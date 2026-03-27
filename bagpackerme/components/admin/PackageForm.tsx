@@ -604,7 +604,7 @@ function TabInclusionsGallery({
     <div className="space-y-8">
       {/* Inclusions */}
       <div>
-        <h3 className="text-sm font-semibold text-gray-800 mb-3">What's Included</h3>
+        <h3 className="text-sm font-semibold text-gray-800 mb-3">What&apos;s Included</h3>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
           {INCLUSION_KEYS.map((key) => (
             <div key={key} className="border border-gray-200 rounded-xl px-4 py-3 bg-white">
@@ -717,6 +717,7 @@ export default function PackageForm({ initialData }: PackageFormProps) {
 
   const [form, setForm] = useState<FormState>(() => {
     if (!initialData) return { ...DEFAULT_FORM };
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { id, createdAt, ...rest } = initialData;
     return rest;
   });

@@ -297,7 +297,7 @@ export default function AdminPackagesPage() {
                 <h3 className="text-base font-semibold text-gray-900">Delete Package</h3>
                 <p className="text-sm text-gray-500 mt-1">
                   Are you sure you want to delete{' '}
-                  <strong className="text-gray-700">"{deleteTarget.title}"</strong>? This action
+                  <strong className="text-gray-700">&quot;{deleteTarget.title}&quot;</strong>? This action
                   cannot be undone.
                 </p>
               </div>
