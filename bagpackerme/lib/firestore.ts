@@ -1,0 +1,64 @@
+import { collection, doc, getDocs, addDoc, updateDoc, deleteDoc, query, where, orderBy, getDoc, limit } from 'firebase/firestore';
+import { db } from './firebase';
+import { Package, BlogPost, Enquiry } from '@/types';
+
+// Packages
+const packagesCol = collection(db, 'packages');
+export const getPackages = async () => getDocs(packagesCol);
+export const getPublishedPackages = async () => getDocs(query(packagesCol, where('status', '==', 'published')));
+export const getFeaturedPackages = async (count: number) => getDocs(query(packagesCol, where('status', '==', 'published'), limit(count)));
+export const getPackage = async (id: string) => getDoc(doc(db, 'packages', id));
+export const getPackageBySlug = async (slug: string) => {
+  const q = query(packagesCol, where('slug', '==', slug), limit(1));
+  const snapshot = await getDocs(q);
+  return snapshot.empty ? null : { id: snapshot.docs[0].id, ...snapshot.docs[0].data() } as Package;
+};
+export const getRelatedPackages = async (category: string, excludeSlug: string, count: number = 3) => {
+  const q = query(packagesCol, where('category', '==', category), where('status', '==', 'published'), limit(count + 1));
+  const snapshot = await getDocs(q);
+  const related = snapshot.docs
+    .map(doc => ({ id: doc.id, ...doc.data() } as Package))
+    .filter(pkg => pkg.slug !== excludeSlug)
+    .slice(0, count);
+  return related;
+};
+export const createPackage = async (data: Omit<Package, 'id'>) => addDoc(packagesCol, data);
+export const updatePackage = async (id: string, data: Partial<Package>) => updateDoc(doc(db, 'packages', id), data);
+export const deletePackage = async (id: string) => deleteDoc(doc(db, 'packages', id));
+
+// Blogs
+const blogsCol = collection(db, 'blogs');
+export const getBlogs = async () => getDocs(query(blogsCol, orderBy('createdAt', 'desc')));
+export const getPublishedBlogs = async () => getDocs(query(blogsCol, where('status', '==', 'published'), orderBy('publishDate', 'desc')));
+export const getRecentPublishedBlogs = async (limitCount: number) => getDocs(query(blogsCol, where('status', '==', 'published'), orderBy('publishDate', 'desc'), limit(limitCount)));
+export const getBlog = async (id: string) => getDoc(doc(db, 'blogs', id));
+export const getBlogBySlug = async (slug: string) => {
+  const q = query(blogsCol, where('slug', '==', slug), limit(1));
+  const snapshot = await getDocs(q);
+  return snapshot.empty ? null : { id: snapshot.docs[0].id, ...snapshot.docs[0].data() } as BlogPost;
+};
+export const getRelatedBlogs = async (category: string, excludeSlug: string, count: number = 3) => {
+  const q = query(blogsCol, where('category', '==', category), where('status', '==', 'published'), limit(count + 1));
+  const snapshot = await getDocs(q);
+  return snapshot.docs
+    .map(doc => ({ id: doc.id, ...doc.data() } as BlogPost))
+    .filter(blog => blog.slug !== excludeSlug)
+    .slice(0, count);
+};
+export const createBlog = async (data: Omit<BlogPost, 'id'>) => addDoc(blogsCol, data);
+export const updateBlog = async (id: string, data: Partial<BlogPost>) => updateDoc(doc(db, 'blogs', id), data);
+export const deleteBlog = async (id: string) => deleteDoc(doc(db, 'blogs', id));
+
+// Enquiries
+const enquiriesCol = collection(db, 'enquiries');
+export const getEnquiries = async () => getDocs(query(enquiriesCol, orderBy('createdAt', 'desc')));
+export const getEnquiry = async (id: string) => getDoc(doc(db, 'enquiries', id));
+export const createEnquiry = async (data: Omit<Enquiry, 'id'>) => addDoc(enquiriesCol, data);
+export const updateEnquiry = async (id: string, data: Partial<Enquiry>) => updateDoc(doc(db, 'enquiries', id), data);
+export const deleteEnquiry = async (id: string) => deleteDoc(doc(db, 'enquiries', id));
+
+// Subscribers
+const subscribersCol = collection(db, 'subscribers');
+export const getSubscribers = async () => getDocs(query(subscribersCol, orderBy('createdAt', 'desc')));
+export const createSubscriber = async (data: { email: string; createdAt: string }) => addDoc(subscribersCol, data);
+export const deleteSubscriber = async (id: string) => deleteDoc(doc(db, 'subscribers', id));
