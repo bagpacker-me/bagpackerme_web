@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { getBlogBySlug, getRelatedBlogs } from '@/lib/firestore';
 import { Calendar, Clock, User, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import ShareButtons from '../_components/ShareButtons';
 import NewsletterCard from '../_components/NewsletterCard';
 
@@ -70,10 +71,11 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
       {/* Hero Section */}
       <section className="relative w-full h-[60vh] min-h-[500px] flex flex-col justify-center pb-[64px]">
         <div className="absolute inset-0 z-0">
-          <img 
+          <Image 
             src={blog.featuredImageUrl || 'https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&q=80'} 
             alt={blog.title} 
-            className="w-full h-full object-cover"
+            fill
+            className="object-cover"
           />
           {/* Dark gradient + grain overlay matching BlogListing */}
           <div className="absolute inset-0 bg-gradient-to-t from-[#0B1517] via-[rgba(11,21,23,0.7)] to-transparent"></div>
@@ -166,10 +168,11 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
               {relatedBlogs.map(related => (
                 <Link href={`/blog/${related.slug}`} key={related.id} className="group flex flex-col bg-white border border-[rgba(34,30,42,0.08)] hover:border-[rgba(34,30,42,0.15)] transition-colors duration-300">
                   <div className="relative aspect-[16/9] w-full overflow-hidden">
-                    <img 
+                    <Image 
                       src={related.featuredImageUrl || 'https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&q=80'} 
                       alt={related.title} 
-                      className="w-full h-full object-cover transition-transform duration-700 ease-[var(--ease-default)] group-hover:scale-[1.06]"
+                      fill
+                      className="object-cover transition-transform duration-700 ease-[var(--ease-default)] group-hover:scale-[1.06]"
                     />
                     <div className="absolute top-[16px] left-[16px] z-10 bg-lime text-[#221E2A] px-[12px] py-[4px] font-display text-[11px] font-bold uppercase tracking-widest leading-none">
                       {related.category}

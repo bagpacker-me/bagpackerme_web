@@ -10,6 +10,7 @@ import {
   useReducedMotion,
 } from 'framer-motion';
 import Link from 'next/link';
+import Image from 'next/image';
 import { FadeInSection } from '@/components/ui/FadeInSection';
 
 // ─── Animated Counter (spec #5) ───────────────────────────────────────────────
@@ -103,25 +104,28 @@ export default function AboutPage() {
         <div className="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-[48px] items-center">
           <FadeInSection className="relative group">
             <div className="grid grid-cols-2 gap-[8px]">
-              <div className="col-span-2 overflow-hidden bg-void/5">
-                <img
+              <div className="col-span-2 overflow-hidden bg-void/5 relative h-[240px] md:h-[320px]">
+                <Image
                   src="https://images.unsplash.com/photo-1477587458883-47145ed31f2f?auto=format&fit=crop&w=600&q=80"
                   alt="India travel"
-                  className="rounded-none w-full h-[240px] md:h-[320px] object-cover transition-transform duration-700 hover:scale-105"
+                  fill
+                  className="rounded-none object-cover transition-transform duration-700 hover:scale-105"
                 />
               </div>
-              <div className="overflow-hidden bg-void/5">
-                <img
+              <div className="overflow-hidden bg-void/5 relative h-[160px] md:h-[240px]">
+                <Image
                   src="https://images.unsplash.com/photo-1561361058-c24cecae35ca?auto=format&fit=crop&w=400&q=80"
                   alt="India stairs"
-                  className="rounded-none w-full h-[160px] md:h-[240px] object-cover transition-transform duration-700 hover:scale-105"
+                  fill
+                  className="rounded-none object-cover transition-transform duration-700 hover:scale-105"
                 />
               </div>
-              <div className="overflow-hidden bg-void/5">
-                <img
+              <div className="overflow-hidden bg-void/5 relative h-[160px] md:h-[240px]">
+                <Image
                   src="https://images.unsplash.com/photo-1506461883276-594a12b5bca4?auto=format&fit=crop&w=400&q=80"
                   alt="India group"
-                  className="rounded-none w-full h-[160px] md:h-[240px] object-cover transition-transform duration-700 hover:scale-105"
+                  fill
+                  className="rounded-none object-cover transition-transform duration-700 hover:scale-105"
                 />
               </div>
             </div>
@@ -172,11 +176,12 @@ export default function AboutPage() {
             <div className="grid grid-cols-1 lg:grid-cols-5">
               <div className="lg:col-span-2 flex items-center justify-center p-[40px] bg-white/5">
                 <div className="relative">
-                  <div className="w-[200px] h-[200px] lg:w-[280px] lg:h-[320px] rounded-none overflow-hidden border border-white/20 shadow-xl group">
-                    <img
+                  <div className="w-[200px] h-[200px] lg:w-[280px] lg:h-[320px] rounded-none overflow-hidden border border-white/20 shadow-xl group relative">
+                    <Image
                       src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80"
                       alt="Kevin — Founder of BagpackerMe"
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
                     />
                   </div>
                   <div className="absolute -bottom-[16px] left-1/2 -translate-x-1/2 bg-lime text-void text-[11px] font-bold font-display tracking-widest px-[16px] py-[8px] rounded-none whitespace-nowrap uppercase">

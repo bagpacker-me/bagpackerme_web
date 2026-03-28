@@ -3,6 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import { BlogPost } from '@/types';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Search, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const CATEGORIES = ['All', 'Adventure', 'Culture', 'Food', 'Spiritual', 'Tips & Guides', 'Corporate Travel'];
@@ -80,10 +81,11 @@ export default function BlogListingClient({ initialBlogs }: { initialBlogs: Blog
                     {featuredPost.category}
                   </div>
                   <div className="aspect-[16/9] lg:aspect-[3/2] relative w-full overflow-hidden">
-                    <img
+                    <Image
                       src={featuredPost.featuredImageUrl || 'https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&q=80'}
                       alt={featuredPost.title}
-                      className="w-full h-full object-cover transition-transform duration-700 ease-[var(--ease-default)] group-hover:scale-[1.06]"
+                      fill
+                      className="object-cover transition-transform duration-700 ease-[var(--ease-default)] group-hover:scale-[1.06]"
                     />
                   </div>
                 </Link>
@@ -145,10 +147,11 @@ export default function BlogListingClient({ initialBlogs }: { initialBlogs: Blog
                    {currentGridPosts.map(post => (
                      <Link href={`/blog/${post.slug}`} key={post.id} className="group flex flex-col bg-white border border-[rgba(34,30,42,0.08)] hover:border-[rgba(34,30,42,0.15)] transition-colors duration-300">
                         <div className="relative aspect-[16/9] w-full overflow-hidden">
-                          <img 
+                          <Image 
                             src={post.featuredImageUrl || 'https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&q=80'}
                             alt={post.title}
-                            className="w-full h-full object-cover transition-transform duration-700 ease-[var(--ease-default)] group-hover:scale-[1.06]"
+                            fill
+                            className="object-cover transition-transform duration-700 ease-[var(--ease-default)] group-hover:scale-[1.06]"
                           />
                           <div className="absolute top-[16px] left-[16px] z-10 bg-lime text-[#221E2A] px-[12px] py-[4px] font-display text-[11px] font-bold uppercase tracking-widest leading-none">
                             {post.category}
@@ -287,11 +290,14 @@ export default function BlogListingClient({ initialBlogs }: { initialBlogs: Blog
                    <div className="flex flex-col">
                      {popularPosts.map((post, idx) => (
                        <Link href={`/blog/${post.slug}`} key={post.id} className={`flex items-start gap-[12px] py-[12px] group ${idx !== popularPosts.length - 1 ? 'border-b border-[rgba(34,30,42,0.06)]' : ''}`}>
-                         <img 
-                           src={post.featuredImageUrl || 'https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&q=80'}
-                           alt={post.title}
-                           className="w-[48px] h-[48px] object-cover shrink-0"
-                         />
+                         <div className="shrink-0 relative w-[48px] h-[48px]">
+                           <Image 
+                             src={post.featuredImageUrl || 'https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&q=80'}
+                             alt={post.title}
+                             fill
+                             className="object-cover"
+                           />
+                         </div>
                          <div>
                            <h5 className="font-body font-medium text-[13px] text-[#221E2A] line-clamp-2 leading-[1.3] group-hover:text-[#285056] transition-colors">
                              {post.title}

@@ -12,7 +12,7 @@ import {
   AnimatePresence,
   useReducedMotion,
 } from 'framer-motion';
-import { Menu, X, ChevronDown } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { Logo } from '../ui/Logo';
 
 const navLinks = [
