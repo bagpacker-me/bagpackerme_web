@@ -49,30 +49,36 @@ export default function FeaturedTrips() {
         </FadeInSection>
 
         {/* Grid Area — Spec #4: stagger 0.08 with useInView */}
-        {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16 px-4">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <PackageCardSkeleton key={i} />
-            ))}
-          </div>
-        ) : (
-          <motion.div
-            ref={gridRef}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16 px-4"
-            variants={shouldReduceMotion ? undefined : CARD_GRID_VARIANTS}
-            initial={shouldReduceMotion ? undefined : 'hidden'}
-            animate={gridInView ? 'visible' : 'hidden'}
-          >
-            {packages.map(pkg => (
-              <motion.div
-                key={pkg.id}
-                variants={shouldReduceMotion ? undefined : CARD_ITEM_VARIANTS}
-              >
-                <PackageCard pkg={pkg} />
-              </motion.div>
-            ))}
-          </motion.div>
-        )}
+        <div ref={gridRef}>
+          {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16 px-4">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <PackageCardSkeleton key={i} />
+              ))}
+            </div>
+          ) : packages.length > 0 ? (
+            <motion.div
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16 px-4"
+              variants={shouldReduceMotion ? undefined : CARD_GRID_VARIANTS}
+              initial={shouldReduceMotion ? undefined : 'hidden'}
+              animate={gridInView ? 'visible' : 'hidden'}
+            >
+              {packages.map(pkg => (
+                <motion.div
+                  key={pkg.id}
+                  variants={shouldReduceMotion ? undefined : CARD_ITEM_VARIANTS}
+                >
+                  <PackageCard pkg={pkg} />
+                </motion.div>
+              ))}
+            </motion.div>
+          ) : (
+            <div className="text-center py-20 bg-gray-50 border border-gray-100">
+              <h3 className="font-heading font-bold text-2xl text-gray-400 mb-2">No Packages Yet</h3>
+              <p className="text-gray-500 font-sans">We&apos;re working on gathering the best journey packages.</p>
+            </div>
+          )}
+        </div>
 
         {/* Bottom CTA */}
         <FadeInSection className="mt-20 flex justify-center w-full px-4" delay={0.2}>
