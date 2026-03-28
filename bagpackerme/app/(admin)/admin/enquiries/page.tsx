@@ -15,9 +15,9 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 const STATUS_STYLES: Record<string, string> = {
-  new: 'bg-blue-100 text-blue-700',
-  in_progress: 'bg-yellow-100 text-yellow-700',
-  responded: 'bg-lime-100 text-lime-700',
+  new: 'bg-[#E0F7FF] text-[#0369a1]',
+  in_progress: 'bg-[#FEF9C3] text-[#854d0e]',
+  responded: 'bg-[#DCFCE7] text-[#166534]',
 };
 
 function SkeletonRow() {
@@ -292,14 +292,22 @@ export default function AdminEnquiriesPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-gray-100 bg-gray-50/60">
-                {['Name', 'Email', 'Phone', 'Inquiry Type', 'Package', 'Date', 'Status', 'Actions'].map((h) => (
-                  <th key={h} className={`px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider ${h === 'Actions' ? 'text-right' : 'text-left'}`}>
-                    {h}
+      <div className="bg-white overflow-x-auto">
+        <table className="w-full">
+          <thead>
+            <tr className="bg-[#F7F9FA] border-b-[2px] border-[#E9F5F7]">
+                {[
+                  { id: 'Name', label: 'Name', class: 'text-left' },
+                  { id: 'Email', label: 'Email', class: 'text-left hidden sm:table-cell' },
+                  { id: 'Phone', label: 'Phone', class: 'text-left hidden lg:table-cell' },
+                  { id: 'Inquiry', label: 'Inquiry Type', class: 'text-left hidden lg:table-cell' },
+                  { id: 'Package', label: 'Package', class: 'text-left hidden lg:table-cell' },
+                  { id: 'Date', label: 'Date', class: 'text-left hidden xl:table-cell' },
+                  { id: 'Status', label: 'Status', class: 'text-left' },
+                  { id: 'Actions', label: 'Actions', class: 'text-right' },
+                ].map((col) => (
+                  <th key={col.id} className={`px-[16px] py-[12px] font-display text-[11px] font-bold text-[#718096] tracking-widest uppercase ${col.class}`}>
+                    {col.label}
                   </th>
                 ))}
               </tr>
@@ -323,27 +331,28 @@ export default function AdminEnquiriesPage() {
                   <tr
                     key={enq.id}
                     onClick={() => setSelected(enq)}
-                    className="border-b border-gray-50 hover:bg-gray-50/60 transition-colors group cursor-pointer"
+                    className="border-b border-[#F3F4F6] hover:bg-[#F7F9FA] transition-colors group h-[56px] align-middle cursor-pointer"
                   >
-                    <td className="px-4 py-3">
-                      <p className="font-medium text-gray-900">{enq.name}</p>
+                    <td className="px-[16px]">
+                      <p className="font-body text-[14px] text-[#221E2A]">{enq.name}</p>
+                      {/* Show email on small mobile under name */}
+                      <p className="font-body text-[12px] text-[#718096] sm:hidden mt-0.5">{enq.email}</p>
                     </td>
-                    <td className="px-4 py-3 text-gray-600 truncate max-w-[160px]">{enq.email}</td>
-                    <td className="px-4 py-3 text-gray-600">{enq.phone || '—'}</td>
-                    <td className="px-4 py-3 text-gray-600">{enq.inquiryType || '—'}</td>
-                    <td className="px-4 py-3 text-gray-500 text-xs truncate max-w-[120px]">
+                    <td className="px-[16px] font-body text-[14px] text-[#221E2A] truncate max-w-[160px] hidden sm:table-cell">{enq.email}</td>
+                    <td className="px-[16px] font-body text-[14px] text-[#221E2A] hidden lg:table-cell">{enq.phone || '—'}</td>
+                    <td className="px-[16px] font-body text-[14px] text-[#221E2A] hidden lg:table-cell">{enq.inquiryType || '—'}</td>
+                    <td className="px-[16px] font-body text-[14px] text-[#221E2A] truncate max-w-[120px] hidden lg:table-cell">
                       {enq.packageSlug || '—'}
                     </td>
-                    <td className="px-4 py-3 text-gray-400 text-xs whitespace-nowrap">
+                    <td className="px-[16px] font-body text-[14px] text-[#221E2A] whitespace-nowrap hidden xl:table-cell">
                       {enq.createdAt ? format(new Date(enq.createdAt), 'd MMM yyyy') : '—'}
                     </td>
-                    <td className="px-4 py-3">
-                      <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold ${STATUS_STYLES[enq.status] ?? 'bg-gray-100 text-gray-500'}`}>
-                        <span className="w-1.5 h-1.5 rounded-full bg-current opacity-70" />
+                    <td className="px-[16px]">
+                      <span className={`inline-flex items-center min-w-[80px] justify-center px-[10px] py-[3px] rounded-full font-body text-[12px] font-medium transition-colors ${STATUS_STYLES[enq.status] ?? 'bg-gray-100 text-gray-500'}`}>
                         {STATUS_LABELS[enq.status] ?? enq.status}
                       </span>
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-[16px]">
                       <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
                         <button
                           type="button"
@@ -360,9 +369,8 @@ export default function AdminEnquiriesPage() {
                   </tr>
                 ))
               )}
-            </tbody>
-          </table>
-        </div>
+          </tbody>
+        </table>
       </div>
 
       {/* Slide-over */}

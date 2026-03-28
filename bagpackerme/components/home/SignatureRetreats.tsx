@@ -16,16 +16,14 @@ export default function SignatureRetreats() {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <span className="font-serif text-teal italic text-2xl md:text-3xl block mb-4">
-              Signature Retreats
-            </span>
-            <h2 className="text-4xl md:text-5xl lg:text-[56px] font-heading font-bold text-void leading-tight mb-6">
+            <div className="section-label justify-center mb-[16px]">✦ SIGNATURE RETREATS</div>
+            <h2 className="text-4xl md:text-5xl lg:text-[56px] font-heading font-bold text-void leading-tight mb-6" style={{ textWrap: 'balance', letterSpacing: '-0.02em' }}>
               Corporate Retreats That Actually Work
             </h2>
-            <p className="text-void/70 font-sans text-lg mb-8">
+            <p className="text-void/70 font-sans text-lg mb-8 leading-[1.7]">
               Whether your team has 4 hours or 48 — Recharge & Realign delivers real connection, renewed energy, and clarity of purpose.
             </p>
-            <div className="inline-block bg-lime text-void font-sans font-medium text-sm px-6 py-2 rounded-full tracking-wide">
+            <div className="inline-block bg-teal text-white font-display font-bold text-[11px] px-[24px] py-[8px] rounded-none tracking-[0.14em] uppercase">
               step out, breathe deep, and come back stronger
             </div>
           </motion.div>
@@ -39,10 +37,10 @@ export default function SignatureRetreats() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="bg-white rounded-[32px] shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 p-8 md:p-12 relative flex flex-col h-full border border-ice"
+            className="bg-white rounded-none shadow-lg hover:shadow-[0_20px_60px_rgba(34,30,42,0.22)] hover:-translate-y-[6px] transition-all duration-600 p-8 md:p-12 relative flex flex-col h-full border border-ice"
           >
             {/* Number Badge */}
-            <div className="absolute -top-6 -left-6 md:-top-8 md:-left-8 w-16 h-16 md:w-20 md:h-20 bg-cyan rounded-full flex items-center justify-center text-void font-heading font-bold text-3xl md:text-4xl shadow-lg border-[4px] border-white z-10">
+            <div className="absolute -top-6 -left-6 md:-top-8 md:-left-8 w-16 h-16 md:w-20 md:h-20 bg-cyan rounded-none flex items-center justify-center text-void font-heading font-bold text-3xl md:text-4xl shadow-lg border-[4px] border-white z-10">
               1
             </div>
 
@@ -54,13 +52,13 @@ export default function SignatureRetreats() {
             <h3 className="font-heading font-bold text-2xl text-void mb-4">
               HALF-DAY WORKSHOP
             </h3>
-            <div className="text-3xl font-heading font-bold text-teal mb-8">
-              ₹4,000 <span className="text-base text-gray-500 font-sans font-normal">/ person</span>
+            <div className="text-3xl font-heading font-bold text-teal mb-8" style={{ fontVariantNumeric: 'oldstyle-nums' }}>
+              ₹{Number(4000).toLocaleString('en-IN')} <span className="text-base text-gray-500 font-sans font-normal">/ person</span>
             </div>
 
             <div className="flex-grow">
               <h4 className="font-bold text-sm text-void mb-3 uppercase tracking-wider">Includes:</h4>
-              <ul className="space-y-3 font-sans text-void/70 text-sm">
+              <ul className="space-y-3 font-sans text-void/70 text-sm leading-[1.7]">
                 <li className="flex items-start">
                   <span className="text-teal mr-2">✓</span> Lunch
                 </li>
@@ -80,8 +78,8 @@ export default function SignatureRetreats() {
             </div>
 
             <div className="mt-8 pt-6 border-t border-gray-100">
-              <Link href="/packages/half-day-workshop" className="text-teal font-bold hover:text-void transition-colors inline-flex items-center">
-                Learn More <span className="ml-2">→</span>
+              <Link href="/packages/half-day-workshop" className="card-cta-link inline-flex items-center gap-2">
+                Learn More <span aria-hidden="true">→</span>
               </Link>
             </div>
           </motion.div>
@@ -92,10 +90,10 @@ export default function SignatureRetreats() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="bg-white rounded-[32px] shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 p-8 md:p-12 relative flex flex-col h-full border border-ice"
+            className="bg-white rounded-none shadow-lg hover:shadow-[0_20px_60px_rgba(34,30,42,0.22)] hover:-translate-y-[6px] transition-all duration-600 p-8 md:p-12 relative flex flex-col h-full border border-ice"
           >
             {/* Number Badge */}
-            <div className="absolute -top-6 -left-6 md:-top-8 md:-left-8 w-16 h-16 md:w-20 md:h-20 bg-lime rounded-full flex items-center justify-center text-void font-heading font-bold text-3xl md:text-4xl shadow-lg border-[4px] border-white z-10">
+            <div className="absolute -top-6 -left-6 md:-top-8 md:-left-8 w-16 h-16 md:w-20 md:h-20 bg-teal rounded-none flex items-center justify-center text-white font-heading font-bold text-3xl md:text-4xl shadow-lg border-[4px] border-white z-10">
               2
             </div>
 
@@ -107,13 +105,13 @@ export default function SignatureRetreats() {
             <h3 className="font-heading font-bold text-2xl text-void mb-4">
               2-DAY RETREAT
             </h3>
-            <div className="text-3xl font-heading font-bold text-teal mb-8">
-              ₹7,500 <span className="text-base text-gray-500 font-sans font-normal">/ person</span>
+            <div className="text-3xl font-heading font-bold text-teal mb-8" style={{ fontVariantNumeric: 'oldstyle-nums' }}>
+              ₹{Number(7500).toLocaleString('en-IN')} <span className="text-base text-gray-500 font-sans font-normal">/ person</span>
             </div>
 
             <div className="flex-grow">
               <h4 className="font-bold text-sm text-void mb-3 uppercase tracking-wider">Includes:</h4>
-              <ul className="space-y-3 font-sans text-void/70 text-sm">
+              <ul className="space-y-3 font-sans text-void/70 text-sm leading-[1.7]">
                 <li className="flex items-start">
                   <span className="text-teal mr-2">✓</span> Boutique stay
                 </li>
@@ -130,8 +128,8 @@ export default function SignatureRetreats() {
             </div>
 
             <div className="mt-8 pt-6 border-t border-gray-100">
-              <Link href="/packages/2-day-retreat" className="text-teal font-bold hover:text-void transition-colors inline-flex items-center">
-                Learn More <span className="ml-2">→</span>
+              <Link href="/packages/2-day-retreat" className="card-cta-link inline-flex items-center gap-2">
+                Learn More <span aria-hidden="true">→</span>
               </Link>
             </div>
           </motion.div>

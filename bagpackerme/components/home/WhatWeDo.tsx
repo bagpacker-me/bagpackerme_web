@@ -24,8 +24,10 @@ export default function WhatWeDo() {
   ];
 
   return (
-    <section className="bg-[#221E2A] py-[var(--space-section)]">
-      <div className="container-custom">
+    <section className="bg-[#221E2A] py-[var(--space-section)] relative overflow-hidden">
+      {/* Grain overlay for dark section */}
+      <div className="grain absolute inset-0 z-0 pointer-events-none" />
+      <div className="container-custom relative z-10">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
           <motion.div
@@ -34,13 +36,9 @@ export default function WhatWeDo() {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <span className="text-cyan text-sm">✦</span>
-              <span className="text-cyan font-bold tracking-[0.2em] text-sm uppercase">Our Services</span>
-              <span className="text-cyan text-sm">✦</span>
-            </div>
+            <div className="section-label justify-center mb-[16px]">✦ OUR SERVICES</div>
             
-            <h2 className="text-4xl md:text-5xl lg:text-[56px] font-heading font-bold text-white leading-tight">
+            <h2 className="text-4xl md:text-5xl lg:text-[56px] font-heading font-bold text-white leading-tight" style={{ textWrap: 'balance', letterSpacing: '-0.02em' }}>
               Three Things We Do Better Than Anyone
             </h2>
           </motion.div>
@@ -55,7 +53,7 @@ export default function WhatWeDo() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.2 * index }}
-              className="bg-[#2a2533] rounded-[32px] shadow-lg border border-white/10 p-8 md:p-10 hover:bg-[#322d3e] hover:-translate-y-2 transition-all duration-300 relative overflow-hidden group"
+              className="bg-[#2a2533] rounded-none border border-white/10 p-8 md:p-10 hover:bg-[#322d3e] hover:-translate-y-[6px] hover:shadow-[0_20px_60px_rgba(34,30,42,0.4)] transition-all duration-600 relative overflow-hidden group"
             >
               {/* Liquid glass accent */}
               <div className="absolute top-0 right-0 w-32 h-32 bg-cyan/10 rounded-full blur-2xl -mr-10 -mt-10 group-hover:bg-cyan/20 transition-all duration-300" />

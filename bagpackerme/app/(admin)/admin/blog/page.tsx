@@ -32,15 +32,15 @@ function StatusBadge({
       type="button"
       onClick={onToggle}
       title={`Click to ${status === 'published' ? 'unpublish' : 'publish'}`}
-      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold transition-colors cursor-pointer
+      className={`inline-flex items-center gap-1.5 px-[10px] py-[3px] rounded-full font-body text-[12px] font-medium transition-colors cursor-pointer
         ${
           status === 'published'
-            ? 'bg-lime-100 text-lime-700 hover:bg-lime-200'
-            : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+            ? 'bg-[#DCFCE7] text-[#166534] hover:bg-green-200'
+            : 'bg-[#F3F4F6] text-[#6B7280] hover:bg-gray-200'
         }`}
     >
       <span
-        className={`w-1.5 h-1.5 rounded-full ${status === 'published' ? 'bg-lime-500' : 'bg-gray-400'}`}
+        className={`w-1.5 h-1.5 rounded-full ${status === 'published' ? 'bg-[#166534]' : 'bg-[#6B7280]'}`}
       />
       {status === 'published' ? 'Published' : 'Draft'}
     </button>
@@ -110,23 +110,20 @@ export default function AdminBlogPage() {
   return (
     <div className="px-6 py-8 max-w-7xl mx-auto">
       {/* Header */}
-      <div className="flex items-center justify-between mb-7">
+      <div className="flex items-center justify-between mb-[28px]">
         <div>
-          <h1
-            className="text-2xl font-bold text-gray-900"
-            style={{ fontFamily: 'DM Sans, sans-serif' }}
-          >
+          <h1 className="text-[24px] font-bold text-[#221E2A] font-display">
             Blog Posts
           </h1>
-          <p className="text-sm text-gray-400 mt-0.5">
+          <p className="font-body text-[13px] text-[#718096] mt-[2px]">
             {blogs.length} post{blogs.length !== 1 ? 's' : ''} total
           </p>
         </div>
         <Link
           href="/admin/blog/new"
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all hover:opacity-90 bg-[#C1EA00] text-[#1a2e1e]"
+          className="flex items-center h-[44px] px-[20px] font-body text-[14px] font-normal border border-[rgba(34,30,42,0.08)] bg-[#FFFFFF] text-[#221E2A] rounded-[2px] transition-colors hover:bg-[#F7F9FA] shadow-sm"
         >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <svg className="w-[16px] h-[16px] mr-[8px] text-[#285056]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
           </svg>
           New Post
@@ -134,35 +131,34 @@ export default function AdminBlogPage() {
       </div>
 
       {/* Table Card */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-gray-100 bg-gray-50/60">
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider w-14">
-                  Image
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                  Title
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                  Category
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                  Publish Date
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                  Read Time
-                </th>
-                <th className="px-4 py-3 text-right text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody>
+      <div className="bg-white overflow-x-auto">
+        <table className="w-full">
+          <thead>
+            <tr className="bg-[#F7F9FA] border-b-[2px] border-[#E9F5F7]">
+              <th className="px-[16px] py-[12px] text-left font-display text-[11px] font-bold text-[#718096] tracking-widest uppercase w-14">
+                Image
+              </th>
+              <th className="px-[16px] py-[12px] text-left font-display text-[11px] font-bold text-[#718096] tracking-widest uppercase">
+                Title
+              </th>
+              <th className="px-[16px] py-[12px] text-left font-display text-[11px] font-bold text-[#718096] tracking-widest uppercase">
+                Category
+              </th>
+              <th className="px-[16px] py-[12px] text-left font-display text-[11px] font-bold text-[#718096] tracking-widest uppercase">
+                Status
+              </th>
+              <th className="px-[16px] py-[12px] text-left font-display text-[11px] font-bold text-[#718096] tracking-widest uppercase">
+                Publish Date
+              </th>
+              <th className="px-[16px] py-[12px] text-left font-display text-[11px] font-bold text-[#718096] tracking-widest uppercase">
+                Read Time
+              </th>
+              <th className="px-[16px] py-[12px] text-right font-display text-[11px] font-bold text-[#718096] tracking-widest uppercase">
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody>
               {loading ? (
                 <>
                   {[...Array(5)].map((_, i) => (
@@ -190,19 +186,19 @@ export default function AdminBlogPage() {
                 blogs.map((post) => (
                   <tr
                     key={post.id}
-                    className="border-b border-gray-50 hover:bg-gray-50/60 transition-colors group"
+                    className="border-b border-[#F3F4F6] hover:bg-[#F7F9FA] transition-colors group h-[56px] align-middle"
                   >
                     {/* Featured Image */}
-                    <td className="px-4 py-3">
+                    <td className="px-[16px]">
                       {post.featuredImageUrl ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
                           src={post.featuredImageUrl}
                           alt={post.title}
-                          className="w-10 h-10 object-cover rounded-lg border border-gray-100"
+                          className="w-10 h-10 object-cover rounded-[2px] border border-gray-100"
                         />
                       ) : (
-                        <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center text-gray-300">
+                        <div className="w-10 h-10 rounded-[2px] bg-[#E9F5F7] flex items-center justify-center text-[#718096]">
                           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5M21 3.75H3 M6.75 8.25a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" />
                           </svg>
@@ -211,26 +207,26 @@ export default function AdminBlogPage() {
                     </td>
 
                     {/* Title */}
-                    <td className="px-4 py-3">
-                      <p className="font-medium text-gray-900 truncate max-w-[220px]">{post.title}</p>
-                      <p className="text-xs text-gray-400 truncate max-w-[220px]">/{post.slug}</p>
+                    <td className="px-[16px]">
+                      <p className="font-body text-[14px] text-[#221E2A] truncate max-w-[220px]">{post.title}</p>
+                      <p className="font-body text-[12px] text-[#718096] truncate max-w-[220px] pt-[2px]">/{post.slug}</p>
                     </td>
 
                     {/* Category */}
-                    <td className="px-4 py-3">
-                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${CATEGORY_COLORS[post.category] ?? 'bg-gray-100 text-gray-600'}`}>
+                    <td className="px-[16px]">
+                      <span className={`px-[8px] py-[2px] rounded-full font-body text-[11px] font-medium ${CATEGORY_COLORS[post.category] ?? 'bg-gray-100 text-gray-600'}`}>
                         {post.category}
                       </span>
                     </td>
 
                     {/* Status */}
-                    <td className="px-4 py-3">
+                    <td className="px-[16px]">
                       <StatusBadge status={post.status} onToggle={() => handleToggleStatus(post)} />
                     </td>
 
                     {/* Publish Date */}
-                    <td className="px-4 py-3">
-                      <span className="text-gray-500 text-xs">
+                    <td className="px-[16px] font-body text-[14px] text-[#221E2A]">
+                      <span>
                         {post.publishDate
                           ? format(new Date(post.publishDate), 'd MMM yyyy')
                           : '—'}
@@ -238,14 +234,14 @@ export default function AdminBlogPage() {
                     </td>
 
                     {/* Read Time */}
-                    <td className="px-4 py-3">
-                      <span className="text-gray-500 text-xs">
+                    <td className="px-[16px] font-body text-[14px] text-[#221E2A]">
+                      <span>
                         {post.readTimeMinutes ? `${post.readTimeMinutes} min` : '—'}
                       </span>
                     </td>
 
                     {/* Actions */}
-                    <td className="px-4 py-3">
+                    <td className="px-[16px]">
                       <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button
                           type="button"
@@ -272,9 +268,8 @@ export default function AdminBlogPage() {
                   </tr>
                 ))
               )}
-            </tbody>
-          </table>
-        </div>
+          </tbody>
+        </table>
       </div>
 
       {/* Delete Confirm Dialog */}

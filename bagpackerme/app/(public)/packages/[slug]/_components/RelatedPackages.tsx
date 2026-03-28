@@ -1,5 +1,6 @@
 import { getRelatedPackages } from '@/lib/firestore';
 import PackageCard from '@/components/home/PackageCard';
+import { FadeInSection } from '@/components/ui/FadeInSection';
 
 export default async function RelatedPackages({ category, currentSlug }: { category: string, currentSlug: string }) {
   const related = await getRelatedPackages(category, currentSlug, 3);
@@ -7,23 +8,27 @@ export default async function RelatedPackages({ category, currentSlug }: { categ
   if (!related || related.length === 0) return null;
 
   return (
-    <section className="w-full bg-white py-24 md:py-32">
-      <div className="max-w-7xl mx-auto px-6">
+    <section className="w-full bg-white py-mobile md:py-desktop px-mobile md:px-desktop">
+      <div className="max-w-7xl mx-auto">
         
-        <div className="mb-16 md:mb-24 text-center">
-          <span className="text-teal font-display font-bold uppercase tracking-[0.3em] text-sm block mb-4">
-            ✦ KEEP EXPLORING
-          </span>
-          <h2 className="text-void font-display text-4xl md:text-5xl lg:text-6xl font-bold uppercase">
+        <FadeInSection className="mb-[64px] md:mb-[96px] flex flex-col items-center">
+          <div className="flex items-center gap-[16px] mb-[24px]">
+             <div className="h-[1px] w-[32px] bg-[#221E2A]" />
+             <span className="font-display font-bold uppercase text-[11px] tracking-widest text-[#221E2A]">Keep Exploring</span>
+             <div className="h-[1px] w-[32px] bg-[#221E2A]" />
+          </div>
+          <h2 className="text-[#221E2A] font-display text-[clamp(2rem,4vw,3rem)] font-bold uppercase tracking-[-0.02em] leading-[1.1]">
             You May Also Like
           </h2>
-        </div>
+        </FadeInSection>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {related.map(pkg => (
-            <PackageCard key={pkg.id} pkg={pkg} />
-          ))}
-        </div>
+        <FadeInSection delay={0.2}>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[24px]">
+            {related.map(pkg => (
+              <PackageCard key={pkg.id} pkg={pkg} />
+            ))}
+          </div>
+        </FadeInSection>
 
       </div>
     </section>

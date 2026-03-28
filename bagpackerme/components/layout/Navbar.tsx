@@ -3,7 +3,15 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { motion, useScroll, useMotionValueEvent, AnimatePresence } from 'framer-motion';
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useMotionTemplate,
+  useMotionValueEvent,
+  AnimatePresence,
+  useReducedMotion,
+} from 'framer-motion';
 import { Menu, X, ChevronDown } from 'lucide-react';
 import { Logo } from '../ui/Logo';
 
@@ -28,6 +36,14 @@ export function Navbar() {
   const [isRetreatsOpen, setIsRetreatsOpen] = useState(false);
   const { scrollY } = useScroll();
   const pathname = usePathname();
+  const shouldReduceMotion = useReducedMotion();
+
+  // Spec #7: interpolate bg and blur via useTransform at 80px threshold
+  const bgOpacity = useTransform(scrollY, [0, 80], [0, 0.95]);
+  const blurPx    = useTransform(scrollY, [0, 80], [0, 12]);
+  // Build CSS values from motion values
+  const background      = useMotionTemplate`rgba(34,30,42,${bgOpacity})`;
+  const backdropFilter  = useMotionTemplate`blur(${blurPx}px)`;
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     setIsScrolled(latest > 80);
@@ -50,19 +66,19 @@ export function Navbar() {
   return (
     <>
       <motion.nav
-        className="fixed top-0 w-full z-50 border-b border-transparent transition-colors duration-300"
-        initial={{ backgroundColor: 'transparent' }}
-        animate={{ 
-          backgroundColor: isScrolled ? 'rgba(34, 30, 42, 0.95)' : 'transparent',
-          backdropFilter: isScrolled ? 'blur(12px)' : 'none',
-          borderColor: isScrolled ? 'rgba(255, 255, 255, 0.05)' : 'transparent',
-        }}
+        className="fixed top-0 w-full z-50 border-b"
+        style={
+          shouldReduceMotion
+            ? { background: isScrolled ? 'rgba(34,30,42,0.95)' : 'transparent' }
+            : { background, backdropFilter, WebkitBackdropFilter: backdropFilter,
+                borderColor: isScrolled ? 'rgba(255,255,255,0.05)' : 'transparent' }
+        }
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             {/* Logo */}
-            <Link href="/" className="flex-shrink-0 z-[60] relative">
-              <Logo variant="light" className="scale-90 sm:scale-100" />
+            <Link href="/" className="flex-shrink-0 z-[60] relative origin-left scale-[0.65] md:scale-100">
+              <Logo variant="light" />
             </Link>
 
             {/* Desktop Navigation */}
@@ -86,7 +102,7 @@ export function Navbar() {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: 10 }}
                             transition={{ duration: 0.2 }}
-                            className="absolute top-full left-0 mt-2 w-64 bg-void border border-white/10 rounded-xl shadow-2xl overflow-hidden"
+                            className="absolute top-full left-0 mt-2 w-64 bg-void border border-white/10 rounded-none shadow-2xl overflow-hidden"
                           >
                             <div className="py-2">
                               {retreatsOptions.map((option) => (
@@ -140,7 +156,7 @@ export function Navbar() {
               </div>
               <Link 
                 href="/contact" 
-                className="bg-lime text-void px-6 py-2.5 rounded-full font-bold text-sm hover:bg-white transition-all duration-300 transform hover:-translate-y-0.5 shadow-[0_0_15px_rgba(193,234,0,0.3)] hover:shadow-[0_0_20px_rgba(255,255,255,0.4)]"
+                className="bg-lime text-void px-6 py-3 rounded-none font-display font-bold text-[11px] tracking-[0.14em] uppercase hover:bg-white transition-all duration-300 transform hover:-translate-y-0.5 shadow-[0_0_15px_rgba(193,234,0,0.3)] hover:shadow-[0_0_20px_rgba(255,255,255,0.4)]"
               >
                 Book a Trip &rarr;
               </Link>
@@ -150,7 +166,7 @@ export function Navbar() {
             <div className="md:hidden flex items-center z-[60]">
               <button 
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="text-white p-2 hover:text-lime transition-colors"
+                className="text-white hover:text-lime transition-colors flex items-center justify-center min-w-[44px] min-h-[44px]"
                 aria-label="Toggle menu"
               >
                 {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -168,9 +184,9 @@ export function Navbar() {
             animate={{ opacity: 1, clipPath: 'circle(150% at 100% 0)' }}
             exit={{ opacity: 0, clipPath: 'circle(0% at 100% 0)' }}
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed inset-0 z-50 bg-void flex flex-col justify-center px-6"
+            className="fixed inset-0 z-50 bg-void flex flex-col justify-center items-center px-6 overflow-y-auto"
           >
-            <div className="flex flex-col space-y-8 text-center mt-12">
+            <div className="flex flex-col items-center justify-center space-y-8 text-center mt-12 w-full py-12 min-h-full">
               {navLinks.map((link, i) => (
                 <motion.div 
                   key={link.name}
@@ -212,7 +228,7 @@ export function Navbar() {
                 <Link 
                   href="/contact" 
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="bg-lime text-void px-8 py-4 rounded-full font-bold text-lg w-full max-w-xs shadow-[0_0_20px_rgba(193,234,0,0.2)]"
+                  className="bg-lime text-void px-8 py-4 rounded-none font-display font-bold text-[11px] tracking-[0.14em] uppercase w-full max-w-xs shadow-[0_0_20px_rgba(193,234,0,0.2)]"
                 >
                   Book a Trip &rarr;
                 </Link>

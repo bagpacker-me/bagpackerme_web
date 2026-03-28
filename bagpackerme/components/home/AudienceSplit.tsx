@@ -8,7 +8,7 @@ export default function AudienceSplit() {
   return (
     <section className="w-full flex flex-col md:flex-row">
       {/* Left Panel - Foreign Travelers (55%) */}
-      <div className="w-full md:w-[55%] bg-teal text-white flex items-center justify-center py-20 px-8 md:px-16 lg:px-24 relative overflow-hidden group">
+      <div className="w-full md:w-[55%] bg-void text-white flex items-center justify-center py-20 px-8 md:px-16 lg:px-24 relative overflow-hidden group">
         <motion.div 
           initial={{ opacity: 0, x: -30 }}
           whileInView={{ opacity: 1, x: 0 }}
@@ -16,12 +16,9 @@ export default function AudienceSplit() {
           transition={{ duration: 0.6 }}
           className="max-w-xl w-full relative z-10"
         >
-          <div className="flex items-center gap-2 mb-6">
-            <span className="text-cyan text-xs">✦</span>
-            <span className="text-cyan font-bold tracking-[0.2em] text-xs uppercase">For Foreign Travelers</span>
-          </div>
+          <div className="section-label mb-[24px]">✦ FOR FOREIGN TRAVELERS</div>
           
-          <h2 className="text-4xl lg:text-5xl font-heading font-bold leading-tight mb-6">
+          <h2 className="text-4xl lg:text-5xl font-heading font-bold leading-tight mb-6" style={{ textWrap: 'balance', letterSpacing: '-0.02em' }}>
             Planning an Immersive India Journey?
           </h2>
           
@@ -50,7 +47,7 @@ export default function AudienceSplit() {
       </div>
 
       {/* Right Panel - Indian Explorers (45%) */}
-      <div className="w-full md:w-[45%] bg-lime text-void flex items-center justify-center py-20 px-8 md:px-16 lg:px-20 relative overflow-hidden group">
+      <div className="w-full md:w-[45%] bg-ice text-void flex items-center justify-center py-20 px-8 md:px-16 lg:px-20 relative overflow-hidden group">
         <motion.div 
           initial={{ opacity: 0, x: 30 }}
           whileInView={{ opacity: 1, x: 0 }}
@@ -58,12 +55,9 @@ export default function AudienceSplit() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="max-w-lg w-full relative z-10"
         >
-          <div className="flex items-center gap-2 mb-6">
-            <span className="text-teal text-xs">✦</span>
-            <span className="text-teal font-bold tracking-[0.2em] text-xs uppercase">For Indian Explorers</span>
-          </div>
+          <div className="section-label mb-[24px]">✦ FOR INDIAN EXPLORERS</div>
           
-          <h2 className="text-4xl lg:text-5xl font-heading font-bold leading-tight mb-6">
+          <h2 className="text-4xl lg:text-5xl font-heading font-bold leading-tight mb-6" style={{ textWrap: 'balance', letterSpacing: '-0.02em' }}>
             Discover Real India
           </h2>
           
@@ -82,7 +76,7 @@ export default function AudienceSplit() {
             </div>
           </div>
           
-          <Link href="/packages?duration=short" className="bg-teal hover:bg-void text-white font-sans font-bold text-sm tracking-widest uppercase px-8 py-4 rounded-full transition-colors duration-300 inline-flex items-center justify-center">
+          <Link href="/packages?duration=short" className="btn-teal inline-flex items-center justify-center">
             Explore Domestic Trips <span className="ml-2">→</span>
           </Link>
         </motion.div>

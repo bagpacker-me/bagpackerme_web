@@ -2,49 +2,169 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Nunito:ital,wght@0,300..800;1,300..800&display=swap');
+/* ─────────────────────────────────────────────────────────────────────────────
+   FONT STACK — loaded via next/font/google in app/layout.tsx
+   CSS variables injected by --font-display, --font-body, --font-accent
+   Josefin Sans 300,400,600,700  → --font-display
+   DM Sans 300,400,500,600       → --font-body
+   Cormorant Garamond 300,400,300i,400i,600i → --font-accent
+   ───────────────────────────────────────────────────────────────────────────── */
 
+/* ─────────────────────────────────────────────────────────────────────────────
+   DESIGN-SYSTEM COLOR TOKENS  (MASTER.md §1)
+   ───────────────────────────────────────────────────────────────────────────── */
 :root {
   /* Brand Colors */
-  --cyan: #0ED2E9;
-  --ice: #E9F5F7;
-  --lime: #C1EA00;
-  --teal: #285056;
-  --void: #221E2A;
-  --white: #FFFFFF;
+  --color-primary:       #285056;
+  --color-primary-dark:  #1e3d42;
+  --color-primary-light: #3a6e76;
+  --color-accent:        #C1EA00;
+  --color-accent-hover:  #afd100;
+  --color-accent-glow:   rgba(193,234,0,0.2);
+  --color-highlight:     #0ED2E9;
+  --color-highlight-dim: rgba(14,210,233,0.15);
+
+  /* Surface */
+  --color-surface-lightest: #FFFFFF;
+  --color-surface-light:    #F7F9FA;
+  --color-surface-mid:      #E9F5F7;
+  --color-surface-dark:     #221E2A;
+  --color-surface-darker:   #1a1620;
+
+  /* Text */
+  --color-text-primary:     #221E2A;
+  --color-text-secondary:   #4a5568;
+  --color-text-muted:       #718096;
+  --color-text-inverse:     #FFFFFF;
+  --color-text-inverse-dim: rgba(255,255,255,0.68);
+
+  /* Semantic */
+  --color-success: #22c55e;
+  --color-error:   #ef4444;
+  --color-warning: #f59e0b;
+
+  /* Borders */
+  --color-border-light:  rgba(34,30,42,0.08);
+  --color-border-mid:    rgba(34,30,42,0.14);
+  --color-border-dark:   rgba(255,255,255,0.10);
+  --color-border-accent: #C1EA00;
+
+  /* Legacy aliases (keep for existing Tailwind class usage) */
+  --cyan:      #0ED2E9;
+  --ice:       #E9F5F7;
+  --lime:      #C1EA00;
+  --teal:      #285056;
+  --void:      #221E2A;
+  --white:     #FFFFFF;
   --off-white: #F7F9FA;
-  --gray-100: #F3F4F6;
-  --gray-300: #D1D5DB;
-  --gray-500: #6B7280;
-  --gray-700: #374151;
 
-  /* Typography */
-  --font-display: 'Arista 2.0 Alternate', 'Baloo 2', sans-serif;   /* Headers, logo, nav */
-  --font-body: 'Nunito', sans-serif;            /* Body text, paragraphs */
-  --font-accent: 'Baloo 2', sans-serif;    /* Playful accent */
+  /* ─── Typography: Type Scale (MASTER.md §2) ─────────────────────────────── */
+  --text-hero:    clamp(52px, 8.5vw, 104px);
+  --text-display: clamp(40px, 6vw, 80px);
+  --text-h1:      clamp(32px, 4.5vw, 64px);
+  --text-h2:      clamp(26px, 3.5vw, 48px);
+  --text-h3:      clamp(20px, 2.5vw, 32px);
+  --text-h4:      clamp(16px, 2vw, 24px);
+  --text-large:   clamp(17px, 1.5vw, 20px);
+  --text-base:    16px;
+  --text-small:   14px;
+  --text-xs:      12px;
+  --text-xxs:     11px;
 
-  /* Spacing scale */
-  --space-section: clamp(80px, 10vw, 140px);
-  --space-inner: clamp(40px, 5vw, 80px);
+  /* ─── Typography: Letter Spacing ─────────────────────────────────────────── */
+  --tracking-tightest: -0.03em;
+  --tracking-tight:    -0.01em;
+  --tracking-normal:    0em;
+  --tracking-wide:      0.04em;
+  --tracking-wider:     0.08em;
+  --tracking-widest:    0.18em;
+  --tracking-extreme:   0.25em;
+
+  /* ─── Typography: Line Heights ───────────────────────────────────────────── */
+  --leading-tightest: 0.95;
+  --leading-tight:    1.1;
+  --leading-snug:     1.25;
+  --leading-normal:   1.5;
+  --leading-relaxed:  1.7;
+  --leading-loose:    1.9;
+
+  /* ─── Typography: Font Weights ───────────────────────────────────────────── */
+  --weight-light:    300;
+  --weight-regular:  400;
+  --weight-medium:   500;
+  --weight-semibold: 600;
+  --weight-bold:     700;
+
+  /* Spacing scale (8pt grid) */
+  --space-1:   4px;
+  --space-2:   8px;
+  --space-3:   12px;
+  --space-4:   16px;
+  --space-5:   20px;
+  --space-6:   24px;
+  --space-8:   32px;
+  --space-10:  40px;
+  --space-12:  48px;
+  --space-16:  64px;
+  --space-20:  80px;
+  --space-24:  96px;
+  --space-32:  128px;
+  --space-40:  160px;
+
+  /* Section rhythm */
+  --space-section:    clamp(80px, 10vw, 140px);
+  --space-inner:      clamp(40px, 5vw, 80px);
+  --section-padding-y: clamp(80px, 10vw, 140px);
+  --section-padding-x: clamp(20px, 5vw, 80px);
+
+  /* Container widths */
+  --container-sm:  720px;
+  --container-md:  960px;
+  --container-lg:  1200px;
+  --container-xl:  1400px;
+  --prose-width:   68ch;
 
   /* Border radius */
-  --radius-card: 24px;      /* Rounded premium feel */
-  --radius-button: 999px;    /* Pill shaped buttons */
-  --radius-pill: 999px;    /* Pill badges */
+  --radius-none: 0px;
+  --radius-card: 0px;
+  --radius-button: 0px;
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+  --radius-pill: 9999px;
 
   /* Transitions */
-  --ease-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --duration-fast: 200ms;
-  --duration-mid: 400ms;
-  --duration-slow: 700ms;
+  --ease-default: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-smooth:  cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-in:      cubic-bezier(0.4, 0, 1, 1);
+  --ease-out:     cubic-bezier(0, 0, 0.2, 1);
+  --ease-inout:   cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring:  cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-back:    cubic-bezier(0.68, -0.55, 0.27, 1.55);
+
+  --duration-instant: 100ms;
+  --duration-fast:    200ms;
+  --duration-mid:     350ms;
+  --duration-slow:    600ms;
+  --duration-slower:  900ms;
 
   /* Shadows */
-  --shadow-card: 0 4px 24px rgba(34, 30, 42, 0.12);
-  --shadow-card-hover: 0 16px 48px rgba(34, 30, 42, 0.22);
-  --shadow-teal: 0 8px 32px rgba(40, 80, 86, 0.3);
+  --shadow-sm:         0 1px 3px rgba(34,30,42,0.08), 0 1px 2px rgba(34,30,42,0.06);
+  --shadow-md:         0 4px 16px rgba(34,30,42,0.10), 0 2px 8px rgba(34,30,42,0.08);
+  --shadow-lg:         0 12px 40px rgba(34,30,42,0.14), 0 4px 16px rgba(34,30,42,0.10);
+  --shadow-xl:         0 24px 64px rgba(34,30,42,0.18), 0 8px 24px rgba(34,30,42,0.12);
+  --shadow-card:       0 4px 24px rgba(34, 30, 42, 0.12);
+  --shadow-card-hover: 0 20px 60px rgba(34,30,42,0.22);
+  --shadow-teal:       0 8px 32px rgba(40,80,86,0.28);
+  --shadow-lime:       0 8px 32px rgba(193,234,0,0.22);
+  --shadow-inset:      inset 0 1px 0 rgba(255,255,255,0.06);
 }
 
+/* ─────────────────────────────────────────────────────────────────────────────
+   RESET + BASE
+   ───────────────────────────────────────────────────────────────────────────── */
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 html {
@@ -53,39 +173,297 @@ html {
 }
 
 body {
-  font-family: var(--font-body);
+  font-family: var(--font-body, 'DM Sans', sans-serif);
   color: var(--void);
   background: var(--white);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
 }
 
-/* Typography scale */
+/* ─────────────────────────────────────────────────────────────────────────────
+   RULE 1 — HEADING TREATMENT  (MASTER.md Typography Polish §1)
+   • text-wrap: balance on H1/H2 — prevents orphan single-word lines
+   • letter-spacing: -0.02em on sizes above 40px (H1, H2, hero)
+   • font-variant-numeric: oldstyle-nums for price numbers
+   ───────────────────────────────────────────────────────────────────────────── */
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-display);
-  letter-spacing: 0.02em;
-  font-weight: 600;
+  font-family: var(--font-display, 'Josefin Sans', sans-serif);
+  font-weight: 700;
   line-height: 1.1;
 }
 
-/* Grain overlay utility */
-.grain::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 1;
+h1, h2 {
+  text-wrap: balance;
+  letter-spacing: -0.02em;  /* Rule 1: -0.02em on anything above 40px */
+  line-height: var(--leading-tight);
 }
 
-/* Utility: Section alternation */
-.section-dark { background: var(--void); color: var(--white); }
-.section-teal { background: var(--teal); color: var(--white); }
-.section-ice { background: var(--ice); color: var(--void); }
-.section-light { background: var(--white); color: var(--void); }
-.section-off { background: var(--off-white); color: var(--void); }
+h3, h4 {
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--leading-snug);
+}
 
-/* Utility: Container */
+/* Price & number containers: oldstyle-nums for authentic typography */
+.price-display,
+[data-price],
+.stat-number {
+  font-variant-numeric: oldstyle-nums;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   RULE 2 — SECTION LABEL EYEBROW  (MASTER.md §5 + §6.5)
+   Format: ::before line | ✦ LABEL TEXT
+   Color: #0ED2E9, font: Josefin Sans 11px 700, tracking: 0.22em, UPPERCASE
+   Line: 32px wide × 1px, #0ED2E9
+   Spacing: margin-bottom 16px, then heading
+   ───────────────────────────────────────────────────────────────────────────── */
+.section-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-display, 'Josefin Sans', sans-serif);
+  font-size: var(--text-xxs);        /* 11px */
+  font-weight: var(--weight-bold);   /* 700 */
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-highlight);     /* #0ED2E9 */
+  margin-bottom: 16px;               /* 16px gap before heading */
+  line-height: 1;
+}
+
+/* The 32px × 1px cyan line before the label text */
+.section-label::before {
+  content: '';
+  display: block;
+  width: 32px;
+  height: 1px;
+  background: var(--color-highlight);
+  flex-shrink: 0;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   RULE 3 — PULL QUOTES / BLOCKQUOTES  (MASTER.md Typography Polish §3)
+   Font: Cormorant Garamond italic 400, clamp(20px, 2vw, 28px)
+   Color: #0ED2E9 on dark, #285056 (teal) on light
+   Left border: 3px solid #C1EA00 (lime), padding-left: 24px
+   No quotation marks — the border IS the quote mark
+   ───────────────────────────────────────────────────────────────────────────── */
+blockquote,
+.pull-quote {
+  font-family: var(--font-accent, 'Cormorant Garamond', Georgia, serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(20px, 2vw, 28px);
+  border-left: 3px solid var(--color-accent);   /* #C1EA00 lime border = the quote mark */
+  padding-left: 24px;
+  quotes: none;            /* No typographic quote marks */
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* On dark backgrounds (parent .section-dark / bg-void) → cyan text */
+.section-dark blockquote,
+.section-dark .pull-quote,
+.bg-void blockquote,
+.bg-void .pull-quote,
+[class*="bg-[#221E2A]"] blockquote,
+[class*="bg-[#221E2A]"] .pull-quote {
+  color: var(--color-highlight);  /* #0ED2E9 */
+}
+
+/* On light backgrounds → teal text */
+.section-light blockquote,
+.section-light .pull-quote,
+.section-ice blockquote,
+.section-ice .pull-quote,
+.bg-white blockquote,
+.bg-white .pull-quote,
+.bg-ice blockquote,
+.bg-ice .pull-quote {
+  color: var(--color-primary);    /* #285056 */
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   RULE 4 — NUMBER / PRICE / STAT FORMATTING  (MASTER.md Typography Polish §4)
+   Stat numbers: Josefin Sans 700, color: white on dark / teal on light
+   Stat labels:  DM Sans 12px, muted color, below number
+   "+" suffix:   Josefin Sans, same size as number, color: #C1EA00
+   ───────────────────────────────────────────────────────────────────────────── */
+.stat-number {
+  font-family: var(--font-display, 'Josefin Sans', sans-serif);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  font-variant-numeric: oldstyle-nums;
+}
+
+.stat-label {
+  font-family: var(--font-body, 'DM Sans', sans-serif);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  margin-top: 8px;
+}
+
+.stat-suffix {
+  font-family: var(--font-display, 'Josefin Sans', sans-serif);
+  font-weight: 700;
+  color: var(--color-accent);  /* #C1EA00 */
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   RULE 5 — LINK STYLES  (MASTER.md Typography Polish §5)
+   Body copy links:  #0ED2E9 cyan, no underline; hover: underline offset 3px
+   Nav links:        no underline, Josefin Sans caps
+   Card "Explore →": Josefin Sans 12px, teal, hover lime
+   Footer links:     DM Sans 14px rgba(255,255,255,0.65), hover white
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* Body copy links */
+.prose-content a,
+.body-link {
+  color: var(--color-highlight);    /* #0ED2E9 */
+  text-decoration: none;
+  transition: text-decoration-color 200ms var(--ease-default);
+}
+.prose-content a:hover,
+.body-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--color-highlight);
+}
+
+/* Card "Explore → / Read More →" links */
+.card-cta-link {
+  font-family: var(--font-display, 'Josefin Sans', sans-serif);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-primary);      /* teal */
+  text-decoration: none;
+  transition: color 200ms var(--ease-default);
+}
+.card-cta-link:hover {
+  color: var(--color-accent);       /* lime on hover */
+}
+
+/* Footer links */
+.footer-link {
+  font-family: var(--font-body, 'DM Sans', sans-serif);
+  font-size: 14px;
+  font-weight: 400;
+  color: rgba(255,255,255,0.65);
+  text-decoration: none;
+  transition: color 200ms var(--ease-default);
+}
+.footer-link:hover {
+  color: #FFFFFF;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   RULE 6 — TRUNCATION UTILITIES  (MASTER.md Typography Polish §6)
+   Card titles: max 2 lines (line-clamp: 2)
+   Card excerpts: max 3 lines (line-clamp: 3)
+   Never truncate headings — use text-wrap: balance
+   ───────────────────────────────────────────────────────────────────────────── */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* "+N more" pill for destination overflow */
+.dest-overflow-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  background: var(--color-highlight-dim);
+  color: var(--color-highlight);
+  font-family: var(--font-body, 'DM Sans', sans-serif);
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   RULE 7 — METADATA ROW  (MASTER.md Typography Polish §7)
+   Format: [icon] text · [icon] text · [icon] text
+   DM Sans 12px, color: #718096
+   Icons: 14px Lucide, same color
+   Dot separator: · with margin: 0 8px
+   On dark: rgba(255,255,255,0.55)
+   ───────────────────────────────────────────────────────────────────────────── */
+.meta-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0;
+  font-family: var(--font-body, 'DM Sans', sans-serif);
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--color-text-muted);  /* #718096 */
+  line-height: 1;
+}
+
+.meta-row .meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.meta-row .meta-item svg,
+.meta-row .meta-item .meta-icon {
+  width: 14px;
+  height: 14px;
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+.meta-row .meta-sep {
+  margin: 0 8px;
+  color: var(--color-text-muted);
+  user-select: none;
+}
+
+/* Meta row on dark backgrounds */
+.section-dark .meta-row,
+.bg-void .meta-row,
+[class*="bg-[#221E2A]"] .meta-row {
+  color: rgba(255,255,255,0.55);
+}
+.section-dark .meta-row .meta-item svg,
+.bg-void .meta-row .meta-item svg {
+  color: rgba(255,255,255,0.55);
+}
+.section-dark .meta-row .meta-sep,
+.bg-void .meta-row .meta-sep {
+  color: rgba(255,255,255,0.35);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SECTION UTILITIES
+   ───────────────────────────────────────────────────────────────────────────── */
+.section-dark  { background: var(--void); color: var(--white); }
+.section-teal  { background: var(--teal); color: var(--white); }
+.section-ice   { background: var(--ice);  color: var(--void);  }
+.section-light { background: var(--white); color: var(--void); }
+.section-off   { background: var(--off-white); color: var(--void); }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   CONTAINERS
+   ───────────────────────────────────────────────────────────────────────────── */
 .container {
   width: 100%;
   max-width: 1280px;
@@ -100,27 +478,59 @@ h1, h2, h3, h4, h5, h6 {
   padding: 0 clamp(20px, 4vw, 60px);
 }
 
+.prose-content {
+  max-width: var(--prose-width);  /* 68ch — never full-width body text */
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SECTION HEADING (reusable class)
+   ───────────────────────────────────────────────────────────────────────────── */
+.section-heading {
+  font-family: var(--font-display, 'Josefin Sans', sans-serif);
+  font-size: clamp(32px, 5vw, 64px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: var(--leading-tight);
+  text-wrap: balance;
+}
+
+/* Accent / script label (Cormorant Garamond italic) */
+.script-label {
+  font-family: var(--font-accent, 'Cormorant Garamond', Georgia, serif);
+  font-style: italic;
+  font-weight: 300;
+  font-size: 1.3em;
+  color: var(--teal);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   BUTTONS  (MASTER.md §6.1–6.3)
+   ───────────────────────────────────────────────────────────────────────────── */
+
 /* Lime CTA Button */
-.btn-lime {
+.btn-lime,
+.btn-primary {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   background: var(--lime);
   color: var(--void);
-  font-family: var(--font-display);
+  font-family: var(--font-display, 'Josefin Sans', sans-serif);
   font-size: 13px;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  padding: 16px 32px;
+  padding: 16px 40px;
   border: none;
-  border-radius: var(--radius-button);
+  border-radius: 0;
   cursor: pointer;
-  transition: all var(--duration-mid) var(--ease-smooth);
   position: relative;
   overflow: hidden;
+  transition: all var(--duration-mid) var(--ease-smooth);
+  text-decoration: none;
 }
-.btn-lime::after {
+.btn-lime::after,
+.btn-primary::after {
   content: '';
   position: absolute;
   bottom: 0; left: 0;
@@ -130,8 +540,21 @@ h1, h2, h3, h4, h5, h6 {
   transform-origin: left;
   transition: transform var(--duration-mid) var(--ease-smooth);
 }
-.btn-lime:hover { transform: translateY(-2px); box-shadow: var(--shadow-teal); }
-.btn-lime:hover::after { transform: scaleX(1); }
+.btn-lime:hover,
+.btn-primary:hover {
+  background: var(--color-accent-hover);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lime);
+}
+.btn-lime:hover::after,
+.btn-primary:hover::after { transform: scaleX(1); }
+.btn-lime:active,
+.btn-primary:active { transform: translateY(-1px); }
+.btn-lime:focus-visible,
+.btn-primary:focus-visible {
+  outline: 2px solid var(--lime);
+  outline-offset: 2px;
+}
 
 /* Ghost Button */
 .btn-ghost {
@@ -140,99 +563,100 @@ h1, h2, h3, h4, h5, h6 {
   gap: 8px;
   background: transparent;
   color: var(--white);
-  font-family: var(--font-display);
+  font-family: var(--font-display, 'Josefin Sans', sans-serif);
   font-size: 13px;
   font-weight: 600;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  padding: 15px 31px;
-  border: 1px solid rgba(255,255,255,0.4);
-  border-radius: var(--radius-button);
+  padding: 15px 39px;
+  border: 1px solid rgba(255,255,255,0.35);
+  border-radius: 0;
   cursor: pointer;
   transition: all var(--duration-mid) var(--ease-smooth);
+  text-decoration: none;
 }
 .btn-ghost:hover {
   border-color: var(--white);
-  background: rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.07);
+  transform: translateY(-2px);
+}
+.btn-ghost:focus-visible {
+  outline: 2px solid var(--lime);
+  outline-offset: 2px;
 }
 
-/* Teal button variant */
+/* Teal button */
 .btn-teal {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   background: var(--teal);
   color: var(--white);
-  font-family: var(--font-display);
+  font-family: var(--font-display, 'Josefin Sans', sans-serif);
   font-size: 13px;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  padding: 16px 32px;
+  padding: 16px 40px;
   border: none;
-  border-radius: var(--radius-button);
+  border-radius: 0;
   cursor: pointer;
   transition: all var(--duration-mid) var(--ease-smooth);
+  text-decoration: none;
 }
-.btn-teal:hover { background: #1e3d42; transform: translateY(-1px); }
+.btn-teal:hover {
+  background: var(--color-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-teal);
+}
+.btn-teal:focus-visible {
+  outline: 2px solid var(--lime);
+  outline-offset: 2px;
+}
 
-/* Category badge */
+/* ─────────────────────────────────────────────────────────────────────────────
+   BADGES
+   ───────────────────────────────────────────────────────────────────────────── */
 .badge {
   display: inline-block;
-  font-family: var(--font-display);
+  font-family: var(--font-display, 'Josefin Sans', sans-serif);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   padding: 5px 12px;
-  border-radius: var(--radius-pill);
+  border-radius: 0;
   background: var(--lime);
   color: var(--void);
+  line-height: 1;
 }
-.badge-cyan { background: var(--cyan); color: var(--void); }
-.badge-teal { background: var(--teal); color: var(--white); }
+.badge-cyan  { background: var(--cyan);  color: var(--void);  }
+.badge-teal  { background: var(--teal);  color: var(--white); }
 .badge-white { background: rgba(255,255,255,0.15); color: var(--white); border: 1px solid rgba(255,255,255,0.3); }
 
-/* Section label */
-.section-label {
-  font-family: var(--font-display);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--cyan);
-  margin-bottom: 16px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
+/* ─────────────────────────────────────────────────────────────────────────────
+   GRAIN OVERLAY UTILITY  (required on all dark sections per MASTER.md §7)
+   ───────────────────────────────────────────────────────────────────────────── */
+.grain,
+.grain-overlay {
+  position: relative;
 }
-.section-label::before {
+.grain::after,
+.grain-overlay::before {
   content: '';
-  display: block;
-  width: 32px;
-  height: 1px;
-  background: var(--cyan);
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 128px 128px;
+  pointer-events: none;
+  z-index: 1;
 }
 
-/* Section heading */
-.section-heading {
-  font-family: var(--font-display);
-  font-size: clamp(32px, 5vw, 64px);
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  line-height: 1.05;
-}
-
-/* Accent script */
-.script-label {
-  font-family: var(--font-accent);
-  font-style: italic;
-  font-weight: 300;
-  font-size: 1.3em;
-  color: var(--teal);
-}
-
-/* Card hover image zoom */
-.img-zoom {
-  overflow: hidden;
-}
+/* ─────────────────────────────────────────────────────────────────────────────
+   IMAGE ZOOM  (all card images)
+   ───────────────────────────────────────────────────────────────────────────── */
+.img-zoom { overflow: hidden; }
 .img-zoom img {
   transition: transform var(--duration-slow) var(--ease-smooth);
   width: 100%;
@@ -240,3 +664,53 @@ h1, h2, h3, h4, h5, h6 {
   object-fit: cover;
 }
 .img-zoom:hover img { transform: scale(1.06); }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   FOCUS RING  (global — WCAG AA)
+   ───────────────────────────────────────────────────────────────────────────── */
+*:focus-visible {
+  outline: 2px solid var(--lime);
+  outline-offset: 2px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   HERO SECTION — scroll indicator animated line
+   ───────────────────────────────────────────────────────────────────────────── */
+@keyframes heroScrollLineGrow {
+  0%   { height: 0px;  opacity: 0.3; }
+  50%  { height: 40px; opacity: 1;   }
+  100% { height: 0px;  opacity: 0.3; }
+}
+
+.hero-scroll-line {
+  display: block;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.7);
+  animation: heroScrollLineGrow 1.8s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-scroll-line {
+    animation: none;
+    height: 40px;
+    opacity: 0.7;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   HERO SECTION — thumbnail card hover lift
+   ───────────────────────────────────────────────────────────────────────────── */
+.hero-thumb-card {
+  transition:
+    transform 350ms var(--ease-smooth),
+    box-shadow 350ms var(--ease-smooth);
+}
+
+.hero-thumb-card:hover {
+  transform: scale(1.05) translateY(-4px);
+  box-shadow: 0 16px 40px rgba(34, 30, 42, 0.48);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-thumb-card:hover { transform: none; }
+}

@@ -43,17 +43,17 @@ function FormField({
 }) {
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1.5">
-        {label} {required && <span className="text-red-400">*</span>}
+      <label className="block font-body text-[13px] font-medium text-[#374151] mb-[6px]">
+        {label} {required && <span className="text-[#ef4444]">*</span>}
       </label>
       {children}
-      {hint && <p className="text-xs text-gray-400 mt-1">{hint}</p>}
+      {hint && <p className="font-body text-[12px] text-[#9CA3AF] mt-[4px]">{hint}</p>}
     </div>
   );
 }
 
 const inputClass =
-  'w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-[#285056]/25 focus:border-[#285056] transition-colors';
+  'w-full px-[14px] py-[10px] rounded-[2px] border border-[#D1D5DB] font-body text-[14px] text-[#221E2A] bg-[#FFFFFF] outline-none transition-all focus:border-[#285056] focus:ring-0 focus:shadow-[0_0_0_3px_rgba(40,80,86,0.12)] placeholder:text-[#9CA3AF]';
 
 const defaultPost: Omit<BlogPost, 'id'> = {
   title: '',
@@ -167,45 +167,16 @@ export default function BlogForm({ initialData, blogId }: BlogFormProps) {
         <div>
           <button
             onClick={() => router.push('/admin/blog')}
-            className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-700 mb-2 transition-colors"
+            className="inline-flex items-center gap-1.5 font-body text-[13px] text-[#718096] hover:text-[#221E2A] mb-[8px] transition-colors"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M19 12H5m7-7l-7 7 7 7" />
             </svg>
             Back to Blog Posts
           </button>
-          <h1 className="text-2xl font-bold text-gray-900" style={{ fontFamily: 'DM Sans, sans-serif' }}>
+          <h1 className="font-display text-[24px] font-bold text-[#221E2A]">
             {isEditing ? 'Edit Post' : 'New Blog Post'}
           </h1>
-        </div>
-        <div className="flex items-center gap-2">
-          {/* Status Toggle */}
-          <button
-            type="button"
-            onClick={() => set('status', form.status === 'published' ? 'draft' : 'published')}
-            className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-colors border ${
-              form.status === 'published'
-                ? 'bg-lime-50 border-lime-200 text-lime-700'
-                : 'bg-gray-50 border-gray-200 text-gray-500'
-            }`}
-          >
-            <span className={`w-1.5 h-1.5 rounded-full ${form.status === 'published' ? 'bg-lime-500' : 'bg-gray-400'}`} />
-            {form.status === 'published' ? 'Published' : 'Draft'}
-          </button>
-          <button
-            type="button"
-            onClick={() => handleSave()}
-            disabled={saving}
-            className="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all hover:opacity-90 disabled:opacity-60 flex items-center gap-2 bg-[#285056] text-white"
-          >
-            {saving && (
-              <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-              </svg>
-            )}
-            {saving ? 'Saving…' : isEditing ? 'Save Changes' : 'Create Post'}
-          </button>
         </div>
       </div>
 
@@ -246,14 +217,14 @@ export default function BlogForm({ initialData, blogId }: BlogFormProps) {
             {/* Slug */}
             <FormField label="Slug" hint="Auto-generated from title. Edit to customize the URL.">
               <div className="flex items-center gap-0">
-                <span className="px-3.5 py-2.5 bg-gray-50 border border-r-0 border-gray-200 rounded-l-xl text-sm text-gray-400">
+                <span className="px-[14px] py-[10px] bg-[#F7F9FA] border border-r-0 border-[#D1D5DB] rounded-l-[2px] font-body text-[14px] text-[#718096]">
                   /blog/
                 </span>
                 <input
                   type="text"
                   value={form.slug}
                   onChange={(e) => set('slug', slugify(e.target.value))}
-                  className={`${inputClass} rounded-l-none`}
+                  className={`${inputClass} rounded-l-none border-l-0`}
                 />
               </div>
             </FormField>
@@ -282,26 +253,28 @@ export default function BlogForm({ initialData, blogId }: BlogFormProps) {
           {/* Sidebar */}
           <div className="space-y-5">
             {/* Featured Image */}
-            <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm">
-              <h3 className="text-sm font-semibold text-gray-700 mb-3">Featured Image</h3>
+            <div className="bg-[#FFFFFF] rounded-[4px] border border-[#E9F5F7] p-[24px] shadow-sm">
+              <h3 className="font-display text-[14px] font-bold text-[#221E2A] mb-[12px]">Featured Image</h3>
               {form.featuredImageUrl ? (
-                <div className="relative group">
+                <div className="relative group overflow-hidden rounded-[4px]">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={form.featuredImageUrl}
                     alt="Featured"
-                    className="w-full h-40 object-cover rounded-xl"
+                    className="w-full h-[160px] object-cover"
                   />
-                  <button
-                    type="button"
-                    onClick={() => set('featuredImageUrl', '')}
-                    className="absolute top-2 right-2 w-7 h-7 bg-black/60 rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    ×
-                  </button>
+                  <div className="absolute inset-0 bg-[#285056]/80 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button
+                      type="button"
+                      onClick={() => set('featuredImageUrl', '')}
+                      className="font-body text-[14px] font-bold text-white uppercase tracking-widest hover:underline"
+                    >
+                      Remove
+                    </button>
+                  </div>
                 </div>
               ) : (
-                <label className={`flex flex-col items-center justify-center h-40 border-2 border-dashed border-gray-200 rounded-xl cursor-pointer hover:border-[#285056]/40 transition-colors ${uploadingImage ? 'opacity-60' : ''}`}>
+                <label className={`relative flex flex-col items-center justify-center min-h-[160px] border-[2px] border-dashed border-[#D1D5DB] rounded-[4px] bg-[#F7F9FA] p-[24px] cursor-pointer hover:border-[#285056] hover:bg-[rgba(40,80,86,0.04)] transition-colors overflow-hidden ${uploadingImage ? 'opacity-60' : ''}`}>
                   <input
                     type="file"
                     accept="image/*"
@@ -313,26 +286,28 @@ export default function BlogForm({ initialData, blogId }: BlogFormProps) {
                     }}
                   />
                   {uploadingImage ? (
-                    <svg className="w-5 h-5 animate-spin text-[#285056]" fill="none" viewBox="0 0 24 24">
+                    <svg className="w-[32px] h-[32px] animate-spin text-[#285056]" fill="none" viewBox="0 0 24 24">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                     </svg>
                   ) : (
-                    <>
-                      <svg className="w-8 h-8 text-gray-300 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5M21 3.75H3M6.75 8.25a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" />
+                    <div className="flex flex-col items-center justify-center gap-[12px] text-[#718096]">
+                      <svg className="w-[32px] h-[32px] text-[#285056]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
                       </svg>
-                      <p className="text-xs text-gray-400">Click to upload image</p>
-                      <p className="text-xs text-gray-300 mt-0.5">PNG, JPG up to 10MB</p>
-                    </>
+                      <div className="text-center">
+                        <p className="font-body text-[14px] font-medium text-[#221E2A] mb-[4px]">Drop image here or click to upload</p>
+                        <p className="font-body text-[12px] text-[#9CA3AF]">PNG, JPG up to 10MB</p>
+                      </div>
+                    </div>
                   )}
                 </label>
               )}
             </div>
 
             {/* Post Details */}
-            <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm space-y-4">
-              <h3 className="text-sm font-semibold text-gray-700">Post Details</h3>
+            <div className="bg-[#FFFFFF] rounded-[4px] border border-[#E9F5F7] p-[24px] shadow-sm space-y-[16px]">
+              <h3 className="font-display text-[14px] font-bold text-[#221E2A]">Post Details</h3>
 
               {/* Category */}
               <FormField label="Category" required>
@@ -422,18 +397,58 @@ export default function BlogForm({ initialData, blogId }: BlogFormProps) {
             </p>
           </div>
 
-          <div className="flex justify-end pt-4">
-            <button
-              type="button"
-              onClick={() => handleSave()}
-              disabled={saving}
-              className="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all hover:opacity-90 disabled:opacity-60 bg-[#285056] text-white"
-            >
-              {saving ? 'Saving…' : 'Save Changes'}
-            </button>
-          </div>
         </div>
       )}
+
+      {/* Sticky Footer Actions */}
+      <div className="sticky bottom-0 bg-[#FFFFFF] p-[16px] border-t border-[#E9F5F7] flex items-center justify-between z-20 mt-8 shadow-[0_-4px_16px_rgba(34,30,42,0.04)]">
+        <label className="flex items-center cursor-pointer gap-2">
+          <div className="relative">
+            <input
+              type="checkbox"
+              className="sr-only"
+              checked={form.status === 'published'}
+              onChange={(e) => set('status', e.target.checked ? 'published' : 'draft')}
+            />
+            <div
+              className={`block w-[44px] h-[24px] rounded-full transition-colors ${
+                form.status === 'published' ? 'bg-[#285056]' : 'bg-[#D1D5DB]'
+              }`}
+            />
+            <div
+              className={`dot absolute left-[2px] top-[2px] bg-white w-[20px] h-[20px] rounded-full transition-transform ${
+                form.status === 'published' ? 'translate-x-[20px]' : ''
+              }`}
+            />
+          </div>
+          <span className="font-body text-[13px] font-medium text-[#221E2A] uppercase tracking-widest">
+            {form.status === 'published' ? 'Published' : 'Draft'}
+          </span>
+        </label>
+        <div className="flex items-center gap-[12px]">
+          <button
+            type="button"
+            onClick={() => router.push('/admin/blog')}
+            className="px-[24px] py-[14px] font-display text-[13px] font-semibold tracking-[0.14em] uppercase text-[#4a5568] border border-[#d1d5db] transition-colors hover:bg-[#F7F9FA]"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={() => handleSave()}
+            disabled={saving}
+            className="inline-flex items-center gap-[8px] bg-[#C1EA00] text-[#221E2A] font-display text-[13px] font-bold tracking-[0.14em] uppercase px-[40px] py-[16px] border-none cursor-pointer transition-all hover:bg-[#afd100] disabled:opacity-60 relative overflow-hidden"
+          >
+            {saving && (
+              <svg className="w-[16px] h-[16px] animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+              </svg>
+            )}
+            {saving ? 'Saving…' : isEditing ? 'Update Post' : 'Publish Post'}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

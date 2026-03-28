@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import AdminSidebar from '@/components/admin/AdminSidebar';
+import AdminTopBar from '@/components/admin/AdminTopBar';
 
 const PUBLIC_PATHS = ['/admin/login'];
 
@@ -11,6 +12,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const { user, loading } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const isPublicPath = PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(p));
 
@@ -42,12 +44,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   if (!user) return null;
 
   return (
-    <div className="flex min-h-screen bg-ice/30">
+    <div className="flex min-h-screen max-w-[100vw] overflow-x-hidden">
       {/* Fixed Sidebar */}
-      <AdminSidebar />
+      <AdminSidebar isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
       {/* Main Content */}
-      <main className="flex-1 ml-[240px] overflow-auto">
-        {children}
+      <main className="flex-1 lg:ml-[240px] min-h-screen bg-[#F7F9FA] relative flex flex-col w-full max-w-full">
+        <AdminTopBar onMenuClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} />
+        <div className="flex-1 p-[16px] lg:p-[32px] overflow-x-hidden">
+          {children}
+        </div>
       </main>
     </div>
   );

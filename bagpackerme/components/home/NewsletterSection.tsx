@@ -36,7 +36,9 @@ export default function NewsletterSection() {
   };
 
   return (
-    <section className="bg-void py-[80px] relative overflow-hidden">
+    <section className="bg-teal py-[80px] relative overflow-hidden">
+      {/* Grain overlay for dark section */}
+      <div className="grain absolute inset-0 z-0 pointer-events-none" />
       {/* Decorative Blur */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-cyan/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2" />
       <div className="absolute bottom-0 left-0 w-80 h-80 bg-lime/10 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2" />
@@ -49,7 +51,8 @@ export default function NewsletterSection() {
           transition={{ duration: 0.6 }}
           className="max-w-2xl mx-auto text-center"
         >
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-white leading-tight mb-4">
+          <div className="section-label justify-center mb-[16px]">✦ JOIN THE COMMUNITY</div>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-white leading-tight mb-4" style={{ textWrap: 'balance', letterSpacing: '-0.02em' }}>
             Travel Stories. Destination Guides. Delivered Weekly.
           </h2>
           
@@ -59,17 +62,18 @@ export default function NewsletterSection() {
           
           <form onSubmit={handleSubmit} className="w-full max-w-[480px] mx-auto flex flex-col sm:flex-row gap-0 sm:gap-2 mb-4">
             <input 
+              aria-label="Email address"
               type="email" 
               placeholder="Your email address" 
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="flex-grow bg-white/10 border border-white/20 text-white placeholder-white/50 px-6 py-4 outline-none focus:border-lime transition-colors duration-300 font-sans sm:rounded-l-full sm:rounded-r-none rounded-full mb-2 sm:mb-0"
+            className="flex-grow bg-white/10 border border-white/20 text-white placeholder-white/50 px-6 py-4 outline-none focus:border-lime transition-colors duration-300 font-sans rounded-none mb-2 sm:mb-0"
             />
             <button 
               type="submit" 
               disabled={loading}
-              className="bg-lime hover:bg-lime/90 text-void font-sans font-bold text-sm tracking-widest uppercase px-8 py-4 transition-colors duration-300 sm:rounded-r-full sm:rounded-l-none rounded-full disabled:opacity-70 flex items-center justify-center min-w-[140px]"
+              className="bg-lime hover:bg-lime/90 text-void font-display font-bold text-[13px] tracking-[0.14em] uppercase px-8 py-4 transition-colors duration-300 rounded-none disabled:opacity-70 flex items-center justify-center min-w-[140px]"
             >
               {loading ? (
                 <div className="w-5 h-5 border-2 border-void border-t-transparent rounded-full animate-spin"></div>

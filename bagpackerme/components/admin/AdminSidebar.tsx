@@ -5,16 +5,60 @@ import { usePathname, useRouter } from 'next/navigation';
 import { Logo } from '@/components/ui/Logo';
 import { useAuth } from '@/hooks/useAuth';
 import { logoutAdmin } from '@/lib/auth';
+import {
+  LayoutDashboard,
+  BarChart3,
+  MapPinned,
+  FileText,
+  Image as ImageIcon,
+  MessageSquare,
+  Calendar,
+  Users,
+  Settings,
+  UserCheck,
+  LogOut,
+  X
+} from 'lucide-react';
 
-const NAV_ITEMS = [
-  { icon: '📊', label: 'Dashboard', href: '/admin/dashboard' },
-  { icon: '🧳', label: 'Packages', href: '/admin/packages' },
-  { icon: '✍️', label: 'Blog Posts', href: '/admin/blog' },
-  { icon: '📬', label: 'Enquiries', href: '/admin/enquiries' },
-  { icon: '⚙️', label: 'Settings', href: '/admin/settings' },
+interface AdminSidebarProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+}
+
+const SECTIONS = [
+  {
+    title: 'OVERVIEW',
+    items: [
+      { icon: LayoutDashboard, label: 'Dashboard', href: '/admin/dashboard' },
+      { icon: BarChart3, label: 'Analytics', href: '/admin/analytics' },
+    ],
+  },
+  {
+    title: 'CONTENT',
+    items: [
+      { icon: MapPinned, label: 'Packages', href: '/admin/packages' },
+      { icon: FileText, label: 'Blog Posts', href: '/admin/blog' },
+      { icon: ImageIcon, label: 'Gallery', href: '/admin/gallery' },
+    ],
+  },
+  {
+    title: 'BOOKINGS',
+    items: [
+      { icon: MessageSquare, label: 'Enquiries', href: '/admin/enquiries', badge: 0 },
+      { icon: Calendar, label: 'Bookings', href: '/admin/bookings' },
+      { icon: Users, label: 'Customers', href: '/admin/customers' },
+    ],
+  },
+  {
+    title: 'SETTINGS',
+    items: [
+      { icon: Settings, label: 'Site Settings', href: '/admin/settings' },
+      { icon: UserCheck, label: 'Team', href: '/admin/team' },
+    ],
+  },
 ];
 
-export default function AdminSidebar() {
+export default function AdminSidebar({ isOpen = false, onClose }: AdminSidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const { user } = useAuth();
@@ -24,57 +68,99 @@ export default function AdminSidebar() {
     router.push('/admin/login');
   };
 
+
+
   return (
-    <aside
-      className="fixed top-0 left-0 h-full w-[240px] flex flex-col z-40 bg-teal"
-    >
-      {/* Logo */}
-      <div className="px-6 pt-7 pb-8">
-        <Logo variant="light" className="scale-90 origin-left" />
-      </div>
+    <>
+      {/* Mobile Overlay */}
+      {isOpen && (
+        <div 
+          className="lg:hidden fixed inset-0 bg-black/50 z-40 transition-opacity" 
+          onClick={onClose} 
+        />
+      )}
 
-      {/* Divider */}
-      <div className="mx-6 h-px bg-white/10 mb-4" />
+      <aside 
+        className={`fixed top-0 left-0 h-[100vh] w-[240px] flex flex-col z-50 border-r border-[#ffffff10] overflow-y-auto transition-transform duration-300 ease-in-out ${
+          isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+        }`}
+        style={{ background: 'linear-gradient(180deg, #285056 0%, #1e3d42 100%)' }}
+      >
+        {/* Logo Area */}
+        <div className="flex-shrink-0 h-[64px] px-[24px] border-b border-[rgba(255,255,255,0.08)] flex items-center justify-between">
+          <Logo variant="light" className="scale-[0.6] lg:scale-75 origin-left" />
+          {/* Close button on mobile */}
+          <button 
+            className="lg:hidden w-11 h-11 flex items-center justify-center text-white/50 hover:text-white transition-colors"
+            onClick={onClose}
+            aria-label="Close menu"
+          >
+            <X className="w-6 h-6" />
+          </button>
+        </div>
 
-      {/* Nav Items */}
-      <nav className="flex-1 px-3 space-y-1">
-        {NAV_ITEMS.map((item) => {
-          const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all group relative border-l-4 ${isActive ? 'text-lime bg-white/10 border-lime' : 'text-white/75 bg-transparent border-transparent hover:bg-white/5 hover:text-white'}`}
-            >
-              <span className="text-base leading-none">{item.icon}</span>
-              <span
-                className="transition-colors"
-              >
-                {item.label}
-              </span>
-            </Link>
-          );
-        })}
+      {/* Nav Sections */}
+      <nav className="flex-1 py-4">
+        {SECTIONS.map((section) => (
+          <div key={section.title} className="mb-2 border-t border-[rgba(255,255,255,0.08)] first:border-t-0">
+            <div className="font-display text-[9px] tracking-[0.2em] font-normal uppercase text-[rgba(255,255,255,0.35)] px-[24px] pt-[24px] pb-[8px]">
+              {section.title}
+            </div>
+            <ul>
+              {section.items.map((item) => {
+                const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
+                return (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      className={`flex items-center h-[44px] px-[24px] group border-l-[3px] transition-colors ${
+                        isActive
+                          ? 'bg-[rgba(255,255,255,0.1)] text-[#FFFFFF] border-[#C1EA00]'
+                          : 'bg-transparent text-[rgba(255,255,255,0.7)] border-transparent hover:bg-[rgba(255,255,255,0.08)] hover:text-[#FFFFFF]'
+                      }`}
+                    >
+                      <item.icon
+                        className={`w-[18px] h-[18px] mr-[10px] shrink-0 transition-colors ${
+                          isActive ? 'text-[#C1EA00]' : 'text-[rgba(255,255,255,0.6)] group-hover:text-white'
+                        }`}
+                        strokeWidth={2}
+                      />
+                      <span className="font-display text-[12px] font-semibold tracking-[0.1em] uppercase flex-1">
+                        {item.label}
+                      </span>
+                      {typeof item.badge === 'number' && item.badge > 0 && (
+                        <span className="ml-auto bg-[#C1EA00] text-[#221E2A] font-display text-[10px] font-bold py-[1px] px-[6px] rounded-full leading-none">
+                          {item.badge}
+                        </span>
+                      )}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        ))}
       </nav>
 
-      {/* Bottom: user + logout */}
-      <div className="px-4 pb-6 pt-4 border-t border-white/10">
+      {/* User Area */}
+      <div className="flex-shrink-0 border-t border-[rgba(255,255,255,0.08)] p-[16px_24px]">
         {user && (
-          <div className="mb-3 px-2">
-            <p className="text-xs text-white/40 uppercase tracking-wider mb-0.5">Signed in as</p>
-            <p className="text-xs text-white/70 truncate">{user.email}</p>
+          <div className="flex items-center gap-3 mb-[12px]">
+            <div className="flex-1 min-w-0">
+              <p className="font-body text-[12px] text-[rgba(255,255,255,0.6)] truncate">{user.email}</p>
+            </div>
           </div>
         )}
         <button
           onClick={handleLogout}
-          className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm text-white/60 hover:text-white hover:bg-white/10 transition-all"
+          className="flex items-center gap-2 p-2 -ml-2 font-body text-[13px] text-[#ffffff66] hover:text-[#ef4444] transition-colors group"
+          aria-label="Log out"
         >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
-          </svg>
+          <LogOut className="w-4 h-4 group-hover:text-[#ef4444]" />
           Log out
         </button>
       </div>
     </aside>
+  </>
   );
 }

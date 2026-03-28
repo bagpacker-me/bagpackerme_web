@@ -28,10 +28,10 @@ const ToolbarButton = ({
     type="button"
     title={title}
     onClick={onClick}
-    className={`px-2.5 py-1.5 rounded text-sm font-medium transition-colors ${
+    className={`px-[10px] py-[6px] rounded-[2px] font-body text-[13px] font-medium transition-colors ${
       active
-        ? 'bg-[#285056] text-white'
-        : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+        ? 'bg-[#285056] text-[#FFFFFF]'
+        : 'text-[#718096] hover:bg-[#E9F5F7] hover:text-[#221E2A]'
     }`}
   >
     {children}
@@ -54,7 +54,7 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
     editorProps: {
       attributes: {
         class:
-          'prose prose-sm max-w-none focus:outline-none min-h-[200px] px-4 py-3 text-gray-800',
+          'prose prose-sm max-w-none focus:outline-none min-h-[200px] px-[16px] py-[12px] font-body text-[14px] text-[#221E2A]',
       },
     },
   });
@@ -88,9 +88,9 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
   if (!editor) return null;
 
   return (
-    <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
+    <div className="border border-[#D1D5DB] rounded-[2px] overflow-hidden bg-[#FFFFFF]">
       {/* Toolbar */}
-      <div className="flex flex-wrap items-center gap-0.5 px-3 py-2 border-b border-gray-200 bg-gray-50">
+      <div className="flex flex-wrap items-center gap-[4px] px-[12px] py-[8px] border-b border-[#D1D5DB] bg-[#F7F9FA]">
         <ToolbarButton
           title="Bold"
           onClick={() => editor.chain().focus().toggleBold().run()}
@@ -105,7 +105,7 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
         >
           <em>I</em>
         </ToolbarButton>
-        <span className="w-px h-5 bg-gray-200 mx-1" />
+        <span className="w-px h-[20px] bg-[#D1D5DB] mx-[4px]" />
         <ToolbarButton
           title="Heading 2"
           onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
@@ -120,7 +120,7 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
         >
           H3
         </ToolbarButton>
-        <span className="w-px h-5 bg-gray-200 mx-1" />
+        <span className="w-px h-[20px] bg-[#D1D5DB] mx-[4px]" />
         <ToolbarButton
           title="Bullet List"
           onClick={() => editor.chain().focus().toggleBulletList().run()}
@@ -142,7 +142,7 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
         >
           ❝
         </ToolbarButton>
-        <span className="w-px h-5 bg-gray-200 mx-1" />
+        <span className="w-px h-[20px] bg-[#D1D5DB] mx-[4px]" />
         <ToolbarButton title="Link" onClick={setLink} active={editor.isActive('link')}>
           🔗
         </ToolbarButton>

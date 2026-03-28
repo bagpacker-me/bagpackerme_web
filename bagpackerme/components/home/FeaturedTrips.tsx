@@ -1,16 +1,21 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { motion, Variants } from 'framer-motion';
+import React, { useEffect, useState, useRef } from 'react';
+import { motion, useInView, useReducedMotion } from 'framer-motion';
 import { getFeaturedPackages } from '@/lib/firestore';
 import { Package } from '@/types';
 import PackageCard, { PackageCardSkeleton } from './PackageCard';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
+import { FadeInSection, CARD_GRID_VARIANTS, CARD_ITEM_VARIANTS } from '@/components/ui/FadeInSection';
 
 export default function FeaturedTrips() {
   const [packages, setPackages] = useState<Package[]>([]);
   const [loading, setLoading] = useState(true);
+  const shouldReduceMotion = useReducedMotion();
+
+  const gridRef = useRef<HTMLDivElement>(null);
+  const gridInView = useInView(gridRef, { once: true, amount: 0.1 });
 
   useEffect(() => {
     async function loadPackages() {
@@ -27,39 +32,23 @@ export default function FeaturedTrips() {
     loadPackages();
   }, []);
 
-  const containerVariants: Variants = {
-    hidden: { opacity: 0 },
-    visible: { 
-      opacity: 1, 
-      transition: { 
-        staggerChildren: 0.15 
-      } 
-    }
-  };
-
-  const itemVariants: Variants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
-  };
-
   return (
     <section className="bg-white w-full" style={{ paddingTop: 'var(--space-section)', paddingBottom: 'var(--space-section)' }}>
       <div className="container mx-auto">
         {/* Header */}
-        <div className="flex flex-col items-center text-center mb-16 md:mb-24 px-4">
+        <FadeInSection className="flex flex-col items-center text-center mb-16 md:mb-24 px-4">
           <div className="section-label justify-center">
             ✦ SIGNATURE JOURNEYS
-            {/* The ::before element will only show on the left in css, let's reverse to center properly or rely on css flex. Actually the css has it on left. We will keep it simple. */}
           </div>
-          <h2 className="section-heading mt-2 mb-6 max-w-2xl text-void">
+          <h2 className="section-heading mt-2 mb-6 max-w-2xl text-void" style={{ textWrap: 'balance', letterSpacing: '-0.02em' }}>
             Five Ways to Experience India
           </h2>
           <p className="font-body text-gray-500 max-w-xl mx-auto text-lg">
             Curated experiential journeys — small groups, deep immersion, real India.
           </p>
-        </div>
+        </FadeInSection>
 
-        {/* Grid Area */}
+        {/* Grid Area — Spec #4: stagger 0.08 with useInView */}
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16 px-4">
             {Array.from({ length: 3 }).map((_, i) => (
@@ -67,15 +56,18 @@ export default function FeaturedTrips() {
             ))}
           </div>
         ) : (
-          <motion.div 
+          <motion.div
+            ref={gridRef}
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16 px-4"
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
+            variants={shouldReduceMotion ? undefined : CARD_GRID_VARIANTS}
+            initial={shouldReduceMotion ? undefined : 'hidden'}
+            animate={gridInView ? 'visible' : 'hidden'}
           >
             {packages.map(pkg => (
-              <motion.div key={pkg.id} variants={itemVariants}>
+              <motion.div
+                key={pkg.id}
+                variants={shouldReduceMotion ? undefined : CARD_ITEM_VARIANTS}
+              >
                 <PackageCard pkg={pkg} />
               </motion.div>
             ))}
@@ -83,11 +75,11 @@ export default function FeaturedTrips() {
         )}
 
         {/* Bottom CTA */}
-        <div className="mt-20 flex justify-center w-full px-4">
+        <FadeInSection className="mt-20 flex justify-center w-full px-4" delay={0.2}>
           <Link href="/packages" className="btn-lime">
             View All Journeys <ArrowRight className="w-4 h-4" />
           </Link>
-        </div>
+        </FadeInSection>
       </div>
     </section>
   );

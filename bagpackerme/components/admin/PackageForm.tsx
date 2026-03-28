@@ -82,15 +82,15 @@ async function uploadFile(file: File, path: string, onProgress?: (p: number) => 
 // ─── Sub-components ──────────────────────────────────────────────────────────
 
 function inputCls(err?: boolean) {
-  return `w-full px-3.5 py-2.5 border rounded-xl text-sm text-gray-800 bg-white outline-none transition-all
-    focus:ring-2 focus:ring-lime focus:border-teal
-    ${err ? 'border-red-400' : 'border-gray-200'} placeholder-gray-400`;
+  return `w-full px-[14px] py-[10px] border rounded-[2px] font-body text-[14px] text-[#221E2A] bg-[#FFFFFF] outline-none transition-all
+    focus:border-[#285056] focus:ring-0 focus:shadow-[0_0_0_3px_rgba(40,80,86,0.12)]
+    ${err ? 'border-[#ef4444] shadow-[0_0_0_3px_rgba(239,68,68,0.12)]' : 'border-[#D1D5DB]'} placeholder:text-[#9CA3AF]`;
 }
 
 function Label({ children, required }: { children: React.ReactNode; required?: boolean }) {
   return (
-    <label className="block text-sm font-medium text-gray-700 mb-1.5">
-      {children} {required && <span className="text-red-500">*</span>}
+    <label className="block font-body text-[13px] font-medium text-[#374151] mb-[6px]">
+      {children} {required && <span className="text-[#ef4444]">*</span>}
     </label>
   );
 }
@@ -137,27 +137,34 @@ function ImageUploadBox({
     <div>
       <Label>{label}</Label>
       <div
-        className="relative border-2 border-dashed border-gray-200 rounded-xl overflow-hidden bg-gray-50 cursor-pointer hover:border-teal transition-colors"
-        style={{ minHeight: 140 }}
+        className="relative border-[2px] border-dashed border-[#D1D5DB] rounded-[4px] bg-[#F7F9FA] p-[40px] flex flex-col items-center justify-center cursor-pointer hover:border-[#285056] hover:bg-[rgba(40,80,86,0.04)] transition-colors overflow-hidden group min-h-[160px]"
         onClick={() => fileRef.current?.click()}
       >
         {value ? (
-          /* eslint-disable-next-line @next/next/no-img-element */
-          <img src={value} alt="preview" className="w-full h-48 object-cover" />
+          <>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={value} alt="preview" className="absolute inset-0 w-full h-full object-cover" />
+            <div className="absolute inset-0 bg-[#285056]/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+              <span className="font-body text-[14px] font-bold text-white uppercase tracking-widest">Change Image</span>
+            </div>
+          </>
         ) : (
-          <div className="flex flex-col items-center justify-center h-36 gap-2 text-gray-400">
-            <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="flex flex-col items-center justify-center gap-[12px] text-[#718096]">
+            <svg className="w-[32px] h-[32px] text-[#285056]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
             </svg>
-            <p className="text-sm">Click to upload</p>
+            <div className="text-center">
+              <p className="font-body text-[14px] font-medium text-[#221E2A] mb-[4px]">Drop image here or click to upload</p>
+              <p className="font-body text-[12px] text-[#9CA3AF]">PNG, JPG, WebP up to 5MB</p>
+            </div>
           </div>
         )}
         {uploading && (
-          <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center gap-2">
-            <div className="w-32 h-2 bg-white/30 rounded-full overflow-hidden">
-              <div className="h-full bg-lime transition-all" style={{ width: `${progress}%` }} />
+          <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center gap-[12px] z-10">
+            <div className="w-[128px] h-[4px] bg-white/30 rounded-full overflow-hidden">
+              <div className="h-full bg-[#C1EA00] transition-all" style={{ width: `${progress}%` }} />
             </div>
-            <p className="text-white text-xs">{progress}%</p>
+            <p className="font-display text-[12px] text-white tracking-widest uppercase">{progress}%</p>
           </div>
         )}
         <input
@@ -632,13 +639,19 @@ function TabInclusionsGallery({
       <div>
         <h3 className="text-sm font-semibold text-gray-800 mb-3">Gallery</h3>
         <div
-          className="border-2 border-dashed border-gray-200 rounded-xl p-4 bg-gray-50 cursor-pointer hover:border-teal transition-colors"
+          className="border-[2px] border-dashed border-[#D1D5DB] rounded-[4px] p-[40px] bg-[#F7F9FA] cursor-pointer hover:border-[#285056] hover:bg-[rgba(40,80,86,0.04)] transition-colors flex flex-col items-center justify-center"
           onClick={() => galleryRef.current?.click()}
         >
           {galleryUploading ? (
-            <p className="text-center text-sm text-gray-500 py-4">Uploading images…</p>
+            <p className="text-center font-body text-[14px] text-[#718096]">Uploading images…</p>
           ) : (
-            <p className="text-center text-sm text-gray-400 py-4">Click to upload images (multi-select supported)</p>
+            <>
+              <svg className="w-[32px] h-[32px] text-[#285056] mb-[12px]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+              </svg>
+              <p className="text-center font-body text-[14px] text-[#221E2A] mb-[4px]">Drop images here or click to upload</p>
+              <p className="text-center font-body text-[12px] text-[#9CA3AF]">Multiple selection supported</p>
+            </>
           )}
           <input
             ref={galleryRef}
@@ -787,29 +800,37 @@ export default function PackageForm({ initialData }: PackageFormProps) {
       </div>
 
       {/* Footer Actions */}
-      <div className="mt-8 pt-6 border-t border-gray-200 flex items-center justify-between">
-        <button
-          type="button"
-          onClick={() => router.push('/admin/packages')}
-          className="px-5 py-2.5 text-sm text-gray-600 hover:text-gray-900 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
-        >
-          ← Back to Packages
-        </button>
-        <button
-          type="button"
-          onClick={handleSave}
-          disabled={saving}
-          className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold transition-all disabled:opacity-60"
-          style={{ background: '#C1EA00', color: '#1a2e1e' }}
-        >
-          {saving && (
-            <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-            </svg>
-          )}
-          {saving ? 'Saving…' : initialData ? 'Update Package' : 'Save Package'}
-        </button>
+      <div className="sticky bottom-0 bg-[#FFFFFF] p-[16px] border-t border-[#E9F5F7] flex items-center justify-between z-20 mt-8 shadow-[0_-4px_16px_rgba(34,30,42,0.04)]">
+        <div className="flex items-center gap-4">
+          <Toggle
+            checked={form.status === 'published'}
+            onChange={(v) => setForm((f) => ({ ...f, status: v ? 'published' : 'draft' }))}
+            label={form.status === 'published' ? 'Published' : 'Draft'}
+          />
+        </div>
+        <div className="flex items-center gap-[12px]">
+          <button
+            type="button"
+            onClick={() => router.push('/admin/packages')}
+            className="px-[24px] py-[14px] font-display text-[13px] font-semibold tracking-[0.14em] uppercase text-[#4a5568] border border-[#d1d5db] transition-colors hover:bg-[#F7F9FA]"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={handleSave}
+            disabled={saving}
+            className="inline-flex items-center gap-[8px] bg-[#C1EA00] text-[#221E2A] font-display text-[13px] font-bold tracking-[0.14em] uppercase px-[40px] py-[16px] border-none cursor-pointer transition-all hover:bg-[#afd100] disabled:opacity-60 relative overflow-hidden"
+          >
+            {saving && (
+              <svg className="w-[16px] h-[16px] animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+              </svg>
+            )}
+            {saving ? 'Saving…' : initialData ? 'Update Package' : 'Save Package'}
+          </button>
+        </div>
       </div>
     </div>
   );

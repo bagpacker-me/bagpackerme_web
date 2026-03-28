@@ -43,23 +43,20 @@ export default function AboutSection() {
             transition={{ duration: 0.8 }}
             className="w-full lg:w-[55%]"
           >
-            <div className="flex items-center gap-2 mb-6">
-              <span className="text-cyan text-sm">✦</span>
-              <span className="text-cyan font-bold tracking-[0.2em] text-sm uppercase">Who We Are</span>
-            </div>
+            <div className="section-label mb-[24px]">✦ WHO WE ARE</div>
             
-            <h2 className="text-4xl md:text-5xl lg:text-[56px] font-heading font-bold text-white leading-tight mb-8">
+            <h2 className="text-4xl md:text-5xl lg:text-[56px] font-heading font-bold text-white leading-tight mb-8" style={{ textWrap: 'balance', letterSpacing: '-0.02em' }}>
               A Community Built on Real Travel
             </h2>
             
-            <motion.blockquote 
+            <motion.blockquote
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-cyan text-2xl font-serif italic border-l-[3px] border-lime pl-6 py-1 mb-8"
+              className="pull-quote mb-8"
             >
-              &quot;At BAGPACKERME, we create meaningful journeys that combine culture, adventure, and sustainability.&quot;
+              At BAGPACKERME, we create meaningful journeys that combine culture, adventure, and sustainability.
             </motion.blockquote>
             
             <p className="text-white/72 font-sans text-base leading-[1.7] mb-12 max-w-2xl">
@@ -111,7 +108,7 @@ export default function AboutSection() {
             className="w-full lg:w-[45%] relative h-[600px] lg:h-[700px] hidden md:block"
           >
             {/* Large Portrait Image */}
-            <div className="absolute top-10 left-10 w-[70%] h-[80%] rounded-[32px] overflow-hidden shadow-2xl z-10">
+            <div className="absolute top-10 left-10 w-[70%] h-[80%] rounded-none overflow-hidden shadow-2xl z-10">
               <img 
                 src="https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&q=80" 
                 alt="Real India Travel" 
@@ -125,7 +122,7 @@ export default function AboutSection() {
               whileInView={{ y: 0, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.3 }}
-              className="absolute top-0 right-0 w-[45%] aspect-square rounded-[32px] overflow-hidden shadow-xl z-20 border-[4px] border-teal"
+              className="absolute top-0 right-0 w-[45%] aspect-square rounded-none overflow-hidden shadow-xl z-20 border-[4px] border-teal"
             >
               <img 
                 src="https://images.unsplash.com/photo-1514222047879-8ab28e7eb224?auto=format&fit=crop&q=80" 
@@ -140,7 +137,7 @@ export default function AboutSection() {
               whileInView={{ y: 0, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.5 }}
-              className="absolute bottom-0 left-0 w-[50%] aspect-square rounded-[32px] overflow-hidden shadow-2xl z-30 border-[4px] border-void"
+              className="absolute bottom-0 left-0 w-[50%] aspect-square rounded-none overflow-hidden shadow-2xl z-30 border-[4px] border-void"
             >
               <img 
                 src="https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&q=80" 

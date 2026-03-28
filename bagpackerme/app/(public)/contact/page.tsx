@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { createEnquiry } from '@/lib/firestore';
 
 // ─── Zod Schema ───────────────────────────────────────────────────────────────
@@ -24,7 +24,9 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 // ─── Success Checkmark ────────────────────────────────────────────────────────
-const SuccessState = () => (
+const SuccessState = () => {
+  const shouldReduceMotion = useReducedMotion();
+  return (
   <motion.div
     initial={{ opacity: 0, scale: 0.9 }}
     animate={{ opacity: 1, scale: 1 }}
@@ -33,9 +35,9 @@ const SuccessState = () => (
     <div className="relative flex items-center justify-center w-24 h-24">
       <motion.div
         className="absolute inset-0 rounded-full bg-teal/10"
-        initial={{ scale: 0 }}
+        initial={shouldReduceMotion ? { scale: 1 } : { scale: 0 }}
         animate={{ scale: 1 }}
-        transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+        transition={shouldReduceMotion ? { duration: 0 } : { type: 'spring', stiffness: 200, damping: 15 }}
       />
       <svg
         className="relative w-12 h-12 text-teal"
@@ -48,15 +50,15 @@ const SuccessState = () => (
           d="M5 13l4 4L19 7"
           strokeLinecap="round"
           strokeLinejoin="round"
-          initial={{ pathLength: 0 }}
+          initial={shouldReduceMotion ? { pathLength: 1 } : { pathLength: 0 }}
           animate={{ pathLength: 1 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
+          transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.6, delay: 0.2 }}
         />
       </svg>
     </div>
     <div>
-      <h3 className="font-display text-void text-2xl mb-2">Message Received!</h3>
-      <p className="font-body text-void/60 text-base max-w-sm">
+      <h3 className="font-display text-void text-[28px] md:text-[32px] mb-[8px]">Message Received!</h3>
+      <p className="font-body text-void/60 text-[15px] md:text-[16px] max-w-[400px]">
         Thanks for reaching out. Kevin will get back to you personally within 24 hours.
       </p>
     </div>
@@ -64,18 +66,20 @@ const SuccessState = () => (
       href="https://wa.me/919920992026"
       target="_blank"
       rel="noopener noreferrer"
-      className="inline-flex items-center gap-2 px-6 py-3 bg-green-500 text-white font-body text-sm rounded-full hover:bg-green-600 transition-colors"
+      className="inline-flex items-center gap-[8px] px-[24px] py-[16px] bg-[#25D366] text-white font-display font-bold text-[12px] tracking-widest uppercase rounded-none hover:bg-black transition-colors"
     >
-      <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+      <svg viewBox="0 0 24 24" fill="currentColor" className="w-[16px] h-[16px]">
         <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/>
       </svg>
       Or chat on WhatsApp
     </a>
   </motion.div>
-);
+  );
+};
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export default function ContactPage() {
+  const shouldReduceMotion = useReducedMotion();
   const [submitted, setSubmitted] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
 
@@ -100,10 +104,10 @@ export default function ContactPage() {
   };
 
   const fieldCls = (hasError: boolean) =>
-    `w-full px-4 py-3 rounded-xl border font-body text-sm text-void placeholder-void/40 bg-white outline-none transition-all focus:ring-2 ${
+    `w-full px-[16px] py-[12px] rounded-none border font-body text-[15px] outline-none transition-colors ${
       hasError
-        ? 'border-red-400 ring-red-200 animate-[shake_0.3s_ease-in-out]'
-        : 'border-void/15 focus:border-teal focus:ring-teal/20'
+        ? 'border-red-400 focus:border-red-500 animate-[shake_0.3s_ease-in-out] bg-red-50 text-red-900 placeholder-red-300'
+        : 'border-void/10 bg-ice text-void placeholder-void/40 focus:border-teal focus:bg-white'
     }`;
 
   return (
@@ -121,20 +125,22 @@ export default function ContactPage() {
 
       <main className="min-h-screen bg-white">
         {/* ── Page Header ──────────────────────────────────────────────────── */}
-        <div className="bg-void py-16 px-6 text-center">
+        <div className="bg-void py-[80px] md:py-[120px] px-[24px] text-center border-b border-white/5 relative overflow-hidden">
+          {/* Grain overlay for dark section */}
+          <div className="grain absolute inset-0 z-0 pointer-events-none" />
           <motion.div
-            initial={{ opacity: 0, y: 24 }}
+            className="relative z-10"
+            initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
+            transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.7 }}
           >
-            <p className="font-display tracking-widest text-sm uppercase text-cyan mb-3">Contact</p>
-            <h1 className="font-display text-white text-4xl md:text-6xl">Get in Touch</h1>
+            <div className="section-label justify-center mb-[16px]">✦ CONTACT</div>
+            <h1 className="font-display text-white text-[40px] md:text-[64px]">Get in Touch</h1>
           </motion.div>
         </div>
 
         {/* ── Two-column Layout ────────────────────────────────────────────── */}
-        <div className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 lg:grid-cols-5 gap-12 items-start">
-
+        <div className="max-w-[1200px] mx-auto px-[24px] py-[80px] md:py-[120px] grid grid-cols-1 lg:grid-cols-5 gap-[48px] md:gap-[80px] items-start">
           {/* ── Left: Contact Form (60%) ─────────────────────────────────── */}
           <div className="lg:col-span-3">
             <div className="mb-8">
@@ -160,7 +166,7 @@ export default function ContactPage() {
                 >
                   {/* Name */}
                   <div>
-                    <label className="block font-body text-sm font-medium text-void mb-1.5">
+                    <label className="block font-body text-sm font-medium text-void mb-2">
                       Full Name <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -177,7 +183,7 @@ export default function ContactPage() {
 
                   {/* Email */}
                   <div>
-                    <label className="block font-body text-sm font-medium text-void mb-1.5">
+                    <label className="block font-body text-sm font-medium text-void mb-2">
                       Email Address <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -194,7 +200,7 @@ export default function ContactPage() {
 
                   {/* Phone */}
                   <div>
-                    <label className="block font-body text-sm font-medium text-void mb-1.5">
+                    <label className="block font-body text-sm font-medium text-void mb-2">
                       Phone (Indian) <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -211,7 +217,7 @@ export default function ContactPage() {
 
                   {/* Inquiry Type */}
                   <div>
-                    <label className="block font-body text-sm font-medium text-void mb-1.5">
+                    <label className="block font-body text-sm font-medium text-void mb-2">
                       Inquiry Type <span className="text-red-500">*</span>
                     </label>
                     <select
@@ -232,7 +238,7 @@ export default function ContactPage() {
 
                   {/* Message */}
                   <div>
-                    <label className="block font-body text-sm font-medium text-void mb-1.5">
+                    <label className="block font-body text-sm font-medium text-void mb-2">
                       Message <span className="text-red-500">*</span>
                     </label>
                     <textarea
@@ -257,7 +263,7 @@ export default function ContactPage() {
                     id="contact-submit"
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full py-4 bg-teal text-white font-display text-sm tracking-widest uppercase rounded-xl hover:bg-void transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+                    className="w-full py-[16px] px-[32px] bg-lime text-void font-display font-bold text-[12px] tracking-widest uppercase rounded-none hover:bg-void hover:text-white transition-colors disabled:opacity-60 flex items-center justify-center gap-[8px]"
                   >
                     {isSubmitting ? (
                       <>
@@ -277,42 +283,42 @@ export default function ContactPage() {
           </div>
 
           {/* ── Right: Info Panel (40%) ──────────────────────────────────── */}
-          <div className="lg:col-span-2 lg:sticky lg:top-28">
-            <div className="bg-teal rounded-3xl overflow-hidden shadow-2xl">
-              <div className="p-8">
-                <h3 className="font-display text-white text-2xl mb-6">Contact Info</h3>
+          <div className="lg:col-span-2 lg:sticky lg:top-[120px]">
+            <div className="bg-teal rounded-none overflow-hidden shadow-lg border border-void/5">
+              <div className="p-[32px] md:p-[48px]">
+                <h3 className="font-display text-white text-[24px] mb-[32px]">Contact Info</h3>
 
                 {/* Info rows */}
-                <div className="space-y-5 mb-8">
+                <div className="flex flex-col gap-[32px] mb-[48px]">
                   {/* Email */}
                   <a
                     href="mailto:partnerships@bagpackerme.com"
-                    className="flex items-start gap-4 group"
+                    className="flex items-start gap-[16px] group"
                   >
-                    <div className="mt-0.5 w-10 h-10 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0 group-hover:bg-white/20 transition-colors">
-                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="w-[48px] h-[48px] rounded-none bg-white/5 flex items-center justify-center flex-shrink-0 group-hover:bg-white/10 transition-colors border border-white/10">
+                      <svg className="w-[20px] h-[20px] text-lime" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                       </svg>
                     </div>
                     <div>
-                      <p className="font-body text-white/50 text-xs uppercase tracking-wider mb-0.5">Email</p>
-                      <p className="font-body text-white text-sm group-hover:text-cyan transition-colors">
+                      <p className="font-display font-bold text-white/50 text-[11px] uppercase tracking-widest mb-[4px]">Email</p>
+                      <p className="font-body text-white text-[15px] group-hover:text-lime transition-colors">
                         partnerships@bagpackerme.com
                       </p>
                     </div>
                   </a>
 
                   {/* Location */}
-                  <div className="flex items-start gap-4">
-                    <div className="mt-0.5 w-10 h-10 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
-                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="flex items-start gap-[16px]">
+                    <div className="w-[48px] h-[48px] rounded-none bg-white/5 flex items-center justify-center flex-shrink-0 border border-white/10">
+                      <svg className="w-[20px] h-[20px] text-lime" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                       </svg>
                     </div>
                     <div>
-                      <p className="font-body text-white/50 text-xs uppercase tracking-wider mb-0.5">Location</p>
-                      <p className="font-body text-white text-sm">Mumbai, India</p>
+                      <p className="font-display font-bold text-white/50 text-[11px] uppercase tracking-widest mb-[4px]">Location</p>
+                      <p className="font-body text-white text-[15px]">Mumbai, India</p>
                     </div>
                   </div>
 
@@ -320,16 +326,16 @@ export default function ContactPage() {
                   <a
                     href="https://www.bagpackerme.com"
                     target="_blank" rel="noopener noreferrer"
-                    className="flex items-start gap-4 group"
+                    className="flex items-start gap-[16px] group"
                   >
-                    <div className="mt-0.5 w-10 h-10 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0 group-hover:bg-white/20 transition-colors">
-                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="w-[48px] h-[48px] rounded-none bg-white/5 flex items-center justify-center flex-shrink-0 group-hover:bg-white/10 transition-colors border border-white/10">
+                      <svg className="w-[20px] h-[20px] text-lime" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
                       </svg>
                     </div>
                     <div>
-                      <p className="font-body text-white/50 text-xs uppercase tracking-wider mb-0.5">Website</p>
-                      <p className="font-body text-white text-sm group-hover:text-cyan transition-colors">
+                      <p className="font-display font-bold text-white/50 text-[11px] uppercase tracking-widest mb-[4px]">Website</p>
+                      <p className="font-body text-white text-[15px] group-hover:text-lime transition-colors">
                         www.bagpackerme.com
                       </p>
                     </div>
@@ -340,33 +346,33 @@ export default function ContactPage() {
                 <a
                   href="https://wa.me/919920992026"
                   target="_blank" rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-3 w-full py-4 bg-green-500 hover:bg-green-600 text-white font-body font-semibold text-sm rounded-xl transition-colors mb-6"
+                  className="flex items-center justify-center gap-[8px] w-full py-[16px] px-[24px] bg-[#25D366] hover:bg-white hover:text-[#25D366] text-white font-display font-bold tracking-widest uppercase text-[12px] rounded-none transition-colors mb-[32px]"
                 >
-                  <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                  <svg viewBox="0 0 24 24" fill="currentColor" className="w-[16px] h-[16px]">
                     <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/>
                   </svg>
                   Chat on WhatsApp — +91 99209 92026
                 </a>
 
                 {/* Social Icons */}
-                <div className="flex gap-3 border-t border-white/10 pt-6">
+                <div className="flex gap-[16px] border-t border-white/10 pt-[32px]">
                   <a
                     href="https://www.instagram.com/bagpackerme/"
                     target="_blank" rel="noopener noreferrer"
                     aria-label="Instagram"
-                    className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/25 transition-colors"
+                    className="w-[48px] h-[48px] rounded-none bg-white/5 flex items-center justify-center text-white/60 hover:text-lime hover:bg-white/10 border border-white/10 transition-colors"
                   >
-                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
-                      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 1.366.062 2.633.337 3.608 1.312.975.975 1.25 2.242 1.312 3.608.058 1.266.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.062 1.366-.337 2.633-1.312 3.608-.975.975-2.242 1.25-3.608 1.312-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-1.366-.062-2.633-.337-3.608-1.312-.975-.975-1.25-2.242-1.312-3.608C2.175 15.747 2.163 15.367 2.163 12s.012-3.584.07-4.85c.062-1.366.337-2.633 1.312-3.608.975-.975 2.242-1.25 3.608-1.312C8.416 2.175 8.796 2.163 12 2.163zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.667.072 4.947.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.667-.014 4.947-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.947 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/>
+                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-[18px] h-[18px]">
+                      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 1.366.062 2.633.337 3.608 1.312.975.975 1.25 2.242 1.312 3.608.058 1.266.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.062 1.366-.337 2.633-1.312 3.608-.975-.975-2.242 1.25-3.608 1.312-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-1.366-.062-2.633-.337-3.608-1.312-.975-.975-1.25-2.242-1.312-3.608C2.175 15.747 2.163 15.367 2.163 12s.012-3.584.07-4.85c.062-1.366.337-2.633 1.312-3.608.975-.975 2.242-1.25 3.608-1.312C8.416 2.175 8.796 2.163 12 2.163zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.667.072 4.947.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.667-.014 4.947-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.947 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/>
                     </svg>
                   </a>
                   <a
                     href="https://www.youtube.com/@BagpackerMe"
                     target="_blank" rel="noopener noreferrer"
                     aria-label="YouTube"
-                    className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/25 transition-colors"
+                    className="w-[48px] h-[48px] rounded-none bg-white/5 flex items-center justify-center text-white/60 hover:text-lime hover:bg-white/10 border border-white/10 transition-colors"
                   >
-                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-[18px] h-[18px]">
                       <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
                     </svg>
                   </a>
@@ -374,7 +380,7 @@ export default function ContactPage() {
               </div>
 
               {/* Map */}
-              <div className="h-52 w-full">
+              <div className="h-[320px] w-full border-t border-white/10">
                 <iframe
                   src="https://maps.google.com/maps?q=Mumbai,India&t=&z=11&ie=UTF8&iwloc=&output=embed"
                   className="w-full h-full"

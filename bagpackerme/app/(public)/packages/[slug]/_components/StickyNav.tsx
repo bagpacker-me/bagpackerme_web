@@ -4,9 +4,10 @@ import { useEffect, useState } from 'react';
 
 const SECTIONS = [
   { id: 'overview', label: 'Overview' },
+  { id: 'highlights', label: 'Highlights' }, // Added according to spec
   { id: 'itinerary', label: 'Itinerary' },
-  { id: 'included', label: "What's Included" },
   { id: 'gallery', label: 'Gallery' },
+  { id: 'inclusions', label: 'Inclusions' }, // Renamed to spec
   { id: 'book', label: 'Book Now' }
 ];
 
@@ -54,8 +55,8 @@ export default function StickyNav() {
     e.preventDefault();
     const el = document.getElementById(id);
     if (el) {
-      // offset for sticky nav (approx 80px)
-      const offset = 80;
+      // offset for sticky nav (approx 100px to account for main nav + anchor nav)
+      const offset = 120;
       const top = el.getBoundingClientRect().top + window.scrollY - offset;
       window.scrollTo({ top, behavior: 'smooth' });
     }
@@ -63,42 +64,32 @@ export default function StickyNav() {
 
   return (
     <div 
-      className={`w-full z-40 transition-all duration-300 ${isSticky ? 'fixed top-0 left-0 bg-void/90 backdrop-blur-md border-b border-white/10 shadow-lg' : 'absolute bottom-0 translate-y-full bg-void'}`}
+      className={`w-full z-40 transition-all duration-300 ${isSticky ? 'fixed top-[72px] left-0 bg-white border-b border-[rgba(34,30,42,0.08)]' : 'absolute bottom-0 translate-y-full bg-white border-b border-[rgba(34,30,42,0.08)]'}`}
       style={{ opacity: isSticky ? 1 : 0, pointerEvents: isSticky ? 'auto' : 'none' }}
     >
-      <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+      <div className="w-full h-[52px] overflow-x-auto hide-scrollbar flex items-center bg-white px-mobile md:px-desktop max-w-7xl mx-auto">
         {/* Links */}
-        <nav className="hidden md:flex items-center gap-8">
-          {SECTIONS.map((section) => (
-            <a
-              key={section.id}
-              href={`#${section.id}`}
-              onClick={(e) => scrollToSection(section.id, e)}
-              className={`font-display text-sm uppercase tracking-widest transition-colors duration-300 ${
-                activeSection === section.id
-                  ? 'text-lime font-bold'
-                  : 'text-white/70 hover:text-white'
-              }`}
-            >
-              {section.label}
-            </a>
-          ))}
+        <nav className="flex items-center whitespace-nowrap">
+          {SECTIONS.map((section) => {
+            const isActive = activeSection === section.id;
+            return (
+              <a
+                key={section.id}
+                href={`#${section.id}`}
+                onClick={(e) => scrollToSection(section.id, e)}
+                className={`font-body text-[13px] font-medium transition-colors duration-200 py-[16px] px-[20px] relative
+                  ${isActive ? 'text-[#285056]' : 'text-[#4a5568] hover:text-[#285056]'}
+                `}
+              >
+                {section.label}
+                {/* Active marker border bottom */}
+                {isActive && (
+                  <div className="absolute bottom-0 left-[20px] right-[20px] h-[2px] bg-[#285056]" />
+                )}
+              </a>
+            );
+          })}
         </nav>
-        
-        {/* Mobile active indicator */}
-        <div className="md:hidden flex items-center">
-            {SECTIONS.map(s => s.id === activeSection && (
-               <span key={s.id} className="text-lime font-display text-sm font-bold uppercase tracking-widest leading-none">{s.label}</span>
-            ))}
-        </div>
-
-        {/* CTA */}
-        <button
-          onClick={(e) => scrollToSection('book', e as unknown as React.MouseEvent)}
-          className="bg-lime hover:bg-lime/90 text-void font-display font-bold uppercase tracking-widest text-sm px-6 py-3 rounded-full transition-all flex items-center gap-2"
-        >
-          Enquire Now <span>&rarr;</span>
-        </button>
       </div>
     </div>
   );

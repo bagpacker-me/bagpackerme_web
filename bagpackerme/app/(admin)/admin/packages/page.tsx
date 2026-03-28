@@ -32,15 +32,15 @@ function StatusBadge({
       type="button"
       onClick={onToggle}
       title={`Click to ${status === 'published' ? 'unpublish' : 'publish'}`}
-      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold transition-colors cursor-pointer
+      className={`inline-flex items-center gap-1.5 px-[10px] py-[3px] rounded-full font-body text-[12px] font-medium transition-colors cursor-pointer
         ${
           status === 'published'
-            ? 'bg-lime-100 text-lime-700 hover:bg-lime-200'
-            : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+            ? 'bg-[#DCFCE7] text-[#166534] hover:bg-green-200'
+            : 'bg-[#F3F4F6] text-[#6B7280] hover:bg-gray-200'
         }`}
     >
       <span
-        className={`w-1.5 h-1.5 rounded-full ${status === 'published' ? 'bg-lime-500' : 'bg-gray-400'}`}
+        className={`w-1.5 h-1.5 rounded-full ${status === 'published' ? 'bg-[#166534]' : 'bg-[#6B7280]'}`}
       />
       {status === 'published' ? 'Published' : 'Draft'}
     </button>
@@ -131,35 +131,34 @@ export default function AdminPackagesPage() {
       </div>
 
       {/* Table Card */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-gray-100 bg-gray-50/60">
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider w-14">
-                  Image
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                  Title
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                  Category
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                  Price (INR)
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                  Created
-                </th>
-                <th className="px-4 py-3 text-right text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody>
+      <div className="bg-white overflow-x-auto">
+        <table className="w-full">
+          <thead>
+            <tr className="bg-[#F7F9FA] border-b-[2px] border-[#E9F5F7]">
+              <th className="px-[16px] py-[12px] text-left font-display text-[11px] font-bold text-[#718096] tracking-widest uppercase w-14">
+                Image
+              </th>
+              <th className="px-[16px] py-[12px] text-left font-display text-[11px] font-bold text-[#718096] tracking-widest uppercase">
+                Title
+              </th>
+              <th className="px-[16px] py-[12px] text-left font-display text-[11px] font-bold text-[#718096] tracking-widest uppercase hidden md:table-cell">
+                Category
+              </th>
+              <th className="px-[16px] py-[12px] text-left font-display text-[11px] font-bold text-[#718096] tracking-widest uppercase">
+                Status
+              </th>
+              <th className="px-[16px] py-[12px] text-left font-display text-[11px] font-bold text-[#718096] tracking-widest uppercase hidden sm:table-cell">
+                Price (INR)
+              </th>
+              <th className="px-[16px] py-[12px] text-left font-display text-[11px] font-bold text-[#718096] tracking-widest uppercase hidden lg:table-cell">
+                Created
+              </th>
+              <th className="px-[16px] py-[12px] text-right font-display text-[11px] font-bold text-[#718096] tracking-widest uppercase">
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody>
               {loading ? (
                 <>
                   {[...Array(5)].map((_, i) => (
@@ -187,7 +186,7 @@ export default function AdminPackagesPage() {
                 packages.map((pkg) => (
                   <tr
                     key={pkg.id}
-                    className="border-b border-gray-50 hover:bg-gray-50/60 transition-colors group"
+                    className="border-b border-[#F3F4F6] hover:bg-[#F7F9FA] transition-colors group h-[56px] align-middle"
                   >
                     {/* Image */}
                     <td className="px-4 py-3">
@@ -208,31 +207,31 @@ export default function AdminPackagesPage() {
                     </td>
 
                     {/* Title */}
-                    <td className="px-4 py-3">
-                      <p className="font-medium text-gray-900 truncate max-w-[220px]">{pkg.title}</p>
-                      <p className="text-xs text-gray-400 truncate max-w-[220px]">/{pkg.slug}</p>
+                    <td className="px-[16px]">
+                      <p className="font-body text-[14px] text-[#221E2A] truncate max-w-[220px]">{pkg.title}</p>
+                      <p className="font-body text-[12px] text-[#718096] truncate max-w-[220px] pt-[2px]">/{pkg.slug}</p>
                     </td>
 
                     {/* Category */}
-                    <td className="px-4 py-3">
-                      <span className="text-gray-600">{pkg.category}</span>
+                    <td className="px-[16px] hidden md:table-cell font-body text-[14px] text-[#221E2A]">
+                      <span>{pkg.category}</span>
                     </td>
 
                     {/* Status */}
-                    <td className="px-4 py-3">
+                    <td className="px-[16px]">
                       <StatusBadge status={pkg.status} onToggle={() => handleToggleStatus(pkg)} />
                     </td>
 
                     {/* Price */}
-                    <td className="px-4 py-3">
-                      <span className="font-medium text-gray-800">
+                    <td className="px-[16px] hidden sm:table-cell font-body text-[14px] text-[#221E2A]">
+                      <span>
                         ₹{pkg.priceInr.toLocaleString('en-IN')}
                       </span>
                     </td>
 
                     {/* Created */}
-                    <td className="px-4 py-3">
-                      <span className="text-gray-500 text-xs">
+                    <td className="px-[16px] hidden lg:table-cell font-body text-[14px] text-[#221E2A]">
+                      <span>
                         {pkg.createdAt
                           ? format(new Date(pkg.createdAt), 'd MMM yyyy')
                           : '—'}
@@ -240,7 +239,7 @@ export default function AdminPackagesPage() {
                     </td>
 
                     {/* Actions */}
-                    <td className="px-4 py-3">
+                    <td className="px-[16px]">
                       <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                         {/* Edit */}
                         <button
@@ -270,9 +269,8 @@ export default function AdminPackagesPage() {
                   </tr>
                 ))
               )}
-            </tbody>
-          </table>
-        </div>
+          </tbody>
+        </table>
       </div>
 
       {/* Delete Confirm Dialog */}
