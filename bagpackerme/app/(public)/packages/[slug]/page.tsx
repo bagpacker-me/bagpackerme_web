@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getPackageBySlug, getPackages } from '@/lib/firestore';
+import { getPackageBySlug, getPublishedPackages } from '@/lib/firestore';
 
 import HeroSection from './_components/HeroSection';
 import StickyNav from './_components/StickyNav';
@@ -15,11 +15,11 @@ interface Props {
   params: { slug: string };
 }
 
-// 1. Generate Static Params for SSG
+// 1. Generate Static Params for SSG (only published packages, matching Firestore security rules)
 export async function generateStaticParams() {
-  const packagesSnapshot = await getPackages();
-  return packagesSnapshot.docs.map(doc => ({
-    slug: doc.data().slug,
+  const packagesSnapshot = await getPublishedPackages();
+  return packagesSnapshot.docs.map((doc) => ({
+    slug: doc.data().slug as string,
   }));
 }
 
