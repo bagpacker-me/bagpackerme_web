@@ -3,7 +3,6 @@ import HeroSection from '@/components/home/HeroSection';
 import StatsSection from '@/components/home/StatsSection';
 import FeaturedTrips from '@/components/home/FeaturedTrips';
 import AboutSection from '@/components/home/AboutSection';
-import SignatureRetreats from '@/components/home/SignatureRetreats';
 import WhatWeDo from '@/components/home/WhatWeDo';
 import BlogPreview from '@/components/home/BlogPreview';
 import AudienceSplit from '@/components/home/AudienceSplit';
@@ -21,7 +20,6 @@ export default function HomePage() {
       <StatsSection />
       <FeaturedTrips />
       <AboutSection />
-      <SignatureRetreats />
       <WhatWeDo />
       <BlogPreview />
       <AudienceSplit />

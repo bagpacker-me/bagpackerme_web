@@ -7,7 +7,7 @@ import { Package } from '@/types';
 import PackageCard, { PackageCardSkeleton } from '@/components/home/PackageCard';
 import { CARD_GRID_VARIANTS, CARD_ITEM_VARIANTS } from '@/components/ui/FadeInSection';
 
-const CATEGORIES = ['All', 'Culinary', 'Spiritual', 'Adventure', 'Heritage', 'Hippy Trail', 'Corporate Retreat'];
+const CATEGORIES = ['All', 'Culinary', 'Spiritual', 'Adventure', 'Heritage', 'Hippy Trail'];
 
 const DURATIONS = [
   { label: 'Any', value: 'Any' },

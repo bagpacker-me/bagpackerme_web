@@ -3,13 +3,12 @@ import { ArrowRight } from 'lucide-react';
 import { Logo } from '../ui/Logo';
 
 const exploreLinks = [
-  { name: 'All Trips', href: '/trips' },
-  { name: 'Culinary Trail', href: '/trips/culinary-trail' },
-  { name: 'Spiritual Circuit', href: '/trips/spiritual-circuit' },
-  { name: 'Adventure Route', href: '/trips/adventure-route' },
-  { name: 'Heritage Walk', href: '/trips/heritage-walk' },
-  { name: 'Hippy Trail', href: '/trips/hippy-trail' },
-  { name: 'Corporate Retreats', href: '/retreats/corporate' },
+  { name: 'All Packages', href: '/packages' },
+  { name: 'Culinary Trail', href: '/packages' },
+  { name: 'Spiritual Circuit', href: '/packages' },
+  { name: 'Adventure Route', href: '/packages' },
+  { name: 'Heritage Walk', href: '/packages' },
+  { name: 'Hippy Trail', href: '/packages' },
 ];
 
 const companyLinks = [

@@ -17,23 +17,14 @@ import { Logo } from '../ui/Logo';
 
 const navLinks = [
   { name: 'Home', href: '/' },
-  { name: 'Trips', href: '/trips' },
-  { name: 'Retreats', href: '/retreats', isDropdown: true },
+  { name: 'Trips', href: '/packages' },
   { name: 'Blog', href: '/blog' },
   { name: 'About', href: '/about' },
-  { name: 'Contact', href: '/contact' },
-];
-
-const retreatsOptions = [
-  { name: 'Half-Day Retreat', price: '₹4,000/person', href: '/retreats/half-day' },
-  { name: '2-Day Retreat', price: '₹7,500/person', href: '/retreats/2-day' },
-  { name: 'View All Retreats', price: '', href: '/retreats' },
 ];
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isRetreatsOpen, setIsRetreatsOpen] = useState(false);
   const { scrollY } = useScroll();
   const pathname = usePathname();
   const shouldReduceMotion = useReducedMotion();
@@ -85,55 +76,18 @@ export function Navbar() {
             <div className="hidden md:flex items-center space-x-8">
               {navLinks.map((link) => (
                 <div key={link.name} className="relative group">
-                  {link.isDropdown ? (
-                    <div 
-                      className="flex items-center space-x-1 cursor-pointer text-white hover:text-lime transition-colors duration-200 py-2"
-                      onMouseEnter={() => setIsRetreatsOpen(true)}
-                      onMouseLeave={() => setIsRetreatsOpen(false)}
-                    >
-                      <span className="text-sm font-medium tracking-wide">{link.name}</span>
-                      <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isRetreatsOpen ? 'rotate-180' : ''}`} />
-                      
-                      {/* Dropdown */}
-                      <AnimatePresence>
-                        {isRetreatsOpen && (
-                          <motion.div
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: 10 }}
-                            transition={{ duration: 0.2 }}
-                            className="absolute top-full left-0 mt-2 w-64 bg-void border border-white/10 rounded-none shadow-2xl overflow-hidden"
-                          >
-                            <div className="py-2">
-                              {retreatsOptions.map((option) => (
-                                <Link
-                                  key={option.name}
-                                  href={option.href}
-                                  className="block px-4 py-3 hover:bg-white/10 transition-colors"
-                                >
-                                  <div className="text-white text-sm font-medium">{option.name}</div>
-                                  {option.price && <div className="text-white/50 text-xs mt-1">{option.price}</div>}
-                                </Link>
-                              ))}
-                            </div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
-                  ) : (
-                    <Link
-                      href={link.href}
-                      className="text-white hover:text-lime transition-colors duration-200 relative py-2 text-sm font-medium tracking-wide"
-                    >
-                      {link.name}
-                      {pathname === link.href && (
-                        <motion.div
-                          layoutId="nav-indicator"
-                          className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-lime rounded-full"
-                        />
-                      )}
-                    </Link>
-                  )}
+                  <Link
+                    href={link.href}
+                    className="text-white hover:text-lime transition-colors duration-200 relative py-2 text-sm font-medium tracking-wide"
+                  >
+                    {link.name}
+                    {pathname === link.href && (
+                      <motion.div
+                        layoutId="nav-indicator"
+                        className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-lime rounded-full"
+                      />
+                    )}
+                  </Link>
                 </div>
               ))}
             </div>
@@ -194,29 +148,13 @@ export function Navbar() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 + i * 0.05 }}
                 >
-                  {link.isDropdown ? (
-                    <div className="flex flex-col space-y-4">
-                      <div className="text-white/40 text-xs font-bold uppercase tracking-widest">{link.name}</div>
-                      {retreatsOptions.map((option) => (
-                        <Link
-                          key={option.name}
-                          href={option.href}
-                          className="text-white text-3xl font-heading font-medium hover:text-lime transition-colors"
-                          onClick={() => setIsMobileMenuOpen(false)}
-                        >
-                          {option.name}
-                        </Link>
-                      ))}
-                    </div>
-                  ) : (
-                    <Link
-                      href={link.href}
-                      className="text-white text-4xl font-heading font-bold hover:text-lime transition-colors"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      {link.name}
-                    </Link>
-                  )}
+                  <Link
+                    href={link.href}
+                    className="text-white text-4xl font-heading font-bold hover:text-lime transition-colors"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {link.name}
+                  </Link>
                 </motion.div>
               ))}
               <motion.div 
