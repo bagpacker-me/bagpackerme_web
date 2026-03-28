@@ -63,7 +63,7 @@ export function Footer() {
 
           {/* Column 2 - Trips */}
           <div className="space-y-6">
-            <h3 className="font-display text-[11px] tracking-widest text-white/50 uppercase">Explore</h3>
+            <h3 className="font-heading text-[11px] tracking-widest text-white/50 uppercase">Explore</h3>
             <ul className="space-y-3">
               {exploreLinks.map((link) => (
                 <li key={link.name}>
@@ -77,7 +77,7 @@ export function Footer() {
 
           {/* Column 3 - Company */}
           <div className="space-y-6">
-            <h3 className="font-display text-[11px] tracking-widest text-white/50 uppercase">Company</h3>
+            <h3 className="font-heading text-[11px] tracking-widest text-white/50 uppercase">Company</h3>
             <ul className="space-y-3">
               {companyLinks.map((link) => (
                 <li key={link.name}>
@@ -91,7 +91,7 @@ export function Footer() {
 
           {/* Column 4 - Connect */}
           <div className="space-y-6 flex flex-col items-start lg:col-span-1">
-            <h3 className="font-display text-[11px] tracking-widest text-white/50 uppercase">Get In Touch</h3>
+            <h3 className="font-heading text-[11px] tracking-widest text-white/50 uppercase">Get In Touch</h3>
             <div className="space-y-2 text-sm text-white/80 flex flex-col items-start w-full">
               <a href="mailto:partnerships@bagpackerme.com" className="hover:text-cyan transition-colors truncate w-full block">partnerships@bagpackerme.com</a>
               <a href="https://wa.me/919920992026" target="_blank" rel="noopener noreferrer" className="hover:text-cyan transition-colors block">+91 9920992026</a>

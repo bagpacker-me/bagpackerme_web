@@ -12,9 +12,9 @@ const STATS = [
 export default function StatsSection() {
   return (
     <section className="relative z-[20] w-full container px-4 -mt-[60px] pb-16">
-      <div className="bg-[#285056] text-white w-full max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 shadow-2xl relative overflow-hidden">
+      <div className="bg-teal text-white w-full max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 rounded-3xl shadow-xl border border-white/10 relative overflow-hidden">
         {/* Subtle top border/accent */}
-        <div className="absolute top-0 left-0 w-full h-1 bg-[#0ED2E9]" />
+        <div className="absolute top-0 left-0 w-full h-1 bg-cyan" />
         
         {STATS.map((stat, idx) => (
           <div 

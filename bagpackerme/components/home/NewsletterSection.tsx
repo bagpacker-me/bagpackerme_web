@@ -36,8 +36,12 @@ export default function NewsletterSection() {
   };
 
   return (
-    <section className="bg-[#221E2A] py-[80px]">
-      <div className="container-custom">
+    <section className="bg-void py-[80px] relative overflow-hidden">
+      {/* Decorative Blur */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-cyan/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2" />
+      <div className="absolute bottom-0 left-0 w-80 h-80 bg-lime/10 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2" />
+      
+      <div className="container-custom relative z-10">
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -60,15 +64,15 @@ export default function NewsletterSection() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="flex-grow bg-white/10 border border-white/20 text-white placeholder-white/50 px-6 py-4 outline-none focus:border-brand-lime transition-colors duration-300 font-sans sm:rounded-l-md sm:rounded-r-none rounded-md mb-2 sm:mb-0"
+              className="flex-grow bg-white/10 border border-white/20 text-white placeholder-white/50 px-6 py-4 outline-none focus:border-lime transition-colors duration-300 font-sans sm:rounded-l-full sm:rounded-r-none rounded-full mb-2 sm:mb-0"
             />
             <button 
               type="submit" 
               disabled={loading}
-              className="bg-brand-lime hover:bg-brand-lime/90 text-[#221E2A] font-sans font-bold text-sm tracking-widest uppercase px-8 py-4 transition-colors duration-300 sm:rounded-r-md sm:rounded-l-none rounded-md disabled:opacity-70 flex items-center justify-center min-w-[140px]"
+              className="bg-lime hover:bg-lime/90 text-void font-sans font-bold text-sm tracking-widest uppercase px-8 py-4 transition-colors duration-300 sm:rounded-r-full sm:rounded-l-none rounded-full disabled:opacity-70 flex items-center justify-center min-w-[140px]"
             >
               {loading ? (
-                <div className="w-5 h-5 border-2 border-[#221E2A] border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-5 h-5 border-2 border-void border-t-transparent rounded-full animate-spin"></div>
               ) : (
                 "Subscribe"
               )}

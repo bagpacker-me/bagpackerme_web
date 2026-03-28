@@ -196,8 +196,7 @@ export default function BlogForm({ initialData, blogId }: BlogFormProps) {
             type="button"
             onClick={() => handleSave()}
             disabled={saving}
-            className="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all hover:opacity-90 disabled:opacity-60 flex items-center gap-2"
-            style={{ background: '#285056', color: 'white' }}
+            className="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all hover:opacity-90 disabled:opacity-60 flex items-center gap-2 bg-[#285056] text-white"
           >
             {saving && (
               <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
@@ -428,8 +427,7 @@ export default function BlogForm({ initialData, blogId }: BlogFormProps) {
               type="button"
               onClick={() => handleSave()}
               disabled={saving}
-              className="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all hover:opacity-90 disabled:opacity-60"
-              style={{ background: '#285056', color: 'white' }}
+              className="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all hover:opacity-90 disabled:opacity-60 bg-[#285056] text-white"
             >
               {saving ? 'Saving…' : 'Save Changes'}
             </button>

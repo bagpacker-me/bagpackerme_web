@@ -20,9 +20,9 @@ const config: Config = {
         void: '#221E2A',
       },
       fontFamily: {
-        display: ['Josefin Sans', 'sans-serif'],
-        body: ['DM Sans', 'sans-serif'],
-        accent: ['Cormorant Garamond', 'serif'],
+        display: ['"Arista 2.0 Alternate"', 'var(--font-baloo)', 'Baloo 2', 'sans-serif'],
+        body: ['var(--font-nunito)', 'Nunito', 'sans-serif'],
+        accent: ['var(--font-baloo)', 'Baloo 2', 'sans-serif'],
       },
       letterSpacing: {
         widest: '0.22em',

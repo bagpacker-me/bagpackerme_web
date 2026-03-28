@@ -36,8 +36,7 @@ export default function AdminLoginPage() {
 
         {/* Heading */}
         <h1
-          className="text-2xl font-bold text-center mb-1"
-          style={{ fontFamily: 'Josefin Sans, sans-serif', color: '#285056' }}
+          className="text-2xl font-bold text-center mb-1 text-teal-900 font-heading"
         >
           Admin Login
         </h1>
@@ -57,10 +56,7 @@ export default function AdminLoginPage() {
               onChange={(e) => setEmail(e.target.value)}
               required
               placeholder="admin@bagpackerme.com"
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 placeholder-gray-300 outline-none transition-all"
-              style={{ '--focus-color': '#285056' } as React.CSSProperties}
-              onFocus={(e) => (e.target.style.borderColor = '#285056')}
-              onBlur={(e) => (e.target.style.borderColor = '#e5e7eb')}
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 placeholder-gray-300 outline-none transition-all focus:border-teal-900 focus:ring-1 focus:ring-teal-900"
             />
           </div>
 
@@ -74,9 +70,7 @@ export default function AdminLoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               required
               placeholder="••••••••"
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 placeholder-gray-300 outline-none transition-all"
-              onFocus={(e) => (e.target.style.borderColor = '#285056')}
-              onBlur={(e) => (e.target.style.borderColor = '#e5e7eb')}
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 placeholder-gray-300 outline-none transition-all focus:border-teal-900 focus:ring-1 focus:ring-teal-900"
             />
           </div>
 
@@ -94,8 +88,7 @@ export default function AdminLoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-xl font-semibold text-sm text-void flex items-center justify-center gap-2 transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-70"
-            style={{ backgroundColor: '#C1EA00', color: '#221E2A' }}
+            className="w-full py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-70 bg-lime-500 text-teal-950"
           >
             {loading ? (
               <>

@@ -68,7 +68,7 @@ function EnquiryPanel({ enquiry, onClose }: { enquiry: Enquiry | null; onClose: 
           >
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
-              <h2 className="text-base font-semibold text-gray-900" style={{ fontFamily: 'DM Sans, sans-serif' }}>
+              <h2 className="text-base font-semibold text-void font-heading">
                 Enquiry Detail
               </h2>
               <button
@@ -113,8 +113,7 @@ function EnquiryPanel({ enquiry, onClose }: { enquiry: Enquiry | null; onClose: 
             <div className="px-6 py-4 border-t border-gray-100 flex gap-3">
               <a
                 href={`mailto:${enquiry.email}`}
-                className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium text-white transition-opacity hover:opacity-90"
-                style={{ backgroundColor: '#285056' }}
+                className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium text-white transition-opacity hover:opacity-90 bg-teal"
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
@@ -148,12 +147,10 @@ function Row({ label, value }: { label: string; value: string }) {
 function StatCard({ label, value, icon, loading }: StatsCard) {
   return (
     <div
-      className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 flex items-start gap-4"
-      style={{ borderLeft: '4px solid #285056' }}
+      className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 flex items-start gap-4 border-l-4 border-l-teal"
     >
       <div
-        className="w-11 h-11 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
-        style={{ backgroundColor: '#E9F5F7' }}
+        className="w-11 h-11 rounded-xl flex items-center justify-center text-xl flex-shrink-0 bg-ice"
       >
         {icon}
       </div>
@@ -162,7 +159,7 @@ function StatCard({ label, value, icon, loading }: StatsCard) {
         {loading ? (
           <div className="h-7 w-16 bg-gray-100 rounded-md animate-pulse" />
         ) : (
-          <p className="text-2xl font-bold text-gray-900" style={{ fontFamily: 'DM Sans, sans-serif' }}>
+          <p className="text-2xl font-bold text-void font-heading">
             {value}
           </p>
         )}
@@ -257,16 +254,14 @@ export default function AdminDashboardPage() {
       <div className="sticky top-0 bg-white/80 backdrop-blur-md border-b border-gray-100 z-30 px-8 py-4 flex items-center justify-between">
         <div>
           <h1
-            className="text-xl font-semibold text-gray-900"
-            style={{ fontFamily: 'DM Sans, sans-serif' }}
+            className="text-xl font-semibold text-void font-heading"
           >
             Welcome back, {firstName.charAt(0).toUpperCase() + firstName.slice(1)} 👋
           </h1>
           <p className="text-xs text-gray-400 mt-0.5">{todayString()}</p>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
-            style={{ backgroundColor: '#285056' }}>
+          <div className="w-8 h-8 rounded-full flex items-center justify-center text-void text-xs font-bold bg-lime">
             {firstName.charAt(0).toUpperCase()}
           </div>
         </div>
@@ -288,8 +283,7 @@ export default function AdminDashboardPage() {
           <div className="flex flex-wrap gap-3">
             <Link
               href="/admin/packages/new"
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all hover:opacity-90 active:scale-[0.98]"
-              style={{ backgroundColor: '#C1EA00', color: '#221E2A' }}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all hover:opacity-90 active:scale-[0.98] bg-lime text-void"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -298,8 +292,7 @@ export default function AdminDashboardPage() {
             </Link>
             <Link
               href="/admin/blog/new"
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90 active:scale-[0.98]"
-              style={{ backgroundColor: '#285056' }}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90 active:scale-[0.98] bg-teal"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -315,8 +308,7 @@ export default function AdminDashboardPage() {
             <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Recent Enquiries</h2>
             <Link
               href="/admin/enquiries"
-              className="text-xs font-medium hover:underline"
-              style={{ color: '#285056' }}
+              className="text-xs font-medium hover:underline text-teal"
             >
               View all →
             </Link>

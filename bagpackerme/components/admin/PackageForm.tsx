@@ -83,7 +83,7 @@ async function uploadFile(file: File, path: string, onProgress?: (p: number) => 
 
 function inputCls(err?: boolean) {
   return `w-full px-3.5 py-2.5 border rounded-xl text-sm text-gray-800 bg-white outline-none transition-all
-    focus:ring-2 focus:ring-[#C1EA00] focus:border-[#285056]
+    focus:ring-2 focus:ring-lime focus:border-teal
     ${err ? 'border-red-400' : 'border-gray-200'} placeholder-gray-400`;
 }
 
@@ -105,7 +105,7 @@ function Toggle({ checked, onChange, label }: { checked: boolean; onChange: (v: 
       <div
         onClick={() => onChange(!checked)}
         className={`relative w-11 h-6 rounded-full transition-colors cursor-pointer ${
-          checked ? 'bg-[#285056]' : 'bg-gray-200'
+          checked ? 'bg-teal' : 'bg-gray-200'
         }`}
       >
         <span
@@ -137,7 +137,7 @@ function ImageUploadBox({
     <div>
       <Label>{label}</Label>
       <div
-        className="relative border-2 border-dashed border-gray-200 rounded-xl overflow-hidden bg-gray-50 cursor-pointer hover:border-[#285056] transition-colors"
+        className="relative border-2 border-dashed border-gray-200 rounded-xl overflow-hidden bg-gray-50 cursor-pointer hover:border-teal transition-colors"
         style={{ minHeight: 140 }}
         onClick={() => fileRef.current?.click()}
       >
@@ -155,7 +155,7 @@ function ImageUploadBox({
         {uploading && (
           <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center gap-2">
             <div className="w-32 h-2 bg-white/30 rounded-full overflow-hidden">
-              <div className="h-full bg-[#C1EA00] transition-all" style={{ width: `${progress}%` }} />
+              <div className="h-full bg-lime transition-all" style={{ width: `${progress}%` }} />
             </div>
             <p className="text-white text-xs">{progress}%</p>
           </div>
@@ -455,7 +455,7 @@ function TabItinerary({
           <button
             type="button"
             onClick={addDay}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-[#285056] text-white text-sm rounded-lg hover:bg-[#1e3b3f] transition-colors"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-teal text-white text-sm rounded-lg hover:bg-teal/90 transition-colors"
           >
             + Add Day
           </button>
@@ -474,7 +474,7 @@ function TabItinerary({
             <div className={`grid gap-4 ${twoCol && isCorporate ? 'grid-cols-2' : 'grid-cols-1 md:grid-cols-[80px_1fr_1fr_160px_auto]'}`}>
               {!twoCol && (
                 <div className="flex flex-col items-center justify-start pt-6">
-                  <div className="w-9 h-9 rounded-full bg-[#285056] text-white flex items-center justify-center text-sm font-bold">
+                  <div className="w-9 h-9 rounded-full bg-teal text-white flex items-center justify-center text-sm font-bold">
                     {day.day}
                   </div>
                 </div>
@@ -507,7 +507,7 @@ function TabItinerary({
                   <div>
                     <label className="text-xs text-gray-500 font-medium mb-1 block">Thumbnail</label>
                     <div
-                      className="border border-dashed border-gray-200 rounded-lg overflow-hidden cursor-pointer hover:border-[#285056] transition-colors"
+                      className="border border-dashed border-gray-200 rounded-lg overflow-hidden cursor-pointer hover:border-teal transition-colors"
                       style={{ height: 80 }}
                       onClick={() => document.getElementById(`day-img-${idx}`)?.click()}
                     >
@@ -632,7 +632,7 @@ function TabInclusionsGallery({
       <div>
         <h3 className="text-sm font-semibold text-gray-800 mb-3">Gallery</h3>
         <div
-          className="border-2 border-dashed border-gray-200 rounded-xl p-4 bg-gray-50 cursor-pointer hover:border-[#285056] transition-colors"
+          className="border-2 border-dashed border-gray-200 rounded-xl p-4 bg-gray-50 cursor-pointer hover:border-teal transition-colors"
           onClick={() => galleryRef.current?.click()}
         >
           {galleryUploading ? (
@@ -769,7 +769,7 @@ export default function PackageForm({ initialData }: PackageFormProps) {
             onClick={() => setTab(key)}
             className={`px-5 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
               tab === key
-                ? 'border-[#285056] text-[#285056]'
+                ? 'border-teal text-teal'
                 : 'border-transparent text-gray-500 hover:text-gray-700'
             }`}
           >

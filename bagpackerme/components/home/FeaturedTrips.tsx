@@ -51,7 +51,7 @@ export default function FeaturedTrips() {
             ✦ SIGNATURE JOURNEYS
             {/* The ::before element will only show on the left in css, let's reverse to center properly or rely on css flex. Actually the css has it on left. We will keep it simple. */}
           </div>
-          <h2 className="section-heading mt-2 mb-6 max-w-2xl text-[#221E2A]">
+          <h2 className="section-heading mt-2 mb-6 max-w-2xl text-void">
             Five Ways to Experience India
           </h2>
           <p className="font-body text-gray-500 max-w-xl mx-auto text-lg">

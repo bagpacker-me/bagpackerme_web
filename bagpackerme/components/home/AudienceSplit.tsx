@@ -8,7 +8,7 @@ export default function AudienceSplit() {
   return (
     <section className="w-full flex flex-col md:flex-row">
       {/* Left Panel - Foreign Travelers (55%) */}
-      <div className="w-full md:w-[55%] bg-brand-teal text-white flex items-center justify-center py-20 px-8 md:px-16 lg:px-24 relative overflow-hidden group">
+      <div className="w-full md:w-[55%] bg-teal text-white flex items-center justify-center py-20 px-8 md:px-16 lg:px-24 relative overflow-hidden group">
         <motion.div 
           initial={{ opacity: 0, x: -30 }}
           whileInView={{ opacity: 1, x: 0 }}
@@ -17,8 +17,8 @@ export default function AudienceSplit() {
           className="max-w-xl w-full relative z-10"
         >
           <div className="flex items-center gap-2 mb-6">
-            <span className="text-brand-cyan text-xs">✦</span>
-            <span className="text-brand-cyan font-bold tracking-[0.2em] text-xs uppercase">For Foreign Travelers</span>
+            <span className="text-cyan text-xs">✦</span>
+            <span className="text-cyan font-bold tracking-[0.2em] text-xs uppercase">For Foreign Travelers</span>
           </div>
           
           <h2 className="text-4xl lg:text-5xl font-heading font-bold leading-tight mb-6">
@@ -50,7 +50,7 @@ export default function AudienceSplit() {
       </div>
 
       {/* Right Panel - Indian Explorers (45%) */}
-      <div className="w-full md:w-[45%] bg-brand-lime text-brand-void flex items-center justify-center py-20 px-8 md:px-16 lg:px-20 relative overflow-hidden group">
+      <div className="w-full md:w-[45%] bg-lime text-void flex items-center justify-center py-20 px-8 md:px-16 lg:px-20 relative overflow-hidden group">
         <motion.div 
           initial={{ opacity: 0, x: 30 }}
           whileInView={{ opacity: 1, x: 0 }}
@@ -59,36 +59,36 @@ export default function AudienceSplit() {
           className="max-w-lg w-full relative z-10"
         >
           <div className="flex items-center gap-2 mb-6">
-            <span className="text-brand-teal text-xs">✦</span>
-            <span className="text-brand-teal font-bold tracking-[0.2em] text-xs uppercase">For Indian Explorers</span>
+            <span className="text-teal text-xs">✦</span>
+            <span className="text-teal font-bold tracking-[0.2em] text-xs uppercase">For Indian Explorers</span>
           </div>
           
           <h2 className="text-4xl lg:text-5xl font-heading font-bold leading-tight mb-6">
             Discover Real India
           </h2>
           
-          <p className="text-brand-void/80 font-sans text-base leading-relaxed mb-8">
+          <p className="text-void/80 font-sans text-base leading-relaxed mb-8">
             Curated group trips and bespoke getaways for young professionals from Mumbai, Delhi, Bangalore and beyond. Skip the tourist traps and connect with like-minded travelers on weekend escapes or week-long adventures.
           </p>
           
           <div className="flex gap-4 mb-10 text-sm font-sans">
-            <div className="bg-brand-void/5 px-4 py-2 rounded">
-              <span className="block text-brand-void/60 text-xs mb-1">Best For</span>
+            <div className="bg-void/5 px-4 py-2 rounded">
+              <span className="block text-void/60 text-xs mb-1">Best For</span>
               <span className="font-bold">Millennials / Gen Z</span>
             </div>
-            <div className="bg-brand-void/5 px-4 py-2 rounded">
-              <span className="block text-brand-void/60 text-xs mb-1">Avg. Spend</span>
+            <div className="bg-void/5 px-4 py-2 rounded">
+              <span className="block text-void/60 text-xs mb-1">Avg. Spend</span>
               <span className="font-bold">₹30K–₹1.2L</span>
             </div>
           </div>
           
-          <Link href="/packages?duration=short" className="bg-brand-teal hover:bg-brand-void text-white font-sans font-bold text-sm tracking-widest uppercase px-8 py-4 transition-colors duration-300 inline-flex items-center justify-center">
+          <Link href="/packages?duration=short" className="bg-teal hover:bg-void text-white font-sans font-bold text-sm tracking-widest uppercase px-8 py-4 rounded-full transition-colors duration-300 inline-flex items-center justify-center">
             Explore Domestic Trips <span className="ml-2">→</span>
           </Link>
         </motion.div>
         
         {/* Decorative background element */}
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-brand-teal/5 rounded-full translate-y-1/3 -translate-x-1/4 blur-3xl group-hover:bg-brand-teal/10 transition-colors duration-700"></div>
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-teal/5 rounded-full translate-y-1/3 -translate-x-1/4 blur-3xl group-hover:bg-teal/10 transition-colors duration-700"></div>
       </div>
     </section>
   );

@@ -5,7 +5,7 @@ import { ArrowRight } from 'lucide-react';
 
 export default function PackageCard({ pkg }: { pkg: Package }) {
   return (
-    <div className="flex flex-col bg-white border-0 rounded-none shadow-none group">
+    <div className="flex flex-col bg-white border border-ice rounded-[24px] shadow-lg overflow-hidden group hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
       {/* Image Area with 4/5 Aspect Ratio and Hover Overlay */}
       <div className="relative w-full aspect-[4/5] img-zoom">
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -78,7 +78,7 @@ export default function PackageCard({ pkg }: { pkg: Package }) {
 
 export function PackageCardSkeleton() {
   return (
-    <div className="flex flex-col bg-white border-0 rounded-none shadow-none animate-pulse">
+    <div className="flex flex-col bg-white border border-ice rounded-[24px] shadow-lg overflow-hidden animate-pulse">
       <div className="relative w-full aspect-[4/5] bg-gray-200" />
       <div className="pt-6 pb-2 flex flex-col flex-1">
         <div className="mb-3 w-20 h-5 bg-gray-200" />

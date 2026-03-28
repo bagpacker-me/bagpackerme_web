@@ -26,8 +26,7 @@ export default function AdminSidebar() {
 
   return (
     <aside
-      className="fixed top-0 left-0 h-full w-[240px] flex flex-col z-40"
-      style={{ backgroundColor: '#285056' }}
+      className="fixed top-0 left-0 h-full w-[240px] flex flex-col z-40 bg-teal"
     >
       {/* Logo */}
       <div className="px-6 pt-7 pb-8">
@@ -45,18 +44,11 @@ export default function AdminSidebar() {
             <Link
               key={item.href}
               href={item.href}
-              className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all group relative"
-              style={{
-                color: isActive ? '#C1EA00' : 'rgba(255,255,255,0.75)',
-                backgroundColor: isActive ? 'rgba(255,255,255,0.08)' : 'transparent',
-                borderLeft: isActive ? '3px solid #C1EA00' : '3px solid transparent',
-                marginLeft: isActive ? '0' : '0',
-              }}
+              className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all group relative border-l-4 ${isActive ? 'text-lime bg-white/10 border-lime' : 'text-white/75 bg-transparent border-transparent hover:bg-white/5 hover:text-white'}`}
             >
               <span className="text-base leading-none">{item.icon}</span>
               <span
                 className="transition-colors"
-                style={{ color: isActive ? '#ffffff' : 'rgba(255,255,255,0.75)' }}
               >
                 {item.label}
               </span>

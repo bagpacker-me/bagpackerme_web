@@ -44,14 +44,14 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 10 }} 
             animate={{ opacity: 1, y: 0 }} 
             transition={{ duration: 0.6 }}
-            className="flex items-center gap-3"
+            className="flex items-center gap-3 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full w-max border border-white/20"
           >
-            <span className="text-[11px] font-display font-bold tracking-[0.22em] text-[#0ED2E9]">✦ EXPERIENTIAL TRAVEL</span>
+            <span className="text-[12px] font-display font-bold tracking-[0.2em] text-cyan uppercase">✦ Experiential Travel</span>
           </motion.div>
 
           <h1 className="font-display font-bold text-[clamp(52px,8vw,96px)] text-white uppercase leading-[0.95] tracking-[0.04em]">
             <motion.div custom={0} variants={staggerVariants} initial="hidden" animate="visible">EXPERIENTIAL</motion.div>
-            <motion.div custom={1} variants={staggerVariants} initial="hidden" animate="visible">JOURNEYS</motion.div>
+            <motion.div custom={1} variants={staggerVariants} initial="hidden" animate="visible" className="text-lime">JOURNEYS</motion.div>
             <motion.div custom={2} variants={staggerVariants} initial="hidden" animate="visible">THROUGH INDIA</motion.div>
           </h1>
 
@@ -59,7 +59,7 @@ export default function HeroSection() {
             initial={{ opacity: 0 }} 
             animate={{ opacity: 1 }} 
             transition={{ delay: 0.4, duration: 0.8 }}
-            className="font-body font-normal text-base text-white/75 max-w-[480px] leading-relaxed"
+            className="font-body font-normal text-lg text-white/90 max-w-[480px] leading-relaxed drop-shadow-md"
           >
             We don&apos;t just plan trips. We create memories that last a lifetime — connecting adventurous souls with the heart of India.
           </motion.p>
@@ -71,7 +71,7 @@ export default function HeroSection() {
             className="flex flex-wrap items-center gap-4 pt-4"
           >
             <button className="btn-lime">Explore Trips &rarr;</button>
-            <button className="btn-ghost">Our Story</button>
+            <button className="btn-ghost backdrop-blur-md bg-white/5">Our Story</button>
           </motion.div>
         </div>
 
@@ -85,12 +85,12 @@ export default function HeroSection() {
             className="hidden md:flex gap-4"
           >
             {THUMBNAILS.map((thumb) => (
-              <div key={thumb.id} className="group flex flex-col gap-2 cursor-pointer">
-                <div className="w-[100px] h-[130px] border border-white/20 overflow-hidden relative transition-transform duration-500 hover:-translate-y-2">
+              <div key={thumb.id} className="group flex flex-col gap-3 cursor-pointer">
+                <div className="w-[100px] h-[130px] rounded-3xl border-2 border-white/30 overflow-hidden relative shadow-lg transition-all duration-500 hover:-translate-y-2 hover:shadow-cyan/50 hover:border-cyan">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={thumb.image} alt={thumb.title} className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-110" />
                 </div>
-                <span className="font-display text-[10px] text-white tracking-[0.18em] uppercase text-center">{thumb.title}</span>
+                <span className="font-display text-[11px] text-white tracking-[0.15em] font-bold uppercase text-center bg-void/50 backdrop-blur-sm py-1 rounded-full">{thumb.title}</span>
               </div>
             ))}
           </motion.div>

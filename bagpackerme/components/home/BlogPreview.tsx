@@ -60,10 +60,10 @@ export default function BlogPreview() {
             className="max-w-2xl"
           >
             <div className="flex items-center gap-2 mb-4">
-              <span className="text-brand-cyan text-sm">✦</span>
-              <span className="text-brand-cyan font-bold tracking-[0.2em] text-sm uppercase">Stories From The Road</span>
+              <span className="text-cyan text-sm">✦</span>
+              <span className="text-cyan font-bold tracking-[0.2em] text-sm uppercase">Stories From The Road</span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-heading font-bold text-brand-void leading-tight mb-4">
+            <h2 className="text-4xl md:text-5xl font-heading font-bold text-void leading-tight mb-4">
               Travel Tales Worth Reading
             </h2>
             <p className="text-gray-500 font-sans text-lg">
@@ -77,7 +77,7 @@ export default function BlogPreview() {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <Link href="/blog" className="text-brand-teal font-bold hover:text-brand-void transition-colors inline-flex items-center">
+            <Link href="/blog" className="text-teal font-bold hover:text-void transition-colors inline-flex items-center">
               Read All Stories <span className="ml-2">→</span>
             </Link>
           </motion.div>
@@ -109,8 +109,8 @@ export default function BlogPreview() {
             {blogs.map(blog => (
               <motion.div key={blog.id} variants={itemVariants} className="group flex flex-col h-full cursor-pointer">
                 {/* Image */}
-                <Link href={`/blog/${blog.slug}`} className="block relative aspect-video overflow-hidden rounded-t-none mb-6">
-                  <div className="absolute top-4 left-4 z-10 bg-brand-cyan text-[#221E2A] text-xs font-bold uppercase tracking-wider px-3 py-1">
+                <Link href={`/blog/${blog.slug}`} className="block relative aspect-video overflow-hidden rounded-[24px] mb-6">
+                  <div className="absolute top-4 left-4 z-10 bg-cyan text-void text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full">
                     {blog.category}
                   </div>
                   <img 
@@ -128,7 +128,7 @@ export default function BlogPreview() {
                   </div>
                   
                   <Link href={`/blog/${blog.slug}`} className="block mb-3">
-                    <h3 className="font-heading font-bold text-[22px] leading-tight text-brand-void group-hover:text-brand-teal transition-colors line-clamp-2">
+                    <h3 className="font-heading font-bold text-[22px] leading-tight text-void group-hover:text-teal transition-colors line-clamp-2">
                       {blog.title}
                     </h3>
                   </Link>
@@ -138,7 +138,7 @@ export default function BlogPreview() {
                   </p>
                   
                   <div className="mt-auto pt-5 border-t border-gray-100">
-                    <Link href={`/blog/${blog.slug}`} className="text-brand-teal text-sm font-bold uppercase tracking-wider group-hover:text-brand-void transition-colors inline-flex items-center">
+                    <Link href={`/blog/${blog.slug}`} className="text-teal text-sm font-bold uppercase tracking-wider group-hover:text-void transition-colors inline-flex items-center">
                       Read More <span className="ml-2">→</span>
                     </Link>
                   </div>

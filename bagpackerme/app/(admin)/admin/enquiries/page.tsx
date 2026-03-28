@@ -84,7 +84,7 @@ function EnquirySlideOver({
             <select
               value={enquiry.status}
               onChange={(e) => onStatusChange(enquiry.id, e.target.value as Enquiry['status'])}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-[#285056]/25 focus:border-[#285056]"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-teal/25 focus:border-teal"
             >
               <option value="new">New</option>
               <option value="in_progress">In Progress</option>
@@ -251,7 +251,7 @@ export default function AdminEnquiriesPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900" style={{ fontFamily: 'DM Sans, sans-serif' }}>
+          <h1 className="text-2xl font-bold text-void font-heading">
             Enquiries
           </h1>
           <p className="text-sm text-gray-400 mt-0.5">{enquiries.length} total enquiries</p>
@@ -277,13 +277,13 @@ export default function AdminEnquiriesPage() {
             onClick={() => setFilter(tab.id)}
             className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium transition-colors border-b-2 ${
               filter === tab.id
-                ? 'border-[#285056] text-[#285056]'
+                ? 'border-teal text-teal'
                 : 'border-transparent text-gray-400 hover:text-gray-700'
             }`}
           >
             {tab.label}
             <span className={`text-xs px-1.5 py-0.5 rounded-full font-semibold ${
-              filter === tab.id ? 'bg-[#285056]/10 text-[#285056]' : 'bg-gray-100 text-gray-400'
+              filter === tab.id ? 'bg-teal/10 text-teal' : 'bg-gray-100 text-gray-400'
             }`}>
               {counts[tab.id]}
             </span>

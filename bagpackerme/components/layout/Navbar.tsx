@@ -185,7 +185,7 @@ export function Navbar() {
                         <Link
                           key={option.name}
                           href={option.href}
-                          className="text-white text-3xl font-display font-medium hover:text-lime transition-colors"
+                          className="text-white text-3xl font-heading font-medium hover:text-lime transition-colors"
                           onClick={() => setIsMobileMenuOpen(false)}
                         >
                           {option.name}
@@ -195,7 +195,7 @@ export function Navbar() {
                   ) : (
                     <Link
                       href={link.href}
-                      className="text-white text-4xl font-display font-bold hover:text-lime transition-colors"
+                      className="text-white text-4xl font-heading font-bold hover:text-lime transition-colors"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       {link.name}

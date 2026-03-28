@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 export default function SignatureRetreats() {
   return (
-    <section className="bg-brand-ice py-[var(--space-section)]">
+    <section className="bg-ice py-[var(--space-section)]">
       <div className="container-custom">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
@@ -16,16 +16,16 @@ export default function SignatureRetreats() {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <span className="font-serif text-brand-teal italic text-2xl md:text-3xl block mb-4">
+            <span className="font-serif text-teal italic text-2xl md:text-3xl block mb-4">
               Signature Retreats
             </span>
-            <h2 className="text-4xl md:text-5xl lg:text-[56px] font-heading font-bold text-brand-void leading-tight mb-6">
+            <h2 className="text-4xl md:text-5xl lg:text-[56px] font-heading font-bold text-void leading-tight mb-6">
               Corporate Retreats That Actually Work
             </h2>
-            <p className="text-brand-void/70 font-sans text-lg mb-8">
+            <p className="text-void/70 font-sans text-lg mb-8">
               Whether your team has 4 hours or 48 — Recharge & Realign delivers real connection, renewed energy, and clarity of purpose.
             </p>
-            <div className="inline-block bg-brand-lime text-brand-void font-sans font-medium text-sm px-6 py-2 rounded-full tracking-wide">
+            <div className="inline-block bg-lime text-void font-sans font-medium text-sm px-6 py-2 rounded-full tracking-wide">
               step out, breathe deep, and come back stronger
             </div>
           </motion.div>
@@ -39,10 +39,10 @@ export default function SignatureRetreats() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="bg-white rounded-none shadow-sm hover:shadow-xl transition-shadow duration-300 p-8 md:p-12 relative flex flex-col h-full border border-gray-100"
+            className="bg-white rounded-[32px] shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 p-8 md:p-12 relative flex flex-col h-full border border-ice"
           >
             {/* Number Badge */}
-            <div className="absolute -top-6 -left-6 md:-top-8 md:-left-8 w-16 h-16 md:w-20 md:h-20 bg-blue-500 rounded-full flex items-center justify-center text-white font-heading font-bold text-3xl md:text-4xl shadow-lg border-[4px] border-white z-10">
+            <div className="absolute -top-6 -left-6 md:-top-8 md:-left-8 w-16 h-16 md:w-20 md:h-20 bg-cyan rounded-full flex items-center justify-center text-void font-heading font-bold text-3xl md:text-4xl shadow-lg border-[4px] border-white z-10">
               1
             </div>
 
@@ -51,36 +51,36 @@ export default function SignatureRetreats() {
                 The Express Edition
               </span>
             </div>
-            <h3 className="font-heading font-bold text-2xl text-brand-void mb-4">
+            <h3 className="font-heading font-bold text-2xl text-void mb-4">
               HALF-DAY WORKSHOP
             </h3>
-            <div className="text-3xl font-heading font-bold text-brand-teal mb-8">
+            <div className="text-3xl font-heading font-bold text-teal mb-8">
               ₹4,000 <span className="text-base text-gray-500 font-sans font-normal">/ person</span>
             </div>
 
             <div className="flex-grow">
-              <h4 className="font-bold text-sm text-brand-void mb-3 uppercase tracking-wider">Includes:</h4>
-              <ul className="space-y-3 font-sans text-brand-void/70 text-sm">
+              <h4 className="font-bold text-sm text-void mb-3 uppercase tracking-wider">Includes:</h4>
+              <ul className="space-y-3 font-sans text-void/70 text-sm">
                 <li className="flex items-start">
-                  <span className="text-brand-teal mr-2">✓</span> Lunch
+                  <span className="text-teal mr-2">✓</span> Lunch
                 </li>
                 <li className="flex items-start">
-                  <span className="text-brand-teal mr-2">✓</span> 1 curated group activity
+                  <span className="text-teal mr-2">✓</span> 1 curated group activity
                 </li>
                 <li className="flex items-start">
-                  <span className="text-brand-teal mr-2">✓</span> Welcome refreshments
+                  <span className="text-teal mr-2">✓</span> Welcome refreshments
                 </li>
                 <li className="flex items-start">
-                  <span className="text-brand-teal mr-2">✓</span> Retreat token
+                  <span className="text-teal mr-2">✓</span> Retreat token
                 </li>
                 <li className="flex items-start">
-                  <span className="text-brand-teal mr-2">✓</span> Transfers
+                  <span className="text-teal mr-2">✓</span> Transfers
                 </li>
               </ul>
             </div>
 
             <div className="mt-8 pt-6 border-t border-gray-100">
-              <Link href="/packages/half-day-workshop" className="text-brand-teal font-bold hover:text-brand-void transition-colors inline-flex items-center">
+              <Link href="/packages/half-day-workshop" className="text-teal font-bold hover:text-void transition-colors inline-flex items-center">
                 Learn More <span className="ml-2">→</span>
               </Link>
             </div>
@@ -92,10 +92,10 @@ export default function SignatureRetreats() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="bg-white rounded-none shadow-sm hover:shadow-xl transition-shadow duration-300 p-8 md:p-12 relative flex flex-col h-full border border-gray-100"
+            className="bg-white rounded-[32px] shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 p-8 md:p-12 relative flex flex-col h-full border border-ice"
           >
             {/* Number Badge */}
-            <div className="absolute -top-6 -left-6 md:-top-8 md:-left-8 w-16 h-16 md:w-20 md:h-20 bg-amber-400 rounded-full flex items-center justify-center text-white font-heading font-bold text-3xl md:text-4xl shadow-lg border-[4px] border-white z-10">
+            <div className="absolute -top-6 -left-6 md:-top-8 md:-left-8 w-16 h-16 md:w-20 md:h-20 bg-lime rounded-full flex items-center justify-center text-void font-heading font-bold text-3xl md:text-4xl shadow-lg border-[4px] border-white z-10">
               2
             </div>
 
@@ -104,33 +104,33 @@ export default function SignatureRetreats() {
                 The Deep Dive
               </span>
             </div>
-            <h3 className="font-heading font-bold text-2xl text-brand-void mb-4">
+            <h3 className="font-heading font-bold text-2xl text-void mb-4">
               2-DAY RETREAT
             </h3>
-            <div className="text-3xl font-heading font-bold text-brand-teal mb-8">
+            <div className="text-3xl font-heading font-bold text-teal mb-8">
               ₹7,500 <span className="text-base text-gray-500 font-sans font-normal">/ person</span>
             </div>
 
             <div className="flex-grow">
-              <h4 className="font-bold text-sm text-brand-void mb-3 uppercase tracking-wider">Includes:</h4>
-              <ul className="space-y-3 font-sans text-brand-void/70 text-sm">
+              <h4 className="font-bold text-sm text-void mb-3 uppercase tracking-wider">Includes:</h4>
+              <ul className="space-y-3 font-sans text-void/70 text-sm">
                 <li className="flex items-start">
-                  <span className="text-brand-teal mr-2">✓</span> Boutique stay
+                  <span className="text-teal mr-2">✓</span> Boutique stay
                 </li>
                 <li className="flex items-start">
-                  <span className="text-brand-teal mr-2">✓</span> All meals included
+                  <span className="text-teal mr-2">✓</span> All meals included
                 </li>
                 <li className="flex items-start">
-                  <span className="text-brand-teal mr-2">✓</span> 1 curated group activity
+                  <span className="text-teal mr-2">✓</span> 1 curated group activity
                 </li>
                 <li className="flex items-start">
-                  <span className="text-brand-teal mr-2">✓</span> Retreat kit
+                  <span className="text-teal mr-2">✓</span> Retreat kit
                 </li>
               </ul>
             </div>
 
             <div className="mt-8 pt-6 border-t border-gray-100">
-              <Link href="/packages/2-day-retreat" className="text-brand-teal font-bold hover:text-brand-void transition-colors inline-flex items-center">
+              <Link href="/packages/2-day-retreat" className="text-teal font-bold hover:text-void transition-colors inline-flex items-center">
                 Learn More <span className="ml-2">→</span>
               </Link>
             </div>

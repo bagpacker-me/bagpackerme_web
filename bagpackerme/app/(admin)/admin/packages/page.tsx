@@ -111,8 +111,7 @@ export default function AdminPackagesPage() {
       <div className="flex items-center justify-between mb-7">
         <div>
           <h1
-            className="text-2xl font-bold text-gray-900"
-            style={{ fontFamily: 'DM Sans, sans-serif' }}
+            className="text-2xl font-bold text-void font-heading"
           >
             Packages
           </h1>
@@ -122,8 +121,7 @@ export default function AdminPackagesPage() {
         </div>
         <Link
           href="/admin/packages/new"
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all hover:opacity-90"
-          style={{ background: '#C1EA00', color: '#1a2e1e' }}
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all hover:opacity-90 bg-lime text-void"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -178,7 +176,7 @@ export default function AdminPackagesPage() {
                       <p className="font-medium text-gray-500 mb-1">No packages yet.</p>
                       <Link
                         href="/admin/packages/new"
-                        className="text-sm text-[#285056] hover:underline font-medium"
+                        className="text-sm text-teal hover:underline font-medium"
                       >
                         Create your first one →
                       </Link>
@@ -248,7 +246,7 @@ export default function AdminPackagesPage() {
                         <button
                           type="button"
                           onClick={() => router.push(`/admin/packages/${pkg.id}`)}
-                          className="p-2 text-gray-400 hover:text-[#285056] hover:bg-[#285056]/10 rounded-lg transition-colors"
+                          className="p-2 text-gray-400 hover:text-teal hover:bg-teal/10 rounded-lg transition-colors"
                           title="Edit"
                         >
                           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
