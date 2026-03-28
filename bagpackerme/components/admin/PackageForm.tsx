@@ -599,10 +599,16 @@ function TabInclusionsGallery({
 
   const removeGalleryImage = async (url: string) => {
     try {
-      const fileRef = ref(storage, url);
-      await deleteObject(fileRef);
+      // Extract the storage path from the download URL
+      // Format: https://firebasestorage.googleapis.com/v0/b/{bucket}/o/{encoded-path}?alt=media&token=...
+      const pathMatch = url.match(/\/o\/(.+?)\?/);
+      if (pathMatch) {
+        const storagePath = decodeURIComponent(pathMatch[1]);
+        const fileRef = ref(storage, storagePath);
+        await deleteObject(fileRef);
+      }
     } catch {
-      // ignore if already deleted
+      // ignore if already deleted or path not parseable
     }
     setForm((f) => ({ ...f, galleryUrls: f.galleryUrls.filter((u) => u !== url) }));
   };

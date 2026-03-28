@@ -1,0 +1,35 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function: check if user is authenticated admin
+    function isAdmin() {
+      return request.auth != null;
+    }
+
+    // Packages: public can read published, only admin can write
+    match /packages/{docId} {
+      allow read: if resource.data.status == 'published' || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // Blogs: public can read published, only admin can write
+    match /blogs/{docId} {
+      allow read: if resource.data.status == 'published' || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // Enquiries: anyone can create (contact form), only admin can read/update/delete
+    match /enquiries/{docId} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // Subscribers: anyone can subscribe, only admin can read/delete
+    match /subscribers/{docId} {
+      allow create: if true;
+      allow read, delete: if isAdmin();
+    }
+  }
+}

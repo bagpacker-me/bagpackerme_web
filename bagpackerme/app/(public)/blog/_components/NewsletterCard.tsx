@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { Mail } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 export default function NewsletterCard() {
   const [email, setEmail] = useState('');
@@ -11,12 +12,24 @@ export default function NewsletterCard() {
     e.preventDefault();
     if (!email) return;
     setIsSubscribing(true);
-    // Simulate API call
-    setTimeout(() => {
-      alert("Thanks for subscribing!");
-      setEmail("");
+    try {
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      if (res.ok) {
+        toast.success("Thanks for subscribing!");
+        setEmail('');
+      } else {
+        const data = await res.json();
+        toast.error(data.error || "Failed to subscribe. Please try again.");
+      }
+    } catch {
+      toast.error("Something went wrong. Please try again later.");
+    } finally {
       setIsSubscribing(false);
-    }, 1000);
+    }
   };
 
   return (
