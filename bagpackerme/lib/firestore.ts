@@ -9,7 +9,7 @@ export const getPublishedPackages = async () => getDocs(query(packagesCol, where
 export const getFeaturedPackages = async (count: number) => getDocs(query(packagesCol, where('status', '==', 'published'), limit(count)));
 export const getPackage = async (id: string) => getDoc(doc(db, 'packages', id));
 export const getPackageBySlug = async (slug: string) => {
-  const q = query(packagesCol, where('slug', '==', slug), limit(1));
+  const q = query(packagesCol, where('slug', '==', slug), where('status', '==', 'published'), limit(1));
   const snapshot = await getDocs(q);
   return snapshot.empty ? null : { id: snapshot.docs[0].id, ...snapshot.docs[0].data() } as Package;
 };
@@ -33,7 +33,7 @@ export const getPublishedBlogs = async () => getDocs(query(blogsCol, where('stat
 export const getRecentPublishedBlogs = async (limitCount: number) => getDocs(query(blogsCol, where('status', '==', 'published'), orderBy('publishDate', 'desc'), limit(limitCount)));
 export const getBlog = async (id: string) => getDoc(doc(db, 'blogs', id));
 export const getBlogBySlug = async (slug: string) => {
-  const q = query(blogsCol, where('slug', '==', slug), limit(1));
+  const q = query(blogsCol, where('slug', '==', slug), where('status', '==', 'published'), limit(1));
   const snapshot = await getDocs(q);
   return snapshot.empty ? null : { id: snapshot.docs[0].id, ...snapshot.docs[0].data() } as BlogPost;
 };
