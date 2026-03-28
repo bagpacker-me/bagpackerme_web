@@ -14,19 +14,14 @@ export default function NewsletterSection() {
 
     try {
       setLoading(true);
-      const res = await fetch('/api/subscribe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+      const { createSubscriber } = await import('@/lib/firestore');
+      await createSubscriber({
+        email,
+        createdAt: new Date().toISOString()
       });
 
-      if (res.ok) {
-        toast.success("Thanks for subscribing! We'll be in touch.");
-        setEmail('');
-      } else {
-        const data = await res.json();
-        toast.error(data.error || "Failed to subscribe. Please try again.");
-      }
+      toast.success("Thanks for subscribing! We'll be in touch.");
+      setEmail('');
     } catch (error) {
       console.error(error);
       toast.error("Something went wrong. Please try again later.");

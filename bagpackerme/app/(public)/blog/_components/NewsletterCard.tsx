@@ -13,19 +13,15 @@ export default function NewsletterCard() {
     if (!email) return;
     setIsSubscribing(true);
     try {
-      const res = await fetch('/api/subscribe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+      const { createSubscriber } = await import('@/lib/firestore');
+      await createSubscriber({
+        email,
+        createdAt: new Date().toISOString()
       });
-      if (res.ok) {
-        toast.success("Thanks for subscribing!");
-        setEmail('');
-      } else {
-        const data = await res.json();
-        toast.error(data.error || "Failed to subscribe. Please try again.");
-      }
-    } catch {
+      toast.success("Thanks for subscribing!");
+      setEmail('');
+    } catch (error) {
+      console.error(error);
       toast.error("Something went wrong. Please try again later.");
     } finally {
       setIsSubscribing(false);

@@ -79,101 +79,6 @@ export default function PackagesPage() {
     return result;
   }, [packages, activeCategory, activeDuration]);
 
-  const handleSeed = async () => {
-    try {
-      const { collection, addDoc } = await import('firebase/firestore');
-      const { db } = await import('@/lib/firebase');
-      const slugify = (await import('slugify')).default;
-      
-      // Using Mount Bromo specific content
-      const seedData = [
-        {
-          title: "Bromo Sunrise Signature",
-          category: "Adventure",
-          duration: "2 days",
-          destinations: ["Cemoro Lawang", "Mount Penanjakan", "Bromo Crater"],
-          tagline: "Experience the golden sunrise over the majestic Bromo caldera",
-          priceInr: 15000, 
-          heroImageUrl: "https://images.unsplash.com/photo-1542898952-01994326fbae?w=1600&auto=format&fit=crop&q=80",
-        },
-        {
-          title: "Bromo & Madakaripura",
-          category: "Adventure",
-          duration: "3 days",
-          destinations: ["Mount Bromo", "Madakaripura Waterfall"],
-          tagline: "Volcanic wonders and East Java's tallest waterfall",
-          priceInr: 22000,
-          heroImageUrl: "https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?w=1600&auto=format&fit=crop&q=80",
-        },
-        {
-          title: "Ijen Blue Fire & Bromo",
-          category: "Adventure",
-          duration: "4 days",
-          destinations: ["Mount Bromo", "Ijen Crater", "Banyuwangi"],
-          tagline: "The ultimate East Java volcanic expedition",
-          priceInr: 35000,
-          heroImageUrl: "https://images.unsplash.com/photo-1511525946853-9bbcd8ce4bda?w=1600&auto=format&fit=crop&q=80",
-        },
-        {
-          title: "Bromo Photography Tour",
-          category: "Spiritual",
-          duration: "3 days",
-          destinations: ["Mount Penanjakan", "Sea of Sand", "Savannah"],
-          tagline: "Capture the essence of Bromo with expert photography guides",
-          priceInr: 28000,
-          heroImageUrl: "https://images.unsplash.com/photo-1518002054494-3a6f94352e9d?w=1600&auto=format&fit=crop&q=80",
-        },
-        {
-          title: "Java Heritage & Bromo",
-          category: "Heritage",
-          duration: "5 days",
-          destinations: ["Yogyakarta", "Prambanan", "Mount Bromo"],
-          tagline: "Ancient temples followed by volcanic majesty",
-          priceInr: 45000,
-          heroImageUrl: "https://images.unsplash.com/photo-1596404764438-c8004fcf1cbb?w=1600&auto=format&fit=crop&q=80",
-        }
-      ];
-
-      const packagesCol = collection(db, 'packages');
-      let count = 0;
-      for (const pkg of seedData) {
-        const docData = {
-          ...pkg,
-          slug: slugify(pkg.title, { lower: true, strict: true }),
-          galleryUrls: [pkg.heroImageUrl],
-          groupSize: '6-10 pax',
-          overviewHtml: `<p>${pkg.tagline}</p>`,
-          itinerary: [
-            {
-              day: 1,
-              location: pkg.destinations[0],
-              description: "Arrival and welcome.",
-            }
-          ],
-          inclusions: {
-            accommodation: true,
-            meals: true,
-            transfers: true,
-            guides: true,
-            flights: false,
-            activities: true,
-          },
-          exclusions: ["Personal expenses", "Travel insurance"],
-          status: 'published',
-          createdAt: new Date().toISOString(),
-        };
-        
-        await addDoc(packagesCol, docData);
-        count++;
-      }
-      alert(`Seeded ${count} packages! Refreshing...`);
-      window.location.reload();
-    } catch (err: any) {
-      console.error(err);
-      alert("Error seeding: " + err.message + "\\nMake sure you are logged in to the admin dashboard first!");
-    }
-  };
-
   return (
     <main className="flex flex-col min-h-screen bg-white">
       {/* Hero Section */}
@@ -191,10 +96,6 @@ export default function PackagesPage() {
 
         {/* Hero Content */}
         <div className="relative z-30 text-center flex flex-col items-center px-[24px] w-full max-w-[800px]">
-          {/* Temporary Seed Button for testing */}
-          {packages.length === 0 && !loading && (
-             <button onClick={handleSeed} className="btn-teal absolute -top-16 right-4 sm:right-6">Auto-Seed Database</button>
-          )}
 
           <div className="section-label mb-[24px]">
             OUR JOURNEYS

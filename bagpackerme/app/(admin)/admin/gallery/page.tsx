@@ -155,6 +155,7 @@ export default function GalleryPage() {
           {images.map(image => (
             <div key={image.id} className="group relative bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">
               <div className="aspect-square relative flex items-center justify-center bg-gray-100 overflow-hidden">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img 
                   src={image.url} 
                   alt={image.altText} 
