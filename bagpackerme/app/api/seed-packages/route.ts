@@ -3,6 +3,8 @@ import { db } from '@/lib/firebase';
 import { collection, addDoc } from 'firebase/firestore';
 import slugify from 'slugify';
 
+export const dynamic = 'force-dynamic';
+
 const packages = [
   {
     title: "The Culinary Trail",
