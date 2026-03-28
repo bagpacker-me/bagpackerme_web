@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { motion, AnimatePresence, useInView, useReducedMotion } from 'framer-motion';
+import React, { useState, useEffect, useMemo } from 'react';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { getPublishedPackages } from '@/lib/firestore';
 import { Package } from '@/types';
 import PackageCard, { PackageCardSkeleton } from '@/components/home/PackageCard';
@@ -29,8 +29,6 @@ export default function PackagesPage() {
   const [activeCategory, setActiveCategory] = useState('All');
   const [activeDuration, setActiveDuration] = useState('Any');
   const shouldReduceMotion = useReducedMotion();
-  const gridRef = useRef<HTMLDivElement>(null);
-  const gridInView = useInView(gridRef, { once: true, amount: 0.05 });
 
   useEffect(() => {
     async function fetchPackages() {
@@ -180,12 +178,13 @@ export default function PackagesPage() {
               {filteredPackages.length > 0 ? (
                 /* Spec #4: stagger 0.08 with useInView */
                 <motion.div
-                  ref={gridRef}
+                  key="package-grid"
                   layout
                   className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[24px]"
                   variants={shouldReduceMotion ? undefined : CARD_GRID_VARIANTS}
                   initial={shouldReduceMotion ? undefined : 'hidden'}
-                  animate={gridInView ? 'visible' : 'hidden'}
+                  whileInView={shouldReduceMotion ? undefined : 'visible'}
+                  viewport={{ once: true, amount: 0.05 }}
                 >
                   {filteredPackages.map(pkg => (
                     <motion.div

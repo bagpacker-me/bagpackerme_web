@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import AdminSidebar from '@/components/admin/AdminSidebar';
 import AdminTopBar from '@/components/admin/AdminTopBar';
+import { ThemeProvider } from '@/app/providers';
 
 const PUBLIC_PATHS = ['/admin/login'];
 
@@ -44,16 +45,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   if (!user) return null;
 
   return (
-    <div className="flex min-h-screen max-w-[100vw] overflow-x-hidden">
-      {/* Fixed Sidebar */}
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+      <div className="flex min-h-screen max-w-[100vw] overflow-x-hidden">
+        {/* Fixed Sidebar */}
       <AdminSidebar isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
       {/* Main Content */}
-      <main className="flex-1 lg:ml-[240px] min-h-screen bg-[#F7F9FA] relative flex flex-col w-full max-w-full">
+      <main className="flex-1 lg:ml-[240px] min-h-screen bg-[#F7F9FA] dark:bg-[#1A1625] relative flex flex-col w-full max-w-full">
         <AdminTopBar onMenuClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} />
         <div className="flex-1 p-[16px] lg:p-[32px] overflow-x-hidden">
           {children}
         </div>
       </main>
-    </div>
+      </div>
+    </ThemeProvider>
   );
 }

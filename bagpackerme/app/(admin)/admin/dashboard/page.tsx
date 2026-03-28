@@ -50,7 +50,7 @@ function EnquiryPanel({ enquiry, onClose }: { enquiry: Enquiry | null; onClose: 
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/20 backdrop-blur-sm z-50"
+            className="fixed inset-0 bg-black/20 dark:bg-black/40 backdrop-blur-sm z-50"
           />
           {/* Panel */}
           <motion.div
@@ -59,16 +59,16 @@ function EnquiryPanel({ enquiry, onClose }: { enquiry: Enquiry | null; onClose: 
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-            className="fixed top-0 right-0 h-full w-[420px] bg-[#FFFFFF] shadow-2xl z-50 flex flex-col border-l border-[rgba(34,30,42,0.06)]"
+            className="fixed top-0 right-0 h-full w-[420px] bg-[#FFFFFF] dark:bg-[#1A1625] shadow-2xl z-50 flex flex-col border-l border-[rgba(34,30,42,0.06)] dark:border-[rgba(255,255,255,0.06)]"
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-[24px] py-[20px] border-b border-[rgba(34,30,42,0.08)] bg-[#F7F9FA]">
-              <h2 className="font-display text-[16px] font-bold text-[#221E2A] uppercase tracking-[0.1em]">
+            <div className="flex items-center justify-between px-[24px] py-[20px] border-b border-[rgba(34,30,42,0.08)] dark:border-[rgba(255,255,255,0.08)] bg-[#F7F9FA] dark:bg-[rgba(255,255,255,0.02)]">
+              <h2 className="font-display text-[16px] font-bold text-[#221E2A] dark:text-white uppercase tracking-[0.1em]">
                 Enquiry Detail
               </h2>
               <button
                 onClick={onClose}
-                className="p-1 text-[#718096] hover:text-[#285056] transition-colors focus:outline-none focus:ring-2 focus:ring-[#C1EA00] focus:ring-offset-2"
+                className="p-1 text-[#718096] dark:text-[rgba(255,255,255,0.6)] hover:text-[#285056] dark:hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-[#C1EA00] focus:ring-offset-2"
               >
                 <svg className="w-[16px] h-[16px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -97,15 +97,15 @@ function EnquiryPanel({ enquiry, onClose }: { enquiry: Enquiry | null; onClose: 
 
               {/* Message */}
               <div>
-                <p className="font-body text-[11px] font-semibold text-[#718096] uppercase tracking-[0.06em] mb-[8px]">Message</p>
-                <div className="bg-[#F7F9FA] border border-[rgba(34,30,42,0.06)] p-[16px] font-body text-[14px] text-[#221E2A] leading-relaxed whitespace-pre-wrap">
+                <p className="font-body text-[11px] font-semibold text-[#718096] dark:text-[rgba(255,255,255,0.5)] uppercase tracking-[0.06em] mb-[8px]">Message</p>
+                <div className="bg-[#F7F9FA] dark:bg-[rgba(255,255,255,0.02)] border border-[rgba(34,30,42,0.06)] dark:border-[rgba(255,255,255,0.06)] p-[16px] font-body text-[14px] text-[#221E2A] dark:text-white leading-relaxed whitespace-pre-wrap">
                   {enquiry.message}
                 </div>
               </div>
             </div>
 
             {/* Footer actions */}
-            <div className="px-[24px] py-[16px] border-t border-[rgba(34,30,42,0.08)] flex gap-[12px] bg-[#F7F9FA]">
+            <div className="px-[24px] py-[16px] border-t border-[rgba(34,30,42,0.08)] dark:border-[rgba(255,255,255,0.08)] flex gap-[12px] bg-[#F7F9FA] dark:bg-[rgba(255,255,255,0.02)]">
               <a
                 href={`mailto:${enquiry.email}`}
                 className="flex-1 flex items-center justify-center h-[44px] font-body text-[14px] font-bold tracking-[0.05em] uppercase bg-[#C1EA00] text-[#221E2A] transition-colors hover:bg-[#A3C700] focus:ring-2 focus:ring-[#C1EA00] focus:ring-offset-2"
@@ -117,7 +117,7 @@ function EnquiryPanel({ enquiry, onClose }: { enquiry: Enquiry | null; onClose: 
               </a>
               <Link
                 href="/admin/enquiries"
-                className="flex items-center justify-center h-[44px] px-[20px] font-body text-[14px] font-bold tracking-[0.05em] uppercase border border-[rgba(34,30,42,0.1)] text-[#285056] hover:bg-[#FFFFFF] transition-colors focus:ring-2 focus:ring-[#C1EA00] focus:ring-offset-2"
+                className="flex items-center justify-center h-[44px] px-[20px] font-body text-[14px] font-bold tracking-[0.05em] uppercase border border-[rgba(34,30,42,0.1)] dark:border-[rgba(255,255,255,0.2)] text-[#285056] dark:text-[rgba(255,255,255,0.8)] hover:bg-[#FFFFFF] dark:hover:bg-[rgba(255,255,255,0.05)] transition-colors focus:ring-2 focus:ring-[#C1EA00] focus:ring-offset-2"
               >
                 View All
               </Link>
@@ -131,9 +131,9 @@ function EnquiryPanel({ enquiry, onClose }: { enquiry: Enquiry | null; onClose: 
 
 function Row({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex justify-between items-start gap-[16px] border-b border-[rgba(34,30,42,0.04)] pb-[8px]">
-      <span className="font-body text-[12px] font-medium text-[#718096] pt-[2px]">{label}</span>
-      <span className="font-body text-[14px] font-medium text-[#221E2A] text-right">{value}</span>
+    <div className="flex justify-between items-start gap-[16px] border-b border-[rgba(34,30,42,0.04)] dark:border-[rgba(255,255,255,0.04)] pb-[8px]">
+      <span className="font-body text-[12px] font-medium text-[#718096] dark:text-[rgba(255,255,255,0.6)] pt-[2px]">{label}</span>
+      <span className="font-body text-[14px] font-medium text-[#221E2A] dark:text-white text-right">{value}</span>
     </div>
   );
 }
@@ -141,21 +141,21 @@ function Row({ label, value }: { label: string; value: string }) {
 // ─── stat card ───────────────────────────────────────────────────────────────
 function StatCard({ label, value, icon, loading }: StatsCard) {
   return (
-    <div className="relative bg-[#FFFFFF] border border-[#E9F5F7] rounded-[4px] p-[24px] shadow-sm flex flex-col justify-between items-start transition-all hover:shadow-md hover:-translate-y-[2px] overflow-hidden group">
+    <div className="relative bg-[#FFFFFF] dark:bg-[#1A1625] border border-[#E9F5F7] dark:border-[rgba(255,255,255,0.06)] rounded-[4px] p-[24px] shadow-sm flex flex-col justify-between items-start transition-all hover:shadow-md hover:-translate-y-[2px] overflow-hidden group">
       {/* Left accent bar */}
       <div className="absolute top-0 left-0 w-[4px] h-full bg-[#285056]" />
       <div className="flex w-full justify-between items-start">
         <div className="flex flex-col pl-[8px]">
           {loading ? (
-            <div className="h-[43px] w-[64px] bg-[#F7F9FA] rounded-sm animate-pulse" />
+            <div className="h-[43px] w-[64px] bg-[#F7F9FA] dark:bg-[rgba(255,255,255,0.05)] rounded-sm animate-pulse" />
           ) : (
-            <p className="font-display text-[36px] font-bold text-[#285056] leading-none mb-1">
+            <p className="font-display text-[36px] font-bold text-[#285056] dark:text-white leading-none mb-1">
               {value}
             </p>
           )}
-          <p className="font-body text-[13px] text-[#718096] mt-[4px]">{label}</p>
+          <p className="font-body text-[13px] text-[#718096] dark:text-[rgba(255,255,255,0.6)] mt-[4px]">{label}</p>
         </div>
-        <div className="w-[40px] h-[40px] bg-[rgba(40,80,86,0.08)] rounded-[8px] flex items-center justify-center shrink-0">
+        <div className="w-[40px] h-[40px] bg-[rgba(40,80,86,0.08)] dark:bg-[rgba(255,255,255,0.08)] rounded-[8px] flex items-center justify-center shrink-0">
           <span className="text-[20px] leading-none select-none">{icon}</span>
         </div>
       </div>
@@ -251,23 +251,23 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Quick Actions */}
-        <div className="bg-[#FFFFFF] border border-[rgba(34,30,42,0.06)] p-[24px]">
-          <h2 className="font-display text-[14px] font-semibold text-[#221E2A] mb-[16px]">Quick Actions</h2>
+        <div className="bg-[#FFFFFF] dark:bg-[#1A1625] border border-[rgba(34,30,42,0.06)] dark:border-[rgba(255,255,255,0.06)] p-[24px]">
+          <h2 className="font-display text-[14px] font-semibold text-[#221E2A] dark:text-white mb-[16px]">Quick Actions</h2>
           <div className="flex flex-wrap gap-3">
             <Link
               href="/admin/packages/new"
-              className="flex items-center h-[44px] px-[16px] font-body text-[14px] font-normal border border-[rgba(34,30,42,0.08)] rounded-[2px] transition-colors hover:bg-[#F7F9FA]"
+              className="flex items-center h-[44px] px-[16px] font-body text-[14px] font-normal border border-[rgba(34,30,42,0.08)] dark:border-[rgba(255,255,255,0.1)] rounded-[2px] transition-colors hover:bg-[#F7F9FA] dark:hover:bg-[rgba(255,255,255,0.05)] text-[#221E2A] dark:text-white"
             >
-              <svg className="w-[16px] h-[16px] mr-[10px] text-[#285056]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg className="w-[16px] h-[16px] mr-[10px] text-[#285056] dark:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
               </svg>
               New Package
             </Link>
             <Link
               href="/admin/blog/new"
-              className="flex items-center h-[44px] px-[16px] font-body text-[14px] font-normal border border-[rgba(34,30,42,0.08)] rounded-[2px] transition-colors hover:bg-[#F7F9FA]"
+              className="flex items-center h-[44px] px-[16px] font-body text-[14px] font-normal border border-[rgba(34,30,42,0.08)] dark:border-[rgba(255,255,255,0.1)] rounded-[2px] transition-colors hover:bg-[#F7F9FA] dark:hover:bg-[rgba(255,255,255,0.05)] text-[#221E2A] dark:text-white"
             >
-              <svg className="w-[16px] h-[16px] mr-[10px] text-[#285056]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg className="w-[16px] h-[16px] mr-[10px] text-[#285056] dark:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
               New Blog Post
@@ -284,20 +284,20 @@ export default function AdminDashboardPage() {
             </h2>
             <Link
               href="/admin/enquiries"
-              className="font-body text-[13px] text-[#285056] hover:text-[#0ED2E9] transition-colors"
+              className="font-body text-[13px] text-[#285056] dark:text-[rgba(255,255,255,0.8)] hover:text-[#0ED2E9] dark:hover:text-[#0ED2E9] transition-colors"
             >
               View all →
             </Link>
           </div>
 
-          <div className="bg-[#FFFFFF] rounded-none overflow-x-auto">
+          <div className="bg-[#FFFFFF] dark:bg-[#1A1625] rounded-none overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
-                <tr className="bg-[#F7F9FA] border-b-[2px] border-[#E9F5F7]">
+                <tr className="bg-[#F7F9FA] dark:bg-[rgba(255,255,255,0.02)] border-b-[2px] border-[#E9F5F7] dark:border-[rgba(255,255,255,0.06)]">
                   {['Name', 'Email', 'Package', 'Type', 'Date', 'Status'].map((col) => (
                     <th
                       key={col}
-                      className="text-left px-[16px] py-[12px] font-display text-[11px] font-bold text-[#718096] tracking-widest uppercase whitespace-nowrap"
+                      className="text-left px-[16px] py-[12px] font-display text-[11px] font-bold text-[#718096] dark:text-[rgba(255,255,255,0.6)] tracking-widest uppercase whitespace-nowrap"
                     >
                       {col}
                     </th>
@@ -309,7 +309,7 @@ export default function AdminDashboardPage() {
                   <tr>
                     <td colSpan={6} className="p-8 text-center">
                       <div className="flex justify-center">
-                        <svg className="animate-spin w-5 h-5 text-[#285056]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <svg className="animate-spin w-5 h-5 text-[#285056] dark:text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                         </svg>
@@ -322,7 +322,7 @@ export default function AdminDashboardPage() {
                       <svg className="w-[40px] h-[40px] text-[#0ED2E9] mx-auto mb-[16px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
                       </svg>
-                      <p className="font-body text-[14px] text-[#718096]">No enquiries yet.</p>
+                      <p className="font-body text-[14px] text-[#718096] dark:text-[rgba(255,255,255,0.6)]">No enquiries yet.</p>
                     </td>
                   </tr>
                 ) : (
@@ -330,17 +330,17 @@ export default function AdminDashboardPage() {
                     <tr
                       key={enq.id}
                       onClick={() => setSelectedEnquiry(enq)}
-                      className={`cursor-pointer h-[56px] transition-colors hover:bg-[#F7F9FA] align-middle ${
-                        i !== recentEnquiries.length - 1 ? 'border-b border-[#F3F4F6]' : ''
+                      className={`cursor-pointer h-[56px] transition-colors hover:bg-[#F7F9FA] dark:hover:bg-[rgba(255,255,255,0.05)] align-middle ${
+                        i !== recentEnquiries.length - 1 ? 'border-b border-[#F3F4F6] dark:border-[rgba(255,255,255,0.06)]' : ''
                       }`}
                     >
-                      <td className="px-[16px] font-body text-[14px] text-[#221E2A] whitespace-nowrap">{enq.name}</td>
-                      <td className="px-[16px] font-body text-[14px] text-[#221E2A] whitespace-nowrap">{enq.email}</td>
-                      <td className="px-[16px] font-body text-[14px] text-[#221E2A] max-w-[150px] truncate whitespace-nowrap">
+                      <td className="px-[16px] font-body text-[14px] text-[#221E2A] dark:text-[rgba(255,255,255,0.9)] whitespace-nowrap">{enq.name}</td>
+                      <td className="px-[16px] font-body text-[14px] text-[#221E2A] dark:text-[rgba(255,255,255,0.9)] whitespace-nowrap">{enq.email}</td>
+                      <td className="px-[16px] font-body text-[14px] text-[#221E2A] dark:text-[rgba(255,255,255,0.9)] max-w-[150px] truncate whitespace-nowrap">
                         {enq.packageSlug || '—'}
                       </td>
-                      <td className="px-[16px] font-body text-[14px] text-[#221E2A] capitalize whitespace-nowrap">{enq.inquiryType}</td>
-                      <td className="px-[16px] font-body text-[14px] text-[#221E2A] whitespace-nowrap">
+                      <td className="px-[16px] font-body text-[14px] text-[#221E2A] dark:text-[rgba(255,255,255,0.9)] capitalize whitespace-nowrap">{enq.inquiryType}</td>
+                      <td className="px-[16px] font-body text-[14px] text-[#221E2A] dark:text-[rgba(255,255,255,0.9)] whitespace-nowrap">
                         {formatDate(enq.createdAt)}
                       </td>
                       <td className="px-[16px] whitespace-nowrap">
