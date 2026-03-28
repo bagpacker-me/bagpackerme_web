@@ -1,6 +1,6 @@
 import { collection, doc, getDocs, addDoc, updateDoc, deleteDoc, query, where, orderBy, getDoc, limit } from 'firebase/firestore';
 import { db } from './firebase';
-import { Package, BlogPost, Enquiry } from '@/types';
+import { Package, BlogPost, Enquiry, Customer, Booking, GalleryImage } from '@/types';
 
 // Packages
 const packagesCol = collection(db, 'packages');
@@ -62,3 +62,25 @@ const subscribersCol = collection(db, 'subscribers');
 export const getSubscribers = async () => getDocs(query(subscribersCol, orderBy('createdAt', 'desc')));
 export const createSubscriber = async (data: { email: string; createdAt: string }) => addDoc(subscribersCol, data);
 export const deleteSubscriber = async (id: string) => deleteDoc(doc(db, 'subscribers', id));
+
+// Customers
+const customersCol = collection(db, 'customers');
+export const getCustomers = async () => getDocs(query(customersCol, orderBy('createdAt', 'desc')));
+export const getCustomer = async (id: string) => getDoc(doc(db, 'customers', id));
+export const createCustomer = async (data: Omit<Customer, 'id'>) => addDoc(customersCol, data);
+export const updateCustomer = async (id: string, data: Partial<Customer>) => updateDoc(doc(db, 'customers', id), data);
+export const deleteCustomer = async (id: string) => deleteDoc(doc(db, 'customers', id));
+
+// Bookings
+const bookingsCol = collection(db, 'bookings');
+export const getBookings = async () => getDocs(query(bookingsCol, orderBy('createdAt', 'desc')));
+export const getBooking = async (id: string) => getDoc(doc(db, 'bookings', id));
+export const createBooking = async (data: Omit<Booking, 'id'>) => addDoc(bookingsCol, data);
+export const updateBooking = async (id: string, data: Partial<Booking>) => updateDoc(doc(db, 'bookings', id), data);
+export const deleteBooking = async (id: string) => deleteDoc(doc(db, 'bookings', id));
+
+// Gallery
+const galleryCol = collection(db, 'gallery');
+export const getGalleryImages = async () => getDocs(query(galleryCol, orderBy('createdAt', 'desc')));
+export const addGalleryImage = async (data: Omit<GalleryImage, 'id'>) => addDoc(galleryCol, data);
+export const deleteGalleryImage = async (id: string) => deleteDoc(doc(db, 'gallery', id));

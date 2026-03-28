@@ -70,3 +70,33 @@ export interface Enquiry {
   status: 'new' | 'in_progress' | 'responded';
   createdAt: string;
 }
+
+export interface Customer {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  totalBookings: number;
+  createdAt: string;
+}
+
+export interface Booking {
+  id: string;
+  customerId: string;
+  packageId: string;
+  packageName: string;
+  travelDate: string;
+  groupSize: number;
+  status: 'pending' | 'confirmed' | 'completed' | 'cancelled';
+  totalPrice: number;
+  createdAt: string;
+}
+
+export interface GalleryImage {
+  id: string;
+  url: string;
+  title: string;
+  altText: string;
+  category: string;
+  createdAt: string;
+}
