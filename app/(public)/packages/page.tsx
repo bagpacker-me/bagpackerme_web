@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
+import Image from 'next/image';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { getPublishedPackages } from '@/lib/firestore';
 import { Package } from '@/types';
@@ -89,11 +90,12 @@ export default function PackagesPage() {
         <div className="absolute inset-0 bg-[#0B1517]/80 z-10" />
         
         {/* BG Image */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img 
-          src="https://images.unsplash.com/photo-1598091383021-15ddea10925d?w=1600" 
-          alt="India Landscape" 
-          className="absolute inset-0 w-full h-full object-cover z-0"
+        <Image
+          src="https://images.unsplash.com/photo-1598091383021-15ddea10925d?w=1600"
+          alt="India Landscape"
+          fill
+          priority
+          className="object-cover z-0"
         />
 
         {/* Hero Content */}

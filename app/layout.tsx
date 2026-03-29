@@ -32,8 +32,29 @@ const cormorantGaramond = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: 'BagPackerMe — Experiential Journeys Through India',
+  metadataBase: new URL('https://bagpackerme.com'),
+  title: {
+    default: 'BagPackerMe — Experiential Journeys Through India',
+    template: '%s | BagPackerMe',
+  },
   description: 'Curated experiential journeys through India — small groups, deep immersion, real India. Culinary, Spiritual, Adventure, Heritage and more.',
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://bagpackerme.com',
+    siteName: 'BagPackerMe',
+    title: 'BagPackerMe — Experiential Journeys Through India',
+    description: 'Curated experiential journeys through India — small groups, deep immersion, real India.',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'BagPackerMe — Experiential Journeys Through India',
+    description: 'Curated experiential journeys through India — small groups, deep immersion, real India.',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function AppRootLayout({ children }: { children: React.ReactNode }) {

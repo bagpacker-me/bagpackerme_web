@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description: 'Destination guides, cultural deep-dives, and honest travel stories from the road.',
 };
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 600; // ISR: revalidate every 10 minutes
 
 
 export default async function BlogPage() {
