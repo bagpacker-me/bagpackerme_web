@@ -738,7 +738,18 @@ export default function PackageForm({ initialData }: PackageFormProps) {
     if (!initialData) return { ...DEFAULT_FORM };
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { id, createdAt, ...rest } = initialData;
-    return rest;
+    // Merge with DEFAULT_FORM so any missing array/object fields
+    // (e.g. packages saved before these fields existed) don't crash with
+    // "Cannot read properties of undefined (reading 'length')"
+    return {
+      ...DEFAULT_FORM,
+      ...rest,
+      itinerary:   Array.isArray(rest.itinerary)   ? rest.itinerary   : [],
+      destinations: Array.isArray(rest.destinations) ? rest.destinations : [],
+      galleryUrls:  Array.isArray(rest.galleryUrls)  ? rest.galleryUrls  : [],
+      exclusions:   Array.isArray(rest.exclusions)   ? rest.exclusions   : [],
+      inclusions:   rest.inclusions ? { ...DEFAULT_INCLUSIONS, ...rest.inclusions } : { ...DEFAULT_INCLUSIONS },
+    };
   });
 
   const handleSave = useCallback(async () => {

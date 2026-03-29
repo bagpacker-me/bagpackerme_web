@@ -29,8 +29,8 @@ export const deletePackage = async (id: string) => deleteDoc(doc(db, 'packages',
 // Blogs
 const blogsCol = collection(db, 'blogs');
 export const getBlogs = async () => getDocs(query(blogsCol, orderBy('createdAt', 'desc')));
-export const getPublishedBlogs = async () => getDocs(query(blogsCol, where('status', '==', 'published'), orderBy('publishDate', 'desc')));
-export const getRecentPublishedBlogs = async (limitCount: number) => getDocs(query(blogsCol, where('status', '==', 'published'), orderBy('publishDate', 'desc'), limit(limitCount)));
+export const getPublishedBlogs = async () => getDocs(query(blogsCol, where('status', '==', 'published'), orderBy('createdAt', 'desc')));
+export const getRecentPublishedBlogs = async (limitCount: number) => getDocs(query(blogsCol, where('status', '==', 'published'), orderBy('createdAt', 'desc'), limit(limitCount)));
 export const getBlog = async (id: string) => getDoc(doc(db, 'blogs', id));
 export const getBlogBySlug = async (slug: string) => {
   const q = query(blogsCol, where('slug', '==', slug), where('status', '==', 'published'), limit(1));

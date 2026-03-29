@@ -8,7 +8,8 @@ export const metadata: Metadata = {
   description: 'Destination guides, cultural deep-dives, and honest travel stories from the road.',
 };
 
-export const revalidate = 3600;
+export const dynamic = 'force-dynamic';
+
 
 export default async function BlogPage() {
   let blogs: BlogPost[] = [];
