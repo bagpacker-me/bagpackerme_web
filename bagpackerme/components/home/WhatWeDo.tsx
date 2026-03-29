@@ -4,68 +4,98 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Compass, Newspaper, MapPin } from 'lucide-react';
 
-export default function WhatWeDo() {
-  const services = [
-    {
-      title: 'Curated Trips',
-      desc: '5 signature experiential journeys across India — Culinary, Spiritual, Adventure, Heritage, and the Hippy Trail. Small groups, deep immersion, local expertise.',
-      icon: <Compass className="w-8 h-8 text-cyan" />
-    },
-    {
-      title: 'Travel Media',
-      desc: 'Destination guides, travel stories, weekly newsletter, and video content reaching 2,000+ engaged travelers across India and the world.',
-      icon: <Newspaper className="w-8 h-8 text-cyan" />
-    },
-    {
-      title: 'Local Expertise',
-      desc: 'Personal itinerary consulting, bespoke trip planning, and connections to vetted local guides, photographers, and experience hosts across India.',
-      icon: <MapPin className="w-8 h-8 text-cyan" />
-    }
-  ];
+const SERVICES = [
+  {
+    title: 'Curated Trips',
+    desc: '5 signature experiential journeys across India — Culinary, Spiritual, Adventure, Heritage, and the Hippy Trail. Small groups, deep immersion, local expertise.',
+    icon: <Compass className="w-8 h-8" style={{ color: '#0ED2E9' }} />,
+    number: '01',
+  },
+  {
+    title: 'Travel Media',
+    desc: 'Destination guides, travel stories, weekly newsletter, and video content reaching 2,000+ engaged travelers across India and the world.',
+    icon: <Newspaper className="w-8 h-8" style={{ color: '#0ED2E9' }} />,
+    number: '02',
+  },
+  {
+    title: 'Local Expertise',
+    desc: 'Personal itinerary consulting, bespoke trip planning, and connections to vetted local guides, photographers, and experience hosts across India.',
+    icon: <MapPin className="w-8 h-8" style={{ color: '#0ED2E9' }} />,
+    number: '03',
+  },
+];
 
+export default function WhatWeDo() {
   return (
     <section className="bg-[#221E2A] py-[var(--space-section)] relative overflow-hidden">
-      {/* Grain overlay for dark section */}
-      <div className="grain absolute inset-0 z-0 pointer-events-none" />
-      <div className="container-custom relative z-10">
+      {/* Subtle radial glow */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(14,210,233,0.06) 0%, transparent 70%)',
+        }}
+      />
+
+      <div className="container relative z-10">
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
+        <div className="text-center max-w-3xl mx-auto mb-16 md:mb-20">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <div className="section-label justify-center mb-[16px]">✦ OUR SERVICES</div>
-            
-            <h2 className="text-4xl md:text-5xl lg:text-[56px] font-heading font-bold text-white leading-tight" style={{ textWrap: 'balance', letterSpacing: '-0.02em' }}>
+            <div className="section-label justify-center mb-5">✦ OUR SERVICES</div>
+            <h2
+              className="font-heading font-bold text-white"
+              style={{ fontSize: 'clamp(30px, 4.5vw, 56px)', lineHeight: 1.08, letterSpacing: '-0.02em' }}
+            >
               Three Things We Do Better Than Anyone
             </h2>
           </motion.div>
         </div>
 
         {/* Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {services.map((service, index) => (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+          {SERVICES.map((service, i) => (
             <motion.div
               key={service.title}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 * index }}
-              className="bg-[#2a2533] rounded-none border border-white/10 p-8 md:p-10 hover:bg-[#322d3e] hover:-translate-y-[6px] hover:shadow-[0_20px_60px_rgba(34,30,42,0.4)] transition-all duration-600 relative overflow-hidden group"
+              transition={{ duration: 0.5, delay: 0.15 * i }}
+              className="relative bg-white/5 border border-white/8 p-8 md:p-10 group overflow-hidden"
+              style={{
+                transition: 'background 400ms, transform 350ms, box-shadow 350ms',
+              }}
+              whileHover={{ y: -6 }}
             >
-              {/* Liquid glass accent */}
-              <div className="absolute top-0 right-0 w-32 h-32 bg-cyan/10 rounded-full blur-2xl -mr-10 -mt-10 group-hover:bg-cyan/20 transition-all duration-300" />
-              <div className="mb-6">
-                {service.icon}
-              </div>
-              <h3 className="font-heading font-bold text-2xl text-white mb-4">
+              {/* Number badge */}
+              <span
+                className="absolute top-6 right-8 font-display font-bold text-[48px] leading-none select-none pointer-events-none"
+                style={{ color: 'rgba(255,255,255,0.04)', letterSpacing: '-0.03em' }}
+              >
+                {service.number}
+              </span>
+
+              {/* Cyan corner glow */}
+              <div
+                className="absolute top-0 right-0 w-28 h-28 rounded-full blur-2xl -mr-8 -mt-8 pointer-events-none transition-opacity duration-300"
+                style={{ background: 'rgba(14,210,233,0.10)' }}
+              />
+
+              <div className="mb-6">{service.icon}</div>
+
+              <h3 className="font-heading font-bold text-white mb-4" style={{ fontSize: '22px', lineHeight: 1.2 }}>
                 {service.title}
               </h3>
-              <p className="font-sans text-white/65 leading-relaxed">
-                {service.desc}
-              </p>
+              <p className="font-sans text-white/60 leading-relaxed text-[15px]">{service.desc}</p>
+
+              {/* Bottom lime line on hover */}
+              <div
+                className="absolute bottom-0 left-0 h-[2px] w-0 group-hover:w-full transition-all duration-500"
+                style={{ background: 'linear-gradient(90deg, #C1EA00, transparent)' }}
+              />
             </motion.div>
           ))}
         </div>

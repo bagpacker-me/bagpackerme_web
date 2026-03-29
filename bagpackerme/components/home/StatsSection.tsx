@@ -1,13 +1,5 @@
 'use client';
 
-/**
- * StatsSection — Spec #5
- * Counter animation: useMotionValue + useSpring + useTransform
- * spring config: { stiffness: 100, damping: 30 }
- * Rounds integer values for display.
- * Spec #9: useReducedMotion guard.
- */
-
 import React from 'react';
 import {
   motion,
@@ -15,21 +7,21 @@ import {
   useInView,
   useMotionValue,
   useSpring,
-  useTransform
+  useTransform,
 } from 'framer-motion';
 import { useRef, useEffect } from 'react';
 
 // ─── STATS ────────────────────────────────────────────────────────────────────
 const STATS = [
   { value: 1200, suffix: '+', label: 'Travelers Hosted' },
-  { value: 25,   suffix: '+', label: 'Destinations'    },
-  { value: 4.9,  suffix: '★', label: 'Satisfaction'    },
-  { value: 2020, suffix: '',  label: 'Founded'          },
+  { value: 25, suffix: '+', label: 'Destinations' },
+  { value: 4.9, suffix: '★', label: 'Satisfaction' },
+  { value: 2020, suffix: '', label: 'Founded' },
 ];
 
 const EASE = [0.25, 0.46, 0.45, 0.94] as const;
 
-// ─── ANIMATED NUMBER (spec #5) ────────────────────────────────────────────────
+// ─── ANIMATED NUMBER ──────────────────────────────────────────────────────────
 function AnimatedNumber({
   target,
   isDecimal,
@@ -73,20 +65,20 @@ function StatItem({
 
   return (
     <motion.div
-      initial={reduced ? false : { opacity: 0, y: 12 }}
+      initial={reduced ? false : { opacity: 0, y: 16 }}
       animate={active ? { opacity: 1, y: 0 } : {}}
       transition={
         reduced
           ? { duration: 0 }
           : { delay: 0.1 + index * 0.1, duration: 0.55, ease: EASE }
       }
-      className="flex flex-col items-center justify-center py-8 px-6 text-center relative"
+      className="flex flex-col items-center justify-center py-8 px-4 md:px-8 text-center relative"
     >
       {/* Vertical divider (desktop only) */}
       {!isLast && (
         <span
           className="hidden md:block absolute right-0 top-1/2 -translate-y-1/2 w-px h-10"
-          style={{ background: 'rgba(255,255,255,0.18)' }}
+          style={{ background: 'rgba(255,255,255,0.15)' }}
           aria-hidden="true"
         />
       )}
@@ -94,11 +86,11 @@ function StatItem({
       <span
         className="stat-number"
         style={{
-          fontSize:      'clamp(36px, 5vw, 60px)',
-          color:         '#FFFFFF',
-          display:       'inline-flex',
-          alignItems:    'baseline',
-          gap:           '2px',
+          fontSize: 'clamp(30px, 4vw, 52px)',
+          color: '#FFFFFF',
+          display: 'inline-flex',
+          alignItems: 'baseline',
+          gap: '2px',
         }}
         aria-label={`${stat.value}${stat.suffix}`}
       >
@@ -111,7 +103,7 @@ function StatItem({
         {stat.suffix && (
           <span
             className="stat-suffix"
-            style={{ fontSize: 'clamp(36px, 5vw, 60px)' }}
+            style={{ fontSize: 'clamp(30px, 4vw, 52px)' }}
             aria-hidden="true"
           >
             {stat.suffix}
@@ -119,7 +111,7 @@ function StatItem({
         )}
       </span>
 
-      <span className="stat-label" style={{ color: 'rgba(255,255,255,0.72)' }}>
+      <span className="stat-label mt-2" style={{ color: 'rgba(255,255,255,0.65)', fontSize: '12px', letterSpacing: '0.05em', textTransform: 'uppercase', fontFamily: 'var(--font-display)' }}>
         {stat.label}
       </span>
     </motion.div>
@@ -128,24 +120,17 @@ function StatItem({
 
 // ─── STATS SECTION ─────────────────────────────────────────────────────────────
 export default function StatsSection() {
-  const ref    = useRef<HTMLElement>(null);
+  const ref = useRef<HTMLElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-40px' });
-  const reduced  = useReducedMotion() ?? false;
+  const reduced = useReducedMotion() ?? false;
 
   return (
-    <section
-      ref={ref}
-      className="relative w-full"
-      style={{ zIndex: 10, marginTop: '-50px' }}
-    >
+    <section ref={ref} className="relative w-full bg-white py-0">
       <div
-        className="mx-auto w-full max-w-5xl grid grid-cols-2 md:grid-cols-4"
+        className="w-full max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4"
         style={{
-          background:
-            'linear-gradient(90deg, #285056 0%, #1e3d42 100%)',
-          minHeight: '100px',
-          boxShadow: '0 12px 40px rgba(34,30,42,0.22)',
-          borderTop: '1px solid rgba(255,255,255,0.08)',
+          background: 'linear-gradient(100deg, #285056 0%, #1a4047 50%, #1e3d42 100%)',
+          boxShadow: '0 16px 48px rgba(34,30,42,0.20)',
         }}
       >
         {STATS.map((stat, idx) => (
@@ -157,14 +142,6 @@ export default function StatsSection() {
             reduced={reduced}
           />
         ))}
-      </div>
-
-      {/* Lime accent line */}
-      <div
-        className="absolute top-0 left-0 w-full max-w-5xl mx-auto"
-        style={{ left: '50%', transform: 'translateX(-50%)', width: 'min(100%, 960px)' }}
-      >
-        <div style={{ height: '2px', background: '#C1EA00', opacity: 0.85 }} />
       </div>
     </section>
   );

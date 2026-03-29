@@ -21,10 +21,10 @@ export default function FeaturedTrips() {
     async function loadPackages() {
       try {
         const snap = await getFeaturedPackages(6);
-        const pkgs = snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Package));
+        const pkgs = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Package));
         setPackages(pkgs);
       } catch (error) {
-        console.error("Failed to load featured packages:", error);
+        console.error('Failed to load featured packages:', error);
       } finally {
         setLoading(false);
       }
@@ -33,37 +33,38 @@ export default function FeaturedTrips() {
   }, []);
 
   return (
-    <section className="bg-white w-full" style={{ paddingTop: 'var(--space-section)', paddingBottom: 'var(--space-section)' }}>
-      <div className="container mx-auto">
+    <section className="bg-[#F7F9FA] w-full" style={{ paddingTop: 'var(--space-section)', paddingBottom: 'var(--space-section)' }}>
+      <div className="container">
         {/* Header */}
-        <FadeInSection className="flex flex-col items-center text-center mb-16 md:mb-24 px-4">
-          <div className="section-label justify-center">
-            ✦ SIGNATURE JOURNEYS
-          </div>
-          <h2 className="section-heading mt-2 mb-6 max-w-2xl text-void" style={{ textWrap: 'balance', letterSpacing: '-0.02em' }}>
+        <FadeInSection className="flex flex-col items-center text-center mb-16 md:mb-20">
+          <div className="section-label justify-center mb-4">✦ SIGNATURE JOURNEYS</div>
+          <h2
+            className="font-heading font-bold text-void mb-5 max-w-2xl"
+            style={{ fontSize: 'clamp(30px, 4.5vw, 56px)', lineHeight: 1.08, letterSpacing: '-0.02em' }}
+          >
             Five Ways to Experience India
           </h2>
-          <p className="font-body text-gray-500 max-w-xl mx-auto text-lg">
+          <p className="font-sans text-gray-500 max-w-xl text-[17px] leading-relaxed">
             Curated experiential journeys — small groups, deep immersion, real India.
           </p>
         </FadeInSection>
 
-        {/* Grid Area — Spec #4: stagger 0.08 with useInView */}
+        {/* Grid */}
         <div ref={gridRef}>
           {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16 px-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
               {Array.from({ length: 3 }).map((_, i) => (
                 <PackageCardSkeleton key={i} />
               ))}
             </div>
           ) : packages.length > 0 ? (
             <motion.div
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16 px-4"
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12"
               variants={shouldReduceMotion ? undefined : CARD_GRID_VARIANTS}
               initial={shouldReduceMotion ? undefined : 'hidden'}
               animate={gridInView ? 'visible' : 'hidden'}
             >
-              {packages.map(pkg => (
+              {packages.map((pkg) => (
                 <motion.div
                   key={pkg.id}
                   variants={shouldReduceMotion ? undefined : CARD_ITEM_VARIANTS}
@@ -73,19 +74,32 @@ export default function FeaturedTrips() {
               ))}
             </motion.div>
           ) : (
-            <div className="text-center py-20 bg-gray-50 border border-gray-100">
-              <h3 className="font-heading font-bold text-2xl text-gray-400 mb-2">No Packages Yet</h3>
-              <p className="text-gray-500 font-sans">We&apos;re working on gathering the best journey packages.</p>
+            /* Premium empty state with destination teaser */
+            <div className="relative overflow-hidden text-center py-24 bg-white border border-gray-100">
+              <div className="relative z-10 max-w-sm mx-auto">
+                <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-teal/10 flex items-center justify-center">
+                  <span className="text-2xl">🌏</span>
+                </div>
+                <h3 className="font-heading font-bold text-void text-2xl mb-3">Journeys Coming Soon</h3>
+                <p className="font-sans text-gray-500 text-sm leading-relaxed mb-8">
+                  We&apos;re crafting our signature India journeys. Stay tuned — something extraordinary is being built.
+                </p>
+                <Link href="/contact" className="btn-lime text-sm">
+                  Get Notified When We Launch
+                </Link>
+              </div>
             </div>
           )}
         </div>
 
         {/* Bottom CTA */}
-        <FadeInSection className="mt-20 flex justify-center w-full px-4" delay={0.2}>
-          <Link href="/packages" className="btn-lime">
-            View All Journeys <ArrowRight className="w-4 h-4" />
-          </Link>
-        </FadeInSection>
+        {packages.length > 0 && (
+          <FadeInSection className="mt-16 flex justify-center" delay={0.2}>
+            <Link href="/packages" className="btn-lime">
+              View All Journeys <ArrowRight className="w-4 h-4" />
+            </Link>
+          </FadeInSection>
+        )}
       </div>
     </section>
   );

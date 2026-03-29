@@ -478,6 +478,13 @@ blockquote,
   padding: 0 clamp(20px, 4vw, 60px);
 }
 
+.container-custom {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 clamp(24px, 5vw, 80px);
+}
+
 .prose-content {
   max-width: var(--prose-width);  /* 68ch — never full-width body text */
 }
