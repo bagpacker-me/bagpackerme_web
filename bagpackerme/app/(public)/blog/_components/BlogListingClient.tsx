@@ -36,9 +36,10 @@ export default function BlogListingClient({ initialBlogs }: { initialBlogs: Blog
     });
   }, [initialBlogs, activeCategory, searchQuery]);
 
-  const featuredPost = filteredBlogs.length > 0 ? filteredBlogs[0] : null;
-  // In the active category 'All' without search, first post is featured. Rest are grid.
-  const isDefaultView = activeCategory === 'All' && !searchQuery;
+  // Only use featuredPost layout when there are MORE than 1 result — otherwise
+  // the single post would be consumed by the featured section leaving the grid empty.
+  const isDefaultView = activeCategory === 'All' && !searchQuery && filteredBlogs.length > 1;
+  const featuredPost = isDefaultView ? filteredBlogs[0] : null;
   const gridPosts = isDefaultView ? filteredBlogs.slice(1) : filteredBlogs;
 
   const currentGridPosts = gridPosts.slice(
@@ -47,9 +48,6 @@ export default function BlogListingClient({ initialBlogs }: { initialBlogs: Blog
   );
 
   const totalPages = Math.ceil(gridPosts.length / POSTS_PER_PAGE);
-
-  // For Popular Posts (just take a random/different slice or latest 4)
-  const popularPosts = initialBlogs.slice(0, 4);
 
   const formatDate = (dateString?: string) => {
     if (!dateString) return '';
@@ -281,36 +279,6 @@ export default function BlogListingClient({ initialBlogs }: { initialBlogs: Blog
                      </button>
                    </form>
                 </div>
-
-                {/* Popular Posts */}
-                <div>
-                   <h4 className="font-display text-[12px] font-bold tracking-widest uppercase text-[#221E2A] mb-[16px]">
-                     Popular Posts
-                   </h4>
-                   <div className="flex flex-col">
-                     {popularPosts.map((post, idx) => (
-                       <Link href={`/blog/${post.slug}`} key={post.id} className={`flex items-start gap-[12px] py-[12px] group ${idx !== popularPosts.length - 1 ? 'border-b border-[rgba(34,30,42,0.06)]' : ''}`}>
-                         <div className="shrink-0 relative w-[48px] h-[48px]">
-                           <Image 
-                             src={post.featuredImageUrl || 'https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&q=80'}
-                             alt={post.title}
-                             fill
-                             className="object-cover"
-                           />
-                         </div>
-                         <div>
-                           <h5 className="font-body font-medium text-[13px] text-[#221E2A] line-clamp-2 leading-[1.3] group-hover:text-[#285056] transition-colors">
-                             {post.title}
-                           </h5>
-                           <div className="font-body text-[11px] text-[#718096] mt-[4px]">
-                             {formatDate(post.publishDate)}
-                           </div>
-                         </div>
-                       </Link>
-                     ))}
-                   </div>
-                </div>
-
              </div>
           </div>
 
