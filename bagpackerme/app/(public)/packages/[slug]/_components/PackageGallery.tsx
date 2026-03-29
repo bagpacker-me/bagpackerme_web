@@ -28,40 +28,40 @@ export default function PackageGallery({ pkg }: { pkg: Package }) {
   };
 
   return (
-    <section id="gallery" className="w-full bg-white py-mobile md:py-desktop px-mobile md:px-desktop">
+    <section id="gallery" className="w-full bg-white py-[64px] md:py-[96px] px-mobile md:px-desktop">
       <div className="max-w-7xl mx-auto">
-        
+
         {/* Section Header */}
-        <FadeInSection className="mb-[64px] md:mb-[96px] flex flex-col items-center">
-          <div className="flex items-center gap-[16px] mb-[24px]">
+        <FadeInSection className="mb-[48px] md:mb-[64px] flex flex-col items-center">
+          <div className="flex items-center gap-[16px] mb-[20px]">
              <div className="h-[1px] w-[32px] bg-[#221E2A]" />
              <span className="font-display font-bold uppercase text-[11px] tracking-widest text-[#221E2A]">Memories</span>
              <div className="h-[1px] w-[32px] bg-[#221E2A]" />
           </div>
-          <h2 className="text-[#221E2A] font-display text-[clamp(2rem,4vw,3rem)] font-bold uppercase tracking-[-0.02em] leading-[1.1]">
+          <h2 className="text-[#221E2A] font-display text-[clamp(1.75rem,3.5vw,2.75rem)] font-bold uppercase tracking-[-0.02em] leading-[1.1]">
             Photo Gallery
           </h2>
         </FadeInSection>
 
         {/* Masonry Grid */}
         <FadeInSection delay={0.1}>
-          <div className="columns-2 md:columns-3 gap-[8px] space-y-[8px]">
+          <div className="columns-2 md:columns-3 gap-[10px] space-y-[10px]">
             {images.map((src, idx) => (
-              <div 
-                key={idx} 
-                className="relative w-full break-inside-avoid overflow-hidden cursor-crosshair group rounded-none"
+              <div
+                key={idx}
+                className="relative w-full break-inside-avoid overflow-hidden cursor-crosshair group rounded-xl"
                 onClick={() => openLightbox(idx)}
               >
-                <Image 
-                  src={src} 
+                <Image
+                  src={src}
                   alt={`${pkg.title} image ${idx + 1}`}
                   width={800}
                   height={800}
                   sizes="(max-width: 768px) 50vw, 33vw"
-                  className="w-full h-auto object-cover transition-transform duration-700 ease-[var(--ease-default)] group-hover:scale-[1.06]"
+                  className="w-full h-auto object-cover transition-transform duration-700 ease-[var(--ease-default)] group-hover:scale-[1.05] rounded-xl"
                 />
-                <div className="absolute inset-0 bg-transparent group-hover:bg-[#221E2A]/20 transition-colors duration-300 flex items-center justify-center pointer-events-none">
-                   <Maximize2 size={32} className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 drop-shadow-lg" />
+                <div className="absolute inset-0 bg-transparent group-hover:bg-[#221E2A]/25 transition-colors duration-300 flex items-center justify-center pointer-events-none rounded-xl">
+                   <Maximize2 size={28} className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 drop-shadow-lg" />
                 </div>
               </div>
             ))}
@@ -72,16 +72,16 @@ export default function PackageGallery({ pkg }: { pkg: Package }) {
 
       {/* Lightbox */}
       {lightboxIndex !== null && (
-        <div 
+        <div
           className="fixed inset-0 z-[100] bg-[rgba(34,30,42,0.96)] flex items-center justify-center overscroll-contain"
           onClick={closeLightbox}
         >
           <button onClick={closeLightbox} className="absolute top-[24px] right-[24px] text-white hover:text-white/70 transition-colors z-[110]">
             <X size={24} />
           </button>
-          
-          <button onClick={prevImage} className="absolute left-[16px] md:left-[32px] top-1/2 -translate-y-1/2 text-white hover:text-white/70 transition-colors z-[110]">
-             <ChevronLeft size={32} />
+
+          <button onClick={prevImage} className="absolute left-[16px] md:left-[32px] top-1/2 -translate-y-1/2 text-white hover:text-white/70 transition-colors z-[110] bg-white/10 hover:bg-white/20 rounded-full p-2">
+             <ChevronLeft size={28} />
           </button>
 
           <div className="relative w-[90vw] h-[90vh] flex items-center justify-center" onClick={e => e.stopPropagation()}>
@@ -89,16 +89,16 @@ export default function PackageGallery({ pkg }: { pkg: Package }) {
               src={images[lightboxIndex]}
               alt={`Lightbox ${lightboxIndex}`}
               fill
-              className="object-contain"
+              className="object-contain rounded-xl"
               sizes="100vw"
             />
           </div>
 
-          <button onClick={nextImage} className="absolute right-[16px] md:right-[32px] top-1/2 -translate-y-1/2 text-white hover:text-white/70 transition-colors z-[110]">
-             <ChevronRight size={32} />
+          <button onClick={nextImage} className="absolute right-[16px] md:right-[32px] top-1/2 -translate-y-1/2 text-white hover:text-white/70 transition-colors z-[110] bg-white/10 hover:bg-white/20 rounded-full p-2">
+             <ChevronRight size={28} />
           </button>
 
-          <div className="absolute bottom-[24px] left-1/2 -translate-x-1/2 text-white font-body text-[12px]">
+          <div className="absolute bottom-[24px] left-1/2 -translate-x-1/2 text-white/60 font-body text-[12px] bg-white/10 px-3 py-1 rounded-full">
             {lightboxIndex + 1} / {images.length}
           </div>
         </div>
