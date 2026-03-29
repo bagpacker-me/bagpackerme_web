@@ -29,8 +29,26 @@ export const deletePackage = async (id: string) => deleteDoc(doc(db, 'packages',
 // Blogs
 const blogsCol = collection(db, 'blogs');
 export const getBlogs = async () => getDocs(query(blogsCol, orderBy('createdAt', 'desc')));
-export const getPublishedBlogs = async () => getDocs(query(blogsCol, where('status', '==', 'published'), orderBy('createdAt', 'desc')));
-export const getRecentPublishedBlogs = async (limitCount: number) => getDocs(query(blogsCol, where('status', '==', 'published'), orderBy('createdAt', 'desc'), limit(limitCount)));
+export const getPublishedBlogs = async () => {
+  const snap = await getDocs(query(blogsCol, where('status', '==', 'published')));
+  // Sort in JS — avoids needing a composite index on (status, createdAt)
+  const docs = snap.docs.map(d => ({ id: d.id, ...d.data() } ));
+  docs.sort((a: any, b: any) => (b.createdAt ?? b.publishDate ?? '').localeCompare(a.createdAt ?? a.publishDate ?? ''));
+  return { docs: snap.docs.sort((a, b) => {
+    const aData = a.data() as any;
+    const bData = b.data() as any;
+    return (bData.createdAt ?? bData.publishDate ?? '').localeCompare(aData.createdAt ?? aData.publishDate ?? '');
+  })};
+};
+export const getRecentPublishedBlogs = async (limitCount: number) => {
+  const snap = await getDocs(query(blogsCol, where('status', '==', 'published')));
+  const sorted = snap.docs.sort((a, b) => {
+    const aData = a.data() as any;
+    const bData = b.data() as any;
+    return (bData.createdAt ?? bData.publishDate ?? '').localeCompare(aData.createdAt ?? aData.publishDate ?? '');
+  });
+  return { docs: sorted.slice(0, limitCount) };
+};
 export const getBlog = async (id: string) => getDoc(doc(db, 'blogs', id));
 export const getBlogBySlug = async (slug: string) => {
   const q = query(blogsCol, where('slug', '==', slug), where('status', '==', 'published'), limit(1));
