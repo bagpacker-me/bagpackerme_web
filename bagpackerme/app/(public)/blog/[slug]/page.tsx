@@ -52,12 +52,12 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
 
   // CSS for inner HTML elements since we don't have tailwindcss/typography
   const articleStyles = `
-    max-w-none font-sans text-[16px] md:text-[18px] leading-[1.75] text-[#221E2A]
+    max-w-none font-sans text-[16px] md:text-[18px] leading-[1.8] text-[#221E2A]
     [&>h2]:font-heading [&>h2]:font-bold [&>h2]:text-[28px] md:[&>h2]:text-[32px] [&>h2]:text-[#285056] [&>h2]:mt-[64px] [&>h2]:mb-[24px] [&>h2]:leading-tight
     [&>h3]:font-heading [&>h3]:font-bold [&>h3]:text-[24px] [&>h3]:text-[#221E2A] [&>h3]:mt-[48px] [&>h3]:mb-[16px]
-    [&>blockquote]:border-l-[4px] [&>blockquote]:border-[#0ED2E9] [&>blockquote]:font-accent [&>blockquote]:italic [&>blockquote]:text-[24px] [&>blockquote]:pl-[24px] [&>blockquote]:text-[#4a5568] [&>blockquote]:my-[48px]
-    [&>img]:w-full [&>img]:rounded-none [&>img]:my-[48px] [&>img]:object-cover
-    [&>p>img]:w-full [&>p>img]:rounded-none [&>p>img]:my-[48px] [&>p>img]:object-cover
+    [&>blockquote]:border-l-[4px] [&>blockquote]:border-[#0ED2E9] [&>blockquote]:font-accent [&>blockquote]:italic [&>blockquote]:text-[24px] [&>blockquote]:pl-[24px] [&>blockquote]:text-[#4a5568] [&>blockquote]:my-[48px] [&>blockquote]:bg-[#0ED2E9]/5 [&>blockquote]:py-[12px] [&>blockquote]:pr-[24px] [&>blockquote]:rounded-r-2xl
+    [&>img]:w-full [&>img]:rounded-[2rem] [&>img]:my-[48px] [&>img]:object-cover [&>img]:shadow-md
+    [&>p>img]:w-full [&>p>img]:rounded-[2rem] [&>p>img]:my-[48px] [&>p>img]:object-cover [&>p>img]:shadow-md
     [&_a]:text-[#0ED2E9] [&_a]:underline hover:[&_a]:text-[#285056] [&_a]:transition-colors [&_a]:font-bold
     [&>p]:mb-[24px]
     [&>ul]:list-disc [&>ul]:pl-[24px] [&>ul]:mb-[24px] [&>ul>li]:mb-[8px] [&>ul>li]:pl-[8px]
@@ -66,10 +66,10 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
   `;
 
   return (
-    <main className="min-h-screen bg-[#FFFFFF] pt-[80px]">
+    <main className="min-h-screen bg-[#FFFFFF]">
       
       {/* Hero Section */}
-      <section className="relative w-full h-[60vh] min-h-[500px] flex flex-col justify-center pb-[64px]">
+      <section className="relative w-full h-[60vh] min-h-[500px] flex flex-col justify-center pb-[64px] rounded-b-[40px] shadow-sm overflow-hidden z-20">
         <div className="absolute inset-0 z-0">
           <Image 
             src={blog.featuredImageUrl || 'https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&q=80'} 
@@ -78,15 +78,18 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
             className="object-cover"
           />
           {/* Dark gradient + grain overlay matching BlogListing */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0B1517] via-[rgba(11,21,23,0.7)] to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0B1517] via-[rgba(11,21,23,0.7)] to-[rgba(11,21,23,0.4)]"></div>
           <div 
             className="absolute inset-0 opacity-[0.4] mix-blend-overlay pointer-events-none" 
             style={{ backgroundImage: 'url("/images/noise.png")', backgroundSize: '128px' }}
           ></div>
+          
+          {/* Glow */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-cyan opacity-20 blur-[120px] rounded-full mix-blend-screen pointer-events-none" />
         </div>
         
         <div className="w-full max-w-7xl mx-auto px-mobile md:px-desktop relative z-10 text-center flex flex-col items-center mt-[80px]">
-          <div className="inline-block bg-[#0ED2E9] text-[#221E2A] text-[11px] font-bold uppercase tracking-widest px-[12px] py-[4px] mb-[24px] font-display">
+          <div className="inline-block bg-cyan text-void text-[11px] font-bold uppercase tracking-widest px-[16px] py-[6px] mb-[24px] font-display rounded-full shadow-lg">
             {blog.category}
           </div>
           <h1 className="font-display font-bold text-[clamp(2.5rem,4vw,3.5rem)] text-white leading-[1.15] mb-[32px] max-w-[800px] [text-wrap:balance]">
@@ -132,13 +135,13 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
         </div>
 
         {/* Author Bio */}
-        <div className="bg-[#F7F9FA] p-[32px] md:p-[48px] flex flex-col md:flex-row items-center md:items-start gap-[32px] border border-[rgba(34,30,42,0.1)] mt-[64px] mb-[64px] text-center md:text-left rounded-none">
-          <div className="w-[96px] h-[96px] rounded-full bg-[rgba(40,80,86,0.1)] flex items-center justify-center shrink-0 border-[4px] border-white shadow-sm overflow-hidden">
+        <div className="bg-[#F7F9FA] p-[32px] md:p-[48px] flex flex-col md:flex-row items-center md:items-start gap-[32px] border border-gray-100 mt-[64px] mb-[64px] text-center md:text-left rounded-3xl shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.05)] transition-shadow">
+          <div className="w-[96px] h-[96px] rounded-full bg-[rgba(40,80,86,0.1)] flex items-center justify-center shrink-0 border-[4px] border-white shadow-sm overflow-hidden text-teal group-hover:bg-cyan/20">
             <User size={40} className="text-[#285056]" />
           </div>
           <div>
             <h3 className="font-display font-bold text-[24px] text-[#221E2A] mb-[12px]">Written by {blog.author}</h3>
-            <p className="font-body text-[#4a5568] mb-[24px] text-[15px] leading-[1.75]">
+            <p className="font-body text-[#4a5568] mb-[24px] text-[15px] leading-[1.8] font-light">
               Traveler, storyteller, and culture enthusiast exploring the hidden gems and spiritual profoundness of our world. Follow my journey with BagPackerMe.
             </p>
             <div className="flex items-center justify-center md:justify-start gap-[24px]">
@@ -166,7 +169,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-[32px]">
               {relatedBlogs.map(related => (
-                <Link href={`/blog/${related.slug}`} key={related.id} className="group flex flex-col bg-white border border-[rgba(34,30,42,0.08)] hover:border-[rgba(34,30,42,0.15)] transition-colors duration-300">
+                <Link href={`/blog/${related.slug}`} key={related.id} className="group flex flex-col bg-white border border-gray-100 hover:shadow-[0_12px_30px_rgb(0,0,0,0.06)] hover:-translate-y-1 transition-all duration-300 rounded-3xl overflow-hidden">
                   <div className="relative aspect-[16/9] w-full overflow-hidden">
                     <Image 
                       src={related.featuredImageUrl || 'https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&q=80'} 
@@ -174,18 +177,18 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                       fill
                       className="object-cover transition-transform duration-700 ease-[var(--ease-default)] group-hover:scale-[1.06]"
                     />
-                    <div className="absolute top-[16px] left-[16px] z-10 bg-lime text-[#221E2A] px-[12px] py-[4px] font-display text-[11px] font-bold uppercase tracking-widest leading-none">
+                    <div className="absolute top-[16px] left-[16px] z-10 bg-white/90 backdrop-blur-sm text-void px-[16px] py-[6px] rounded-full font-display text-[10px] sm:text-[11px] font-bold uppercase tracking-widest leading-none border border-white/20 shadow-sm">
                       {related.category}
                     </div>
                   </div>
-                  <div className="p-[24px] flex flex-col flex-grow">
+                  <div className="p-[24px] md:p-[32px] flex flex-col flex-grow">
                      <div className="font-body text-[12px] text-[#718096] mb-[12px]">
                        {formatDate(related.publishDate)}
                      </div>
                      <h3 className="font-display font-bold text-[20px] text-[#221E2A] mb-[12px] leading-[1.2] group-hover:text-[#285056] transition-colors duration-300 line-clamp-2">
                        {related.title}
                      </h3>
-                     <p className="font-body text-[15px] text-[#4a5568] leading-[1.75] line-clamp-3">
+                     <p className="font-body text-[15px] text-[#4a5568] leading-[1.8] line-clamp-3 font-light">
                        {related.excerpt}
                      </p>
                   </div>

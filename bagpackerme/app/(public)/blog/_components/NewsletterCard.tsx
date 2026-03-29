@@ -29,32 +29,32 @@ export default function NewsletterCard() {
   };
 
   return (
-    <div className="bg-[#285056] p-[32px] md:p-[48px] rounded-none shadow-sm text-white my-[48px] relative overflow-hidden">
-      <div className="absolute -top-[40px] -right-[40px] w-[160px] h-[160px] bg-white/10 rounded-full blur-2xl"></div>
-      <div className="absolute -bottom-[40px] -left-[40px] w-[160px] h-[160px] bg-[#221E2A]/20 rounded-full blur-2xl"></div>
+    <div className="bg-[#285056] p-[32px] md:p-[48px] rounded-3xl shadow-lg border border-white/10 text-white my-[48px] relative overflow-hidden group">
+      <div className="absolute -top-[40px] -right-[40px] w-[160px] h-[160px] bg-white/10 rounded-full blur-2xl transition-all duration-700 group-hover:scale-150 group-hover:bg-lime/20"></div>
+      <div className="absolute -bottom-[40px] -left-[40px] w-[160px] h-[160px] bg-[#221E2A]/20 rounded-full blur-2xl transition-all duration-700 group-hover:scale-150 group-hover:bg-cyan/20"></div>
       
       <div className="relative z-10 flex flex-col md:flex-row items-center gap-[32px]">
         <div className="flex-grow text-center md:text-left">
-          <Mail className="mb-[16px] opacity-80 mx-auto md:mx-0" size={36} />
-          <h3 className="font-display font-bold text-[28px] mb-[8px]">Join Our Newsletter</h3>
-          <p className="font-body text-[#E6FFFA] text-[15px] max-w-md">
+          <Mail className="mb-[16px] text-lime opacity-90 mx-auto md:mx-0 drop-shadow-sm" size={36} />
+          <h3 className="font-display font-bold text-[28px] mb-[8px] tracking-tight">Join Our Newsletter</h3>
+          <p className="font-body text-[#E6FFFA] text-[15px] max-w-md font-light">
             Get destination guides, tips, and inspiration delivered straight to your inbox.
           </p>
         </div>
         
-        <form onSubmit={handleSubscribe} className="w-full md:w-auto shrink-0 flex flex-col sm:flex-row gap-[8px]">
+        <form onSubmit={handleSubscribe} className="w-full md:w-auto shrink-0 flex flex-col sm:flex-row gap-[12px]">
           <input 
             type="email" 
             placeholder="Your email address" 
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full sm:w-[256px] px-[16px] py-[12px] rounded-none bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-[#0ED2E9] transition-colors font-body text-[15px]"
+            className="w-full sm:w-[256px] px-[24px] py-[14px] rounded-full bg-white/5 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-cyan focus:bg-white/10 transition-all font-body text-[15px] backdrop-blur-sm"
           />
           <button 
             type="submit" 
             disabled={isSubscribing}
-            className="w-full sm:w-auto bg-lime text-[#221E2A] font-display font-bold py-[12px] px-[24px] rounded-none hover:bg-white transition-colors disabled:opacity-70 whitespace-nowrap tracking-[0.14em] uppercase text-[12px]"
+            className="w-full sm:w-auto bg-lime text-[#221E2A] font-display font-bold py-[14px] px-[32px] rounded-full hover:bg-white transition-all hover:scale-105 disabled:opacity-70 whitespace-nowrap tracking-[0.14em] uppercase text-[12px] shadow-[0_4px_14px_rgba(193,234,0,0.3)] hover:shadow-[0_6px_20px_rgba(193,234,0,0.4)]"
           >
             {isSubscribing ? 'Subscribing...' : 'Subscribe'}
           </button>
