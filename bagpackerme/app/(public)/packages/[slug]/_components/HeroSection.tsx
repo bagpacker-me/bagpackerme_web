@@ -87,17 +87,17 @@ export default function HeroSection({ pkg }: { pkg: Package }) {
             {pkg.tagline}
           </p>
 
-          {/* Meta row — pill badges */}
+          {/* Meta row — stat blocks */}
           <div className="flex flex-wrap items-center gap-[12px] mt-[24px]">
-            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full border border-white/15">
+            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 border border-white/15">
               <Clock className="w-4 h-4 text-[#0ED2E9] shrink-0" />
               <span className="font-body text-[13px] text-white/80">{pkg.duration}</span>
             </div>
-            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full border border-white/15">
+            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 border border-white/15">
               <Users className="w-4 h-4 text-[#0ED2E9] shrink-0" />
               <span className="font-body text-[13px] text-white/80">{pkg.groupSize}</span>
             </div>
-            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full border border-white/15">
+            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 border border-white/15">
               <MapPin className="w-4 h-4 text-[#0ED2E9] shrink-0" />
               <span className="font-body text-[13px] text-white/80">{pkg.destinations?.length || 0} Cities</span>
             </div>

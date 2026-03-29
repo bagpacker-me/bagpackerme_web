@@ -44,7 +44,7 @@ export default function OverviewSection({ pkg }: { pkg: Package }) {
 
           {/* Sticky Sidebar (35% on desktop) */}
           <motion.div
-            className="lg:col-span-4 hidden lg:block sticky top-[136px] bg-white border border-[rgba(34,30,42,0.10)] p-[32px] shadow-lg rounded-2xl z-30"
+            className="lg:col-span-4 hidden lg:block sticky top-[136px] bg-white border border-[rgba(34,30,42,0.10)] p-[32px] shadow-lg z-30"
             initial={shouldReduceMotion ? false : { x: 40, opacity: 0 }}
             whileInView={shouldReduceMotion ? {} : { x: 0, opacity: 1 }}
             viewport={{ once: true, margin: '-100px' }}

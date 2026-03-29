@@ -49,7 +49,7 @@ export default function PackageGallery({ pkg }: { pkg: Package }) {
             {images.map((src, idx) => (
               <div
                 key={idx}
-                className="relative w-full break-inside-avoid overflow-hidden cursor-crosshair group rounded-xl"
+                className="relative w-full break-inside-avoid overflow-hidden cursor-crosshair group"
                 onClick={() => openLightbox(idx)}
               >
                 <Image
@@ -58,9 +58,9 @@ export default function PackageGallery({ pkg }: { pkg: Package }) {
                   width={800}
                   height={800}
                   sizes="(max-width: 768px) 50vw, 33vw"
-                  className="w-full h-auto object-cover transition-transform duration-700 ease-[var(--ease-default)] group-hover:scale-[1.05] rounded-xl"
+                  className="w-full h-auto object-cover transition-transform duration-700 ease-[var(--ease-default)] group-hover:scale-[1.05]"
                 />
-                <div className="absolute inset-0 bg-transparent group-hover:bg-[#221E2A]/25 transition-colors duration-300 flex items-center justify-center pointer-events-none rounded-xl">
+                <div className="absolute inset-0 bg-transparent group-hover:bg-[#221E2A]/25 transition-colors duration-300 flex items-center justify-center pointer-events-none">
                    <Maximize2 size={28} className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 drop-shadow-lg" />
                 </div>
               </div>
@@ -80,7 +80,7 @@ export default function PackageGallery({ pkg }: { pkg: Package }) {
             <X size={24} />
           </button>
 
-          <button onClick={prevImage} className="absolute left-[16px] md:left-[32px] top-1/2 -translate-y-1/2 text-white hover:text-white/70 transition-colors z-[110] bg-white/10 hover:bg-white/20 rounded-full p-2">
+          <button onClick={prevImage} className="absolute left-[16px] md:left-[32px] top-1/2 -translate-y-1/2 text-white hover:text-white/70 transition-colors z-[110] bg-white/10 hover:bg-white/20 p-2">
              <ChevronLeft size={28} />
           </button>
 
@@ -89,16 +89,16 @@ export default function PackageGallery({ pkg }: { pkg: Package }) {
               src={images[lightboxIndex]}
               alt={`Lightbox ${lightboxIndex}`}
               fill
-              className="object-contain rounded-xl"
+              className="object-contain"
               sizes="100vw"
             />
           </div>
 
-          <button onClick={nextImage} className="absolute right-[16px] md:right-[32px] top-1/2 -translate-y-1/2 text-white hover:text-white/70 transition-colors z-[110] bg-white/10 hover:bg-white/20 rounded-full p-2">
+          <button onClick={nextImage} className="absolute right-[16px] md:right-[32px] top-1/2 -translate-y-1/2 text-white hover:text-white/70 transition-colors z-[110] bg-white/10 hover:bg-white/20 p-2">
              <ChevronRight size={28} />
           </button>
 
-          <div className="absolute bottom-[24px] left-1/2 -translate-x-1/2 text-white/60 font-body text-[12px] bg-white/10 px-3 py-1 rounded-full">
+          <div className="absolute bottom-[24px] left-1/2 -translate-x-1/2 text-white/60 font-body text-[12px] bg-white/10 px-3 py-1">
             {lightboxIndex + 1} / {images.length}
           </div>
         </div>

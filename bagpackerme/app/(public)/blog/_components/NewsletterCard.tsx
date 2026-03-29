@@ -29,9 +29,9 @@ export default function NewsletterCard() {
   };
 
   return (
-    <div className="bg-[#285056] p-[32px] md:p-[48px] rounded-3xl shadow-lg border border-white/10 text-white my-[48px] relative overflow-hidden group">
-      <div className="absolute -top-[40px] -right-[40px] w-[160px] h-[160px] bg-white/10 rounded-full blur-2xl transition-all duration-700 group-hover:scale-150 group-hover:bg-lime/20"></div>
-      <div className="absolute -bottom-[40px] -left-[40px] w-[160px] h-[160px] bg-[#221E2A]/20 rounded-full blur-2xl transition-all duration-700 group-hover:scale-150 group-hover:bg-cyan/20"></div>
+    <div className="bg-[#285056] p-[32px] md:p-[48px] shadow-xl border border-white/10 text-white my-[48px] relative overflow-hidden group">
+      <div className="absolute -top-[40px] -right-[40px] w-[160px] h-[160px] bg-white/10 blur-2xl transition-all duration-700 group-hover:scale-150 group-hover:bg-lime/20"></div>
+      <div className="absolute -bottom-[40px] -left-[40px] w-[160px] h-[160px] bg-[#221E2A]/20 blur-2xl transition-all duration-700 group-hover:scale-150 group-hover:bg-cyan/20"></div>
       
       <div className="relative z-10 flex flex-col md:flex-row items-center gap-[32px]">
         <div className="flex-grow text-center md:text-left">
@@ -49,12 +49,12 @@ export default function NewsletterCard() {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full sm:w-[256px] px-[24px] py-[14px] rounded-full bg-white/5 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-cyan focus:bg-white/10 transition-all font-body text-[15px] backdrop-blur-sm"
+            className="w-full sm:w-[256px] px-[24px] py-[14px] bg-white/5 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-cyan focus:bg-white/10 transition-all font-body text-[15px]"
           />
           <button 
             type="submit" 
             disabled={isSubscribing}
-            className="w-full sm:w-auto bg-lime text-[#221E2A] font-display font-bold py-[14px] px-[32px] rounded-full hover:bg-white transition-all hover:scale-105 disabled:opacity-70 whitespace-nowrap tracking-[0.14em] uppercase text-[12px] shadow-[0_4px_14px_rgba(193,234,0,0.3)] hover:shadow-[0_6px_20px_rgba(193,234,0,0.4)]"
+            className="btn-lime w-full sm:w-auto whitespace-nowrap disabled:opacity-70"
           >
             {isSubscribing ? 'Subscribing...' : 'Subscribe'}
           </button>

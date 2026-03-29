@@ -39,9 +39,9 @@ export default function WhatsIncluded({ pkg }: { pkg: Package }) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-[32px] md:gap-[64px] max-w-5xl mx-auto">
 
           {/* Included */}
-          <FadeInSection delay={0.1} className="bg-white rounded-2xl p-[32px] shadow-sm border border-[rgba(34,30,42,0.05)]">
+          <FadeInSection delay={0.1} className="bg-white p-[32px] shadow-sm border border-[rgba(34,30,42,0.05)]">
             <h3 className="font-display text-[17px] font-bold text-[#221E2A] mb-[20px] flex items-center gap-[10px]">
-              <span className="w-[24px] h-[24px] rounded-full bg-[#dcfce7] flex items-center justify-center shrink-0">
+              <span className="w-[24px] h-[24px] bg-[#dcfce7] flex items-center justify-center shrink-0">
                 <Check className="w-[14px] h-[14px] text-[#22c55e]" />
               </span>
               Included in the Price
@@ -65,9 +65,9 @@ export default function WhatsIncluded({ pkg }: { pkg: Package }) {
           </FadeInSection>
 
           {/* Excluded */}
-          <FadeInSection delay={0.2} className="bg-white rounded-2xl p-[32px] shadow-sm border border-[rgba(34,30,42,0.05)]">
+          <FadeInSection delay={0.2} className="bg-white p-[32px] shadow-sm border border-[rgba(34,30,42,0.05)]">
             <h3 className="font-display text-[17px] font-bold text-[#221E2A] mb-[20px] flex items-center gap-[10px]">
-              <span className="w-[24px] h-[24px] rounded-full bg-[#fee2e2] flex items-center justify-center shrink-0">
+              <span className="w-[24px] h-[24px] bg-[#fee2e2] flex items-center justify-center shrink-0">
                 <X className="w-[14px] h-[14px] text-[#ef4444]" />
               </span>
               Not Included

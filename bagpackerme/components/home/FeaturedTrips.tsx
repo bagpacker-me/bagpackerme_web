@@ -77,7 +77,7 @@ export default function FeaturedTrips() {
             /* Premium empty state with destination teaser */
             <div className="relative overflow-hidden text-center py-24 bg-white border border-gray-100">
               <div className="relative z-10 max-w-sm mx-auto">
-                <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-teal/10 flex items-center justify-center">
+                <div className="w-16 h-16 mx-auto mb-6 bg-teal/10 flex items-center justify-center">
                   <span className="text-2xl">🌏</span>
                 </div>
                 <h3 className="font-heading font-bold text-void text-2xl mb-3">Journeys Coming Soon</h3>

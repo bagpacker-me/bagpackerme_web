@@ -149,28 +149,28 @@ export default function BookingForm({ pkg }: { pkg: Package }) {
           
           <div className="space-y-[32px] font-body text-[rgba(255,255,255,0.8)] w-full max-w-sm mx-auto lg:mx-0">
             <a href="tel:+919920992026" className="flex items-center gap-[24px] p-[16px] rounded-none hover:bg-[rgba(255,255,255,0.05)] transition-colors border border-transparent hover:border-[rgba(255,255,255,0.1)] group">
-              <div className="w-[48px] h-[48px] bg-[#D4E839]/10 group-hover:bg-[#D4E839] text-[#D4E839] group-hover:text-[#221E2A] rounded-full flex items-center justify-center transition-colors duration-300">
+              <div className="w-[48px] h-[48px] bg-[#D4E839]/10 group-hover:bg-[#D4E839] text-[#D4E839] group-hover:text-[#221E2A] flex items-center justify-center transition-colors duration-300">
                 <Phone size={24} />
               </div>
               <span className="font-display text-[16px] group-hover:text-white transition-colors duration-300">+91 99209 92026</span>
             </a>
             
             <a href="mailto:hello@bagpackerme.com" className="flex items-center gap-[24px] p-[16px] rounded-none hover:bg-[rgba(255,255,255,0.05)] transition-colors border border-transparent hover:border-[rgba(255,255,255,0.1)] group">
-              <div className="w-[48px] h-[48px] bg-[#D4E839]/10 group-hover:bg-[#D4E839] text-[#D4E839] group-hover:text-[#221E2A] rounded-full flex items-center justify-center transition-colors duration-300">
+              <div className="w-[48px] h-[48px] bg-[#D4E839]/10 group-hover:bg-[#D4E839] text-[#D4E839] group-hover:text-[#221E2A] flex items-center justify-center transition-colors duration-300">
                 <Mail size={24} />
               </div>
               <span className="font-display text-[16px] group-hover:text-white transition-colors duration-300">hello@bagpackerme.com</span>
             </a>
             
             <a href="https://instagram.com/bagpackerme" target="_blank" rel="noopener noreferrer" className="flex items-center gap-[24px] p-[16px] rounded-none hover:bg-[rgba(255,255,255,0.05)] transition-colors border border-transparent hover:border-[rgba(255,255,255,0.1)] group">
-              <div className="w-[48px] h-[48px] bg-[#D4E839]/10 group-hover:bg-[#D4E839] text-[#D4E839] group-hover:text-[#221E2A] rounded-full flex items-center justify-center transition-colors duration-300 font-display font-bold text-xl">
+              <div className="w-[48px] h-[48px] bg-[#D4E839]/10 group-hover:bg-[#D4E839] text-[#D4E839] group-hover:text-[#221E2A] flex items-center justify-center transition-colors duration-300 font-display font-bold text-xl">
                 Ig
               </div>
               <span className="font-display text-[16px] group-hover:text-white transition-colors duration-300">@bagpackerme</span>
             </a>
 
             <div className="flex items-center gap-[24px] p-[16px] rounded-none border border-transparent">
-              <div className="w-[48px] h-[48px] bg-[rgba(255,255,255,0.05)] text-[rgba(255,255,255,0.5)] rounded-full flex items-center justify-center">
+              <div className="w-[48px] h-[48px] bg-[rgba(255,255,255,0.05)] text-[rgba(255,255,255,0.5)] flex items-center justify-center">
                 <MapPin size={24} />
               </div>
               <span className="font-display text-[16px] text-[rgba(255,255,255,0.5)]">Mumbai, India</span>
