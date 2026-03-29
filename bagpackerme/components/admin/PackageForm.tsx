@@ -306,16 +306,6 @@ function TabBasicInfo({
         />
       </div>
 
-      <Field>
-        <Label>Status</Label>
-        <div className="flex items-center gap-4 mt-1">
-          <Toggle
-            checked={form.status === 'published'}
-            onChange={(v) => setForm((f) => ({ ...f, status: v ? 'published' : 'draft' }))}
-            label={form.status === 'published' ? 'Published' : 'Draft'}
-          />
-        </div>
-      </Field>
     </div>
   );
 }
@@ -771,11 +761,25 @@ export default function PackageForm({ initialData }: PackageFormProps) {
 
     setSaving(true);
     try {
+      // Prevent Firestore "Unsupported field value: undefined" errors
+      const cleanPayload = (function replaceUndefinedWithNull(obj: unknown): unknown {
+        if (obj === undefined) return null;
+        if (Array.isArray(obj)) return obj.map(replaceUndefinedWithNull);
+        if (obj !== null && typeof obj === 'object') {
+          const newObj: Record<string, unknown> = {};
+          for (const key in obj as Record<string, unknown>) {
+            newObj[key] = replaceUndefinedWithNull((obj as Record<string, unknown>)[key]);
+          }
+          return newObj;
+        }
+        return obj;
+      })(form);
+
       if (initialData?.id) {
-        await updatePackage(initialData.id, form);
+        await updatePackage(initialData.id, cleanPayload as Partial<Package>);
         toast.success('Package updated!');
       } else {
-        const data = { ...form, createdAt: new Date().toISOString() };
+        const data = { ...(cleanPayload as Omit<Package, 'id'>), createdAt: new Date().toISOString() };
         await createPackage(data);
         toast.success('Package saved!');
       }

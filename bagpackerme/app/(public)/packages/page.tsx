@@ -19,8 +19,12 @@ const DURATIONS = [
 const parseDurationDays = (durationStr: string): number => {
   if (!durationStr) return 0;
   if (durationStr.toLowerCase().includes('half')) return 0.5;
-  const match = durationStr.match(/\d+/);
-  return match ? parseInt(match[0], 10) : 0;
+  const matches = durationStr.match(/\d+/g);
+  if (matches) {
+    const numbers = matches.map(n => parseInt(n, 10));
+    return Math.max(...numbers);
+  }
+  return 0;
 };
 
 export default function PackagesPage() {
@@ -178,7 +182,7 @@ export default function PackagesPage() {
               {filteredPackages.length > 0 ? (
                 /* Spec #4: stagger 0.08 with useInView */
                 <motion.div
-                  key="package-grid"
+                  key={`package-grid-${activeCategory}-${activeDuration}`}
                   layout
                   className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[24px]"
                   variants={shouldReduceMotion ? undefined : CARD_GRID_VARIANTS}
@@ -198,6 +202,7 @@ export default function PackagesPage() {
                   </motion.div>
                 ) : (
                   <motion.div 
+                    key="empty-state"
                     layout
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
