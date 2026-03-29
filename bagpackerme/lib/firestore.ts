@@ -32,20 +32,24 @@ export const getBlogs = async () => getDocs(query(blogsCol, orderBy('createdAt',
 export const getPublishedBlogs = async () => {
   const snap = await getDocs(query(blogsCol, where('status', '==', 'published')));
   // Sort in JS — avoids needing a composite index on (status, createdAt)
-  const docs = snap.docs.map(d => ({ id: d.id, ...d.data() } ));
-  docs.sort((a: any, b: any) => (b.createdAt ?? b.publishDate ?? '').localeCompare(a.createdAt ?? a.publishDate ?? ''));
-  return { docs: snap.docs.sort((a, b) => {
-    const aData = a.data() as any;
-    const bData = b.data() as any;
-    return (bData.createdAt ?? bData.publishDate ?? '').localeCompare(aData.createdAt ?? aData.publishDate ?? '');
-  })};
+  return {
+    docs: snap.docs.sort((a, b) => {
+      const aData = a.data();
+      const bData = b.data();
+      const aDate = (aData['createdAt'] ?? aData['publishDate'] ?? '') as string;
+      const bDate = (bData['createdAt'] ?? bData['publishDate'] ?? '') as string;
+      return bDate.localeCompare(aDate);
+    }),
+  };
 };
 export const getRecentPublishedBlogs = async (limitCount: number) => {
   const snap = await getDocs(query(blogsCol, where('status', '==', 'published')));
   const sorted = snap.docs.sort((a, b) => {
-    const aData = a.data() as any;
-    const bData = b.data() as any;
-    return (bData.createdAt ?? bData.publishDate ?? '').localeCompare(aData.createdAt ?? aData.publishDate ?? '');
+    const aData = a.data();
+    const bData = b.data();
+    const aDate = (aData['createdAt'] ?? aData['publishDate'] ?? '') as string;
+    const bDate = (bData['createdAt'] ?? bData['publishDate'] ?? '') as string;
+    return bDate.localeCompare(aDate);
   });
   return { docs: sorted.slice(0, limitCount) };
 };
