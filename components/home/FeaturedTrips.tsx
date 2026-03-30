@@ -6,7 +6,7 @@ import { getFeaturedPackages } from '@/lib/firestore';
 import { Package } from '@/types';
 import PackageCard, { PackageCardSkeleton } from './PackageCard';
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Compass } from 'lucide-react';
 import { FadeInSection, CARD_GRID_VARIANTS, CARD_ITEM_VARIANTS } from '@/components/ui/FadeInSection';
 
 export default function FeaturedTrips() {
@@ -78,7 +78,7 @@ export default function FeaturedTrips() {
             <div className="relative overflow-hidden text-center py-24 bg-white border border-gray-100">
               <div className="relative z-10 max-w-sm mx-auto">
                 <div className="w-16 h-16 mx-auto mb-6 bg-teal/10 flex items-center justify-center">
-                  <span className="text-2xl">🌏</span>
+                  <Compass className="w-7 h-7 text-teal" />
                 </div>
                 <h3 className="font-heading font-bold text-void text-2xl mb-3">Journeys Coming Soon</h3>
                 <p className="font-sans text-gray-500 text-sm leading-relaxed mb-8">
@@ -95,7 +95,7 @@ export default function FeaturedTrips() {
         {/* Bottom CTA */}
         {packages.length > 0 && (
           <FadeInSection className="mt-16 flex justify-center" delay={0.2}>
-            <Link href="/packages" className="btn-lime">
+            <Link href="/packages" className="btn-lime btn-shimmer">
               View All Journeys <ArrowRight className="w-4 h-4" />
             </Link>
           </FadeInSection>

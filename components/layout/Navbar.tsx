@@ -68,7 +68,7 @@ export function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             {/* Logo */}
-            <Link href="/" className="flex-shrink-0 z-[60] relative origin-left scale-[0.65] md:scale-100">
+            <Link href="/" className="flex-shrink-0 z-[60] relative origin-left scale-[0.78] md:scale-100">
               <Logo variant="light" />
             </Link>
 
@@ -81,10 +81,13 @@ export function Navbar() {
                     className="text-white hover:text-lime transition-colors duration-200 relative py-2 text-sm font-medium tracking-wide"
                   >
                     {link.name}
+                    {/* Animated underline on hover */}
+                    <span className="absolute -bottom-1 left-0 w-full h-[2px] bg-lime scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out origin-left" />
+                    {/* Active page indicator — full-width lime bar */}
                     {pathname === link.href && (
                       <motion.div
                         layoutId="nav-indicator"
-                        className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-lime rounded-full"
+                        className="absolute -bottom-1 left-0 w-full h-[2px] bg-lime"
                       />
                     )}
                   </Link>
@@ -150,7 +153,7 @@ export function Navbar() {
                 >
                   <Link
                     href={link.href}
-                    className="text-white text-4xl font-heading font-bold hover:text-lime transition-colors"
+                    className="text-white text-3xl font-heading font-bold hover:text-lime transition-colors"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     {link.name}

@@ -61,12 +61,12 @@ export function FadeInSection({
 export const CARD_GRID_VARIANTS: Variants = {
   hidden: {},
   visible: {
-    transition: { staggerChildren: 0.08 },
+    transition: { staggerChildren: 0.10 },
   },
 };
 
 export const CARD_ITEM_VARIANTS: Variants = {
-  hidden: { opacity: 0, y: 24 },
+  hidden: { opacity: 0, y: 30 },
   visible: {
     opacity: 1,
     y: 0,

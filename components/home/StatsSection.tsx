@@ -78,7 +78,7 @@ function StatItem({
       {!isLast && (
         <span
           className="hidden md:block absolute right-0 top-1/2 -translate-y-1/2 w-px h-10"
-          style={{ background: 'rgba(255,255,255,0.15)' }}
+          style={{ background: 'rgba(255,255,255,0.22)' }}
           aria-hidden="true"
         />
       )}
@@ -127,10 +127,10 @@ export default function StatsSection() {
   return (
     <section ref={ref} className="relative w-full bg-white py-0">
       <div
-        className="w-full max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4"
+        className="w-full max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4"
         style={{
           background: 'linear-gradient(100deg, #285056 0%, #1a4047 50%, #1e3d42 100%)',
-          boxShadow: '0 16px 48px rgba(34,30,42,0.20)',
+          boxShadow: '0 16px 48px rgba(40,80,86,0.24), 0 4px 16px rgba(40,80,86,0.12)',
         }}
       >
         {STATS.map((stat, idx) => (

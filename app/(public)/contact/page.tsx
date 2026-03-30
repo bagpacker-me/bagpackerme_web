@@ -52,7 +52,7 @@ const SuccessState = () => {
           strokeLinejoin="round"
           initial={shouldReduceMotion ? { pathLength: 1 } : { pathLength: 0 }}
           animate={{ pathLength: 1 }}
-          transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.6, delay: 0.2 }}
+          transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.8, delay: 0.2 }}
         />
       </svg>
     </div>
@@ -104,10 +104,10 @@ export default function ContactPage() {
   };
 
   const fieldCls = (hasError: boolean) =>
-    `w-full px-[16px] py-[12px] rounded-none border font-body text-[15px] outline-none transition-colors ${
+    `w-full px-[16px] py-[12px] rounded-none border font-body text-[15px] outline-none transition-all duration-200 ${
       hasError
         ? 'border-red-400 focus:border-red-500 animate-[shake_0.3s_ease-in-out] bg-red-50 text-red-900 placeholder-red-300'
-        : 'border-void/10 bg-ice text-void placeholder-void/40 focus:border-teal focus:bg-white'
+        : 'border-[rgba(34,30,42,0.12)] bg-white text-void placeholder-void/40 focus:border-teal focus:ring-2 focus:ring-teal/15'
     }`;
 
   return (
@@ -116,10 +116,10 @@ export default function ContactPage() {
       <style>{`
         @keyframes shake {
           0%, 100% { transform: translateX(0); }
-          20% { transform: translateX(-6px); }
-          40% { transform: translateX(6px); }
-          60% { transform: translateX(-4px); }
-          80% { transform: translateX(4px); }
+          20% { transform: translateX(-4px); }
+          40% { transform: translateX(4px); }
+          60% { transform: translateX(-3px); }
+          80% { transform: translateX(3px); }
         }
       `}</style>
 
@@ -380,7 +380,7 @@ export default function ContactPage() {
               </div>
 
               {/* Map */}
-              <div className="h-[320px] w-full border-t border-white/10">
+              <div className="aspect-video max-h-[360px] w-full border-t border-white/10">
                 <iframe
                   src="https://maps.google.com/maps?q=Mumbai,India&t=&z=11&ie=UTF8&iwloc=&output=embed"
                   className="w-full h-full"

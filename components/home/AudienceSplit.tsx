@@ -48,8 +48,8 @@ export default function AudienceSplit() {
         </motion.div>
 
         {/* Decorative glows */}
-        <div className="absolute top-0 right-0 w-72 h-72 bg-cyan/5 rounded-full -translate-y-1/2 translate-x-1/4 blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-48 h-48 bg-lime/5 rounded-full translate-y-1/2 -translate-x-1/4 blur-3xl pointer-events-none" />
+        <div className="absolute top-0 right-0 w-56 h-56 bg-cyan/5 rounded-full -translate-y-1/2 translate-x-1/4 blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-40 h-40 bg-lime/5 rounded-full translate-y-1/2 -translate-x-1/4 blur-3xl pointer-events-none" />
       </div>
 
       {/* ── RIGHT PANEL — Indian Explorers ─────────────────────────────── */}
@@ -90,13 +90,13 @@ export default function AudienceSplit() {
             </div>
           </div>
 
-          <Link href="/packages?duration=short" className="btn-teal inline-flex items-center justify-center">
+          <Link href="/packages?duration=short" className="btn-lime inline-flex items-center justify-center">
             Explore Domestic Trips →
           </Link>
         </motion.div>
 
         {/* Decorative glows */}
-        <div className="absolute top-0 right-0 w-72 h-72 bg-teal/8 rounded-full -translate-y-1/2 translate-x-1/4 blur-3xl pointer-events-none" />
+        <div className="absolute top-0 right-0 w-56 h-56 bg-teal/8 rounded-full -translate-y-1/2 translate-x-1/4 blur-3xl pointer-events-none" />
       </div>
     </section>
   );

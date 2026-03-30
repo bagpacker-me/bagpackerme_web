@@ -131,6 +131,12 @@ export default function PackageCard({
           cursor: 'pointer',
           display: 'flex',
           flexDirection: 'column',
+          border: '1px solid rgba(34,30,42,0.10)',
+          boxShadow: isHovered
+            ? '0 20px 60px rgba(40,80,86,0.20), 0 8px 24px rgba(40,80,86,0.12)'
+            : '0 8px 32px rgba(40,80,86,0.12), 0 2px 8px rgba(40,80,86,0.08)',
+          transition: 'box-shadow 350ms cubic-bezier(0.25,0.46,0.45,0.94), border-color 350ms ease',
+          borderColor: isHovered ? 'rgba(34,30,42,0.12)' : 'rgba(34,30,42,0.10)',
         }}
         role="article"
         aria-label={pkg.title}
@@ -199,7 +205,16 @@ export default function PackageCard({
               }}
               aria-hidden="true"
             >
-              <ArrowRight size={24} color="#ffffff" strokeWidth={2} />
+              <ArrowRight
+                size={24}
+                color="#ffffff"
+                strokeWidth={2}
+                style={{
+                  transform: isHovered ? 'translateY(0)' : 'translateY(8px)',
+                  opacity: isHovered ? 1 : 0,
+                  transition: 'transform 400ms cubic-bezier(0.25,0.46,0.45,0.94), opacity 400ms ease',
+                }}
+              />
               <span
                 style={{
                   fontFamily: 'var(--font-display)',
@@ -208,6 +223,9 @@ export default function PackageCard({
                   letterSpacing: '0.2em',
                   textTransform: 'uppercase',
                   color: '#ffffff',
+                  transform: isHovered ? 'translateY(0)' : 'translateY(8px)',
+                  opacity: isHovered ? 1 : 0,
+                  transition: 'transform 400ms cubic-bezier(0.25,0.46,0.45,0.94) 50ms, opacity 400ms ease 50ms',
                 }}
               >
                 View Journey

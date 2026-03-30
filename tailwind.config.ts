@@ -32,6 +32,27 @@ const config: Config = {
       letterSpacing: {
         widest: '0.22em',
       },
+      boxShadow: {
+        'card-teal':       '0 8px 32px rgba(40,80,86,0.12), 0 2px 8px rgba(40,80,86,0.08)',
+        'card-teal-hover': '0 20px 60px rgba(40,80,86,0.20), 0 8px 24px rgba(40,80,86,0.12)',
+        'glow-lime':       '0 0 24px rgba(193,234,0,0.18)',
+        'glow-lime-sm':    '0 4px 16px rgba(193,234,0,0.15)',
+        'glow-cyan':       '0 0 24px rgba(14,210,233,0.15)',
+      },
+      borderColor: {
+        'subtle':  'rgba(34,30,42,0.08)',
+        'medium':  'rgba(34,30,42,0.12)',
+        'strong':  'rgba(34,30,42,0.18)',
+      },
+      keyframes: {
+        'underline-in': {
+          '0%':   { transform: 'scaleX(0)' },
+          '100%': { transform: 'scaleX(1)' },
+        },
+      },
+      animation: {
+        'underline-in': 'underline-in 0.3s ease-out forwards',
+      },
     },
   },
   plugins: [],

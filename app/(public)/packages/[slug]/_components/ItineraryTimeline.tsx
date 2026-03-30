@@ -72,7 +72,7 @@ function TimelineItem({
           {day.day}
         </div>
         {/* Vertical connector (not shown on last item) */}
-        <div className="flex-1 w-[1px] bg-white/10 mt-[8px]" />
+        <div className="flex-1 w-[1px] mt-[8px]" style={{ background: 'linear-gradient(to bottom, rgba(40,80,86,0.5), rgba(255,255,255,0.05))' }} />
       </div>
 
       {/* Right: Content */}

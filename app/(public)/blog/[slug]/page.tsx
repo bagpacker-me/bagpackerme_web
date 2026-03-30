@@ -55,13 +55,13 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
     max-w-none font-sans text-[16px] md:text-[18px] leading-[1.8] text-[#221E2A]
     [&>h2]:font-heading [&>h2]:font-bold [&>h2]:text-[28px] md:[&>h2]:text-[32px] [&>h2]:text-[#285056] [&>h2]:mt-[64px] [&>h2]:mb-[24px] [&>h2]:leading-tight
     [&>h3]:font-heading [&>h3]:font-bold [&>h3]:text-[24px] [&>h3]:text-[#221E2A] [&>h3]:mt-[48px] [&>h3]:mb-[16px]
-    [&>blockquote]:border-l-[4px] [&>blockquote]:border-[#0ED2E9] [&>blockquote]:font-accent [&>blockquote]:italic [&>blockquote]:text-[24px] [&>blockquote]:pl-[24px] [&>blockquote]:text-[#4a5568] [&>blockquote]:my-[48px] [&>blockquote]:bg-[#0ED2E9]/5 [&>blockquote]:py-[12px] [&>blockquote]:pr-[24px]
+    [&>blockquote]:border-l-[4px] [&>blockquote]:border-[#0ED2E9] [&>blockquote]:font-accent [&>blockquote]:italic [&>blockquote]:text-[24px] [&>blockquote]:pl-[24px] [&>blockquote]:text-[#4a5568] [&>blockquote]:my-[48px] [&>blockquote]:bg-[#E9F5F7]/50 [&>blockquote]:py-[16px] [&>blockquote]:pr-[24px]
     [&>img]:w-full [&>img]:my-[48px] [&>img]:object-cover [&>img]:shadow-md
     [&>p>img]:w-full [&>p>img]:my-[48px] [&>p>img]:object-cover [&>p>img]:shadow-md
     [&_a]:text-[#0ED2E9] [&_a]:underline hover:[&_a]:text-[#285056] [&_a]:transition-colors [&_a]:font-bold
     [&>p]:mb-[24px]
-    [&>ul]:list-disc [&>ul]:pl-[24px] [&>ul]:mb-[24px] [&>ul>li]:mb-[8px] [&>ul>li]:pl-[8px]
-    [&>ol]:list-decimal [&>ol]:pl-[24px] [&>ol]:mb-[24px] [&>ol>li]:mb-[8px] [&>ol>li]:pl-[8px]
+    [&>ul]:list-disc [&>ul]:pl-[24px] [&>ul]:mb-[24px] [&>ul>li]:mb-[8px] [&>ul>li]:pl-[8px] [&>ul>li]:marker:text-teal
+    [&>ol]:list-decimal [&>ol]:pl-[24px] [&>ol]:mb-[24px] [&>ol>li]:mb-[8px] [&>ol>li]:pl-[8px] [&>ol>li]:marker:text-teal
     [&>strong]:text-[#221E2A]
   `;
 
@@ -135,7 +135,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
         </div>
 
         {/* Author Bio */}
-        <div className="bg-[#F7F9FA] p-[32px] md:p-[48px] flex flex-col md:flex-row items-center md:items-start gap-[32px] border border-gray-100 mt-[64px] mb-[64px] text-center md:text-left hover:shadow-[0_8px_30px_rgba(34,30,42,0.08)] transition-shadow">
+        <div className="bg-[#F7F9FA] p-[32px] md:p-[48px] flex flex-col md:flex-row items-center md:items-start gap-[32px] border border-gray-100 border-l-[3px] border-l-teal mt-[64px] mb-[64px] text-center md:text-left hover:shadow-[0_8px_30px_rgba(40,80,86,0.10)] transition-shadow">
           <div className="w-[96px] h-[96px] bg-[rgba(40,80,86,0.1)] flex items-center justify-center shrink-0 border-[4px] border-white shadow-sm overflow-hidden text-teal">
             <User size={40} className="text-[#285056]" />
           </div>

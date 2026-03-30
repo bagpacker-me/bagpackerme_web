@@ -246,7 +246,7 @@ export default function BlogListingClient({ initialBlogs }: { initialBlogs: Blog
                     placeholder="Search stories..." 
                     value={searchQuery}
                     onChange={handleSearchChange}
-                    className="w-full pl-[56px] pr-[20px] py-[18px] border border-gray-200 bg-white shadow-sm text-void font-body text-[15px] focus:border-teal focus:ring-4 focus:ring-teal/10 transition-all outline-none"
+                    className="w-full pl-[56px] pr-[20px] py-[18px] border border-gray-200 bg-white shadow-sm text-void font-body text-[15px] focus:border-teal focus:ring-4 focus:ring-teal/10 focus:shadow-[0_0_0_3px_rgba(40,80,86,0.08)] transition-all outline-none"
                   />
                 </div>
 
@@ -263,7 +263,7 @@ export default function BlogListingClient({ initialBlogs }: { initialBlogs: Blog
                          <li key={cat}>
                            <button
                              onClick={() => handleCategoryChange(cat)}
-                             className={`w-full flex items-center justify-between px-[16px] py-[12px] transition-all group ${isActive ? 'bg-ice text-teal border-l-[3px] border-teal' : 'hover:bg-gray-50 border-l-[3px] border-transparent'}`}
+                             className={`w-full flex items-center justify-between px-[16px] py-[12px] transition-all duration-200 group ${isActive ? 'bg-ice text-teal border-l-[3px] border-teal' : 'hover:bg-gray-50 hover:scale-[1.01] border-l-[3px] border-transparent'}`}
                            >
                              <span className={`font-body text-[15px] transition-colors ${isActive ? 'font-semibold' : 'text-gray-600 group-hover:text-void'}`}>
                                {cat}

@@ -89,7 +89,7 @@ export default function HeroSection() {
         className="absolute inset-0 z-[1]"
         style={{
           background:
-            'linear-gradient(160deg, rgba(34,30,42,0.70) 0%, rgba(34,30,42,0.45) 50%, rgba(34,30,42,0.85) 100%)',
+            'linear-gradient(160deg, rgba(34,30,42,0.72) 0%, rgba(34,30,42,0.55) 50%, rgba(34,30,42,0.85) 100%)',
         }}
         aria-hidden="true"
       />
@@ -125,7 +125,13 @@ export default function HeroSection() {
             {...fadeUp(0.1)}
             className="flex items-center gap-3 mb-6"
           >
-            <div className="w-8 h-px bg-cyan opacity-90" />
+            <motion.div
+              className="w-8 h-px bg-cyan"
+              initial={{ scaleX: 0, opacity: 0 }}
+              animate={{ scaleX: 1, opacity: 0.9 }}
+              transition={shouldReduceMotion ? { duration: 0 } : { delay: 0.6, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+              style={{ transformOrigin: 'left' }}
+            />
             <span
               style={{
                 fontFamily: 'var(--font-display)',
@@ -193,7 +199,7 @@ export default function HeroSection() {
             className="flex flex-col sm:flex-row items-start gap-4 sm:gap-5"
             style={{ marginTop: '44px' }}
           >
-            <Link href="/packages" className="btn-lime">Explore Trips →</Link>
+            <Link href="/packages" className="btn-lime btn-shimmer">Explore Trips →</Link>
             <Link href="/about" className="btn-ghost backdrop-blur-sm bg-white/5">
               Our Story
             </Link>
@@ -208,7 +214,7 @@ export default function HeroSection() {
             transition={
               shouldReduceMotion
                 ? { duration: 0 }
-                : { delay: 1.2, duration: 0.8 }
+                : { delay: 0.8, duration: 0.8 }
             }
             className="flex flex-col items-center gap-2"
             aria-hidden="true"

@@ -55,20 +55,20 @@ export default function NewsletterSection() {
             Join 2,000+ engaged travelers across India and the world.
           </p>
           
-          <form onSubmit={handleSubmit} className="w-full max-w-[480px] mx-auto flex flex-col sm:flex-row gap-0 sm:gap-2 mb-4">
-            <input 
+          <form onSubmit={handleSubmit} className="w-full max-w-[480px] mx-auto flex flex-col sm:flex-row gap-0 mb-4">
+            <input
               aria-label="Email address"
-              type="email" 
-              placeholder="Your email address" 
+              type="email"
+              placeholder="Your email address"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-            className="flex-grow bg-white/10 border border-white/20 text-white placeholder-white/50 px-6 py-4 outline-none focus:border-lime transition-colors duration-300 font-sans rounded-none mb-2 sm:mb-0"
+            className="flex-grow bg-white/[0.07] border border-white/20 text-white placeholder-white/50 px-6 py-4 outline-none focus:border-lime focus:shadow-[0_4px_16px_rgba(193,234,0,0.15)] transition-all duration-300 font-sans rounded-none mb-2 sm:mb-0"
             />
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               disabled={loading}
-              className="bg-lime hover:bg-lime/90 text-void font-display font-bold text-[13px] tracking-[0.14em] uppercase px-8 py-4 transition-colors duration-300 rounded-none disabled:opacity-70 flex items-center justify-center min-w-[140px]"
+              className="bg-lime hover:bg-lime/90 text-void font-display font-bold text-[13px] tracking-[0.14em] uppercase px-8 py-4 transition-all duration-300 rounded-none disabled:opacity-50 flex items-center justify-center min-w-[140px]"
             >
               {loading ? (
                 <div className="w-5 h-5 border-2 border-void border-t-transparent rounded-full animate-spin"></div>

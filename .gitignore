@@ -5,6 +5,7 @@
 /.pnp
 .pnp.js
 .yarn/install-state.gz
+/skills
 
 # testing
 /coverage
@@ -34,12 +35,3 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
-# ui/ux tools
-ui-ux-pro/
-
-# playwright
-/playwright/
-playwright-report/
-test-results/
-.playwright/

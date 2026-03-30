@@ -8,22 +8,22 @@ import Link from 'next/link';
 
 const PILLARS = [
   {
-    icon: <Users className="w-5 h-5 text-cyan" />,
+    icon: <Users className="w-6 h-6 text-cyan" />,
     title: 'COMMUNITY-FIRST',
     desc: 'Started as a travel community, not a company',
   },
   {
-    icon: <Map className="w-5 h-5 text-cyan" />,
+    icon: <Map className="w-6 h-6 text-cyan" />,
     title: 'DEEPLY PERSONAL',
     desc: 'No two itineraries are ever the same',
   },
   {
-    icon: <Leaf className="w-5 h-5 text-cyan" />,
+    icon: <Leaf className="w-6 h-6 text-cyan" />,
     title: 'RESPONSIBLE TOURISM',
     desc: 'Local guides, artisans, eco practices',
   },
   {
-    icon: <UserCircle className="w-5 h-5 text-cyan" />,
+    icon: <UserCircle className="w-6 h-6 text-cyan" />,
     title: 'FOUNDER-LED',
     desc: 'Real expertise, real accountability',
   },
@@ -91,7 +91,7 @@ export default function AboutSection() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: 0.1 * i }}
-                  className="flex items-start gap-4"
+                  className="flex items-start gap-4 p-3 -m-3 hover:bg-white/5 transition-all duration-300 hover:-translate-y-0.5"
                 >
                   <div className="mt-0.5 flex-shrink-0">{pillar.icon}</div>
                   <div>
@@ -189,8 +189,8 @@ export default function AboutSection() {
 
             {/* Teal glow accent */}
             <div
-              className="absolute bottom-10 left-10 w-40 h-40 rounded-full blur-[80px] pointer-events-none"
-              style={{ background: 'rgba(40,80,86,0.5)', zIndex: 5 }}
+              className="absolute bottom-10 left-10 w-48 h-48 rounded-full blur-[80px] pointer-events-none"
+              style={{ background: 'rgba(40,80,86,0.6)', zIndex: 5 }}
             />
           </motion.div>
         </div>

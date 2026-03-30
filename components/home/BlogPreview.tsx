@@ -91,7 +91,7 @@ export default function BlogPreview() {
                 <motion.div
                   key={blog.id}
                   variants={shouldReduceMotion ? undefined : CARD_ITEM_VARIANTS}
-                  className="group flex flex-col h-full cursor-pointer"
+                  className="group flex flex-col h-full cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-card-teal"
                 >
                   <Link
                     href={`/blog/${blog.slug}`}
@@ -133,7 +133,7 @@ export default function BlogPreview() {
                     </p>
 
                     <div className="mt-auto pt-5 border-t border-gray-100">
-                      <Link href={`/blog/${blog.slug}`} className="card-cta-link inline-flex items-center gap-2">
+                      <Link href={`/blog/${blog.slug}`} className="inline-flex items-center gap-2 px-3 py-1.5 bg-ice hover:bg-teal hover:text-white text-xs font-display font-bold uppercase tracking-wider text-teal transition-all duration-200">
                         Read More →
                       </Link>
                     </div>

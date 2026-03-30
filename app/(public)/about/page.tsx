@@ -137,7 +137,7 @@ export default function AboutPage() {
                 />
               </div>
             </div>
-            <div className="absolute -bottom-[20px] -right-[20px] bg-lime text-void font-display text-[12px] font-bold tracking-widest px-[24px] py-[16px] uppercase z-10 shadow-lime border-l-[3px] border-void">
+            <div className="absolute -bottom-[12px] -right-[12px] sm:-bottom-[20px] sm:-right-[20px] bg-lime text-void font-display text-[12px] font-bold tracking-widest px-[24px] py-[16px] uppercase z-10 shadow-lime border-l-[3px] border-void">
               EST. 2020
             </div>
           </FadeInSection>

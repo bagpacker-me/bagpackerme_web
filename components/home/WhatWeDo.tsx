@@ -64,7 +64,7 @@ export default function WhatWeDo() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.15 * i }}
-              className="relative bg-white/5 border border-white/8 p-8 md:p-10 group overflow-hidden"
+              className="relative bg-white/5 border border-white/[0.12] hover:border-white/[0.16] p-8 md:p-10 group overflow-hidden"
               style={{
                 transition: 'background 400ms, transform 350ms, box-shadow 350ms',
               }}
@@ -80,7 +80,7 @@ export default function WhatWeDo() {
 
               {/* Cyan corner glow */}
               <div
-                className="absolute top-0 right-0 w-28 h-28 rounded-full blur-2xl -mr-8 -mt-8 pointer-events-none transition-opacity duration-300"
+                className="absolute top-0 right-0 w-28 h-28 rounded-full blur-2xl -mr-4 -mt-4 pointer-events-none transition-opacity duration-300"
                 style={{ background: 'rgba(14,210,233,0.10)' }}
               />
 
@@ -93,7 +93,7 @@ export default function WhatWeDo() {
 
               {/* Bottom lime line on hover */}
               <div
-                className="absolute bottom-0 left-0 h-[2px] w-0 group-hover:w-full transition-all duration-500"
+                className="absolute bottom-0 left-0 h-[2px] w-0 group-hover:w-full transition-all duration-500 ease-out"
                 style={{ background: 'linear-gradient(90deg, #C1EA00, transparent)' }}
               />
             </motion.div>

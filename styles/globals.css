@@ -160,6 +160,18 @@
   --shadow-teal:       0 8px 32px rgba(40,80,86,0.28);
   --shadow-lime:       0 8px 32px rgba(193,234,0,0.22);
   --shadow-inset:      inset 0 1px 0 rgba(255,255,255,0.06);
+
+  /* Premium brand-tinted shadows */
+  --shadow-card-teal:       0 8px 32px rgba(40,80,86,0.12), 0 2px 8px rgba(40,80,86,0.08);
+  --shadow-card-teal-hover: 0 20px 60px rgba(40,80,86,0.20), 0 8px 24px rgba(40,80,86,0.12);
+  --shadow-glow-lime:       0 0 24px rgba(193,234,0,0.18);
+  --shadow-glow-lime-sm:    0 4px 16px rgba(193,234,0,0.15);
+  --shadow-glow-cyan:       0 0 24px rgba(14,210,233,0.15);
+
+  /* Standardized border opacity scale */
+  --border-subtle:  rgba(34,30,42,0.08);
+  --border-medium:  rgba(34,30,42,0.12);
+  --border-strong:  rgba(34,30,42,0.18);
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
@@ -551,7 +563,7 @@ blockquote,
 .btn-primary:hover {
   background: var(--color-accent-hover);
   transform: translateY(-3px);
-  box-shadow: var(--shadow-lime);
+  box-shadow: var(--shadow-lime), var(--shadow-glow-lime-sm);
 }
 .btn-lime:hover::after,
 .btn-primary:hover::after { transform: scaleX(1); }
@@ -586,6 +598,8 @@ blockquote,
   border-color: var(--white);
   background: rgba(255,255,255,0.07);
   transform: translateY(-2px);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 .btn-ghost:focus-visible {
   outline: 2px solid var(--lime);
@@ -720,4 +734,101 @@ blockquote,
 
 @media (prefers-reduced-motion: reduce) {
   .hero-thumb-card:hover { transform: none; }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   PREMIUM UTILITY CLASSES
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* Text selection — lime tint for brand consistency */
+::selection {
+  background: rgba(193,234,0,0.25);
+  color: #221E2A;
+}
+
+/* Glassmorphism panels */
+.glass-panel {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  background: rgba(255,255,255,0.70);
+  border: 1px solid rgba(255,255,255,0.20);
+  box-shadow: var(--shadow-lg);
+}
+.glass-panel-dark {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  background: rgba(34,30,42,0.70);
+  border: 1px solid rgba(255,255,255,0.10);
+}
+
+/* Animated underline — slides in from left on hover */
+.link-underline {
+  position: relative;
+}
+.link-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--color-accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--duration-mid) var(--ease-smooth);
+}
+.link-underline:hover::after {
+  transform: scaleX(1);
+}
+
+/* Premium card utility — brand shadow + hover lift + teal-tinted shadow */
+.card-premium {
+  box-shadow: var(--shadow-card-teal);
+  border: 1px solid var(--border-subtle);
+  transition:
+    transform var(--duration-mid) var(--ease-smooth),
+    box-shadow var(--duration-mid) var(--ease-smooth),
+    border-color var(--duration-mid) var(--ease-smooth);
+}
+.card-premium:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-card-teal-hover);
+  border-color: var(--border-medium);
+}
+
+/* Button shimmer — diagonal light sweep on hover */
+.btn-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.btn-shimmer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(255,255,255,0.25) 50%,
+    transparent 100%
+  );
+  transition: left var(--duration-slow) var(--ease-smooth);
+  pointer-events: none;
+}
+.btn-shimmer:hover::before {
+  left: 100%;
+}
+
+/* Scroll margin for anchor navigation */
+[id] {
+  scroll-margin-top: 100px;
+}
+
+/* Print styles */
+@media print {
+  nav, footer, .whatsapp-btn, .grain::after, .grain-overlay::before {
+    display: none !important;
+  }
 }

@@ -44,7 +44,7 @@ export default function OverviewSection({ pkg }: { pkg: Package }) {
 
           {/* Sticky Sidebar (35% on desktop) */}
           <motion.div
-            className="lg:col-span-4 hidden lg:block sticky top-[136px] bg-white border border-[rgba(34,30,42,0.10)] p-[32px] shadow-lg z-30"
+            className="lg:col-span-4 hidden lg:block sticky top-[136px] bg-white border border-[rgba(34,30,42,0.10)] border-l-[3px] border-l-teal p-[32px] shadow-lg z-30"
             initial={shouldReduceMotion ? false : { x: 40, opacity: 0 }}
             whileInView={shouldReduceMotion ? {} : { x: 0, opacity: 1 }}
             viewport={{ once: true, margin: '-100px' }}
@@ -94,15 +94,15 @@ export default function OverviewSection({ pkg }: { pkg: Package }) {
 
             {/* Trust Badges */}
             <div className="mt-[20px] pt-[16px] border-t border-[rgba(34,30,42,0.05)] space-y-[10px]">
-               <div className="flex items-center gap-[10px]">
+               <div className="flex items-center gap-[10px] p-2 -m-2 hover:bg-ice transition-colors duration-200">
                   <BadgeCheck className="w-[16px] h-[16px] text-[#22c55e]" />
                   <span className="font-body text-[12px] text-[#718096]">Free Cancellation</span>
                </div>
-               <div className="flex items-center gap-[10px]">
+               <div className="flex items-center gap-[10px] p-2 -m-2 hover:bg-ice transition-colors duration-200">
                   <ShieldCheck className="w-[16px] h-[16px] text-[#22c55e]" />
                   <span className="font-body text-[12px] text-[#718096]">Instant Confirmation</span>
                </div>
-               <div className="flex items-center gap-[10px]">
+               <div className="flex items-center gap-[10px] p-2 -m-2 hover:bg-ice transition-colors duration-200">
                   <HeartHandshake className="w-[16px] h-[16px] text-[#22c55e]" />
                   <span className="font-body text-[12px] text-[#718096]">24/7 Support</span>
                </div>
@@ -113,7 +113,7 @@ export default function OverviewSection({ pkg }: { pkg: Package }) {
       </div>
 
       {/* Mobile Sticky Bottom Bar */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-[rgba(34,30,42,0.08)] p-4 flex items-center justify-between z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-[rgba(34,30,42,0.08)] p-4 flex items-center justify-between z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
         <div className="flex flex-col">
           <span className="font-display font-bold text-[20px] text-[#221E2A] leading-none">
             ₹{pkg.priceInr.toLocaleString('en-IN')}
