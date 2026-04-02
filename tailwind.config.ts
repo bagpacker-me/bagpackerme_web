@@ -14,20 +14,27 @@ const config: Config = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
-        cyan: '#0ED2E9',
-        ice: '#E9F5F7',
-        lime: '#C1EA00',
-        teal: '#285056',
-        void: '#221E2A',
+        cyan: '#0ED2E9', // Electric Cyan Highlight
+        ice: '#F0FCFE',  // Base Ice White
+        lime: '#C1EA00', // Acid Lime
+        teal: '#285056', // Deep Slate
+        void: '#221E2A', // Dark Navy
+        surface: {
+          lowest: '#FFFFFF',
+          DEFAULT: '#F0FCFE',
+          container: '#E4F0F2',
+          high: '#D8E8EA',
+          highest: '#CCE2E5',
+        }
       },
       fontFamily: {
         // MASTER.md §2 — canonical font roles
-        display: ['var(--font-display)', 'Josefin Sans', 'Raleway', 'sans-serif'],
+        display: ['var(--font-display)', 'Outfit', 'Josefin Sans', 'Raleway', 'sans-serif'],
         body:    ['var(--font-body)',    'DM Sans',       'sans-serif'],
         sans:    ['var(--font-body)',    'DM Sans',       'sans-serif'],
         accent:  ['var(--font-accent)', 'Cormorant Garamond', 'Georgia', 'serif'],
         // heading alias — kept for existing className="font-heading" usage
-        heading: ['var(--font-display)', 'Josefin Sans', 'Raleway', 'sans-serif'],
+        heading: ['var(--font-display)', 'Outfit', 'Josefin Sans', 'Raleway', 'sans-serif'],
       },
       letterSpacing: {
         widest: '0.22em',
@@ -38,11 +45,12 @@ const config: Config = {
         'glow-lime':       '0 0 24px rgba(193,234,0,0.18)',
         'glow-lime-sm':    '0 4px 16px rgba(193,234,0,0.15)',
         'glow-cyan':       '0 0 24px rgba(14,210,233,0.15)',
+        'diffuse':         '0 40px 60px rgba(18,29,31,0.06)',
       },
       borderColor: {
-        'subtle':  'rgba(34,30,42,0.08)',
-        'medium':  'rgba(34,30,42,0.12)',
-        'strong':  'rgba(34,30,42,0.18)',
+        'subtle':  'rgba(34,30,42,0.03)', // Ghost border 
+        'medium':  'rgba(34,30,42,0.10)', // 10% outline variant
+        'strong':  'rgba(34,30,42,0.15)',
       },
       keyframes: {
         'underline-in': {

@@ -8,7 +8,7 @@ export default function AudienceSplit() {
   return (
     <section className="w-full flex flex-col md:flex-row" aria-label="Who we serve">
       {/* ── LEFT PANEL — Foreign Travelers ────────────────────────────── */}
-      <div className="w-full md:w-[55%] bg-void text-white flex items-center justify-start py-20 px-8 md:px-16 lg:px-20 xl:px-24 relative overflow-hidden group">
+      <div className="w-full md:w-[55%] bg-white text-void flex items-center justify-start py-20 px-8 md:px-16 lg:px-20 xl:px-24 relative overflow-hidden group">
         <motion.div
           initial={{ opacity: 0, x: -30 }}
           whileInView={{ opacity: 1, x: 0 }}
@@ -19,26 +19,26 @@ export default function AudienceSplit() {
           <div className="section-label mb-5">✦ FOR FOREIGN TRAVELERS</div>
 
           <h2
-            className="font-heading font-bold text-white leading-tight mb-5"
+            className="font-heading font-bold text-void leading-tight mb-5"
             style={{ fontSize: 'clamp(26px, 3.5vw, 44px)', letterSpacing: '-0.02em' }}
           >
             Planning an Immersive India Journey?
           </h2>
 
-          <p className="text-white/70 font-sans text-[15px] leading-[1.75] mb-8">
+          <p className="text-gray-600 font-sans text-[15px] leading-[1.75] mb-8">
             Tailor-made itineraries for travelers from the US, UK, Europe, and Australia. We
             handle the logistics, so you can dive deep into the culture. Designed for those
             planning 3–12 months ahead with a focus on premium, hassle-free experiences.
           </p>
 
           <div className="flex gap-4 mb-10">
-            <div className="bg-white/8 border border-white/12 px-5 py-3">
-              <span className="block text-white/50 text-[10px] mb-1 font-display tracking-[0.12em] uppercase">Avg. Planning</span>
-              <span className="font-display font-bold text-white text-[15px]">3–12 Months</span>
+            <div className="bg-surface-high border border-subtle px-5 py-3">
+              <span className="block text-gray-500 text-[10px] mb-1 font-display tracking-[0.12em] uppercase">Avg. Planning</span>
+              <span className="font-display font-bold text-void text-[15px]">3–12 Months</span>
             </div>
-            <div className="bg-white/8 border border-white/12 px-5 py-3">
-              <span className="block text-white/50 text-[10px] mb-1 font-display tracking-[0.12em] uppercase">Trip Budget</span>
-              <span className="font-display font-bold text-white text-[15px]">$3K–$8K USD</span>
+            <div className="bg-surface-high border border-subtle px-5 py-3">
+              <span className="block text-gray-500 text-[10px] mb-1 font-display tracking-[0.12em] uppercase">Trip Budget</span>
+              <span className="font-display font-bold text-void text-[15px]">$3K–$8K USD</span>
             </div>
           </div>
 
@@ -53,7 +53,7 @@ export default function AudienceSplit() {
       </div>
 
       {/* ── RIGHT PANEL — Indian Explorers ─────────────────────────────── */}
-      <div className="w-full md:w-[45%] bg-[#E9F5F7] text-void flex items-center justify-start py-20 px-8 md:px-12 lg:px-16 xl:px-20 relative overflow-hidden group">
+      <div className="w-full md:w-[45%] bg-surface-container text-void flex items-center justify-start py-20 px-8 md:px-12 lg:px-16 xl:px-20 relative overflow-hidden group">
         <motion.div
           initial={{ opacity: 0, x: 30 }}
           whileInView={{ opacity: 1, x: 0 }}

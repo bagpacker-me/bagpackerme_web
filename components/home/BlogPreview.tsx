@@ -37,7 +37,7 @@ export default function BlogPreview() {
   };
 
   return (
-    <section className="bg-white py-[var(--space-section)]">
+    <section className="bg-surface-high py-[var(--space-section)]">
       <div className="container">
         {/* Header */}
         <FadeInSection className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
@@ -74,7 +74,7 @@ export default function BlogPreview() {
               ))}
             </div>
           ) : blogs.length === 0 ? (
-            <div className="text-center py-20 border border-dashed border-gray-200">
+            <div className="text-center py-20 border border-dashed border-medium">
               <p className="font-sans text-gray-400 text-sm mb-4">No stories published yet.</p>
               <Link href="/blog" className="card-cta-link inline-flex items-center gap-2">
                 Visit the Blog →
@@ -91,7 +91,7 @@ export default function BlogPreview() {
                 <motion.div
                   key={blog.id}
                   variants={shouldReduceMotion ? undefined : CARD_ITEM_VARIANTS}
-                  className="group flex flex-col h-full cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-card-teal"
+                  className="group flex flex-col h-full cursor-pointer transition-all duration-700 hover:-translate-y-1 hover:shadow-diffuse"
                 >
                   <Link
                     href={`/blog/${blog.slug}`}
@@ -132,8 +132,8 @@ export default function BlogPreview() {
                       {blog.excerpt}
                     </p>
 
-                    <div className="mt-auto pt-5 border-t border-gray-100">
-                      <Link href={`/blog/${blog.slug}`} className="inline-flex items-center gap-2 px-3 py-1.5 bg-ice hover:bg-teal hover:text-white text-xs font-display font-bold uppercase tracking-wider text-teal transition-all duration-200">
+                    <div className="mt-auto pt-5 border-t border-subtle">
+                      <Link href={`/blog/${blog.slug}`} className="inline-flex items-center gap-2 px-3 py-1.5 bg-surface hover:bg-primary hover:text-white text-xs font-display font-bold uppercase tracking-wider text-primary transition-all duration-200">
                         Read More →
                       </Link>
                     </div>

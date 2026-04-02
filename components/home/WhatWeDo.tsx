@@ -27,7 +27,7 @@ const SERVICES = [
 
 export default function WhatWeDo() {
   return (
-    <section className="bg-[#221E2A] py-[var(--space-section)] relative overflow-hidden">
+    <section className="bg-void py-[var(--space-section)] relative overflow-hidden">
       {/* Subtle radial glow */}
       <div
         className="absolute inset-0 pointer-events-none"
@@ -64,7 +64,7 @@ export default function WhatWeDo() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.15 * i }}
-              className="relative bg-white/5 border border-white/[0.12] hover:border-white/[0.16] p-8 md:p-10 group overflow-hidden"
+              className="relative bg-white/5 border border-white/10 hover:border-white/20 p-8 md:p-10 group overflow-hidden"
               style={{
                 transition: 'background 400ms, transform 350ms, box-shadow 350ms',
               }}
@@ -94,7 +94,7 @@ export default function WhatWeDo() {
               {/* Bottom lime line on hover */}
               <div
                 className="absolute bottom-0 left-0 h-[2px] w-0 group-hover:w-full transition-all duration-500 ease-out"
-                style={{ background: 'linear-gradient(90deg, #C1EA00, transparent)' }}
+                style={{ background: 'linear-gradient(90deg, var(--lime), transparent)' }}
               />
             </motion.div>
           ))}

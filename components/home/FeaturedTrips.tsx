@@ -33,7 +33,7 @@ export default function FeaturedTrips() {
   }, []);
 
   return (
-    <section className="bg-[#F7F9FA] w-full" style={{ paddingTop: 'var(--space-section)', paddingBottom: 'var(--space-section)' }}>
+    <section className="bg-surface w-full" style={{ paddingTop: 'var(--space-section)', paddingBottom: 'var(--space-section)' }}>
       <div className="container">
         {/* Header */}
         <FadeInSection className="flex flex-col items-center text-center mb-16 md:mb-20">
@@ -75,13 +75,13 @@ export default function FeaturedTrips() {
             </motion.div>
           ) : (
             /* Premium empty state with destination teaser */
-            <div className="relative overflow-hidden text-center py-24 bg-white border border-gray-100">
+            <div className="relative overflow-hidden text-center py-24 bg-surface-highest border border-subtle">
               <div className="relative z-10 max-w-sm mx-auto">
-                <div className="w-16 h-16 mx-auto mb-6 bg-teal/10 flex items-center justify-center">
-                  <Compass className="w-7 h-7 text-teal" />
+                <div className="w-16 h-16 mx-auto mb-6 bg-cyan/10 flex items-center justify-center">
+                  <Compass className="w-7 h-7 text-cyan" />
                 </div>
                 <h3 className="font-heading font-bold text-void text-2xl mb-3">Journeys Coming Soon</h3>
-                <p className="font-sans text-gray-500 text-sm leading-relaxed mb-8">
+                <p className="font-sans text-gray-600 text-sm leading-relaxed mb-8">
                   We&apos;re crafting our signature India journeys. Stay tuned — something extraordinary is being built.
                 </p>
                 <Link href="/contact" className="btn-lime text-sm">

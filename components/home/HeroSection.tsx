@@ -89,7 +89,9 @@ export default function HeroSection() {
         className="absolute inset-0 z-[1]"
         style={{
           background:
-            'linear-gradient(160deg, rgba(34,30,42,0.72) 0%, rgba(34,30,42,0.55) 50%, rgba(34,30,42,0.85) 100%)',
+            'linear-gradient(160deg, rgba(240,252,254,0.65) 0%, rgba(240,252,254,0.4) 50%, rgba(240,252,254,0.85) 100%)',
+          backdropFilter: 'blur(10px)',
+          WebkitBackdropFilter: 'blur(10px)'
         }}
         aria-hidden="true"
       />
@@ -139,7 +141,7 @@ export default function HeroSection() {
                 fontWeight: 700,
                 letterSpacing: '0.22em',
                 textTransform: 'uppercase',
-                color: '#0ED2E9',
+                color: 'var(--teal)',
               }}
             >
               ✦ Experiential Travel
@@ -153,7 +155,7 @@ export default function HeroSection() {
                 fontFamily: 'var(--font-display)',
                 fontWeight: 700,
                 fontSize: 'clamp(48px, 8.5vw, 104px)',
-                color: '#FFFFFF',
+                color: 'var(--void)',
                 textTransform: 'uppercase',
                 lineHeight: 0.92,
                 letterSpacing: '-0.03em',
@@ -183,7 +185,7 @@ export default function HeroSection() {
               fontStyle: 'italic',
               fontWeight: 300,
               fontSize: 'clamp(17px, 1.8vw, 22px)',
-              color: 'rgba(255,255,255,0.80)',
+              color: 'var(--teal)',
               marginTop: '28px',
               maxWidth: '520px',
               lineHeight: 1.6,
@@ -200,7 +202,7 @@ export default function HeroSection() {
             style={{ marginTop: '44px' }}
           >
             <Link href="/packages" className="btn-lime btn-shimmer">Explore Trips →</Link>
-            <Link href="/about" className="btn-ghost backdrop-blur-sm bg-white/5">
+            <Link href="/about" className="btn-ghost backdrop-blur-sm bg-white/30 text-void border border-subtle">
               Our Story
             </Link>
           </motion.div>
@@ -226,7 +228,7 @@ export default function HeroSection() {
                 letterSpacing: '0.25em',
                 fontWeight: 700,
                 textTransform: 'uppercase',
-                color: 'rgba(255,255,255,0.55)',
+                color: 'var(--teal)',
               }}
             >
               SCROLL

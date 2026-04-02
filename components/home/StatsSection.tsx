@@ -78,7 +78,7 @@ function StatItem({
       {!isLast && (
         <span
           className="hidden md:block absolute right-0 top-1/2 -translate-y-1/2 w-px h-10"
-          style={{ background: 'rgba(255,255,255,0.22)' }}
+          style={{ background: 'var(--color-border-dark)' }}
           aria-hidden="true"
         />
       )}
@@ -87,7 +87,7 @@ function StatItem({
         className="stat-number"
         style={{
           fontSize: 'clamp(30px, 4vw, 52px)',
-          color: '#FFFFFF',
+          color: 'var(--color-surface-lightest)',
           display: 'inline-flex',
           alignItems: 'baseline',
           gap: '2px',
@@ -111,7 +111,7 @@ function StatItem({
         )}
       </span>
 
-      <span className="stat-label mt-2" style={{ color: 'rgba(255,255,255,0.65)', fontSize: '12px', letterSpacing: '0.05em', textTransform: 'uppercase', fontFamily: 'var(--font-display)' }}>
+      <span className="stat-label mt-2" style={{ color: 'var(--color-text-inverse-dim)', fontSize: '12px', letterSpacing: '0.05em', textTransform: 'uppercase', fontFamily: 'var(--font-display)' }}>
         {stat.label}
       </span>
     </motion.div>
@@ -129,8 +129,8 @@ export default function StatsSection() {
       <div
         className="w-full max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4"
         style={{
-          background: 'linear-gradient(100deg, #285056 0%, #1a4047 50%, #1e3d42 100%)',
-          boxShadow: '0 16px 48px rgba(40,80,86,0.24), 0 4px 16px rgba(40,80,86,0.12)',
+          background: 'linear-gradient(100deg, var(--teal) 0%, var(--primary-dark) 50%, #1e3d42 100%)',
+          boxShadow: 'var(--shadow-teal)',
         }}
       >
         {STATS.map((stat, idx) => (

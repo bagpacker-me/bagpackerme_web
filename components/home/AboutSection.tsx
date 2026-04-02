@@ -38,7 +38,7 @@ const IMAGES = {
 
 export default function AboutSection() {
   return (
-    <section className="bg-void py-[var(--space-section)] overflow-hidden relative">
+    <section className="bg-surface-high py-[var(--space-section)] overflow-hidden relative">
       <div className="container relative z-10">
         <div className="flex flex-col lg:flex-row gap-16 xl:gap-24 items-center">
 
@@ -53,7 +53,7 @@ export default function AboutSection() {
             <div className="section-label mb-6">✦ WHO WE ARE</div>
 
             <h2
-              className="font-heading font-bold text-white mb-8"
+              className="font-heading font-bold text-void mb-8"
               style={{
                 fontSize: 'clamp(34px, 4.5vw, 56px)',
                 lineHeight: 1.08,
@@ -74,7 +74,7 @@ export default function AboutSection() {
               culture, adventure, and sustainability.
             </motion.blockquote>
 
-            <p className="text-white/65 font-sans text-base leading-[1.75] mb-12 max-w-xl">
+            <p className="text-gray-600 font-sans text-base leading-[1.75] mb-12 max-w-xl">
               Founded in 2020, BAGPACKERME began as a travel community — not a
               company. We connect adventurous travelers with the real India
               through curated journeys, authentic local experiences, and a
@@ -91,14 +91,14 @@ export default function AboutSection() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: 0.1 * i }}
-                  className="flex items-start gap-4 p-3 -m-3 hover:bg-white/5 transition-all duration-300 hover:-translate-y-0.5"
+                  className="flex items-start gap-4 p-3 -m-3 hover:bg-white transition-all duration-300 hover:-translate-y-0.5 shadow-sm"
                 >
                   <div className="mt-0.5 flex-shrink-0">{pillar.icon}</div>
                   <div>
-                    <h3 className="text-white font-display font-bold text-[12px] tracking-[0.12em] uppercase mb-1.5">
+                    <h3 className="text-void font-display font-bold text-[12px] tracking-[0.12em] uppercase mb-1.5">
                       {pillar.title}
                     </h3>
-                    <p className="font-sans text-[13px] text-white/55 leading-relaxed">
+                    <p className="font-sans text-[13px] text-gray-500 leading-relaxed">
                       {pillar.desc}
                     </p>
                   </div>
@@ -108,7 +108,7 @@ export default function AboutSection() {
 
             <Link
               href="/about"
-              className="btn-ghost border-white/40 text-white hover:bg-white hover:text-void inline-flex items-center justify-center"
+              className="btn-ghost border border-subtle text-void hover:bg-white hover:text-primary transition-colors inline-flex items-center justify-center"
             >
               Our Story →
             </Link>
@@ -154,7 +154,7 @@ export default function AboutSection() {
                 width: '38%',
                 aspectRatio: '1',
                 zIndex: 20,
-                border: '3px solid #285056',
+                border: '1px solid var(--color-border-medium)',
               }}
             >
               <img
@@ -177,7 +177,7 @@ export default function AboutSection() {
                 width: '42%',
                 aspectRatio: '1',
                 zIndex: 30,
-                border: '3px solid #221E2A',
+                border: '1px solid var(--color-border-medium)',
               }}
             >
               <img

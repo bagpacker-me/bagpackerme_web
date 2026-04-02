@@ -15,9 +15,9 @@
    ───────────────────────────────────────────────────────────────────────────── */
 :root {
   /* Brand Colors */
-  --color-primary:       #285056;
-  --color-primary-dark:  #1e3d42;
-  --color-primary-light: #3a6e76;
+  --color-primary:       #006875;
+  --color-primary-dark:  #004d57;
+  --color-primary-light: #0ED2E9;
   --color-accent:        #C1EA00;
   --color-accent-hover:  #afd100;
   --color-accent-glow:   rgba(193,234,0,0.2);
@@ -26,8 +26,8 @@
 
   /* Surface */
   --color-surface-lightest: #FFFFFF;
-  --color-surface-light:    #F7F9FA;
-  --color-surface-mid:      #E9F5F7;
+  --color-surface-light:    #E4F0F2;
+  --color-surface-mid:      #F0FCFE;
   --color-surface-dark:     #221E2A;
   --color-surface-darker:   #1a1620;
 
@@ -44,19 +44,19 @@
   --color-warning: #f59e0b;
 
   /* Borders */
-  --color-border-light:  rgba(34,30,42,0.08);
-  --color-border-mid:    rgba(34,30,42,0.14);
+  --color-border-light:  rgba(34,30,42,0.03);
+  --color-border-mid:    rgba(34,30,42,0.10);
   --color-border-dark:   rgba(255,255,255,0.10);
   --color-border-accent: #C1EA00;
 
   /* Legacy aliases (keep for existing Tailwind class usage) */
   --cyan:      #0ED2E9;
-  --ice:       #E9F5F7;
+  --ice:       #F0FCFE;
   --lime:      #C1EA00;
   --teal:      #285056;
   --void:      #221E2A;
   --white:     #FFFFFF;
-  --off-white: #F7F9FA;
+  --off-white: #E4F0F2;
 
   /* ─── Typography: Type Scale (MASTER.md §2) ─────────────────────────────── */
   --text-hero:    clamp(52px, 8.5vw, 104px);
@@ -169,9 +169,9 @@
   --shadow-glow-cyan:       0 0 24px rgba(14,210,233,0.15);
 
   /* Standardized border opacity scale */
-  --border-subtle:  rgba(34,30,42,0.08);
-  --border-medium:  rgba(34,30,42,0.12);
-  --border-strong:  rgba(34,30,42,0.18);
+  --border-subtle:  rgba(34,30,42,0.03);
+  --border-medium:  rgba(34,30,42,0.10);
+  --border-strong:  rgba(34,30,42,0.15);
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
@@ -541,7 +541,7 @@ blockquote,
   text-transform: uppercase;
   padding: 16px 40px;
   border: none;
-  border-radius: 0;
+  border-radius: var(--radius-full);
   cursor: pointer;
   position: relative;
   overflow: hidden;
@@ -620,7 +620,7 @@ blockquote,
   text-transform: uppercase;
   padding: 16px 40px;
   border: none;
-  border-radius: 0;
+  border-radius: var(--radius-full);
   cursor: pointer;
   transition: all var(--duration-mid) var(--ease-smooth);
   text-decoration: none;

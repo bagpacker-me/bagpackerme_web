@@ -1,15 +1,15 @@
 import type { Metadata } from 'next';
-import { Josefin_Sans, DM_Sans, Cormorant_Garamond } from 'next/font/google';
+import { Outfit, DM_Sans, Cormorant_Garamond } from 'next/font/google';
 import '@/styles/globals.css';
 
 // ── DESIGN-SYSTEM FONT STACK ──────────────────────────────────────────────────
 // MASTER.md §2 — Font Families
-// Josefin Sans → --font-display  (headings, nav, labels, badges, buttons)
+// Outfit         → --font-display  (headings, nav, labels, badges, buttons)
 // DM Sans      → --font-body     (body paragraphs, card descriptions, UI copy)
 // Cormorant Garamond → --font-accent (pull quotes, taglines, italic script ONLY)
 // ─────────────────────────────────────────────────────────────────────────────
 
-const josefinSans = Josefin_Sans({
+const outfit = Outfit({
   subsets: ['latin'],
   weight: ['300', '400', '600', '700'],
   variable: '--font-display',
@@ -64,7 +64,7 @@ export default function AppRootLayout({ children }: { children: React.ReactNode 
   return (
     <html
       lang="en"
-      className={`${josefinSans.variable} ${dmSans.variable} ${cormorantGaramond.variable}`}
+      className={`${outfit.variable} ${dmSans.variable} ${cormorantGaramond.variable}`}
     >
       <body>
         {children}
