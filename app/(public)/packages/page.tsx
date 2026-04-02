@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { Compass, Clock, Wallet, FilterX } from 'lucide-react';
 import { getPublishedPackages } from '@/lib/firestore';
 import { Package } from '@/types';
 import PackageCard, { PackageCardSkeleton } from '@/components/home/PackageCard';
@@ -132,76 +133,146 @@ export default function PackagesPage() {
         </div>
       </section>
 
-      {/* Filter Bar */}
-      <div className="bg-[rgba(255,255,255,0.9)] backdrop-blur-md shadow-sm border-b border-[rgba(34,30,42,0.08)] py-[16px]">
-        <div className="container mx-auto px-[24px] flex flex-col lg:flex-row flex-wrap gap-[16px] lg:items-center max-w-[1400px]">
-          
-          <div className="flex items-center w-full lg:w-auto">
-            <span className="text-[11px] text-[#718096] uppercase tracking-[0.06em] font-semibold font-body mr-[16px] whitespace-nowrap">Category</span>
-            <div className="flex overflow-x-auto no-scrollbar gap-[8px] pb-[8px] lg:pb-0 w-full snap-x">
-              {CATEGORIES.map(cat => {
-                const isActive = activeCategory === cat;
-                return (
-                  <button
-                    key={cat}
-                    onClick={() => setActiveCategory(cat)}
-                    className={`relative px-[16px] py-[8px] rounded-none whitespace-nowrap font-body text-[13px] font-medium transition-colors snap-center border ${
-                      isActive ? 'text-[#221E2A] border-[#C1EA00] bg-[#C1EA00]' : 'text-[#718096] border-[rgba(34,30,42,0.08)] bg-[#FFFFFF] hover:bg-[#F7F9FA]'
-                    }`}
-                  >
-                    <span className="relative z-10">{cat}</span>
-                  </button>
-                );
-              })}
+      {/* Filter Section - Premium Floating Card Style */}
+      <section className="relative z-40 bg-[#F7F9FA]">
+        {/* Decorative top shape to bridge background */}
+        <div className="absolute top-0 left-0 right-0 h-[40%] bg-gradient-to-b from-[rgba(11,21,23,0.1)] to-transparent opacity-100 pointer-events-none" />
+        
+        <div className="container mx-auto px-[16px] md:px-[24px] max-w-[1400px]">
+          {/* Glass Card Container */}
+          <div className="relative -mt-[40px] md:-mt-[60px] bg-white/95 backdrop-blur-2xl rounded-[24px] md:rounded-[32px] shadow-[0_20px_40px_-15px_rgba(34,30,42,0.1)] border border-[rgba(255,255,255,0.5)] p-[24px] md:p-[32px] flex flex-col xl:flex-row gap-[32px] xl:gap-[40px] justify-between">
+            
+            {/* Category Filter */}
+            <div className="flex-1 flex flex-col gap-[16px]">
+              <div className="flex items-center gap-[8px] text-[#285056]">
+                <div className="w-[32px] h-[32px] rounded-full bg-[#E9F5F7] flex items-center justify-center">
+                  <Compass className="w-[16px] h-[16px] text-[#285056]" />
+                </div>
+                <span className="text-[13px] uppercase tracking-[0.1em] font-bold font-display">Category</span>
+              </div>
+              <div className="flex flex-wrap gap-[8px] md:gap-[12px]">
+                {CATEGORIES.map(cat => {
+                  const isActive = activeCategory === cat;
+                  return (
+                    <button
+                      key={cat}
+                      onClick={() => setActiveCategory(cat)}
+                      className={`relative px-[20px] py-[10px] rounded-full whitespace-nowrap font-body text-[14px] md:text-[15px] font-medium transition-colors duration-300 outline-none focus-visible:ring-2 focus-visible:ring-[#C1EA00] ${
+                        isActive 
+                          ? 'text-white' 
+                          : 'bg-[#F7F9FA] text-[#718096] hover:bg-[#E9F5F7] hover:text-[#285056] border border-transparent'
+                      }`}
+                    >
+                      {isActive && (
+                        <motion.div
+                          layoutId="category-active"
+                          className="absolute inset-0 bg-[#285056] rounded-full shadow-md z-0"
+                          initial={false}
+                          transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                        />
+                      )}
+                      <span className="relative z-10">{cat}</span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-          </div>
 
-          <div className="hidden lg:block w-px h-[32px] bg-[rgba(34,30,42,0.08)] mx-[8px]" />
+            {/* Separator */}
+            <div className="hidden xl:block w-[1px] bg-[rgba(34,30,42,0.06)] self-stretch" />
 
-          <div className="flex items-center w-full lg:w-auto">
-            <span className="text-[11px] text-[#718096] uppercase tracking-[0.06em] font-semibold font-body mr-[16px] whitespace-nowrap">Duration</span>
-            <div className="flex overflow-x-auto no-scrollbar gap-[8px] pb-[8px] lg:pb-0 w-full snap-x">
-              {DURATIONS.map(dur => {
-                const isActive = activeDuration === dur.value;
-                return (
-                  <button
-                    key={dur.value}
-                    onClick={() => setActiveDuration(dur.value)}
-                    className={`relative px-[16px] py-[8px] rounded-none whitespace-nowrap font-body text-[13px] font-medium transition-colors snap-center border ${
-                      isActive ? 'text-[#221E2A] border-[#C1EA00] bg-[#C1EA00]' : 'text-[#718096] border-[rgba(34,30,42,0.08)] bg-[#FFFFFF] hover:bg-[#F7F9FA]'
-                    }`}
-                  >
-                    <span className="relative z-10">{dur.label}</span>
-                  </button>
-                );
-              })}
+            {/* Duration Filter */}
+            <div className="flex-1 flex flex-col gap-[16px]">
+              <div className="flex items-center gap-[8px] text-[#285056]">
+                <div className="w-[32px] h-[32px] rounded-full bg-[#E9F5F7] flex items-center justify-center">
+                  <Clock className="w-[16px] h-[16px] text-[#285056]" />
+                </div>
+                <span className="text-[13px] uppercase tracking-[0.1em] font-bold font-display">Duration</span>
+              </div>
+              <div className="flex flex-wrap gap-[8px] md:gap-[12px]">
+                {DURATIONS.map(dur => {
+                  const isActive = activeDuration === dur.value;
+                  return (
+                    <button
+                      key={dur.value}
+                      onClick={() => setActiveDuration(dur.value)}
+                      className={`relative px-[20px] py-[10px] rounded-full whitespace-nowrap font-body text-[14px] md:text-[15px] font-medium transition-colors duration-300 outline-none focus-visible:ring-2 focus-visible:ring-[#C1EA00] ${
+                        isActive 
+                          ? 'text-[#221E2A]' 
+                          : 'bg-[#F7F9FA] text-[#718096] hover:bg-[#C1EA00]/20 hover:text-[#221E2A] border border-transparent'
+                      }`}
+                    >
+                      {isActive && (
+                        <motion.div
+                          layoutId="duration-active"
+                          className="absolute inset-0 bg-[#C1EA00] rounded-full shadow-md z-0"
+                          initial={false}
+                          transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                        />
+                      )}
+                      <span className="relative z-10">{dur.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-          </div>
 
-          <div className="hidden lg:block w-px h-[32px] bg-[rgba(34,30,42,0.08)] mx-[8px]" />
+            {/* Separator */}
+            <div className="hidden xl:block w-[1px] bg-[rgba(34,30,42,0.06)] self-stretch" />
 
-          <div className="flex items-center w-full lg:w-auto">
-            <span className="text-[11px] text-[#718096] uppercase tracking-[0.06em] font-semibold font-body mr-[16px] whitespace-nowrap">Price</span>
-            <div className="flex overflow-x-auto no-scrollbar gap-[8px] pb-[8px] lg:pb-0 w-full snap-x">
-              {PRICES.map(price => {
-                const isActive = activePrice === price.value;
-                return (
-                  <button
-                    key={price.value}
-                    onClick={() => setActivePrice(price.value)}
-                    className={`relative px-[16px] py-[8px] rounded-none whitespace-nowrap font-body text-[13px] font-medium transition-colors snap-center border ${
-                      isActive ? 'text-[#221E2A] border-[#C1EA00] bg-[#C1EA00]' : 'text-[#718096] border-[rgba(34,30,42,0.08)] bg-[#FFFFFF] hover:bg-[#F7F9FA]'
-                    }`}
+            {/* Price Filter */}
+            <div className="flex-1 flex flex-col gap-[16px]">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-[8px] text-[#285056]">
+                  <div className="w-[32px] h-[32px] rounded-full bg-[#E9F5F7] flex items-center justify-center">
+                    <Wallet className="w-[16px] h-[16px] text-[#285056]" />
+                  </div>
+                  <span className="text-[13px] uppercase tracking-[0.1em] font-bold font-display">Price</span>
+                </div>
+                
+                {/* Clear Filters Button (If Any Active) */}
+                {(activeCategory !== 'All' || activeDuration !== 'Any' || activePrice !== 'Any') && (
+                  <button 
+                    onClick={() => { setActiveCategory('All'); setActiveDuration('Any'); setActivePrice('Any'); }}
+                    className="flex items-center gap-[6px] text-[12px] font-body text-[#718096] hover:text-[#285056] transition-colors"
                   >
-                    <span className="relative z-10">{price.label}</span>
+                    <FilterX className="w-[14px] h-[14px]" />
+                    <span>Clear All</span>
                   </button>
-                );
-              })}
+                )}
+              </div>
+              
+              <div className="flex flex-wrap gap-[8px] md:gap-[12px]">
+                {PRICES.map(price => {
+                  const isActive = activePrice === price.value;
+                  return (
+                    <button
+                      key={price.value}
+                      onClick={() => setActivePrice(price.value)}
+                      className={`relative px-[20px] py-[10px] rounded-full whitespace-nowrap font-body text-[14px] md:text-[15px] font-medium transition-colors duration-300 outline-none focus-visible:ring-2 focus-visible:ring-[#0ED2E9] ${
+                        isActive 
+                          ? 'text-[#221E2A]' 
+                          : 'bg-[#F7F9FA] text-[#718096] hover:bg-[#0ED2E9]/10 hover:text-[#285056] border border-transparent'
+                      }`}
+                    >
+                      {isActive && (
+                        <motion.div
+                          layoutId="price-active"
+                          className="absolute inset-0 bg-[#0ED2E9] rounded-full shadow-md z-0"
+                          initial={false}
+                          transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                        />
+                      )}
+                      <span className="relative z-10">{price.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-          </div>
 
+          </div>
         </div>
-      </div>
+      </section>
 
       {/* Packages Grid */}
       <section className="bg-[#F7F9FA] min-h-[500px] py-[80px] lg:py-[120px]">
