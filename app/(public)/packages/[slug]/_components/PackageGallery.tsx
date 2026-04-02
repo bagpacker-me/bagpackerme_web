@@ -52,13 +52,12 @@ export default function PackageGallery({ pkg }: { pkg: Package }) {
                 className="relative w-full break-inside-avoid overflow-hidden cursor-crosshair group"
                 onClick={() => openLightbox(idx)}
               >
-                <Image
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
                   src={src}
                   alt={`${pkg.title} image ${idx + 1}`}
-                  width={800}
-                  height={800}
-                  sizes="(max-width: 768px) 50vw, 33vw"
-                  className="w-full h-auto object-cover transition-transform duration-700 ease-[var(--ease-default)] group-hover:scale-[1.05]"
+                  loading="lazy"
+                  className="w-full h-auto transition-transform duration-700 ease-[var(--ease-default)] group-hover:scale-[1.05]"
                 />
                 <div className="absolute inset-0 bg-transparent group-hover:bg-[#221E2A]/25 transition-colors duration-300 flex items-center justify-center pointer-events-none">
                    <Maximize2 size={28} className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 drop-shadow-lg" />

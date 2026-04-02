@@ -9,9 +9,17 @@ export const getPublishedPackages = async () => getDocs(query(packagesCol, where
 export const getFeaturedPackages = async (count: number) => getDocs(query(packagesCol, where('status', '==', 'published'), limit(count)));
 export const getPackage = async (id: string) => getDoc(doc(db, 'packages', id));
 export const getPackageBySlug = async (slug: string) => {
-  const q = query(packagesCol, where('slug', '==', slug), where('status', '==', 'published'), limit(1));
+  const q = query(packagesCol, where('slug', '==', slug), where('status', '==', 'published'));
   const snapshot = await getDocs(q);
-  return snapshot.empty ? null : { id: snapshot.docs[0].id, ...snapshot.docs[0].data() } as Package;
+  if (snapshot.empty) return null;
+  // Sort in JS to get the newest one if there are duplicates with the same slug
+  const docs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Package));
+  docs.sort((a, b) => {
+    const aDate = a.createdAt || '';
+    const bDate = b.createdAt || '';
+    return bDate.localeCompare(aDate);
+  });
+  return docs[0];
 };
 export const getRelatedPackages = async (category: string, excludeSlug: string, count: number = 3) => {
   const q = query(packagesCol, where('category', '==', category), where('status', '==', 'published'), limit(count + 1));
@@ -55,9 +63,16 @@ export const getRecentPublishedBlogs = async (limitCount: number) => {
 };
 export const getBlog = async (id: string) => getDoc(doc(db, 'blogs', id));
 export const getBlogBySlug = async (slug: string) => {
-  const q = query(blogsCol, where('slug', '==', slug), where('status', '==', 'published'), limit(1));
+  const q = query(blogsCol, where('slug', '==', slug), where('status', '==', 'published'));
   const snapshot = await getDocs(q);
-  return snapshot.empty ? null : { id: snapshot.docs[0].id, ...snapshot.docs[0].data() } as BlogPost;
+  if (snapshot.empty) return null;
+  const docs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as BlogPost));
+  docs.sort((a, b) => {
+    const aDate = a.createdAt || a.publishDate || '';
+    const bDate = b.createdAt || b.publishDate || '';
+    return bDate.localeCompare(aDate);
+  });
+  return docs[0];
 };
 export const getRelatedBlogs = async (category: string, excludeSlug: string, count: number = 3) => {
   const q = query(blogsCol, where('category', '==', category), where('status', '==', 'published'), limit(count + 1));

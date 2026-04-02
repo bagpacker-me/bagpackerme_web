@@ -82,7 +82,7 @@ function TimelineItem({
           <div className="flex-1 min-w-0 pb-[24px] md:pb-0">
             <div className="font-body text-[11px] text-[#0ED2E9] mb-[8px] tracking-[0.12em] uppercase">Day {day.day}</div>
             <h3 className="font-display text-[clamp(18px,2.2vw,26px)] font-bold text-white tracking-[-0.01em] mb-[12px] leading-[1.2]">{day.location}</h3>
-            <p className="font-body text-[15px] text-[rgba(255,255,255,0.65)] leading-[1.75] max-w-[520px]">{day.description}</p>
+            <p className="font-body text-[15px] text-[rgba(255,255,255,0.65)] leading-[1.75] max-w-[520px] whitespace-pre-wrap">{day.description}</p>
           </div>
 
           {/* Image (optional) */}
@@ -130,7 +130,7 @@ function CorporateItinerary({ itinerary }: { itinerary: Package['itinerary'] }) 
           <div key={index} className="flex flex-col border-t border-white/10 pt-[24px] first:border-t-0 md:first:border-t-0 md:[&:nth-child(2)]:border-t-0">
             <span className="font-body text-[11px] text-[#0ED2E9] mb-[8px] tracking-[0.1em] uppercase">Day {day.day}</span>
             <h3 className="font-display text-[22px] font-bold text-white tracking-[-0.01em] mb-[12px]">{day.location}</h3>
-            <p className="font-body text-[15px] text-[rgba(255,255,255,0.68)] leading-[1.7]">
+            <p className="font-body text-[15px] text-[rgba(255,255,255,0.68)] leading-[1.7] whitespace-pre-wrap">
               {day.description}
             </p>
           </div>
