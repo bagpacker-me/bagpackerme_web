@@ -38,42 +38,22 @@ export function HeroSectionAnimated() {
                 </div>
                 <section>
                     <div className="relative pt-24 md:pt-36">
-                        <AnimatedGroup
-                            variants={{
-                                container: {
-                                    visible: {
-                                        transition: {
-                                            delayChildren: 1,
-                                        },
-                                    },
-                                },
-                                item: {
-                                    hidden: {
-                                        opacity: 0,
-                                        y: 20,
-                                    },
-                                    visible: {
-                                        opacity: 1,
-                                        y: 0,
-                                        transition: {
-                                            type: 'spring' as const,
-                                            bounce: 0.3,
-                                            duration: 2,
-                                        },
-                                    },
-                                },
+                        <div
+                            className="absolute inset-0 -z-20 opacity-30 pointer-events-none"
+                            dangerouslySetInnerHTML={{
+                                __html: `
+                                <video
+                                    autoplay
+                                    loop
+                                    muted
+                                    playsinline
+                                    class="absolute inset-x-0 top-0 object-cover h-[800px] w-full"
+                                >
+                                    <source src="/hero_bg.webm" type="video/webm" />
+                                </video>
+                                `
                             }}
-                            className="absolute inset-0 -z-20 opacity-30">
-                            <video
-                                autoPlay
-                                loop
-                                muted
-                                playsInline
-                                className="absolute inset-x-0 top-0 -z-20 object-cover h-[800px] w-full"
-                            >
-                                <source src="/hero_bg.webm" type="video/webm" />
-                            </video>
-                        </AnimatedGroup>
+                        />
                         <div aria-hidden className="absolute inset-0 -z-10 size-full [background:radial-gradient(125%_125%_at_50%_100%,transparent_0%,#221E2A_75%)]" />
                         <div className="mx-auto max-w-7xl px-6 relative z-10">
                             <div className="text-center sm:mx-auto lg:mt-0">
