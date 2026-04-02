@@ -17,6 +17,13 @@ const DURATIONS = [
   { label: 'Long (14+ days)', value: 'Long', min: 14, max: 999 }
 ];
 
+const PRICES = [
+  { label: 'Any', value: 'Any' },
+  { label: 'Budget (< ₹50k)', value: 'Budget', max: 50000 },
+  { label: 'Mid (₹50k-100k)', value: 'Mid', min: 50000, max: 100000 },
+  { label: 'Luxury (> ₹100k)', value: 'Luxury', min: 100000 }
+];
+
 const parseDurationDays = (durationStr: string): number => {
   if (!durationStr) return 0;
   if (durationStr.toLowerCase().includes('half')) return 0.5;
@@ -33,6 +40,7 @@ export default function PackagesPage() {
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState('All');
   const [activeDuration, setActiveDuration] = useState('Any');
+  const [activePrice, setActivePrice] = useState('Any');
   const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
@@ -79,8 +87,19 @@ export default function PackagesPage() {
       }
     }
 
+    if (activePrice !== 'Any') {
+      const pOpt = PRICES.find(p => p.value === activePrice);
+      if (pOpt) {
+        result = result.filter(p => {
+          if (pOpt.min && p.priceInr < pOpt.min) return false;
+          if (pOpt.max && p.priceInr > pOpt.max) return false;
+          return true;
+        });
+      }
+    }
+
     return result;
-  }, [packages, activeCategory, activeDuration]);
+  }, [packages, activeCategory, activeDuration, activePrice]);
 
   return (
     <main className="flex flex-col min-h-screen bg-white">
@@ -113,13 +132,13 @@ export default function PackagesPage() {
         </div>
       </section>
 
-      {/* Filter Bar (Sticky) */}
-      <div className="sticky top-[80px] lg:top-[100px] z-40 bg-[rgba(255,255,255,0.9)] backdrop-blur-md shadow-sm border-b border-[rgba(34,30,42,0.08)] py-[16px]">
-        <div className="container mx-auto px-[24px] flex flex-col md:flex-row gap-[16px] md:items-center max-w-[1400px]">
+      {/* Filter Bar */}
+      <div className="bg-[rgba(255,255,255,0.9)] backdrop-blur-md shadow-sm border-b border-[rgba(34,30,42,0.08)] py-[16px]">
+        <div className="container mx-auto px-[24px] flex flex-col lg:flex-row flex-wrap gap-[16px] lg:items-center max-w-[1400px]">
           
-          <div className="flex items-center w-full md:w-auto">
+          <div className="flex items-center w-full lg:w-auto">
             <span className="text-[11px] text-[#718096] uppercase tracking-[0.06em] font-semibold font-body mr-[16px] whitespace-nowrap">Category</span>
-            <div className="flex overflow-x-auto no-scrollbar gap-[8px] pb-[8px] md:pb-0 w-full snap-x">
+            <div className="flex overflow-x-auto no-scrollbar gap-[8px] pb-[8px] lg:pb-0 w-full snap-x">
               {CATEGORIES.map(cat => {
                 const isActive = activeCategory === cat;
                 return (
@@ -137,11 +156,11 @@ export default function PackagesPage() {
             </div>
           </div>
 
-          <div className="hidden md:block w-px h-[32px] bg-[rgba(34,30,42,0.08)] mx-[8px]" />
+          <div className="hidden lg:block w-px h-[32px] bg-[rgba(34,30,42,0.08)] mx-[8px]" />
 
-          <div className="flex items-center w-full md:w-auto">
+          <div className="flex items-center w-full lg:w-auto">
             <span className="text-[11px] text-[#718096] uppercase tracking-[0.06em] font-semibold font-body mr-[16px] whitespace-nowrap">Duration</span>
-            <div className="flex overflow-x-auto no-scrollbar gap-[8px] pb-[8px] md:pb-0 w-full snap-x">
+            <div className="flex overflow-x-auto no-scrollbar gap-[8px] pb-[8px] lg:pb-0 w-full snap-x">
               {DURATIONS.map(dur => {
                 const isActive = activeDuration === dur.value;
                 return (
@@ -153,6 +172,28 @@ export default function PackagesPage() {
                     }`}
                   >
                     <span className="relative z-10">{dur.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="hidden lg:block w-px h-[32px] bg-[rgba(34,30,42,0.08)] mx-[8px]" />
+
+          <div className="flex items-center w-full lg:w-auto">
+            <span className="text-[11px] text-[#718096] uppercase tracking-[0.06em] font-semibold font-body mr-[16px] whitespace-nowrap">Price</span>
+            <div className="flex overflow-x-auto no-scrollbar gap-[8px] pb-[8px] lg:pb-0 w-full snap-x">
+              {PRICES.map(price => {
+                const isActive = activePrice === price.value;
+                return (
+                  <button
+                    key={price.value}
+                    onClick={() => setActivePrice(price.value)}
+                    className={`relative px-[16px] py-[8px] rounded-none whitespace-nowrap font-body text-[13px] font-medium transition-colors snap-center border ${
+                      isActive ? 'text-[#221E2A] border-[#C1EA00] bg-[#C1EA00]' : 'text-[#718096] border-[rgba(34,30,42,0.08)] bg-[#FFFFFF] hover:bg-[#F7F9FA]'
+                    }`}
+                  >
+                    <span className="relative z-10">{price.label}</span>
                   </button>
                 );
               })}
@@ -220,7 +261,7 @@ export default function PackagesPage() {
                       Try exploring other categories or duration lengths.
                     </p>
                     <button 
-                      onClick={() => { setActiveCategory('All'); setActiveDuration('Any'); }}
+                      onClick={() => { setActiveCategory('All'); setActiveDuration('Any'); setActivePrice('Any'); }}
                       className="btn-primary"
                     >
                       Reset Filters

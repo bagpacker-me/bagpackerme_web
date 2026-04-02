@@ -2,7 +2,6 @@
 
 import React from 'react'
 import Link from 'next/link'
-import { ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { AnimatedGroup } from '@/components/ui/animated-group'
 
@@ -65,35 +64,20 @@ export function HeroSectionAnimated() {
                                 },
                             }}
                             className="absolute inset-0 -z-20 opacity-30">
-                            <img
-                                src="https://images.unsplash.com/photo-1542104068-0fc6c81ce2fb?q=80&w=3276&auto=format&fit=crop"
-                                alt="Mount Bromo background"
+                            <video
+                                src="/hero_bg.webm"
+                                autoPlay
+                                loop
+                                muted
+                                playsInline
                                 className="absolute inset-x-0 top-0 -z-20 hidden lg:block object-cover h-[800px] w-full"
-                                width="3276"
-                                height="4095"
                             />
                         </AnimatedGroup>
                         <div aria-hidden className="absolute inset-0 -z-10 size-full [background:radial-gradient(125%_125%_at_50%_100%,transparent_0%,#221E2A_75%)]" />
                         <div className="mx-auto max-w-7xl px-6 relative z-10">
                             <div className="text-center sm:mx-auto lg:mt-0">
                                 <AnimatedGroup variants={transitionVariants}>
-                                    <Link
-                                        href="/packages"
-                                        className="hover:bg-[#E9F5F7]/10 bg-[#E9F5F7]/5 group mx-auto flex w-fit items-center gap-4 rounded-full border border-white/10 p-1 pl-4 shadow-md shadow-black/20 transition-all duration-300">
-                                        <span className="text-[#E9F5F7] text-sm font-body">New: Custom Bromo Sunrise Packages</span>
-                                        <span className="block h-4 w-0.5 border-l border-white/20"></span>
 
-                                        <div className="bg-[#C1EA00] text-[#285056] group-hover:bg-[#C1EA00]/80 size-6 overflow-hidden rounded-full duration-500">
-                                            <div className="flex w-12 -translate-x-1/2 duration-500 ease-in-out group-hover:translate-x-0">
-                                                <span className="flex size-6">
-                                                    <ArrowRight className="m-auto size-3" />
-                                                </span>
-                                                <span className="flex size-6">
-                                                    <ArrowRight className="m-auto size-3" />
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </Link>
                         
                                     <h1
                                         className="font-display mt-8 max-w-5xl mx-auto text-balance text-5xl md:text-7xl lg:mt-16 xl:text-[5.25rem] text-[#E9F5F7]">

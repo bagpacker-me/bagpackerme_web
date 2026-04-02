@@ -1,6 +1,5 @@
 import React from 'react';
 import { HeroSectionAnimated } from '@/components/home/HeroSectionAnimated';
-import StatsSection from '@/components/home/StatsSection';
 import FeaturedTrips from '@/components/home/FeaturedTrips';
 import AboutSection from '@/components/home/AboutSection';
 import WhatWeDo from '@/components/home/WhatWeDo';
@@ -17,7 +16,6 @@ export default function HomePage() {
   return (
     <main className="flex flex-col min-h-screen bg-void">
       <HeroSectionAnimated />
-      <StatsSection />
       <FeaturedTrips />
       <AboutSection />
       <WhatWeDo />
