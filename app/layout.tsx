@@ -38,6 +38,9 @@ export const metadata: Metadata = {
     template: '%s | BagPackerMe',
   },
   description: 'Curated experiential journeys through India — small groups, deep immersion, real India. Culinary, Spiritual, Adventure, Heritage and more.',
+  icons: {
+    icon: '/logo.webp',
+  },
   openGraph: {
     type: 'website',
     locale: 'en_US',
