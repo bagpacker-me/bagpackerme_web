@@ -2,10 +2,9 @@
 
 import React from 'react'
 import Link from 'next/link'
-import { ArrowRight, Menu, X } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { AnimatedGroup } from '@/components/ui/animated-group'
-import { cn } from '@/lib/utils'
 
 const transitionVariants = {
     item: {
@@ -30,7 +29,6 @@ const transitionVariants = {
 export function HeroSectionAnimated() {
     return (
         <>
-            <HeroHeader />
             <main className="overflow-hidden bg-[#221E2A] text-[#E9F5F7] min-h-screen">
                 <div
                     aria-hidden
@@ -182,90 +180,4 @@ export function HeroSectionAnimated() {
     )
 }
 
-const menuItems = [
-    { name: 'Destinations', href: '/packages' },
-    { name: 'Journal', href: '/blog' },
-    { name: 'About Us', href: '/about' },
-    { name: 'Contact', href: '/contact' },
-]
 
-const HeroHeader = () => {
-    const [menuState, setMenuState] = React.useState(false)
-    const [isScrolled, setIsScrolled] = React.useState(false)
-
-    React.useEffect(() => {
-        const handleScroll = () => {
-            setIsScrolled(window.scrollY > 50)
-        }
-        window.addEventListener('scroll', handleScroll)
-        return () => window.removeEventListener('scroll', handleScroll)
-    }, [])
-    return (
-        <header>
-            <nav
-                data-state={menuState && 'active'}
-                className="fixed z-50 w-full px-2 group">
-                <div className={cn('mx-auto mt-4 max-w-6xl px-6 transition-all duration-300 lg:px-8', isScrolled && 'bg-[#285056]/80 max-w-4xl rounded-full border border-white/10 backdrop-blur-lg')}>
-                    <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0">
-                        <div className="flex w-full justify-between lg:w-auto items-center">
-                            <Link
-                                href="/"
-                                aria-label="home"
-                                className="flex items-center space-x-2">
-                                <span className="font-display font-bold text-xl tracking-wide text-[#E9F5F7]">BagPackerMe</span>
-                            </Link>
-
-                            <button
-                                onClick={() => setMenuState(!menuState)}
-                                aria-label={menuState == true ? 'Close Menu' : 'Open Menu'}
-                                className="relative z-20 block cursor-pointer p-2.5 lg:hidden text-[#E9F5F7]">
-                                <Menu className="in-data-[state=active]:rotate-180 group-data-[state=active]:scale-0 group-data-[state=active]:opacity-0 m-auto size-6 duration-200" />
-                                <X className="group-data-[state=active]:rotate-0 group-data-[state=active]:scale-100 group-data-[state=active]:opacity-100 absolute inset-0 m-auto size-6 -rotate-180 scale-0 opacity-0 duration-200" />
-                            </button>
-                        </div>
-
-                        <div className="absolute inset-0 m-auto hidden size-fit lg:block">
-                            <ul className="flex gap-8 text-sm font-body">
-                                {menuItems.map((item, index) => (
-                                    <li key={index}>
-                                        <Link
-                                            href={item.href}
-                                            className="text-[#E9F5F7]/80 hover:text-[#C1EA00] block duration-150 transition-colors">
-                                            <span>{item.name}</span>
-                                        </Link>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-
-                        <div className="bg-[#285056] group-data-[state=active]:block lg:group-data-[state=active]:flex mb-6 hidden w-full flex-wrap items-center justify-end space-y-8 rounded-3xl border border-white/10 p-6 shadow-2xl md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none">
-                            <div className="lg:hidden">
-                                <ul className="space-y-6 text-base font-body">
-                                    {menuItems.map((item, index) => (
-                                        <li key={index}>
-                                            <Link
-                                                href={item.href}
-                                                className="text-[#E9F5F7]/80 hover:text-[#C1EA00] block duration-150">
-                                                <span>{item.name}</span>
-                                            </Link>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                            <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
-                                <Button
-                                    asChild
-                                    size="sm"
-                                    className="bg-[#C1EA00] text-[#285056] hover:bg-[#C1EA00]/90 rounded-full px-6 w-full sm:w-auto">
-                                    <Link href="/contact">
-                                        <span>Book Now</span>
-                                    </Link>
-                                </Button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </nav>
-        </header>
-    )
-}

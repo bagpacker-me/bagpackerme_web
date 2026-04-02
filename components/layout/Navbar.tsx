@@ -1,198 +1,123 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import {
-  motion,
-  useScroll,
-  useTransform,
-  useMotionTemplate,
-  useMotionValueEvent,
-  AnimatePresence,
-  useReducedMotion,
-} from 'framer-motion';
+import Image from 'next/image';
 import { Menu, X } from 'lucide-react';
-import { Logo } from '../ui/Logo';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { usePathname } from 'next/navigation';
 
-const navLinks = [
-  { name: 'Home', href: '/' },
-  { name: 'Trips', href: '/packages' },
-  { name: 'Blog', href: '/blog' },
-  { name: 'About', href: '/about' },
-];
+const menuItems = [
+    { name: 'Destinations', href: '/packages' },
+    { name: 'Journal', href: '/blog' },
+    { name: 'About Us', href: '/about' },
+    { name: 'Contact', href: '/contact' },
+]
 
 export function Navbar() {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { scrollY } = useScroll();
-  const pathname = usePathname();
-  const shouldReduceMotion = useReducedMotion();
+    const [menuState, setMenuState] = useState(false)
+    const [isScrolled, setIsScrolled] = useState(false)
+    const pathname = usePathname();
 
-  // Spec #7: interpolate bg and blur via useTransform at 80px threshold
-  const bgOpacity = useTransform(scrollY, [0, 80], [0, 0.15]);
-  const blurPx    = useTransform(scrollY, [0, 80], [0, 20]);
-  // Build CSS values from motion values
-  const background      = useMotionTemplate`rgba(240,252,254,${bgOpacity})`;
-  const backdropFilter  = useMotionTemplate`blur(${blurPx}px)`;
-
-  useMotionValueEvent(scrollY, "change", (latest) => {
-    setIsScrolled(latest > 80);
-  });
-
-  // Close mobile menu on route change
-  useEffect(() => {
-    setIsMobileMenuOpen(false);
-  }, [pathname]);
-
-  // Prevent scrolling when mobile menu is open
-  useEffect(() => {
-    if (isMobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-  }, [isMobileMenuOpen]);
-
-  return (
-    <>
-      <motion.nav
-        className="fixed top-4 left-4 right-4 z-50 border border-subtle rounded-2xl mx-auto max-w-7xl transition-all duration-300"
-        style={
-          shouldReduceMotion
-            ? { background: isScrolled ? 'rgba(240,252,254,0.95)' : 'transparent' }
-            : { background, backdropFilter, WebkitBackdropFilter: backdropFilter,
-                borderColor: isScrolled ? 'rgba(255,255,255,0.1)' : 'rgba(240,252,254,0.05)' }
+    useEffect(() => {
+        const handleScroll = () => {
+            setIsScrolled(window.scrollY > 50)
         }
-      >
-        <div className="px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
-            {/* Logo */}
-            <Link href="/" className="flex-shrink-0 z-[60] relative origin-left scale-[0.78] md:scale-100">
-              <Logo variant="light" />
-            </Link>
+        window.addEventListener('scroll', handleScroll)
+        return () => window.removeEventListener('scroll', handleScroll)
+    }, [])
 
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-8">
-              {navLinks.map((link) => (
-                <div key={link.name} className="relative group">
-                  <Link
-                    href={link.href}
-                    className="text-void hover:text-primary-light transition-colors duration-200 relative py-2 text-sm font-medium tracking-wide"
-                  >
-                    {link.name}
-                    {/* Animated underline on hover */}
-                    <span className="absolute -bottom-1 left-0 w-full h-[2px] bg-primary scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out origin-left" />
-                    {/* Active page indicator — full-width primary bar */}
-                    {pathname === link.href && (
-                      <motion.div
-                        layoutId="nav-indicator"
-                        className="absolute -bottom-1 left-0 w-full h-[2px] bg-primary-light"
-                      />
-                    )}
-                  </Link>
+    // Close menu on navigation
+    useEffect(() => {
+        setMenuState(false);
+    }, [pathname]);
+
+    return (
+        <header>
+            <nav
+                data-state={menuState && 'active'}
+                className="fixed top-0 left-0 z-[100] w-full px-2 group">
+                <div className={cn('mx-auto mt-4 max-w-6xl px-6 transition-all duration-300 lg:px-8', isScrolled && 'bg-[#285056]/90 max-w-4xl rounded-full border border-white/10 backdrop-blur-lg shadow-lg')}>
+                    <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0">
+                        <div className="flex w-full justify-between lg:w-auto items-center">
+                            <Link
+                                href="/"
+                                aria-label="home"
+                                className="flex items-center space-x-2">
+                                <Image
+                                    src="/logo_text.webp"
+                                    alt="BagPackerMe Logo"
+                                    width={180}
+                                    height={40}
+                                    priority
+                                    className="h-7 sm:h-8 w-auto object-contain relative z-20"
+                                />
+                            </Link>
+
+                            <button
+                                onClick={() => setMenuState(!menuState)}
+                                aria-label={menuState == true ? 'Close Menu' : 'Open Menu'}
+                                className="relative z-20 block cursor-pointer p-2.5 lg:hidden text-white hover:text-[#C1EA00] transition-colors">
+                                <Menu className="in-data-[state=active]:rotate-180 group-data-[state=active]:scale-0 group-data-[state=active]:opacity-0 m-auto size-6 duration-200" />
+                                <X className="group-data-[state=active]:rotate-0 group-data-[state=active]:scale-100 group-data-[state=active]:opacity-100 absolute inset-0 m-auto size-6 -rotate-180 scale-0 opacity-0 duration-200" />
+                            </button>
+                        </div>
+
+                        <div className="absolute inset-0 m-auto hidden size-fit lg:block">
+                            <ul className="flex gap-8 text-sm font-body">
+                                {menuItems.map((item, index) => {
+                                    const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
+                                    return (
+                                        <li key={index}>
+                                            <Link
+                                                href={item.href}
+                                                className={cn(
+                                                    "block duration-150 transition-colors font-medium",
+                                                    isActive || (!isScrolled && pathname === '/') ? "text-[#C1EA00]" : (isScrolled ? "text-white hover:text-[#C1EA00]" : "text-white drop-shadow-md hover:text-[#C1EA00]")
+                                                )}>
+                                                <span>{item.name}</span>
+                                            </Link>
+                                        </li>
+                                    )
+                                })}
+                            </ul>
+                        </div>
+
+                        <div className="bg-[#285056] group-data-[state=active]:block lg:group-data-[state=active]:flex mb-6 hidden w-full flex-wrap items-center justify-end space-y-8 rounded-3xl border border-white/10 p-6 shadow-2xl md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none">
+                            <div className="lg:hidden">
+                                <ul className="space-y-6 text-base font-body">
+                                    {menuItems.map((item, index) => {
+                                        const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
+                                        return (
+                                            <li key={index}>
+                                                <Link
+                                                    href={item.href}
+                                                    className={cn(
+                                                        "block duration-150 transition-colors",
+                                                        isActive ? "text-[#C1EA00] font-bold" : "text-white/80 hover:text-[#C1EA00]"
+                                                    )}>
+                                                    <span>{item.name}</span>
+                                                </Link>
+                                            </li>
+                                        )
+                                    })}
+                                </ul>
+                            </div>
+                            <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
+                                <Button
+                                    asChild
+                                    size="sm"
+                                    className="bg-[#C1EA00] text-[#285056] hover:bg-[#C1EA00]/90 rounded-full px-6 w-full sm:w-auto font-semibold">
+                                    <Link href="/contact">
+                                        <span>Book Now</span>
+                                    </Link>
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              ))}
-            </div>
-
-            {/* Right Side Icons & CTA (Desktop) */}
-            <div className="hidden md:flex items-center space-x-6 z-[60]">
-              <div className="flex items-center space-x-4">
-                <a href="https://instagram.com/bagpackerme" target="_blank" rel="noopener noreferrer" className="text-void hover:text-primary-light transition-colors">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
-                    <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
-                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
-                    <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
-                  </svg>
-                </a>
-                <a href="https://wa.me/919920992026" target="_blank" rel="noopener noreferrer" className="text-void hover:text-primary-light transition-colors">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/>
-                  </svg>
-                </a>
-              </div>
-              <Link 
-                href="/contact" 
-                className="btn-lime"
-              >
-                Book a Trip &rarr;
-              </Link>
-            </div>
-
-            {/* Mobile Menu Button */}
-            <div className="md:hidden flex items-center z-[60]">
-              <button 
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="text-void hover:text-primary-light transition-colors flex items-center justify-center min-w-[44px] min-h-[44px]"
-                aria-label="Toggle menu"
-              >
-                {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-              </button>
-            </div>
-          </div>
-        </div>
-      </motion.nav>
-
-      {/* Mobile Menu Overlay */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, clipPath: 'circle(0% at 100% 0)' }}
-            animate={{ opacity: 1, clipPath: 'circle(150% at 100% 0)' }}
-            exit={{ opacity: 0, clipPath: 'circle(0% at 100% 0)' }}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed inset-0 z-50 bg-void flex flex-col justify-center items-center px-6 overflow-y-auto"
-          >
-            <div className="flex flex-col items-center justify-center space-y-8 text-center mt-12 w-full py-12 min-h-full">
-              {navLinks.map((link, i) => (
-                <motion.div 
-                  key={link.name}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 + i * 0.05 }}
-                >
-                  <Link
-                    href={link.href}
-                    className="text-white text-3xl font-heading font-bold hover:text-lime transition-colors"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    {link.name}
-                  </Link>
-                </motion.div>
-              ))}
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 + navLinks.length * 0.05 }}
-                className="pt-8 flex flex-col items-center space-y-8"
-              >
-                <Link 
-                  href="/contact" 
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="btn-lime w-full text-center justify-center max-w-xs"
-                >
-                  Book a Trip &rarr;
-                </Link>
-                
-                <div className="flex space-x-6">
-                  <a href="https://instagram.com/bagpackerme" target="_blank" rel="noopener noreferrer" className="text-white hover:text-lime transition-colors">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
-                      <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
-                      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
-                      <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
-                    </svg>
-                  </a>
-                  <a href="https://wa.me/919920992026" target="_blank" rel="noopener noreferrer" className="text-white hover:text-lime transition-colors">
-                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/>
-                    </svg>
-                  </a>
-                </div>
-              </motion.div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
-  );
+            </nav>
+        </header>
+    )
 }
