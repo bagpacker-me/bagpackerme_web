@@ -39,7 +39,7 @@ export const metadata: Metadata = {
   },
   description: 'Curated experiential journeys through India — small groups, deep immersion, real India. Culinary, Spiritual, Adventure, Heritage and more.',
   icons: {
-    icon: '/logo.webp',
+    icon: '/logo_b.webp',
   },
   openGraph: {
     type: 'website',

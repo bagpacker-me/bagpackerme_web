@@ -46,7 +46,7 @@ export function Navbar() {
                                 aria-label="home"
                                 className="flex items-center space-x-2">
                                 <Image
-                                    src="/logo_text.webp"
+                                    src="/logo_w.webp"
                                     alt="BagPackerMe Logo"
                                     width={180}
                                     height={40}
