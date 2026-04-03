@@ -13,7 +13,7 @@ function SkeletonRow() {
     <tr className="border-b border-gray-100">
       {[40, 160, 100, 80, 80, 100, 100].map((w, i) => (
         <td key={i} className="px-4 py-3">
-          <div className="h-4 bg-gray-200 rounded animate-pulse" style={{ width: w }} />
+          <div className="h-4 bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.1)] rounded animate-pulse" style={{ width: w }} />
         </td>
       ))}
     </tr>
@@ -35,12 +35,12 @@ function StatusBadge({
       className={`inline-flex items-center gap-1.5 px-[10px] py-[3px] rounded-full font-body text-[12px] font-medium transition-colors cursor-pointer
         ${
           status === 'published'
-            ? 'bg-[#DCFCE7] text-[#166534] hover:bg-green-200'
-            : 'bg-[#F3F4F6] text-[#6B7280] hover:bg-gray-200'
+            ? 'bg-[#DCFCE7] dark:bg-[rgba(22,101,52,0.3)] text-[#166534] dark:text-[#4ADE80] hover:bg-green-200 dark:hover:bg-[rgba(22,101,52,0.5)]'
+            : 'bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.05)] text-[#6B7280] dark:text-[rgba(255,255,255,0.6)] hover:bg-gray-200 dark:hover:bg-[rgba(255,255,255,0.1)]'
         }`}
     >
       <span
-        className={`w-1.5 h-1.5 rounded-full ${status === 'published' ? 'bg-[#166534]' : 'bg-[#6B7280]'}`}
+        className={`w-1.5 h-1.5 rounded-full ${status === 'published' ? 'bg-[#166534] dark:bg-[#4ADE80]' : 'bg-[#6B7280] dark:bg-[rgba(255,255,255,0.6)]'}`}
       />
       {status === 'published' ? 'Published' : 'Draft'}
     </button>
@@ -111,11 +111,11 @@ export default function AdminPackagesPage() {
       <div className="flex items-center justify-between mb-7">
         <div>
           <h1
-            className="text-2xl font-bold text-void font-heading"
+            className="text-2xl font-bold text-void dark:text-white font-heading"
           >
             Packages
           </h1>
-          <p className="text-sm text-gray-400 mt-0.5">
+          <p className="text-sm text-gray-400 dark:text-[rgba(255,255,255,0.6)] mt-0.5">
             {packages.length} package{packages.length !== 1 ? 's' : ''} total
           </p>
         </div>
@@ -131,29 +131,29 @@ export default function AdminPackagesPage() {
       </div>
 
       {/* Table Card */}
-      <div className="bg-white overflow-x-auto">
+      <div className="bg-[#FFFFFF] dark:bg-[#1A1625] overflow-x-auto">
         <table className="w-full">
           <thead>
-            <tr className="bg-[#F7F9FA] border-b-[2px] border-[#E9F5F7]">
-              <th className="px-[16px] py-[12px] text-left font-display text-[11px] font-bold text-[#718096] tracking-widest uppercase w-14">
+            <tr className="bg-[#F7F9FA] dark:bg-[rgba(255,255,255,0.02)] border-b-[2px] border-[#E9F5F7] dark:border-[rgba(255,255,255,0.06)]">
+              <th className="px-[16px] py-[12px] text-left font-display text-[11px] font-bold text-[#718096] dark:text-[rgba(255,255,255,0.6)] tracking-widest uppercase w-14">
                 Image
               </th>
-              <th className="px-[16px] py-[12px] text-left font-display text-[11px] font-bold text-[#718096] tracking-widest uppercase">
+              <th className="px-[16px] py-[12px] text-left font-display text-[11px] font-bold text-[#718096] dark:text-[rgba(255,255,255,0.6)] tracking-widest uppercase">
                 Title
               </th>
-              <th className="px-[16px] py-[12px] text-left font-display text-[11px] font-bold text-[#718096] tracking-widest uppercase hidden md:table-cell">
+              <th className="px-[16px] py-[12px] text-left font-display text-[11px] font-bold text-[#718096] dark:text-[rgba(255,255,255,0.6)] tracking-widest uppercase hidden md:table-cell">
                 Category
               </th>
-              <th className="px-[16px] py-[12px] text-left font-display text-[11px] font-bold text-[#718096] tracking-widest uppercase">
+              <th className="px-[16px] py-[12px] text-left font-display text-[11px] font-bold text-[#718096] dark:text-[rgba(255,255,255,0.6)] tracking-widest uppercase">
                 Status
               </th>
-              <th className="px-[16px] py-[12px] text-left font-display text-[11px] font-bold text-[#718096] tracking-widest uppercase hidden sm:table-cell">
+              <th className="px-[16px] py-[12px] text-left font-display text-[11px] font-bold text-[#718096] dark:text-[rgba(255,255,255,0.6)] tracking-widest uppercase hidden sm:table-cell">
                 Price (INR)
               </th>
-              <th className="px-[16px] py-[12px] text-left font-display text-[11px] font-bold text-[#718096] tracking-widest uppercase hidden lg:table-cell">
+              <th className="px-[16px] py-[12px] text-left font-display text-[11px] font-bold text-[#718096] dark:text-[rgba(255,255,255,0.6)] tracking-widest uppercase hidden lg:table-cell">
                 Created
               </th>
-              <th className="px-[16px] py-[12px] text-right font-display text-[11px] font-bold text-[#718096] tracking-widest uppercase">
+              <th className="px-[16px] py-[12px] text-right font-display text-[11px] font-bold text-[#718096] dark:text-[rgba(255,255,255,0.6)] tracking-widest uppercase">
                 Actions
               </th>
             </tr>
@@ -186,7 +186,7 @@ export default function AdminPackagesPage() {
                 packages.map((pkg) => (
                   <tr
                     key={pkg.id}
-                    className="border-b border-[#F3F4F6] hover:bg-[#F7F9FA] transition-colors group h-[56px] align-middle"
+                    className="border-b border-[#F3F4F6] dark:border-[rgba(255,255,255,0.06)] hover:bg-[#F7F9FA] dark:hover:bg-[rgba(255,255,255,0.05)] transition-colors group h-[56px] align-middle"
                   >
                     {/* Image */}
                     <td className="px-4 py-3">
@@ -208,12 +208,12 @@ export default function AdminPackagesPage() {
 
                     {/* Title */}
                     <td className="px-[16px]">
-                      <p className="font-body text-[14px] text-[#221E2A] truncate max-w-[220px]">{pkg.title}</p>
-                      <p className="font-body text-[12px] text-[#718096] truncate max-w-[220px] pt-[2px]">/{pkg.slug}</p>
+                      <p className="font-body text-[14px] text-[#221E2A] dark:text-[rgba(255,255,255,0.9)] truncate max-w-[220px]">{pkg.title}</p>
+                      <p className="font-body text-[12px] text-[#718096] dark:text-[rgba(255,255,255,0.6)] truncate max-w-[220px] pt-[2px]">/{pkg.slug}</p>
                     </td>
 
                     {/* Category */}
-                    <td className="px-[16px] hidden md:table-cell font-body text-[14px] text-[#221E2A]">
+                    <td className="px-[16px] hidden md:table-cell font-body text-[14px] text-[#221E2A] dark:text-[rgba(255,255,255,0.9)]">
                       <span>{pkg.category}</span>
                     </td>
 
@@ -223,14 +223,14 @@ export default function AdminPackagesPage() {
                     </td>
 
                     {/* Price */}
-                    <td className="px-[16px] hidden sm:table-cell font-body text-[14px] text-[#221E2A]">
+                    <td className="px-[16px] hidden sm:table-cell font-body text-[14px] text-[#221E2A] dark:text-[rgba(255,255,255,0.9)]">
                       <span>
                         ₹{pkg.priceInr.toLocaleString('en-IN')}
                       </span>
                     </td>
 
                     {/* Created */}
-                    <td className="px-[16px] hidden lg:table-cell font-body text-[14px] text-[#221E2A]">
+                    <td className="px-[16px] hidden lg:table-cell font-body text-[14px] text-[#221E2A] dark:text-[rgba(255,255,255,0.9)]">
                       <span>
                         {pkg.createdAt
                           ? format(new Date(pkg.createdAt), 'd MMM yyyy')
@@ -282,7 +282,7 @@ export default function AdminPackagesPage() {
             onClick={() => !deleting && setDeleteTarget(null)}
           />
           {/* Modal */}
-          <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md mx-4 p-6 z-10">
+          <div className="relative bg-white dark:bg-[#1A1625] dark:border dark:border-[rgba(255,255,255,0.1)] rounded-2xl shadow-xl w-full max-w-md mx-4 p-6 z-10">
             <div className="flex items-start gap-4">
               <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
                 <svg className="w-5 h-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -290,10 +290,10 @@ export default function AdminPackagesPage() {
                 </svg>
               </div>
               <div>
-                <h3 className="text-base font-semibold text-gray-900">Delete Package</h3>
-                <p className="text-sm text-gray-500 mt-1">
+                <h3 className="text-base font-semibold text-gray-900 dark:text-white">Delete Package</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                   Are you sure you want to delete{' '}
-                  <strong className="text-gray-700">&quot;{deleteTarget.title}&quot;</strong>? This action
+                  <strong className="text-gray-700 dark:text-gray-300">&quot;{deleteTarget.title}&quot;</strong>? This action
                   cannot be undone.
                 </p>
               </div>
@@ -303,7 +303,7 @@ export default function AdminPackagesPage() {
                 type="button"
                 onClick={() => setDeleteTarget(null)}
                 disabled={deleting}
-                className="px-4 py-2 text-sm rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors disabled:opacity-50"
+                className="px-4 py-2 text-sm rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 dark:bg-[rgba(255,255,255,0.05)] dark:border-[rgba(255,255,255,0.1)] transition-colors disabled:opacity-50"
               >
                 Cancel
               </button>

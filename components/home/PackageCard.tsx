@@ -5,7 +5,7 @@ import { ArrowRight } from 'lucide-react';
 
 export default function PackageCard({ pkg }: { pkg: Package }) {
   return (
-    <div className="flex flex-col bg-white border border-subtle rounded-none overflow-hidden group hover:shadow-diffuse hover:-translate-y-[6px] transition-all duration-700">
+    <Link href={`/packages/${pkg.slug}`} className="flex flex-col bg-white border border-subtle rounded-none overflow-hidden group hover:shadow-diffuse hover:-translate-y-[6px] transition-all duration-700">
       {/* Image Area with 3/2 Mobile and 4/5 Desktop Aspect Ratio and Hover Overlay */}
       <div className="relative w-full aspect-[3/2] md:aspect-[4/5] overflow-hidden">
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -67,12 +67,12 @@ export default function PackageCard({ pkg }: { pkg: Package }) {
               <span className="text-[12px] font-normal text-gray-500 ml-[4px]">/psn</span>
             </span>
           </div>
-          <Link href={`/packages/${pkg.slug}`} className="font-display text-primary font-bold text-[13px] tracking-[0.1em] uppercase hover:text-cyan transition-colors flex items-center gap-[4px]">
+          <span className="font-display text-primary font-bold text-[13px] tracking-[0.1em] uppercase group-hover:text-cyan transition-colors flex items-center gap-[4px]">
             Explore <ArrowRight className="w-[14px] h-[14px]" />
-          </Link>
+          </span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
 

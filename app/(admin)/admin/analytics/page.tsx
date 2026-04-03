@@ -80,24 +80,24 @@ export default function AnalyticsPage() {
   return (
     <div className="px-6 py-8 max-w-7xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-[#221E2A] font-heading">Analytics Dashboard</h1>
-        <p className="text-sm text-gray-500 mt-1">Overview of your platform&apos;s performance</p>
+        <h1 className="text-2xl font-bold text-[#221E2A] dark:text-white font-heading">Analytics Dashboard</h1>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Overview of your platform&apos;s performance</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {statCards.map((stat, idx) => {
           const Icon = stat.icon;
           return (
-            <div key={idx} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center justify-between">
+            <div key={idx} className="bg-[#FFFFFF] dark:bg-[#1A1625] rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-[rgba(255,255,255,0.06)] flex items-center justify-between">
               <div>
                 <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-1">{stat.title}</p>
                 {loading ? (
-                  <div className="h-8 w-16 bg-gray-200 rounded animate-pulse mt-2" />
+                  <div className="h-8 w-16 bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.1)] rounded animate-pulse mt-2" />
                 ) : (
-                  <h3 className="text-3xl font-bold text-[#221E2A]">{stat.value}</h3>
+                  <h3 className="text-3xl font-bold text-[#221E2A] dark:text-[rgba(255,255,255,0.9)]">{stat.value}</h3>
                 )}
               </div>
-              <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${stat.bgColor}`}>
+              <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${stat.bgColor} dark:opacity-80`}>
                 <Icon className={`w-6 h-6 ${stat.textColor}`} />
               </div>
             </div>

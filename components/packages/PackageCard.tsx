@@ -143,7 +143,7 @@ export default function PackageCard({
       >
         <Link
           href={`/packages/${pkg.slug}`}
-          style={{ display: 'contents' }}
+          style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}
           tabIndex={0}
           aria-label={`Explore ${pkg.title}`}
         >

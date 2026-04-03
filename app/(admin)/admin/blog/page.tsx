@@ -13,7 +13,7 @@ function SkeletonRow() {
     <tr className="border-b border-gray-100">
       {[40, 180, 100, 80, 100, 80, 100].map((w, i) => (
         <td key={i} className="px-4 py-3">
-          <div className="h-4 bg-gray-200 rounded animate-pulse" style={{ width: w }} />
+          <div className="h-4 bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.1)] rounded animate-pulse" style={{ width: w }} />
         </td>
       ))}
     </tr>
@@ -35,12 +35,12 @@ function StatusBadge({
       className={`inline-flex items-center gap-1.5 px-[10px] py-[3px] rounded-full font-body text-[12px] font-medium transition-colors cursor-pointer
         ${
           status === 'published'
-            ? 'bg-[#DCFCE7] text-[#166534] hover:bg-green-200'
-            : 'bg-[#F3F4F6] text-[#6B7280] hover:bg-gray-200'
+            ? 'bg-[#DCFCE7] dark:bg-[rgba(22,101,52,0.3)] text-[#166534] dark:text-[#4ADE80] hover:bg-green-200 dark:hover:bg-[rgba(22,101,52,0.5)]'
+            : 'bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.05)] text-[#6B7280] dark:text-[rgba(255,255,255,0.6)] hover:bg-gray-200 dark:hover:bg-[rgba(255,255,255,0.1)]'
         }`}
     >
       <span
-        className={`w-1.5 h-1.5 rounded-full ${status === 'published' ? 'bg-[#166534]' : 'bg-[#6B7280]'}`}
+        className={`w-1.5 h-1.5 rounded-full ${status === 'published' ? 'bg-[#166534] dark:bg-[#4ADE80]' : 'bg-[#6B7280] dark:bg-[rgba(255,255,255,0.6)]'}`}
       />
       {status === 'published' ? 'Published' : 'Draft'}
     </button>
@@ -112,10 +112,10 @@ export default function AdminBlogPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-[28px]">
         <div>
-          <h1 className="text-[24px] font-bold text-[#221E2A] font-display">
+          <h1 className="text-[24px] font-bold text-[#221E2A] dark:text-white font-display">
             Blog Posts
           </h1>
-          <p className="font-body text-[13px] text-[#718096] mt-[2px]">
+          <p className="font-body text-[13px] text-[#718096] dark:text-[rgba(255,255,255,0.6)] mt-[2px]">
             {blogs.length} post{blogs.length !== 1 ? 's' : ''} total
           </p>
         </div>
@@ -131,29 +131,29 @@ export default function AdminBlogPage() {
       </div>
 
       {/* Table Card */}
-      <div className="bg-white overflow-x-auto">
+      <div className="bg-[#FFFFFF] dark:bg-[#1A1625] overflow-x-auto">
         <table className="w-full">
           <thead>
-            <tr className="bg-[#F7F9FA] border-b-[2px] border-[#E9F5F7]">
-              <th className="px-[16px] py-[12px] text-left font-display text-[11px] font-bold text-[#718096] tracking-widest uppercase w-14">
+            <tr className="bg-[#F7F9FA] dark:bg-[rgba(255,255,255,0.02)] border-b-[2px] border-[#E9F5F7] dark:border-[rgba(255,255,255,0.06)]">
+              <th className="px-[16px] py-[12px] text-left font-display text-[11px] font-bold text-[#718096] dark:text-[rgba(255,255,255,0.6)] tracking-widest uppercase w-14">
                 Image
               </th>
-              <th className="px-[16px] py-[12px] text-left font-display text-[11px] font-bold text-[#718096] tracking-widest uppercase">
+              <th className="px-[16px] py-[12px] text-left font-display text-[11px] font-bold text-[#718096] dark:text-[rgba(255,255,255,0.6)] tracking-widest uppercase">
                 Title
               </th>
-              <th className="px-[16px] py-[12px] text-left font-display text-[11px] font-bold text-[#718096] tracking-widest uppercase">
+              <th className="px-[16px] py-[12px] text-left font-display text-[11px] font-bold text-[#718096] dark:text-[rgba(255,255,255,0.6)] tracking-widest uppercase">
                 Category
               </th>
-              <th className="px-[16px] py-[12px] text-left font-display text-[11px] font-bold text-[#718096] tracking-widest uppercase">
+              <th className="px-[16px] py-[12px] text-left font-display text-[11px] font-bold text-[#718096] dark:text-[rgba(255,255,255,0.6)] tracking-widest uppercase">
                 Status
               </th>
-              <th className="px-[16px] py-[12px] text-left font-display text-[11px] font-bold text-[#718096] tracking-widest uppercase">
+              <th className="px-[16px] py-[12px] text-left font-display text-[11px] font-bold text-[#718096] dark:text-[rgba(255,255,255,0.6)] tracking-widest uppercase">
                 Publish Date
               </th>
-              <th className="px-[16px] py-[12px] text-left font-display text-[11px] font-bold text-[#718096] tracking-widest uppercase">
+              <th className="px-[16px] py-[12px] text-left font-display text-[11px] font-bold text-[#718096] dark:text-[rgba(255,255,255,0.6)] tracking-widest uppercase">
                 Read Time
               </th>
-              <th className="px-[16px] py-[12px] text-right font-display text-[11px] font-bold text-[#718096] tracking-widest uppercase">
+              <th className="px-[16px] py-[12px] text-right font-display text-[11px] font-bold text-[#718096] dark:text-[rgba(255,255,255,0.6)] tracking-widest uppercase">
                 Actions
               </th>
             </tr>
@@ -186,7 +186,7 @@ export default function AdminBlogPage() {
                 blogs.map((post) => (
                   <tr
                     key={post.id}
-                    className="border-b border-[#F3F4F6] hover:bg-[#F7F9FA] transition-colors group h-[56px] align-middle"
+                    className="border-b border-[#F3F4F6] dark:border-[rgba(255,255,255,0.06)] hover:bg-[#F7F9FA] dark:hover:bg-[rgba(255,255,255,0.05)] transition-colors group h-[56px] align-middle"
                   >
                     {/* Featured Image */}
                     <td className="px-[16px]">
@@ -208,8 +208,8 @@ export default function AdminBlogPage() {
 
                     {/* Title */}
                     <td className="px-[16px]">
-                      <p className="font-body text-[14px] text-[#221E2A] truncate max-w-[220px]">{post.title}</p>
-                      <p className="font-body text-[12px] text-[#718096] truncate max-w-[220px] pt-[2px]">/{post.slug}</p>
+                      <p className="font-body text-[14px] text-[#221E2A] dark:text-[rgba(255,255,255,0.9)] truncate max-w-[220px]">{post.title}</p>
+                      <p className="font-body text-[12px] text-[#718096] dark:text-[rgba(255,255,255,0.6)] truncate max-w-[220px] pt-[2px]">/{post.slug}</p>
                     </td>
 
                     {/* Category */}
@@ -225,7 +225,7 @@ export default function AdminBlogPage() {
                     </td>
 
                     {/* Publish Date */}
-                    <td className="px-[16px] font-body text-[14px] text-[#221E2A]">
+                    <td className="px-[16px] font-body text-[14px] text-[#221E2A] dark:text-[rgba(255,255,255,0.9)]">
                       <span>
                         {post.publishDate
                           ? format(new Date(post.publishDate), 'd MMM yyyy')
@@ -234,7 +234,7 @@ export default function AdminBlogPage() {
                     </td>
 
                     {/* Read Time */}
-                    <td className="px-[16px] font-body text-[14px] text-[#221E2A]">
+                    <td className="px-[16px] font-body text-[14px] text-[#221E2A] dark:text-[rgba(255,255,255,0.9)]">
                       <span>
                         {post.readTimeMinutes ? `${post.readTimeMinutes} min` : '—'}
                       </span>
@@ -279,7 +279,7 @@ export default function AdminBlogPage() {
             className="absolute inset-0 bg-black/40 backdrop-blur-sm"
             onClick={() => !deleting && setDeleteTarget(null)}
           />
-          <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md mx-4 p-6 z-10">
+          <div className="relative bg-white dark:bg-[#1A1625] dark:border dark:border-[rgba(255,255,255,0.1)] rounded-2xl shadow-xl w-full max-w-md mx-4 p-6 z-10">
             <div className="flex items-start gap-4">
               <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
                 <svg className="w-5 h-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -287,10 +287,10 @@ export default function AdminBlogPage() {
                 </svg>
               </div>
               <div>
-                <h3 className="text-base font-semibold text-gray-900">Delete Post</h3>
-                <p className="text-sm text-gray-500 mt-1">
+                <h3 className="text-base font-semibold text-gray-900 dark:text-white">Delete Post</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                   Are you sure you want to delete{' '}
-                  <strong className="text-gray-700">&quot;{deleteTarget.title}&quot;</strong>? This action
+                  <strong className="text-gray-700 dark:text-gray-300">&quot;{deleteTarget.title}&quot;</strong>? This action
                   cannot be undone.
                 </p>
               </div>
@@ -300,7 +300,7 @@ export default function AdminBlogPage() {
                 type="button"
                 onClick={() => setDeleteTarget(null)}
                 disabled={deleting}
-                className="px-4 py-2 text-sm rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors disabled:opacity-50"
+                className="px-4 py-2 text-sm rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 dark:bg-[rgba(255,255,255,0.05)] dark:border-[rgba(255,255,255,0.1)] transition-colors disabled:opacity-50"
               >
                 Cancel
               </button>

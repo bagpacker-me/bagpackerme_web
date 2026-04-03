@@ -21,16 +21,15 @@ function formatDate(iso: string) {
 }
 
 function StatusBadge({ status }: { status: Enquiry['status'] }) {
-  const map: Record<Enquiry['status'], { label: string; bg: string; text: string }> = {
-    new: { label: 'New', bg: '#E0F7FF', text: '#0369a1' },
-    in_progress: { label: 'In Progress', bg: '#FEF9C3', text: '#854d0e' },
-    responded: { label: 'Responded', bg: '#DCFCE7', text: '#166534' },
+  const map: Record<Enquiry['status'], { label: string; classes: string }> = {
+    new: { label: 'New', classes: 'bg-[#E0F7FF] dark:bg-[#E0F7FF]/20 text-[#0369a1] dark:text-[#38bdf8]' },
+    in_progress: { label: 'In Progress', classes: 'bg-[#FEF9C3] dark:bg-[#FEF9C3]/20 text-[#854d0e] dark:text-[#fde047]' },
+    responded: { label: 'Responded', classes: 'bg-[#DCFCE7] dark:bg-[#DCFCE7]/20 text-[#166534] dark:text-[#4ade80]' },
   };
   const s = map[status];
   return (
     <span
-      className="inline-flex items-center min-w-[80px] justify-center px-[10px] py-[3px] rounded-full font-body text-[12px] font-medium"
-      style={{ backgroundColor: s.bg, color: s.text }}
+      className={`inline-flex items-center min-w-[80px] justify-center px-[10px] py-[3px] rounded-full font-body text-[12px] font-medium ${s.classes}`}
     >
       {s.label}
     </span>

@@ -3,11 +3,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { Compass, Clock, Wallet, FilterX } from 'lucide-react';
 import { getPublishedPackages } from '@/lib/firestore';
 import { Package } from '@/types';
 import PackageCard, { PackageCardSkeleton } from '@/components/home/PackageCard';
 import { CARD_GRID_VARIANTS, CARD_ITEM_VARIANTS } from '@/components/ui/FadeInSection';
+import { PremiumFilter, type PremiumFilterState } from '@/components/packages/PremiumFilter';
 
 const CATEGORIES = ['All', 'Culinary', 'Spiritual', 'Adventure', 'Heritage', 'Hippy Trail'];
 
@@ -16,13 +16,6 @@ const DURATIONS = [
   { label: 'Short (1–7 days)', value: 'Short', min: 1, max: 7 },
   { label: 'Medium (7–14 days)', value: 'Medium', min: 8, max: 13 },
   { label: 'Long (14+ days)', value: 'Long', min: 14, max: 999 }
-];
-
-const PRICES = [
-  { label: 'Any', value: 'Any' },
-  { label: 'Budget (< ₹50k)', value: 'Budget', max: 50000 },
-  { label: 'Mid (₹50k-100k)', value: 'Mid', min: 50000, max: 100000 },
-  { label: 'Luxury (> ₹100k)', value: 'Luxury', min: 100000 }
 ];
 
 const parseDurationDays = (durationStr: string): number => {
@@ -39,9 +32,11 @@ const parseDurationDays = (durationStr: string): number => {
 export default function PackagesPage() {
   const [packages, setPackages] = useState<Package[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeCategory, setActiveCategory] = useState('All');
-  const [activeDuration, setActiveDuration] = useState('Any');
-  const [activePrice, setActivePrice] = useState('Any');
+  const [filters, setFilters] = useState<PremiumFilterState>({
+    category: 'All',
+    duration: 'Any',
+    priceRange: [0, 200000]
+  });
   const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
@@ -65,22 +60,22 @@ export default function PackagesPage() {
   const filteredPackages = useMemo(() => {
     let result = packages;
 
-    if (activeCategory !== 'All') {
-      result = result.filter(p => p.category === activeCategory);
+    if (filters.category !== 'All') {
+      result = result.filter(p => p.category === filters.category);
     }
 
-    if (activeDuration !== 'Any') {
-      const dOpt = DURATIONS.find(d => d.value === activeDuration);
+    if (filters.duration !== 'Any') {
+      const dOpt = DURATIONS.find(d => d.value === filters.duration);
       if (dOpt && dOpt.min !== undefined) {
         result = result.filter(p => {
           const days = parseDurationDays(p.duration);
-          if (activeDuration === 'Medium') {
+          if (filters.duration === 'Medium') {
             return days > 7 && days < 14; 
           }
-          if (activeDuration === 'Short') {
+          if (filters.duration === 'Short') {
             return days >= 1 && days <= 7;
           }
-          if (activeDuration === 'Long') {
+          if (filters.duration === 'Long') {
             return days >= 14;
           }
           return true;
@@ -88,19 +83,10 @@ export default function PackagesPage() {
       }
     }
 
-    if (activePrice !== 'Any') {
-      const pOpt = PRICES.find(p => p.value === activePrice);
-      if (pOpt) {
-        result = result.filter(p => {
-          if (pOpt.min && p.priceInr < pOpt.min) return false;
-          if (pOpt.max && p.priceInr > pOpt.max) return false;
-          return true;
-        });
-      }
-    }
+    result = result.filter(p => p.priceInr >= filters.priceRange[0] && p.priceInr <= filters.priceRange[1]);
 
     return result;
-  }, [packages, activeCategory, activeDuration, activePrice]);
+  }, [packages, filters]);
 
   return (
     <main className="flex flex-col min-h-screen bg-white">
@@ -139,138 +125,13 @@ export default function PackagesPage() {
         <div className="absolute top-0 left-0 right-0 h-[40%] bg-gradient-to-b from-[rgba(11,21,23,0.1)] to-transparent opacity-100 pointer-events-none" />
         
         <div className="container mx-auto px-[16px] md:px-[24px] max-w-[1400px]">
-          {/* Glass Card Container */}
-          <div className="relative -mt-[40px] md:-mt-[60px] bg-white/95 backdrop-blur-2xl rounded-[24px] md:rounded-[32px] shadow-[0_20px_40px_-15px_rgba(34,30,42,0.1)] border border-[rgba(255,255,255,0.5)] p-[24px] md:p-[32px] flex flex-col xl:flex-row gap-[32px] xl:gap-[40px] justify-between">
-            
-            {/* Category Filter */}
-            <div className="flex-1 flex flex-col gap-[16px]">
-              <div className="flex items-center gap-[8px] text-[#285056]">
-                <div className="w-[32px] h-[32px] rounded-full bg-[#E9F5F7] flex items-center justify-center">
-                  <Compass className="w-[16px] h-[16px] text-[#285056]" />
-                </div>
-                <span className="text-[13px] uppercase tracking-[0.1em] font-bold font-display">Category</span>
-              </div>
-              <div className="flex flex-wrap gap-[8px] md:gap-[12px]">
-                {CATEGORIES.map(cat => {
-                  const isActive = activeCategory === cat;
-                  return (
-                    <button
-                      key={cat}
-                      onClick={() => setActiveCategory(cat)}
-                      className={`relative px-[20px] py-[10px] rounded-full whitespace-nowrap font-body text-[14px] md:text-[15px] font-medium transition-colors duration-300 outline-none focus-visible:ring-2 focus-visible:ring-[#C1EA00] ${
-                        isActive 
-                          ? 'text-white' 
-                          : 'bg-[#F7F9FA] text-[#718096] hover:bg-[#E9F5F7] hover:text-[#285056] border border-transparent'
-                      }`}
-                    >
-                      {isActive && (
-                        <motion.div
-                          layoutId="category-active"
-                          className="absolute inset-0 bg-[#285056] rounded-full shadow-md z-0"
-                          initial={false}
-                          transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                        />
-                      )}
-                      <span className="relative z-10">{cat}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Separator */}
-            <div className="hidden xl:block w-[1px] bg-[rgba(34,30,42,0.06)] self-stretch" />
-
-            {/* Duration Filter */}
-            <div className="flex-1 flex flex-col gap-[16px]">
-              <div className="flex items-center gap-[8px] text-[#285056]">
-                <div className="w-[32px] h-[32px] rounded-full bg-[#E9F5F7] flex items-center justify-center">
-                  <Clock className="w-[16px] h-[16px] text-[#285056]" />
-                </div>
-                <span className="text-[13px] uppercase tracking-[0.1em] font-bold font-display">Duration</span>
-              </div>
-              <div className="flex flex-wrap gap-[8px] md:gap-[12px]">
-                {DURATIONS.map(dur => {
-                  const isActive = activeDuration === dur.value;
-                  return (
-                    <button
-                      key={dur.value}
-                      onClick={() => setActiveDuration(dur.value)}
-                      className={`relative px-[20px] py-[10px] rounded-full whitespace-nowrap font-body text-[14px] md:text-[15px] font-medium transition-colors duration-300 outline-none focus-visible:ring-2 focus-visible:ring-[#C1EA00] ${
-                        isActive 
-                          ? 'text-[#221E2A]' 
-                          : 'bg-[#F7F9FA] text-[#718096] hover:bg-[#C1EA00]/20 hover:text-[#221E2A] border border-transparent'
-                      }`}
-                    >
-                      {isActive && (
-                        <motion.div
-                          layoutId="duration-active"
-                          className="absolute inset-0 bg-[#C1EA00] rounded-full shadow-md z-0"
-                          initial={false}
-                          transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                        />
-                      )}
-                      <span className="relative z-10">{dur.label}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Separator */}
-            <div className="hidden xl:block w-[1px] bg-[rgba(34,30,42,0.06)] self-stretch" />
-
-            {/* Price Filter */}
-            <div className="flex-1 flex flex-col gap-[16px]">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-[8px] text-[#285056]">
-                  <div className="w-[32px] h-[32px] rounded-full bg-[#E9F5F7] flex items-center justify-center">
-                    <Wallet className="w-[16px] h-[16px] text-[#285056]" />
-                  </div>
-                  <span className="text-[13px] uppercase tracking-[0.1em] font-bold font-display">Price</span>
-                </div>
-                
-                {/* Clear Filters Button (If Any Active) */}
-                {(activeCategory !== 'All' || activeDuration !== 'Any' || activePrice !== 'Any') && (
-                  <button 
-                    onClick={() => { setActiveCategory('All'); setActiveDuration('Any'); setActivePrice('Any'); }}
-                    className="flex items-center gap-[6px] text-[12px] font-body text-[#718096] hover:text-[#285056] transition-colors"
-                  >
-                    <FilterX className="w-[14px] h-[14px]" />
-                    <span>Clear All</span>
-                  </button>
-                )}
-              </div>
-              
-              <div className="flex flex-wrap gap-[8px] md:gap-[12px]">
-                {PRICES.map(price => {
-                  const isActive = activePrice === price.value;
-                  return (
-                    <button
-                      key={price.value}
-                      onClick={() => setActivePrice(price.value)}
-                      className={`relative px-[20px] py-[10px] rounded-full whitespace-nowrap font-body text-[14px] md:text-[15px] font-medium transition-colors duration-300 outline-none focus-visible:ring-2 focus-visible:ring-[#0ED2E9] ${
-                        isActive 
-                          ? 'text-[#221E2A]' 
-                          : 'bg-[#F7F9FA] text-[#718096] hover:bg-[#0ED2E9]/10 hover:text-[#285056] border border-transparent'
-                      }`}
-                    >
-                      {isActive && (
-                        <motion.div
-                          layoutId="price-active"
-                          className="absolute inset-0 bg-[#0ED2E9] rounded-full shadow-md z-0"
-                          initial={false}
-                          transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                        />
-                      )}
-                      <span className="relative z-10">{price.label}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-          </div>
+          <PremiumFilter 
+            filters={filters}
+            setFilters={setFilters}
+            categories={CATEGORIES}
+            durations={DURATIONS}
+            maxPrice={200000}
+          />
         </div>
       </section>
 
@@ -296,7 +157,7 @@ export default function PackagesPage() {
               {filteredPackages.length > 0 ? (
                 /* Spec #4: stagger 0.08 with useInView */
                 <motion.div
-                  key={`package-grid-${activeCategory}-${activeDuration}`}
+                  key={`package-grid-${filters.category}-${filters.duration}-${filters.priceRange[0]}-${filters.priceRange[1]}`}
                   layout
                   className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[24px]"
                   variants={shouldReduceMotion ? undefined : CARD_GRID_VARIANTS}
@@ -332,7 +193,7 @@ export default function PackagesPage() {
                       Try exploring other categories or duration lengths.
                     </p>
                     <button 
-                      onClick={() => { setActiveCategory('All'); setActiveDuration('Any'); setActivePrice('Any'); }}
+                      onClick={() => { setFilters({ category: 'All', duration: 'Any', priceRange: [0, 200000] }); }}
                       className="btn-primary"
                     >
                       Reset Filters

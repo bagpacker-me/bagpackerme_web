@@ -16,10 +16,10 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 const STATUS_STYLES: Record<string, string> = {
-  pending: 'bg-[#FEF9C3] text-[#854d0e]',
-  confirmed: 'bg-[#E0F7FF] text-[#0369a1]',
-  completed: 'bg-[#DCFCE7] text-[#166534]',
-  cancelled: 'bg-red-100 text-red-700',
+  pending: 'bg-[#FEF9C3] dark:bg-[#FEF9C3]/20 text-[#854d0e] dark:text-[#fde047]',
+  confirmed: 'bg-[#E0F7FF] dark:bg-[#E0F7FF]/20 text-[#0369a1] dark:text-[#38bdf8]',
+  completed: 'bg-[#DCFCE7] dark:bg-[#DCFCE7]/20 text-[#166534] dark:text-[#4ade80]',
+  cancelled: 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400',
 };
 
 function SkeletonRow() {
@@ -27,7 +27,7 @@ function SkeletonRow() {
     <tr className="border-b border-gray-100">
       {[120, 160, 100, 120, 120, 100, 80].map((w, i) => (
         <td key={i} className="px-4 py-3">
-          <div className="h-4 bg-gray-200 rounded animate-pulse" style={{ width: w }} />
+          <div className="h-4 bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.1)] rounded animate-pulse" style={{ width: w }} />
         </td>
       ))}
     </tr>
@@ -55,16 +55,16 @@ function BookingSlideOver({
         onClick={onClose}
       />
       {/* Panel */}
-      <div className="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-white shadow-2xl flex flex-col">
+      <div className="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-[#FFFFFF] dark:bg-[#1A1625] shadow-2xl flex flex-col dark:border-l dark:border-[rgba(255,255,255,0.06)]">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-[rgba(255,255,255,0.06)] bg-[#F7F9FA] dark:bg-[rgba(255,255,255,0.02)]">
           <div>
-            <h2 className="text-base font-semibold text-gray-900">Booking #{booking.id.slice(0, 8).toUpperCase()}</h2>
-            <p className="text-xs text-gray-400 mt-0.5">Package: {booking.packageName}</p>
+            <h2 className="text-base font-semibold text-gray-900 dark:text-white">Booking #{booking.id.slice(0, 8).toUpperCase()}</h2>
+            <p className="text-xs text-gray-400 dark:text-[rgba(255,255,255,0.6)] mt-0.5">Package: {booking.packageName}</p>
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100 transition-colors"
+            className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100 dark:hover:bg-[rgba(255,255,255,0.05)] transition-colors"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -80,7 +80,7 @@ function BookingSlideOver({
             <select
               value={booking.status}
               onChange={(e) => onStatusChange(booking.id, e.target.value as Booking['status'])}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-[#C1EA00] focus:border-transparent"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 dark:border-[rgba(255,255,255,0.1)] text-sm text-gray-900 dark:text-white bg-white dark:bg-[#1A1625] focus:outline-none focus:ring-2 focus:ring-[#C1EA00] focus:border-transparent"
             >
               <option value="pending">Pending</option>
               <option value="confirmed">Confirmed</option>
@@ -97,9 +97,9 @@ function BookingSlideOver({
               { label: 'Total Price', value: `₹${booking.totalPrice?.toLocaleString() || 0}` },
               { label: 'Booked On', value: booking.createdAt ? format(new Date(booking.createdAt), 'd MMM yyyy, h:mm a') : '—' },
             ].map(({ label, value }) => (
-              <div key={label} className="bg-gray-50 rounded-xl p-3">
-                <p className="text-xs text-gray-400 font-medium mb-0.5">{label}</p>
-                <p className="text-sm text-gray-800 font-medium truncate">{value}</p>
+              <div key={label} className="bg-gray-50 dark:bg-[rgba(255,255,255,0.02)] rounded-xl p-3 border border-transparent dark:border-[rgba(255,255,255,0.04)]">
+                <p className="text-xs text-gray-400 dark:text-[rgba(255,255,255,0.5)] font-medium mb-0.5">{label}</p>
+                <p className="text-sm text-gray-800 dark:text-[rgba(255,255,255,0.9)] font-medium truncate">{value}</p>
               </div>
             ))}
           </div>
@@ -107,7 +107,7 @@ function BookingSlideOver({
           {/* Customer Details */}
           <div>
             <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Customer Information</label>
-            <div className="bg-gray-50 rounded-xl p-4 text-sm text-gray-700 space-y-2">
+            <div className="bg-gray-50 dark:bg-[rgba(255,255,255,0.02)] rounded-xl p-4 text-sm text-gray-700 dark:text-[rgba(255,255,255,0.8)] border border-transparent dark:border-[rgba(255,255,255,0.04)] space-y-2">
               {customerData ? (
                 <>
                   <p><strong>Name:</strong> {customerData.name}</p>
@@ -229,7 +229,7 @@ export default function AdminBookingsPage() {
           <h1 className="text-2xl font-bold text-[#221E2A] font-heading">
             Bookings
           </h1>
-          <p className="text-sm text-gray-400 mt-0.5">{bookings.length} total bookings</p>
+          <p className="text-sm text-gray-400 dark:text-[rgba(255,255,255,0.6)] mt-0.5">{bookings.length} total bookings</p>
         </div>
       </div>
 
@@ -242,13 +242,13 @@ export default function AdminBookingsPage() {
             onClick={() => setFilter(tab.id)}
             className={`flex items-center whitespace-nowrap gap-1.5 px-4 py-2.5 text-sm font-medium transition-colors border-b-2 ${
               filter === tab.id
-                ? 'border-[#C1EA00] text-[#221E2A]'
+                ? 'border-[#C1EA00] text-[#221E2A] dark:text-white'
                 : 'border-transparent text-gray-400 hover:text-gray-700'
             }`}
           >
             {tab.label}
             <span className={`text-xs px-1.5 py-0.5 rounded-full font-semibold ${
-              filter === tab.id ? 'bg-[#C1EA00]/20 text-[#221E2A]' : 'bg-gray-100 text-gray-400'
+              filter === tab.id ? 'bg-[#C1EA00]/20 text-[#221E2A] dark:text-white' : 'bg-gray-100 dark:bg-[rgba(255,255,255,0.1)] text-gray-400'
             }`}>
               {counts[tab.id]}
             </span>
@@ -257,10 +257,10 @@ export default function AdminBookingsPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-white overflow-x-auto rounded-xl border border-gray-100">
+      <div className="bg-[#FFFFFF] dark:bg-[#1A1625] overflow-x-auto rounded-xl border border-gray-100">
         <table className="w-full">
           <thead>
-            <tr className="bg-[#F7F9FA] border-b-[2px] border-[#E9F5F7]">
+            <tr className="bg-[#F7F9FA] dark:bg-[rgba(255,255,255,0.02)] border-b-[2px] border-[#E9F5F7] dark:border-[rgba(255,255,255,0.06)]">
                 {[
                   { id: 'ID', label: 'Booking ID', class: 'text-left' },
                   { id: 'Customer', label: 'Customer', class: 'text-left' },
@@ -270,7 +270,7 @@ export default function AdminBookingsPage() {
                   { id: 'Status', label: 'Status', class: 'text-left' },
                   { id: 'Actions', label: 'Actions', class: 'text-right' },
                 ].map((col) => (
-                  <th key={col.id} className={`px-[16px] py-[12px] font-display text-[11px] font-bold text-[#718096] tracking-widest uppercase ${col.class}`}>
+                  <th key={col.id} className={`px-[16px] py-[12px] font-display text-[11px] font-bold text-[#718096] dark:text-[rgba(255,255,255,0.6)] tracking-widest uppercase ${col.class}`}>
                     {col.label}
                   </th>
                 ))}
@@ -295,15 +295,15 @@ export default function AdminBookingsPage() {
                   <tr
                     key={booking.id}
                     onClick={() => setSelected(booking)}
-                    className="border-b border-[#F3F4F6] hover:bg-[#F7F9FA] transition-colors group h-[56px] align-middle cursor-pointer"
+                    className="border-b border-[#F3F4F6] dark:border-[rgba(255,255,255,0.06)] hover:bg-[#F7F9FA] dark:hover:bg-[rgba(255,255,255,0.05)] transition-colors group h-[56px] align-middle cursor-pointer"
                   >
-                    <td className="px-[16px] font-body text-[14px] text-[#221E2A]">
+                    <td className="px-[16px] font-body text-[14px] text-[#221E2A] dark:text-[rgba(255,255,255,0.9)]">
                       #{booking.id.slice(0, 8).toUpperCase()}
                     </td>
                     <td className="px-[16px]">
-                      <p className="font-body text-[14px] text-[#221E2A]">{customersMap[booking.customerId]?.name || 'Unknown'}</p>
+                      <p className="font-body text-[14px] text-[#221E2A] dark:text-[rgba(255,255,255,0.9)]">{customersMap[booking.customerId]?.name || 'Unknown'}</p>
                     </td>
-                    <td className="px-[16px] font-body text-[14px] text-[#221E2A] truncate max-w-[150px] hidden lg:table-cell">
+                    <td className="px-[16px] font-body text-[14px] text-[#221E2A] dark:text-[rgba(255,255,255,0.9)] truncate max-w-[150px] hidden lg:table-cell">
                       {booking.packageName || '—'}
                     </td>
                     <td className="px-[16px] font-body text-[14px] text-[#221E2A] whitespace-nowrap hidden lg:table-cell">
@@ -355,7 +355,7 @@ export default function AdminBookingsPage() {
             className="absolute inset-0 bg-black/40 backdrop-blur-sm"
             onClick={() => !deleting && setDeleteTarget(null)}
           />
-          <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md mx-4 p-6 z-10">
+          <div className="relative bg-white dark:bg-[#1A1625] dark:border dark:border-[rgba(255,255,255,0.1)] rounded-2xl shadow-xl w-full max-w-md mx-4 p-6 z-10">
             <div className="flex items-start gap-4">
               <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
                 <svg className="w-5 h-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -363,9 +363,9 @@ export default function AdminBookingsPage() {
                 </svg>
               </div>
               <div>
-                <h3 className="text-base font-semibold text-gray-900">Delete Booking</h3>
-                <p className="text-sm text-gray-500 mt-1">
-                  Delete booking <strong className="text-gray-700">#{deleteTarget.id.slice(0, 8).toUpperCase()}</strong>? This cannot be undone.
+                <h3 className="text-base font-semibold text-gray-900 dark:text-white">Delete Booking</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                  Delete booking <strong className="text-gray-700 dark:text-gray-300">#{deleteTarget.id.slice(0, 8).toUpperCase()}</strong>? This cannot be undone.
                 </p>
               </div>
             </div>
@@ -374,7 +374,7 @@ export default function AdminBookingsPage() {
                 type="button"
                 onClick={() => setDeleteTarget(null)}
                 disabled={deleting}
-                className="px-4 py-2 text-sm rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors disabled:opacity-50"
+                className="px-4 py-2 text-sm rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 dark:bg-[rgba(255,255,255,0.05)] dark:border-[rgba(255,255,255,0.1)] transition-colors disabled:opacity-50"
               >
                 Cancel
               </button>

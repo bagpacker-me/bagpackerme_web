@@ -128,7 +128,7 @@ export default function GalleryPage() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-2xl font-bold text-[#221E2A] font-heading">Gallery Management</h1>
-          <p className="text-sm text-gray-500 mt-1">Upload and manage images for your platform</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Upload and manage images for your platform</p>
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
@@ -142,19 +142,19 @@ export default function GalleryPage() {
       {loading ? (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {[1, 2, 3, 4, 5, 6].map((skel) => (
-             <div key={skel} className="bg-gray-200 animate-pulse aspect-square rounded-2xl" />
+             <div key={skel} className="bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.1)] animate-pulse aspect-square rounded-2xl" />
           ))}
         </div>
       ) : images.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 text-gray-400 bg-white rounded-2xl border border-gray-100">
-          <ImageIcon className="w-12 h-12 mb-4 text-gray-200" />
-          <p className="font-medium text-gray-500">No images in the gallery yet.</p>
+        <div className="flex flex-col items-center justify-center py-20 text-gray-400 bg-[#FFFFFF] dark:bg-[#1A1625] rounded-2xl border border-gray-100 dark:border-[rgba(255,255,255,0.06)]">
+          <ImageIcon className="w-12 h-12 mb-4 text-gray-200 dark:text-[rgba(255,255,255,0.1)]" />
+          <p className="font-medium text-gray-500 dark:text-gray-400">No images in the gallery yet.</p>
         </div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {images.map(image => (
-            <div key={image.id} className="group relative bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">
-              <div className="aspect-square relative flex items-center justify-center bg-gray-100 overflow-hidden">
+            <div key={image.id} className="group relative bg-[#FFFFFF] dark:bg-[#1A1625] rounded-2xl border border-gray-100 dark:border-[rgba(255,255,255,0.06)] overflow-hidden shadow-sm">
+              <div className="aspect-square relative flex items-center justify-center bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.02)] overflow-hidden">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img 
                   src={image.url} 
@@ -165,10 +165,10 @@ export default function GalleryPage() {
               </div>
               
               <div className="p-4">
-                <p className="font-semibold text-[#221E2A] truncate">{image.title}</p>
+                <p className="font-semibold text-[#221E2A] dark:text-[rgba(255,255,255,0.9)] truncate">{image.title}</p>
                 <div className="flex items-center justify-between mt-1">
-                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-md">{image.category}</span>
-                  <span className="text-xs text-gray-400">{format(new Date(image.createdAt), 'MMM d, yyyy')}</span>
+                  <span className="text-xs bg-gray-100 dark:bg-[rgba(255,255,255,0.1)] text-gray-600 dark:text-[rgba(255,255,255,0.8)] px-2 py-1 rounded-md">{image.category}</span>
+                  <span className="text-xs text-gray-400 dark:text-[rgba(255,255,255,0.5)]">{format(new Date(image.createdAt), 'MMM d, yyyy')}</span>
                 </div>
               </div>
 
@@ -176,7 +176,7 @@ export default function GalleryPage() {
               <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button 
                   onClick={() => handleDelete(image)}
-                  className="p-2 bg-white/90 backdrop-blur-sm text-red-500 rounded-lg hover:bg-red-50 shadow-sm transition-colors"
+                  className="p-2 bg-white/90 dark:bg-[#1A1625]/90 backdrop-blur-sm text-red-500 dark:text-red-400 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/30 shadow-sm transition-colors"
                   title="Delete Image"
                 >
                   <Trash2 className="w-4 h-4" />
@@ -191,9 +191,9 @@ export default function GalleryPage() {
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={resetModal} />
-          <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md mx-4 p-6 z-10 flex flex-col">
+          <div className="relative bg-white dark:bg-[#1A1625] dark:border dark:border-[rgba(255,255,255,0.1)] rounded-2xl shadow-xl w-full max-w-md mx-4 p-6 z-10 flex flex-col">
             <div className="flex items-center justify-between mb-5">
-              <h2 className="text-lg font-bold text-[#221E2A]">Upload New Image</h2>
+              <h2 className="text-lg font-bold text-[#221E2A] dark:text-[rgba(255,255,255,0.9)]">Upload New Image</h2>
               <button onClick={resetModal} className="p-1 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors">
                 <X className="w-5 h-5" />
               </button>
@@ -201,36 +201,36 @@ export default function GalleryPage() {
 
             <form onSubmit={handleUpload} className="flex flex-col gap-4">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">Image File <span className="text-red-500">*</span></label>
+                <label className="block text-sm font-semibold text-gray-700 dark:text-[rgba(255,255,255,0.8)] mb-1">Image File <span className="text-red-500">*</span></label>
                 <input 
                   type="file" 
                   accept="image/*"
                   onChange={handleFileChange}
                   ref={fileInputRef}
-                  className="w-full px-3 py-2 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#C1EA00] focus:border-transparent"
+                  className="w-full px-3 py-2 text-sm border border-gray-200 dark:border-[rgba(255,255,255,0.1)] bg-white dark:bg-[#1A1625] text-[#221E2A] dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-[#C1EA00] focus:border-transparent"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">Title</label>
+                <label className="block text-sm font-semibold text-gray-700 dark:text-[rgba(255,255,255,0.8)] mb-1">Title</label>
                 <input 
                   type="text" 
                   value={uploadTitle}
                   onChange={(e) => setUploadTitle(e.target.value)}
                   placeholder="e.g. Sunset in Bali"
-                  className="w-full px-3 py-2 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#C1EA00] focus:border-transparent"
+                  className="w-full px-3 py-2 text-sm border border-gray-200 dark:border-[rgba(255,255,255,0.1)] bg-white dark:bg-[#1A1625] text-[#221E2A] dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-[#C1EA00] focus:border-transparent"
                 />
               </div>
               
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">Category</label>
+                <label className="block text-sm font-semibold text-gray-700 dark:text-[rgba(255,255,255,0.8)] mb-1">Category</label>
                 <input 
                   type="text" 
                   value={uploadCategory}
                   onChange={(e) => setUploadCategory(e.target.value)}
                   placeholder="e.g. Beaches, Spiritual, Culture"
-                  className="w-full px-3 py-2 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#C1EA00] focus:border-transparent"
+                  className="w-full px-3 py-2 text-sm border border-gray-200 dark:border-[rgba(255,255,255,0.1)] bg-white dark:bg-[#1A1625] text-[#221E2A] dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-[#C1EA00] focus:border-transparent"
                 />
               </div>
 
@@ -238,14 +238,14 @@ export default function GalleryPage() {
                 <button
                   type="button"
                   onClick={resetModal}
-                  className="px-4 py-2 text-sm rounded-xl font-medium border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors"
+                  className="px-4 py-2 text-sm rounded-xl font-medium border border-gray-200 dark:border-[rgba(255,255,255,0.1)] text-gray-600 dark:text-[rgba(255,255,255,0.8)] hover:bg-gray-50 dark:hover:bg-[rgba(255,255,255,0.05)] transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={uploading || !selectedFile}
-                  className="px-4 py-2 text-sm rounded-xl font-bold bg-[#221E2A] text-white hover:bg-[#322c3e] transition-colors disabled:opacity-50 flex items-center gap-2"
+                  className="px-4 py-2 text-sm rounded-xl font-bold bg-[#221E2A] dark:bg-[rgba(255,255,255,0.1)] text-white hover:bg-[#322c3e] dark:hover:bg-[rgba(255,255,255,0.15)] transition-colors disabled:opacity-50 flex items-center gap-2"
                 >
                   {uploading && (
                     <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">

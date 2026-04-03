@@ -14,6 +14,27 @@
    DESIGN-SYSTEM COLOR TOKENS  (MASTER.md §1)
    ───────────────────────────────────────────────────────────────────────────── */
 :root {
+  /* shadcn/ui mappings for components */
+  --background: var(--white);
+  --foreground: var(--void);
+  --card: var(--white);
+  --card-foreground: var(--void);
+  --popover: var(--white);
+  --popover-foreground: var(--void);
+  --primary: var(--teal);
+  --primary-foreground: var(--white);
+  --secondary: var(--off-white);
+  --secondary-foreground: var(--teal);
+  --muted: var(--off-white);
+  --muted-foreground: #718096;
+  --accent: var(--ice);
+  --accent-foreground: var(--teal);
+  --destructive: #ef4444;
+  --destructive-foreground: var(--white);
+  --border: rgba(34,30,42,0.10);
+  --input: rgba(34,30,42,0.10);
+  --ring: var(--teal);
+  
   /* Brand Colors */
   --color-primary:       #006875;
   --color-primary-dark:  #004d57;

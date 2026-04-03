@@ -15,9 +15,9 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 const STATUS_STYLES: Record<string, string> = {
-  new: 'bg-[#E0F7FF] text-[#0369a1]',
-  in_progress: 'bg-[#FEF9C3] text-[#854d0e]',
-  responded: 'bg-[#DCFCE7] text-[#166534]',
+  new: 'bg-[#E0F7FF] dark:bg-[#E0F7FF]/20 text-[#0369a1] dark:text-[#38bdf8]',
+  in_progress: 'bg-[#FEF9C3] dark:bg-[#FEF9C3]/20 text-[#854d0e] dark:text-[#fde047]',
+  responded: 'bg-[#DCFCE7] dark:bg-[#DCFCE7]/20 text-[#166534] dark:text-[#4ade80]',
 };
 
 function SkeletonRow() {
@@ -25,7 +25,7 @@ function SkeletonRow() {
     <tr className="border-b border-gray-100">
       {[120, 160, 100, 120, 120, 100, 80, 80].map((w, i) => (
         <td key={i} className="px-4 py-3">
-          <div className="h-4 bg-gray-200 rounded animate-pulse" style={{ width: w }} />
+          <div className="h-4 bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.1)] rounded animate-pulse" style={{ width: w }} />
         </td>
       ))}
     </tr>
@@ -59,16 +59,16 @@ function EnquirySlideOver({
         onClick={onClose}
       />
       {/* Panel */}
-      <div className="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-white shadow-2xl flex flex-col">
+      <div className="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-[#FFFFFF] dark:bg-[#1A1625] shadow-2xl flex flex-col dark:border-l dark:border-[rgba(255,255,255,0.06)]">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-[rgba(255,255,255,0.06)] bg-[#F7F9FA] dark:bg-[rgba(255,255,255,0.02)]">
           <div>
-            <h2 className="text-base font-semibold text-gray-900">{enquiry.name}</h2>
-            <p className="text-xs text-gray-400 mt-0.5">{enquiry.email}</p>
+            <h2 className="text-base font-semibold text-gray-900 dark:text-white">{enquiry.name}</h2>
+            <p className="text-xs text-gray-400 dark:text-[rgba(255,255,255,0.6)] mt-0.5">{enquiry.email}</p>
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100 transition-colors"
+            className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100 dark:hover:bg-[rgba(255,255,255,0.05)] transition-colors"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -84,7 +84,7 @@ function EnquirySlideOver({
             <select
               value={enquiry.status}
               onChange={(e) => onStatusChange(enquiry.id, e.target.value as Enquiry['status'])}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-teal/25 focus:border-teal"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 dark:border-[rgba(255,255,255,0.1)] text-sm text-gray-900 dark:text-white bg-white dark:bg-[#1A1625] focus:outline-none focus:ring-2 focus:ring-teal/25 focus:border-teal"
             >
               <option value="new">New</option>
               <option value="in_progress">In Progress</option>
@@ -102,9 +102,9 @@ function EnquirySlideOver({
               { label: 'Travel Date', value: enquiry.travelDate ? format(new Date(enquiry.travelDate), 'd MMM yyyy') : '—' },
               { label: 'Submitted', value: enquiry.createdAt ? format(new Date(enquiry.createdAt), 'd MMM yyyy, h:mm a') : '—' },
             ].map(({ label, value }) => (
-              <div key={label} className="bg-gray-50 rounded-xl p-3">
-                <p className="text-xs text-gray-400 font-medium mb-0.5">{label}</p>
-                <p className="text-sm text-gray-800 font-medium truncate">{value}</p>
+              <div key={label} className="bg-gray-50 dark:bg-[rgba(255,255,255,0.02)] rounded-xl p-3 border border-transparent dark:border-[rgba(255,255,255,0.04)]">
+                <p className="text-xs text-gray-400 dark:text-[rgba(255,255,255,0.5)] font-medium mb-0.5">{label}</p>
+                <p className="text-sm text-gray-800 dark:text-[rgba(255,255,255,0.9)] font-medium truncate">{value}</p>
               </div>
             ))}
           </div>
@@ -112,14 +112,14 @@ function EnquirySlideOver({
           {/* Message */}
           <div>
             <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Message</label>
-            <div className="bg-gray-50 rounded-xl p-4 text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">
-              {enquiry.message || <span className="italic text-gray-300">No message</span>}
+            <div className="bg-gray-50 dark:bg-[rgba(255,255,255,0.02)] rounded-xl p-4 text-sm text-gray-700 dark:text-[rgba(255,255,255,0.8)] border border-transparent dark:border-[rgba(255,255,255,0.04)] leading-relaxed whitespace-pre-wrap">
+              {enquiry.message || <span className="italic text-gray-300 dark:text-[rgba(255,255,255,0.3)]">No message</span>}
             </div>
           </div>
         </div>
 
         {/* Actions Footer */}
-        <div className="px-6 py-4 border-t border-gray-100 space-y-2">
+        <div className="px-6 py-4 border-t border-gray-100 dark:border-[rgba(255,255,255,0.06)] bg-[#F7F9FA] dark:bg-[rgba(255,255,255,0.02)] space-y-2">
           {whatsappUrl && (
             <a
               href={whatsappUrl}
@@ -136,7 +136,7 @@ function EnquirySlideOver({
           )}
           <a
             href={mailtoUrl}
-            className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-sm font-semibold border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors"
+            className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-sm font-semibold border border-gray-200 dark:border-[rgba(255,255,255,0.1)] text-gray-700 dark:text-[rgba(255,255,255,0.8)] hover:bg-gray-50 dark:hover:bg-[rgba(255,255,255,0.05)] transition-colors"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
@@ -251,15 +251,15 @@ export default function AdminEnquiriesPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-void font-heading">
+          <h1 className="text-2xl font-bold text-void dark:text-white font-heading">
             Enquiries
           </h1>
-          <p className="text-sm text-gray-400 mt-0.5">{enquiries.length} total enquiries</p>
+          <p className="text-sm text-gray-400 dark:text-[rgba(255,255,255,0.6)] mt-0.5">{enquiries.length} total enquiries</p>
         </div>
         <button
           type="button"
           onClick={() => exportToCSV(filtered)}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors"
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border border-gray-200 dark:border-[rgba(255,255,255,0.1)] text-gray-700 dark:text-[rgba(255,255,255,0.8)] hover:bg-gray-50 dark:hover:bg-[rgba(255,255,255,0.05)] transition-colors"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
@@ -283,7 +283,7 @@ export default function AdminEnquiriesPage() {
           >
             {tab.label}
             <span className={`text-xs px-1.5 py-0.5 rounded-full font-semibold ${
-              filter === tab.id ? 'bg-teal/10 text-teal' : 'bg-gray-100 text-gray-400'
+              filter === tab.id ? 'bg-teal/10 text-teal dark:text-[#C1EA00]' : 'bg-gray-100 dark:bg-[rgba(255,255,255,0.1)] text-gray-400'
             }`}>
               {counts[tab.id]}
             </span>
@@ -292,10 +292,10 @@ export default function AdminEnquiriesPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-white overflow-x-auto">
+      <div className="bg-[#FFFFFF] dark:bg-[#1A1625] overflow-x-auto">
         <table className="w-full">
           <thead>
-            <tr className="bg-[#F7F9FA] border-b-[2px] border-[#E9F5F7]">
+            <tr className="bg-[#F7F9FA] dark:bg-[rgba(255,255,255,0.02)] border-b-[2px] border-[#E9F5F7] dark:border-[rgba(255,255,255,0.06)]">
                 {[
                   { id: 'Name', label: 'Name', class: 'text-left' },
                   { id: 'Email', label: 'Email', class: 'text-left hidden sm:table-cell' },
@@ -306,7 +306,7 @@ export default function AdminEnquiriesPage() {
                   { id: 'Status', label: 'Status', class: 'text-left' },
                   { id: 'Actions', label: 'Actions', class: 'text-right' },
                 ].map((col) => (
-                  <th key={col.id} className={`px-[16px] py-[12px] font-display text-[11px] font-bold text-[#718096] tracking-widest uppercase ${col.class}`}>
+                  <th key={col.id} className={`px-[16px] py-[12px] font-display text-[11px] font-bold text-[#718096] dark:text-[rgba(255,255,255,0.6)] tracking-widest uppercase ${col.class}`}>
                     {col.label}
                   </th>
                 ))}
@@ -331,17 +331,17 @@ export default function AdminEnquiriesPage() {
                   <tr
                     key={enq.id}
                     onClick={() => setSelected(enq)}
-                    className="border-b border-[#F3F4F6] hover:bg-[#F7F9FA] transition-colors group h-[56px] align-middle cursor-pointer"
+                    className="border-b border-[#F3F4F6] dark:border-[rgba(255,255,255,0.06)] hover:bg-[#F7F9FA] dark:hover:bg-[rgba(255,255,255,0.05)] transition-colors group h-[56px] align-middle cursor-pointer"
                   >
                     <td className="px-[16px]">
-                      <p className="font-body text-[14px] text-[#221E2A]">{enq.name}</p>
+                      <p className="font-body text-[14px] text-[#221E2A] dark:text-[rgba(255,255,255,0.9)]">{enq.name}</p>
                       {/* Show email on small mobile under name */}
                       <p className="font-body text-[12px] text-[#718096] sm:hidden mt-0.5">{enq.email}</p>
                     </td>
-                    <td className="px-[16px] font-body text-[14px] text-[#221E2A] truncate max-w-[160px] hidden sm:table-cell">{enq.email}</td>
+                    <td className="px-[16px] font-body text-[14px] text-[#221E2A] dark:text-[rgba(255,255,255,0.9)] truncate max-w-[160px] hidden sm:table-cell">{enq.email}</td>
                     <td className="px-[16px] font-body text-[14px] text-[#221E2A] hidden lg:table-cell">{enq.phone || '—'}</td>
                     <td className="px-[16px] font-body text-[14px] text-[#221E2A] hidden lg:table-cell">{enq.inquiryType || '—'}</td>
-                    <td className="px-[16px] font-body text-[14px] text-[#221E2A] truncate max-w-[120px] hidden lg:table-cell">
+                    <td className="px-[16px] font-body text-[14px] text-[#221E2A] dark:text-[rgba(255,255,255,0.9)] truncate max-w-[120px] hidden lg:table-cell">
                       {enq.packageSlug || '—'}
                     </td>
                     <td className="px-[16px] font-body text-[14px] text-[#221E2A] whitespace-nowrap hidden xl:table-cell">
@@ -389,7 +389,7 @@ export default function AdminEnquiriesPage() {
             className="absolute inset-0 bg-black/40 backdrop-blur-sm"
             onClick={() => !deleting && setDeleteTarget(null)}
           />
-          <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md mx-4 p-6 z-10">
+          <div className="relative bg-white dark:bg-[#1A1625] dark:border dark:border-[rgba(255,255,255,0.1)] rounded-2xl shadow-xl w-full max-w-md mx-4 p-6 z-10">
             <div className="flex items-start gap-4">
               <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
                 <svg className="w-5 h-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -397,9 +397,9 @@ export default function AdminEnquiriesPage() {
                 </svg>
               </div>
               <div>
-                <h3 className="text-base font-semibold text-gray-900">Delete Enquiry</h3>
-                <p className="text-sm text-gray-500 mt-1">
-                  Delete enquiry from <strong className="text-gray-700">{deleteTarget.name}</strong>? This cannot be undone.
+                <h3 className="text-base font-semibold text-gray-900 dark:text-white">Delete Enquiry</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                  Delete enquiry from <strong className="text-gray-700 dark:text-gray-300">{deleteTarget.name}</strong>? This cannot be undone.
                 </p>
               </div>
             </div>
@@ -408,7 +408,7 @@ export default function AdminEnquiriesPage() {
                 type="button"
                 onClick={() => setDeleteTarget(null)}
                 disabled={deleting}
-                className="px-4 py-2 text-sm rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors disabled:opacity-50"
+                className="px-4 py-2 text-sm rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 dark:bg-[rgba(255,255,255,0.05)] dark:border-[rgba(255,255,255,0.1)] transition-colors disabled:opacity-50"
               >
                 Cancel
               </button>
