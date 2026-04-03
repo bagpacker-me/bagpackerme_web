@@ -45,8 +45,6 @@ const config: Config = {
           DEFAULT: "var(--card)",
           foreground: "var(--card-foreground)",
         },
-        background: "var(--background)",
-        foreground: "var(--foreground)",
         cyan: '#0ED2E9', // Electric Cyan Highlight
         ice: '#F0FCFE',  // Base Ice White
         lime: '#C1EA00', // Acid Lime
