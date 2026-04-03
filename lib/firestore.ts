@@ -1,4 +1,4 @@
-import { collection, doc, getDocs, addDoc, updateDoc, deleteDoc, query, where, orderBy, getDoc, limit } from 'firebase/firestore';
+import { collection, doc, getDocs, addDoc, updateDoc, deleteDoc, query, where, orderBy, getDoc, limit, setDoc } from 'firebase/firestore';
 import { db } from './firebase';
 import { Package, BlogPost, Enquiry, Customer, Booking, GalleryImage } from '@/types';
 
@@ -121,3 +121,12 @@ const galleryCol = collection(db, 'gallery');
 export const getGalleryImages = async () => getDocs(query(galleryCol, orderBy('createdAt', 'desc')));
 export const addGalleryImage = async (data: Omit<GalleryImage, 'id'>) => addDoc(galleryCol, data);
 export const deleteGalleryImage = async (id: string) => deleteDoc(doc(db, 'gallery', id));
+
+// Settings
+export const getSiteSettings = async () => {
+  const docSnap = await getDoc(doc(db, 'settings', 'site'));
+  return docSnap.exists() ? (docSnap.data() as import('@/types').SiteSettings) : null;
+};
+export const updateSiteSettings = async (data: Partial<import('@/types').SiteSettings>) => {
+  return setDoc(doc(db, 'settings', 'site'), { ...data, updatedAt: new Date().toISOString() }, { merge: true });
+};

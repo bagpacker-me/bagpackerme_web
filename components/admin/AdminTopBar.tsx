@@ -1,9 +1,10 @@
 'use client';
 
 import { useAuth } from '@/hooks/useAuth';
+import { logoutAdmin } from '@/lib/auth';
 import { useTheme } from 'next-themes';
-import { usePathname } from 'next/navigation';
-import { Bell, Search, Menu, Sun, Moon } from 'lucide-react';
+import { usePathname, useRouter } from 'next/navigation';
+import { Search, Menu, Sun, Moon } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 interface AdminTopBarProps {
@@ -13,6 +14,7 @@ interface AdminTopBarProps {
 export default function AdminTopBar({ onMenuClick }: AdminTopBarProps) {
   const { user } = useAuth();
   const pathname = usePathname();
+  const router = useRouter();
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const firstName = user?.email?.split('@')[0]?.replace(/\./g, ' ') ?? 'Admin';
@@ -20,6 +22,15 @@ export default function AdminTopBar({ onMenuClick }: AdminTopBarProps) {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      await logoutAdmin();
+      router.push('/admin/login');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
 
   const segments = pathname.split('/').filter(Boolean);
   const title = segments[segments.length - 1] 
@@ -65,21 +76,18 @@ export default function AdminTopBar({ onMenuClick }: AdminTopBarProps) {
             className="relative text-[#4a5568] dark:text-[rgba(255,255,255,0.7)] hover:text-[#221E2A] dark:hover:text-white transition-colors"
             aria-label="Toggle theme"
           >
-            {theme === 'dark' ? <Sun className="w-[20px] h-[20px]" strokeWidth={2} /> : <Moon className="w-[20px] h-[20px]" strokeWidth={2} />}
+            {theme === 'dark' ? <Moon className="w-[20px] h-[20px]" strokeWidth={2} /> : <Sun className="w-[20px] h-[20px]" strokeWidth={2} />}
           </button>
         )}
 
-        {/* Notification Bell */}
-        <button className="relative text-[#4a5568] dark:text-[rgba(255,255,255,0.7)] hover:text-[#221E2A] dark:hover:text-white transition-colors">
-          <Bell className="w-[20px] h-[20px]" strokeWidth={2} />
-          {/* Example notification badge */}
-          <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-        </button>
-        
-        {/* Avatar */}
-        <div className="w-[32px] h-[32px] rounded-full flex items-center justify-center text-[#FFFFFF] text-[13px] font-medium bg-[#285056] shrink-0 uppercase ml-2">
+        {/* Avatar / Logout */}
+        <button 
+          onClick={handleLogout}
+          title="Logout"
+          className="w-[32px] h-[32px] rounded-full flex items-center justify-center text-[#FFFFFF] text-[13px] font-medium bg-[#285056] shrink-0 uppercase ml-2 hover:bg-[#1a3539] transition-colors cursor-pointer ring-offset-2 hover:ring-2 ring-[#285056] dark:ring-offset-[#1A1625]"
+        >
           {firstName.substring(0, 2)}
-        </div>
+        </button>
       </div>
     </div>
   );

@@ -15,7 +15,6 @@ import {
   Calendar,
   Users,
   Settings,
-  UserCheck,
   LogOut,
   X
 } from 'lucide-react';
@@ -53,7 +52,6 @@ const SECTIONS = [
     title: 'SETTINGS',
     items: [
       { icon: Settings, label: 'Site Settings', href: '/admin/settings' },
-      { icon: UserCheck, label: 'Team', href: '/admin/team' },
     ],
   },
 ];

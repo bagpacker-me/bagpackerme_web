@@ -9,12 +9,31 @@
 
 import { motion, useReducedMotion } from 'framer-motion';
 import { usePathname } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { getSiteSettings } from '@/lib/firestore';
 
 export function WhatsAppButton() {
   const pathname = usePathname();
   const isPackagePage = pathname?.startsWith('/packages/');
   const message = encodeURIComponent("Hi, I'm interested in a Bagpackerme trip!");
-  const waLink = `https://wa.me/919920992026?text=${message}`;
+  
+  const [whatsappNumber, setWhatsappNumber] = useState('919920992026');
+  
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const data = await getSiteSettings();
+        if (data?.whatsappNumber) {
+          setWhatsappNumber(data.whatsappNumber);
+        }
+      } catch (error) {
+        console.error('Error fetching site settings', error);
+      }
+    };
+    fetchSettings();
+  }, []);
+
+  const waLink = `https://wa.me/${whatsappNumber}?text=${message}`;
   const shouldReduceMotion = useReducedMotion();
 
   return (

@@ -1,5 +1,5 @@
 import React from 'react';
-import { HeroSectionAnimated } from '@/components/home/HeroSectionAnimated';
+import HeroInteractive from '@/components/home/HeroInteractive';
 import FeaturedTrips from '@/components/home/FeaturedTrips';
 import AboutSection from '@/components/home/AboutSection';
 import WhatWeDo from '@/components/home/WhatWeDo';
@@ -15,7 +15,7 @@ export const metadata = {
 export default function HomePage() {
   return (
     <main className="flex flex-col min-h-screen bg-void">
-      <HeroSectionAnimated />
+      <HeroInteractive />
       <FeaturedTrips />
       <AboutSection />
       <WhatWeDo />

@@ -100,3 +100,16 @@ export interface GalleryImage {
   category: string;
   createdAt: string;
 }
+
+export interface SiteSettings {
+  contactEmail?: string;
+  contactPhone?: string;
+  whatsappNumber?: string;
+  address?: string;
+  workingHours?: string;
+  instagramUrl?: string;
+  facebookUrl?: string;
+  twitterUrl?: string;
+  youtubeUrl?: string;
+  updatedAt?: string;
+}

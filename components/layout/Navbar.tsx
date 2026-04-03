@@ -12,7 +12,6 @@ const menuItems = [
     { name: 'Destinations', href: '/packages' },
     { name: 'Journal', href: '/blog' },
     { name: 'About Us', href: '/about' },
-    { name: 'Contact', href: '/contact' },
 ]
 
 export function Navbar() {

@@ -1,15 +1,18 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { createEnquiry } from '@/lib/firestore';
+import { createEnquiry, getSiteSettings } from '@/lib/firestore';
+import { SiteSettings } from '@/types';
+import Image from 'next/image';
 
 // ─── Zod Schema ───────────────────────────────────────────────────────────────
 const schema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters'),
+  firstName: z.string().min(2, 'First name is required'),
+  lastName: z.string().min(2, 'Last name is required'),
   email: z.string().email('Please enter a valid email address'),
   phone: z
     .string()
@@ -24,7 +27,7 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 // ─── Success Checkmark ────────────────────────────────────────────────────────
-const SuccessState = () => {
+const SuccessState = ({ whatsappNumber = '919920992026' }: { whatsappNumber?: string }) => {
   const shouldReduceMotion = useReducedMotion();
   return (
   <motion.div
@@ -59,18 +62,15 @@ const SuccessState = () => {
     <div>
       <h3 className="font-display text-void text-[28px] md:text-[32px] mb-[8px]">Message Received!</h3>
       <p className="font-body text-void/60 text-[15px] md:text-[16px] max-w-[400px]">
-        Thanks for reaching out. Kevin will get back to you personally within 24 hours.
+        Thanks for reaching out. One of our team members will get back to you shortly.
       </p>
     </div>
     <a
-      href="https://wa.me/919920992026"
+      href={`https://wa.me/${whatsappNumber}`}
       target="_blank"
       rel="noopener noreferrer"
-      className="inline-flex items-center gap-[8px] px-[24px] py-[16px] bg-[#25D366] text-white font-display font-bold text-[12px] tracking-widest uppercase rounded-none hover:bg-black transition-colors"
+      className="inline-flex items-center gap-[8px] px-[24px] py-[16px] bg-[#25D366] text-white font-display font-bold text-[12px] tracking-widest uppercase rounded-full hover:bg-black transition-colors"
     >
-      <svg viewBox="0 0 24 24" fill="currentColor" className="w-[16px] h-[16px]">
-        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/>
-      </svg>
       Or chat on WhatsApp
     </a>
   </motion.div>
@@ -82,6 +82,25 @@ export default function ContactPage() {
   const shouldReduceMotion = useReducedMotion();
   const [submitted, setSubmitted] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
+  const [settings, setSettings] = useState<SiteSettings | null>(null);
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const data = await getSiteSettings();
+        if (data) setSettings(data);
+      } catch (error) {
+        console.error('Error fetching site settings', error);
+      }
+    };
+    fetchSettings();
+  }, []);
+
+  const contactEmail = settings?.contactEmail || 'partnerships@bagpackerme.com';
+  const contactPhone = settings?.contactPhone || '+91 9920992026';
+  const whatsappNumber = settings?.whatsappNumber || '919920992026';
+  const address = settings?.address || 'Mumbai, India';
+  const workingHours = settings?.workingHours || 'Mon-Fri: 9:00 AM - 6:00 PM (IST)';
 
   const {
     register,
@@ -92,8 +111,10 @@ export default function ContactPage() {
   const onSubmit = async (data: FormData) => {
     setServerError(null);
     try {
+      const { firstName, lastName, ...rest } = data;
       await createEnquiry({
-        ...data,
+        name: `${firstName} ${lastName}`,
+        ...rest,
         status: 'new',
         createdAt: new Date().toISOString(),
       });
@@ -104,15 +125,16 @@ export default function ContactPage() {
   };
 
   const fieldCls = (hasError: boolean) =>
-    `w-full px-[16px] py-[12px] rounded-none border font-body text-[15px] outline-none transition-all duration-200 ${
+    `w-full px-[16px] py-[16px] rounded-xl border font-body text-[15px] outline-none transition-all duration-200 ${
       hasError
         ? 'border-red-400 focus:border-red-500 animate-[shake_0.3s_ease-in-out] bg-red-50 text-red-900 placeholder-red-300'
-        : 'border-[rgba(34,30,42,0.12)] bg-white text-void placeholder-void/40 focus:border-teal focus:ring-2 focus:ring-teal/15'
+        : 'border-void/10 bg-[#fafafa] hover:bg-white text-void placeholder-void/40 focus:border-teal focus:bg-white focus:ring-4 focus:ring-teal/5'
     }`;
+
+  const labelCls = "block font-body text-[14px] font-medium text-void mb-2";
 
   return (
     <>
-      {/* Global shake keyframe */}
       <style>{`
         @keyframes shake {
           0%, 100% { transform: translateX(0); }
@@ -124,68 +146,83 @@ export default function ContactPage() {
       `}</style>
 
       <main className="min-h-screen bg-white">
-        {/* ── Page Header ──────────────────────────────────────────────────── */}
-        <div className="bg-void py-[80px] md:py-[120px] px-[24px] text-center border-b border-white/5 relative overflow-hidden">
-          {/* Grain overlay for dark section */}
-          <div className="grain absolute inset-0 z-0 pointer-events-none" />
+        {/* ── Top Header ──────────────────────────────────────────────────── */}
+        <div className="pt-[80px] md:pt-[120px] pb-[40px] px-[24px] text-center max-w-[800px] mx-auto">
           <motion.div
-            className="relative z-10"
             initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.7 }}
           >
-            <div className="section-label justify-center mb-[16px]">✦ CONTACT</div>
-            <h1 className="font-display text-white text-[40px] md:text-[64px]">Get in Touch</h1>
+            <h1 className="font-display text-teal text-[44px] md:text-[64px] font-bold leading-[1.1] mb-6">
+              Get in Touch with Us
+            </h1>
+            <p className="font-body text-teal/80 text-[16px] md:text-[18px] leading-relaxed">
+              Have questions about our outdoor adventures or looking to plan your next thrilling getaway? We&apos;re here to help! Reach out for any inquiries, rental assistance, or adventure advice
+            </p>
           </motion.div>
         </div>
 
         {/* ── Two-column Layout ────────────────────────────────────────────── */}
-        <div className="max-w-[1200px] mx-auto px-[24px] py-[80px] md:py-[120px] grid grid-cols-1 lg:grid-cols-5 gap-[48px] md:gap-[80px] items-start">
-          {/* ── Left: Contact Form (60%) ─────────────────────────────────── */}
-          <div className="lg:col-span-3">
+        <div className="max-w-[1200px] mx-auto px-[24px] pb-[80px] md:pb-[120px] grid grid-cols-1 lg:grid-cols-12 gap-[48px] md:gap-[80px] items-start">
+          
+          {/* ── Left: Contact Form (Takes 7 cols on layout) ───────────────── */}
+          <div className="lg:col-span-7">
             <div className="mb-8">
-              <h2 className="font-display text-teal text-3xl md:text-4xl mb-2">
-                Let&apos;s Start a Conversation
+              <h2 className="font-display text-void text-[32px] md:text-[40px] leading-tight mb-4 font-bold">
+                Have Questions? We&apos;re Just a Message Away!
               </h2>
-              <p className="font-body text-void/60 text-base">
-                Fill in the form below and Kevin will personally respond within 24 hours.
+              <p className="font-body text-void/60 text-[16px]">
+                Fill out the form below, and one of our team members will get back to you shortly.
               </p>
             </div>
 
             <AnimatePresence mode="wait">
               {submitted ? (
-                <SuccessState key="success" />
+                <SuccessState key="success" whatsappNumber={whatsappNumber} />
               ) : (
                 <motion.form
                   key="form"
                   initial={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   onSubmit={handleSubmit(onSubmit)}
-                  className="space-y-5"
+                  className="space-y-6"
                   noValidate
                 >
-                  {/* Name */}
-                  <div>
-                    <label className="block font-body text-sm font-medium text-void mb-2">
-                      Full Name <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      id="name"
-                      type="text"
-                      placeholder="e.g. Aakash Sharma"
-                      {...register('name')}
-                      className={fieldCls(!!errors.name)}
-                    />
-                    {errors.name && (
-                      <p className="mt-1 text-xs text-red-500 font-body">{errors.name.message}</p>
-                    )}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    {/* First Name */}
+                    <div>
+                      <label className={labelCls}>First Name</label>
+                      <input
+                        id="firstName"
+                        type="text"
+                        placeholder="First name"
+                        {...register('firstName')}
+                        className={fieldCls(!!errors.firstName)}
+                      />
+                      {errors.firstName && (
+                        <p className="mt-2 text-xs text-red-500 font-body">{errors.firstName.message}</p>
+                      )}
+                    </div>
+
+                    {/* Last Name */}
+                    <div>
+                      <label className={labelCls}>Last Name</label>
+                      <input
+                        id="lastName"
+                        type="text"
+                        placeholder="Last name"
+                        {...register('lastName')}
+                        className={fieldCls(!!errors.lastName)}
+                      />
+                      {errors.lastName && (
+                        <p className="mt-2 text-xs text-red-500 font-body">{errors.lastName.message}</p>
+                      )}
+                    </div>
                   </div>
 
                   {/* Email */}
                   <div>
-                    <label className="block font-body text-sm font-medium text-void mb-2">
-                      Email Address <span className="text-red-500">*</span>
-                    </label>
+                    <label className={labelCls}>E-mail</label>
                     <input
                       id="email"
                       type="email"
@@ -194,62 +231,56 @@ export default function ContactPage() {
                       className={fieldCls(!!errors.email)}
                     />
                     {errors.email && (
-                      <p className="mt-1 text-xs text-red-500 font-body">{errors.email.message}</p>
+                      <p className="mt-2 text-xs text-red-500 font-body">{errors.email.message}</p>
                     )}
                   </div>
 
                   {/* Phone */}
                   <div>
-                    <label className="block font-body text-sm font-medium text-void mb-2">
-                      Phone (Indian) <span className="text-red-500">*</span>
-                    </label>
+                    <label className={labelCls}>Phone Number</label>
                     <input
                       id="phone"
                       type="tel"
-                      placeholder="+91 98765 43210"
+                      placeholder="+91 800234756"
                       {...register('phone')}
                       className={fieldCls(!!errors.phone)}
                     />
                     {errors.phone && (
-                      <p className="mt-1 text-xs text-red-500 font-body">{errors.phone.message}</p>
+                      <p className="mt-2 text-xs text-red-500 font-body">{errors.phone.message}</p>
                     )}
                   </div>
 
-                  {/* Inquiry Type */}
+                  {/* Inquiry Type (Subject) */}
                   <div>
-                    <label className="block font-body text-sm font-medium text-void mb-2">
-                      Inquiry Type <span className="text-red-500">*</span>
-                    </label>
+                    <label className={labelCls}>Subject</label>
                     <select
                       id="inquiryType"
                       {...register('inquiryType')}
-                      className={`${fieldCls(!!errors.inquiryType)} cursor-pointer`}
+                      className={`${fieldCls(!!errors.inquiryType)} cursor-pointer appearance-none`}
                       defaultValue=""
                     >
-                      <option value="" disabled>Select an inquiry type…</option>
+                      <option value="" disabled>Choose message subject</option>
                       {['Group Trip', 'Personalised Itinerary', 'Corporate Retreat', 'Media & Partnership', 'Other'].map((t) => (
                         <option key={t} value={t}>{t}</option>
                       ))}
                     </select>
                     {errors.inquiryType && (
-                      <p className="mt-1 text-xs text-red-500 font-body">{errors.inquiryType.message}</p>
+                      <p className="mt-2 text-xs text-red-500 font-body">{errors.inquiryType.message}</p>
                     )}
                   </div>
 
                   {/* Message */}
                   <div>
-                    <label className="block font-body text-sm font-medium text-void mb-2">
-                      Message <span className="text-red-500">*</span>
-                    </label>
+                    <label className={labelCls}>Message</label>
                     <textarea
                       id="message"
                       rows={5}
-                      placeholder="Tell us about your travel dream, group size, dates, or any questions…"
+                      placeholder="Leave us a message..."
                       {...register('message')}
                       className={`${fieldCls(!!errors.message)} resize-none`}
                     />
                     {errors.message && (
-                      <p className="mt-1 text-xs text-red-500 font-body">{errors.message.message}</p>
+                      <p className="mt-2 text-xs text-red-500 font-body">{errors.message.message}</p>
                     )}
                   </div>
 
@@ -259,139 +290,123 @@ export default function ContactPage() {
                     </div>
                   )}
 
-                  <button
-                    id="contact-submit"
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full py-[16px] px-[32px] bg-lime text-void font-display font-bold text-[12px] tracking-widest uppercase rounded-none hover:bg-void hover:text-white transition-colors disabled:opacity-60 flex items-center justify-center gap-[8px]"
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                          <circle cx="12" cy="12" r="10" strokeWidth="2" opacity="0.3" />
-                          <path d="M12 2a10 10 0 0 1 10 10" strokeWidth="2" strokeLinecap="round" />
-                        </svg>
-                        Sending…
-                      </>
-                    ) : (
-                      'Send Message'
-                    )}
-                  </button>
+                  <div className="flex justify-start sm:justify-end border-t border-void/5 pt-6 mt-4">
+                    <button
+                      id="contact-submit"
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="px-[32px] py-[16px] bg-teal text-white font-body font-medium rounded-full hover:bg-teal/90 transition-colors disabled:opacity-60 flex items-center justify-center gap-[12px]"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <circle cx="12" cy="12" r="10" strokeWidth="2" opacity="0.3" />
+                            <path d="M12 2a10 10 0 0 1 10 10" strokeWidth="2" strokeLinecap="round" />
+                          </svg>
+                          Sending...
+                        </>
+                      ) : (
+                        <>
+                          Send Message
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <line x1="7" y1="17" x2="17" y2="7"></line>
+                            <polyline points="7 7 17 7 17 17"></polyline>
+                          </svg>
+                        </>
+                      )}
+                    </button>
+                  </div>
                 </motion.form>
               )}
             </AnimatePresence>
           </div>
 
-          {/* ── Right: Info Panel (40%) ──────────────────────────────────── */}
-          <div className="lg:col-span-2 lg:sticky lg:top-[120px]">
-            <div className="bg-teal rounded-none overflow-hidden shadow-lg border border-void/5">
-              <div className="p-[32px] md:p-[48px]">
-                <h3 className="font-display text-white text-[24px] mb-[32px]">Contact Info</h3>
-
-                {/* Info rows */}
-                <div className="flex flex-col gap-[32px] mb-[48px]">
-                  {/* Email */}
-                  <a
-                    href="mailto:partnerships@bagpackerme.com"
-                    className="flex items-start gap-[16px] group"
-                  >
-                    <div className="w-[48px] h-[48px] rounded-none bg-white/5 flex items-center justify-center flex-shrink-0 group-hover:bg-white/10 transition-colors border border-white/10">
-                      <svg className="w-[20px] h-[20px] text-lime" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                      </svg>
-                    </div>
-                    <div>
-                      <p className="font-display font-bold text-white/50 text-[11px] uppercase tracking-widest mb-[4px]">Email</p>
-                      <p className="font-body text-white text-[15px] group-hover:text-lime transition-colors">
-                        partnerships@bagpackerme.com
-                      </p>
-                    </div>
-                  </a>
-
-                  {/* Location */}
-                  <div className="flex items-start gap-[16px]">
-                    <div className="w-[48px] h-[48px] rounded-none bg-white/5 flex items-center justify-center flex-shrink-0 border border-white/10">
-                      <svg className="w-[20px] h-[20px] text-lime" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                      </svg>
-                    </div>
-                    <div>
-                      <p className="font-display font-bold text-white/50 text-[11px] uppercase tracking-widest mb-[4px]">Location</p>
-                      <p className="font-body text-white text-[15px]">Mumbai, India</p>
-                    </div>
-                  </div>
-
-                  {/* Website */}
-                  <a
-                    href="https://www.bagpackerme.com"
-                    target="_blank" rel="noopener noreferrer"
-                    className="flex items-start gap-[16px] group"
-                  >
-                    <div className="w-[48px] h-[48px] rounded-none bg-white/5 flex items-center justify-center flex-shrink-0 group-hover:bg-white/10 transition-colors border border-white/10">
-                      <svg className="w-[20px] h-[20px] text-lime" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
-                      </svg>
-                    </div>
-                    <div>
-                      <p className="font-display font-bold text-white/50 text-[11px] uppercase tracking-widest mb-[4px]">Website</p>
-                      <p className="font-body text-white text-[15px] group-hover:text-lime transition-colors">
-                        www.bagpackerme.com
-                      </p>
-                    </div>
-                  </a>
-                </div>
-
-                {/* WhatsApp CTA */}
-                <a
-                  href="https://wa.me/919920992026"
-                  target="_blank" rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-[8px] w-full py-[16px] px-[24px] bg-[#25D366] hover:bg-white hover:text-[#25D366] text-white font-display font-bold tracking-widest uppercase text-[12px] rounded-none transition-colors mb-[32px]"
-                >
-                  <svg viewBox="0 0 24 24" fill="currentColor" className="w-[16px] h-[16px]">
-                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/>
+          {/* ── Right: Info Panel (Takes 5 cols) ─────────────────────────── */}
+          <div className="lg:col-span-5 flex flex-col gap-6">
+            
+            {/* Image Banner */}
+            <div className="bg-teal rounded-3xl overflow-hidden relative aspect-video md:aspect-[4/3] w-full isolate">
+              <Image 
+                src="/images/expert-support.png" 
+                alt="Travel Expert" 
+                fill 
+                className="object-cover object-center mix-blend-luminosity opacity-40 z-0" 
+              />
+              <div className="absolute inset-0 bg-teal/40 z-10 pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-t from-teal/90 via-teal/20 to-transparent z-10 pointer-events-none" />
+              <div className="absolute inset-0 z-20 flex flex-col p-8 md:p-10 justify-between pointer-events-none">
+                <div className="flex items-center gap-2 text-white/90">
+                  <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zm0 7.5L4 6l8 4 8-4-8 3.5z" />
+                    <path d="M2 12l10 5 10-5v5l-10 5-10-5v-5z" />
                   </svg>
-                  Chat on WhatsApp — +91 99209 92026
-                </a>
-
-                {/* Social Icons */}
-                <div className="flex gap-[16px] border-t border-white/10 pt-[32px]">
-                  <a
-                    href="https://www.instagram.com/bagpackerme/"
-                    target="_blank" rel="noopener noreferrer"
-                    aria-label="Instagram"
-                    className="w-[48px] h-[48px] rounded-none bg-white/5 flex items-center justify-center text-white/60 hover:text-lime hover:bg-white/10 border border-white/10 transition-colors"
-                  >
-                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-[18px] h-[18px]">
-                      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 1.366.062 2.633.337 3.608 1.312.975.975 1.25 2.242 1.312 3.608.058 1.266.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.062 1.366-.337 2.633-1.312 3.608-.975-.975-2.242 1.25-3.608 1.312-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-1.366-.062-2.633-.337-3.608-1.312-.975-.975-1.25-2.242-1.312-3.608C2.175 15.747 2.163 15.367 2.163 12s.012-3.584.07-4.85c.062-1.366.337-2.633 1.312-3.608.975-.975 2.242-1.25 3.608-1.312C8.416 2.175 8.796 2.163 12 2.163zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.667.072 4.947.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.667-.014 4.947-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.947 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/>
-                    </svg>
-                  </a>
-                  <a
-                    href="https://www.youtube.com/@BagpackerMe"
-                    target="_blank" rel="noopener noreferrer"
-                    aria-label="YouTube"
-                    className="w-[48px] h-[48px] rounded-none bg-white/5 flex items-center justify-center text-white/60 hover:text-lime hover:bg-white/10 border border-white/10 transition-colors"
-                  >
-                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-[18px] h-[18px]">
-                      <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-                    </svg>
-                  </a>
+                  <span className="font-display font-medium text-lg leading-none mt-1">BagPackerMe</span>
                 </div>
-              </div>
-
-              {/* Map */}
-              <div className="aspect-video max-h-[360px] w-full border-t border-white/10">
-                <iframe
-                  src="https://maps.google.com/maps?q=Mumbai,India&t=&z=11&ie=UTF8&iwloc=&output=embed"
-                  className="w-full h-full"
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title="Mumbai, India"
-                  style={{ border: 0 }}
-                />
+                <h3 className="font-display text-white text-[32px] md:text-[36px] leading-[1.1] font-bold max-w-[280px]">
+                  Our experts will always help you
+                </h3>
               </div>
             </div>
+
+            {/* Info Cards */}
+            <div className="flex flex-col gap-4">
+              
+              {/* Email */}
+              <a href={`mailto:${contactEmail}`} className="bg-teal/5 hover:bg-teal/10 transition-colors flex items-center gap-[20px] p-[20px] md:p-[24px] rounded-3xl group cursor-pointer">
+                <div className="w-[56px] h-[56px] rounded-full bg-white flex items-center justify-center text-teal shadow-sm shrink-0 transition-transform group-hover:scale-105">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="font-display font-bold text-void text-[16px] mb-1">Email</p>
+                  <p className="font-body text-void/60 text-[14px]">{contactEmail}</p>
+                </div>
+              </a>
+
+              {/* Call */}
+              <a href={`tel:${contactPhone.replace(/\s+/g, '')}`} className="bg-teal/5 hover:bg-teal/10 transition-colors flex items-center gap-[20px] p-[20px] md:p-[24px] rounded-3xl group cursor-pointer">
+                <div className="w-[56px] h-[56px] rounded-full bg-white flex items-center justify-center text-teal shadow-sm shrink-0 transition-transform group-hover:scale-105">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="font-display font-bold text-void text-[16px] mb-1">Call</p>
+                  <p className="font-body text-void/60 text-[14px]">{contactPhone}</p>
+                </div>
+              </a>
+
+              {/* Address */}
+              <div className="bg-teal/5 flex items-center gap-[20px] p-[20px] md:p-[24px] rounded-3xl">
+                <div className="w-[56px] h-[56px] rounded-full bg-white flex items-center justify-center text-teal shadow-sm shrink-0">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="font-display font-bold text-void text-[16px] mb-1">Address</p>
+                  <p className="font-body text-void/60 text-[14px]">{address}</p>
+                </div>
+              </div>
+
+              {/* Working Hours */}
+              <div className="bg-teal/5 flex items-center gap-[20px] p-[20px] md:p-[24px] rounded-3xl">
+                <div className="w-[56px] h-[56px] rounded-full bg-white flex items-center justify-center text-teal shadow-sm shrink-0">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="font-display font-bold text-void text-[16px] mb-1">Working Hours</p>
+                  <p className="font-body text-void/60 text-[14px]">{workingHours}</p>
+                </div>
+              </div>
+
+            </div>
           </div>
+          
         </div>
       </main>
     </>
