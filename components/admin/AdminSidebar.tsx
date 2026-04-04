@@ -14,6 +14,7 @@ import {
   MessageSquare,
   Calendar,
   Users,
+  Mail,
   Settings,
   LogOut,
   X
@@ -46,6 +47,7 @@ const SECTIONS = [
       { icon: MessageSquare, label: 'Enquiries', href: '/admin/enquiries', badge: 0 },
       { icon: Calendar, label: 'Bookings', href: '/admin/bookings' },
       { icon: Users, label: 'Customers', href: '/admin/customers' },
+      { icon: Mail, label: 'Newsletter', href: '/admin/newsletter' },
     ],
   },
   {

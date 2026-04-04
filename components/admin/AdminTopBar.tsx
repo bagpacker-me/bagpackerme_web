@@ -55,9 +55,6 @@ export default function AdminTopBar({ onMenuClick }: AdminTopBarProps) {
       </div>
       
       <div className="flex items-center gap-6">
-        <div className="hidden md:flex items-center text-[#718096] dark:text-[rgba(255,255,255,0.6)] font-body text-[13px] mr-4">
-          {breadcrumb}
-        </div>
         
         {/* Search */}
         <div className="relative w-[200px] sm:w-[280px] hidden md:block">

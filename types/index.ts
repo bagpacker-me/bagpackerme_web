@@ -101,6 +101,12 @@ export interface GalleryImage {
   createdAt: string;
 }
 
+export interface Subscriber {
+  id: string;
+  email: string;
+  createdAt: string;
+}
+
 export interface SiteSettings {
   contactEmail?: string;
   contactPhone?: string;

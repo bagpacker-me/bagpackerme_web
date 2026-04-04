@@ -155,13 +155,7 @@ export default function HeroInteractive() {
             <p className="text-base md:text-lg mb-8 max-w-md opacity-80 leading-relaxed">
               {activeDest.description}
             </p>
-            <Link
-              href="/packages"
-              className="flex items-center gap-3 px-8 py-4 rounded-full bg-lime text-void backdrop-blur-md border border-lime hover:bg-lime/90 hover:shadow-[0_8px_32px_rgba(193,234,0,0.4)] transition-all group font-display font-bold uppercase tracking-widest text-sm"
-            >
-              Explore Trips
-              <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-            </Link>
+
           </motion.div>
         </AnimatePresence>
       </div>
@@ -242,21 +236,7 @@ export default function HeroInteractive() {
           </AnimatePresence>
         </div>
 
-        {/* Center: Navigation Buttons */}
-        <div className="flex items-center gap-4">
-          <button 
-            onClick={handlePrev}
-            className="w-14 h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center hover:bg-white/20 hover:scale-110 transition-all"
-          >
-            <ArrowLeft size={24} />
-          </button>
-          <button 
-            onClick={handleNext}
-            className="w-14 h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center hover:bg-white/20 hover:scale-110 transition-all"
-          >
-            <ArrowRight size={24} />
-          </button>
-        </div>
+
 
         {/* Right Side: Pagination + Auto-Progress */}
         <div className="flex items-center gap-3 text-sm font-medium tracking-widest min-w-[120px] justify-end">

@@ -147,7 +147,7 @@ export default function ContactPage() {
 
       <main className="min-h-screen bg-white">
         {/* ── Top Header ──────────────────────────────────────────────────── */}
-        <div className="relative bg-teal pt-[160px] md:pt-[200px] pb-[100px] md:pb-[140px] overflow-hidden rounded-b-[40px] md:rounded-b-[80px] mb-[60px] md:mb-[100px]">
+        <div className="relative bg-teal pt-[160px] md:pt-[200px] pb-[160px] md:pb-[240px] overflow-hidden">
           {/* Abstract Background Elements */}
           <div className="absolute inset-0 bg-gradient-to-b from-void/40 to-transparent pointer-events-none" />
           <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-lime/20 rounded-full blur-[120px] pointer-events-none" />
