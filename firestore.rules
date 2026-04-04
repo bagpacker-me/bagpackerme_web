@@ -31,5 +31,11 @@ service cloud.firestore {
       allow create: if true;
       allow read, delete: if isAdmin();
     }
+
+    // Settings: public can read, only admin can write
+    match /settings/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
   }
 }
