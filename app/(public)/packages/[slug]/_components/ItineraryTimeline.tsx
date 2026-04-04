@@ -20,7 +20,7 @@ export default function ItineraryTimeline({ pkg }: { pkg: Package }) {
         style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")` }}
       />
 
-      <div className="max-w-7xl mx-auto px-mobile md:px-desktop relative z-10">
+      <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
 
         {/* Section Header */}
         <div className="mb-[56px] md:mb-[80px] text-center flex flex-col items-center">

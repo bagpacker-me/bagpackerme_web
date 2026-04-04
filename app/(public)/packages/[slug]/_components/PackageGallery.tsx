@@ -28,7 +28,7 @@ export default function PackageGallery({ pkg }: { pkg: Package }) {
   };
 
   return (
-    <section id="gallery" className="w-full bg-white py-[64px] md:py-[96px] px-mobile md:px-desktop">
+    <section id="gallery" className="w-full bg-white py-[64px] md:py-[96px] px-6 md:px-12">
       <div className="max-w-7xl mx-auto">
 
         {/* Section Header */}

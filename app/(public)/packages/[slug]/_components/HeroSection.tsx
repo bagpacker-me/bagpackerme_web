@@ -60,7 +60,7 @@ export default function HeroSection({ pkg }: { pkg: Package }) {
       </div>
 
       {/* Content (bottom-anchored) */}
-      <div className="relative z-10 w-full px-mobile md:px-desktop pb-[80px] max-w-7xl mx-auto">
+      <div className="relative z-10 w-full px-6 md:px-12 pb-[80px] max-w-7xl mx-auto">
         <motion.div
           className="max-w-[750px]"
           variants={containerVariants}

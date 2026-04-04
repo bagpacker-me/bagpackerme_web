@@ -8,7 +8,7 @@ export default async function RelatedPackages({ category, currentSlug }: { categ
   if (!related || related.length === 0) return null;
 
   return (
-    <section className="w-full bg-white py-mobile md:py-desktop px-mobile md:px-desktop">
+    <section className="w-full bg-white py-16 md:py-24 px-6 md:px-12">
       <div className="max-w-7xl mx-auto">
         
         <FadeInSection className="mb-[64px] md:mb-[96px] flex flex-col items-center">

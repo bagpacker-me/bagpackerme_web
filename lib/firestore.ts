@@ -40,8 +40,9 @@ export const getBlogs = async () => getDocs(query(blogsCol, orderBy('createdAt',
 export const getPublishedBlogs = async () => {
   const snap = await getDocs(query(blogsCol, where('status', '==', 'published')));
   // Sort in JS — avoids needing a composite index on (status, createdAt)
+  const docsCopy = [...snap.docs];
   return {
-    docs: snap.docs.sort((a, b) => {
+    docs: docsCopy.sort((a, b) => {
       const aData = a.data();
       const bData = b.data();
       const aDate = (aData['createdAt'] ?? aData['publishDate'] ?? '') as string;
@@ -52,7 +53,7 @@ export const getPublishedBlogs = async () => {
 };
 export const getRecentPublishedBlogs = async (limitCount: number) => {
   const snap = await getDocs(query(blogsCol, where('status', '==', 'published')));
-  const sorted = snap.docs.sort((a, b) => {
+  const sorted = [...snap.docs].sort((a, b) => {
     const aData = a.data();
     const bData = b.data();
     const aDate = (aData['createdAt'] ?? aData['publishDate'] ?? '') as string;

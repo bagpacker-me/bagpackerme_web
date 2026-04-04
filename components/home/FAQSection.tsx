@@ -6,24 +6,28 @@ import { Plus, Minus } from 'lucide-react';
 
 const FAQS = [
   {
-    question: 'Can I change or cancel my trip after booking?',
-    answer: 'Yes! We know plans can change. You can easily update or cancel your trip through your BagPackerMe account — just make sure to check the flexible date options before confirming.'
+    question: 'What services does Bagpackerme offer?',
+    answer: 'We provide fully customized travel planning, including itinerary design, hotel recommendations, transportation, and on-trip concierge support.'
   },
   {
-    question: 'Does BagPackerMe offer group travel options?',
-    answer: 'Absolutely. We specialize in curating incredible journeys for solo travelers, couples, and both small and large groups. Contact us for custom group rates.'
+    question: 'Is this a group tour or a private experience?',
+    answer: 'All our trips are completely private and tailored to your preferences, pace, and travel style.'
   },
   {
-    question: 'How do I get travel support during my trip?',
-    answer: 'You will have access to 24/7 dedicated support via WhatsApp and phone throughout your entire journey with BagPackerMe.'
+    question: 'When do I need to make a payment?',
+    answer: 'A partial payment is required to begin detailed planning, with the remaining balance depending on the scope of services and support during your trip.'
   },
   {
-    question: 'Can I save destinations to plan later?',
-    answer: 'Yes, if you create a BagPackerMe account, you can favorite any destination or package to build your own dream itinerary.'
+    question: 'What kind of support will I get during the trip?',
+    answer: 'You’ll have real-time support via WhatsApp or phone for any changes, delays, or assistance needed while traveling.'
   },
   {
-    question: 'Does BagPackerMe offer special deals or discounts?',
-    answer: "We regularly provide early-bird specials and seasonal discounts for our newsletter subscribers. Subscribe below so you don't miss out!"
+    question: 'Can the itinerary be changed after it’s created?',
+    answer: 'Yes, we offer flexible planning and can adjust your itinerary based on your preferences or unexpected changes.'
+  },
+  {
+    question: 'Why should I choose Bagpackerme over booking everything myself?',
+    answer: 'We save you time, reduce stress, and provide expert guidance, trusted recommendations, and seamless coordination for a smoother travel experience.'
   }
 ];
 

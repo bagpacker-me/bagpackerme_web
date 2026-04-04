@@ -147,7 +147,7 @@ export default function ContactPage() {
 
       <main className="min-h-screen bg-white">
         {/* ── Top Header ──────────────────────────────────────────────────── */}
-        <div className="relative bg-teal pt-[160px] md:pt-[200px] pb-[160px] md:pb-[240px] overflow-hidden">
+        <div className="relative bg-teal pt-40 md:pt-56 pb-32 md:pb-48 overflow-hidden">
           {/* Abstract Background Elements */}
           <div className="absolute inset-0 bg-gradient-to-b from-void/40 to-transparent pointer-events-none" />
           <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-lime/20 rounded-full blur-[120px] pointer-events-none" />
@@ -174,10 +174,11 @@ export default function ContactPage() {
         </div>
 
         {/* ── Two-column Layout ────────────────────────────────────────────── */}
-        <div className="max-w-[1200px] mx-auto px-[24px] pb-[80px] md:pb-[120px] grid grid-cols-1 lg:grid-cols-12 gap-[48px] md:gap-[80px] items-start">
-          
-          {/* ── Left: Contact Form (Takes 7 cols on layout) ───────────────── */}
-          <div className="lg:col-span-7">
+        <div className="relative z-10 bg-white rounded-t-[40px] md:rounded-t-[60px] -mt-12 md:-mt-20 pt-16 md:pt-24 shadow-[0_-20px_40px_rgba(0,0,0,0.04)]">
+          <div className="max-w-[1200px] mx-auto px-6 pb-24 md:pb-32 grid grid-cols-1 lg:grid-cols-12 gap-12 md:gap-20 items-start">
+            
+            {/* ── Left: Contact Form (Takes 7 cols on layout) ───────────────── */}
+            <div className="lg:col-span-7">
             <div className="mb-8">
               <h2 className="font-display text-void text-[32px] md:text-[40px] leading-tight mb-4 font-bold">
                 Have Questions? We&apos;re Just a Message Away!
@@ -420,7 +421,7 @@ export default function ContactPage() {
 
             </div>
           </div>
-          
+        </div>
         </div>
       </main>
     </>

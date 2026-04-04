@@ -350,7 +350,7 @@ export default function BlogListingClient({ initialBlogs }: { initialBlogs: Blog
       {/* ── Blog Grid ────────────────────────────────────────── */}
       <section className="w-full px-5 md:px-8 lg:px-12 pb-10 bg-[#F5F5F5]">
         <div className="max-w-[1400px] mx-auto">
-          {currentGridPosts.length === 0 ? (
+          {filteredBlogs.length === 0 ? (
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center py-[100px] px-6 bg-white rounded-[32px] border border-void/5 shadow-card-teal flex flex-col items-center justify-center relative overflow-hidden">
               <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-cyan/5 rounded-full blur-[80px] pointer-events-none" />
               <div className="absolute bottom-0 left-0 w-[200px] h-[200px] bg-lime/5 rounded-full blur-[60px] pointer-events-none" />

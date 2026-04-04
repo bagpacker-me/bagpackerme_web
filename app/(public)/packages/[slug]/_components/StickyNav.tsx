@@ -55,8 +55,8 @@ export default function StickyNav() {
     e.preventDefault();
     const el = document.getElementById(id);
     if (el) {
-      // offset for sticky nav (approx 100px to account for main nav + anchor nav)
-      const offset = 120;
+      // offset for sticky nav (approx 160px to account for main nav + anchor nav)
+      const offset = 160;
       const top = el.getBoundingClientRect().top + window.scrollY - offset;
       window.scrollTo({ top, behavior: 'smooth' });
     }
@@ -64,10 +64,10 @@ export default function StickyNav() {
 
   return (
     <div 
-      className={`w-full z-40 transition-all duration-300 ${isSticky ? 'fixed top-[72px] left-0 bg-white border-b border-[rgba(34,30,42,0.08)]' : 'absolute bottom-0 translate-y-full bg-white border-b border-[rgba(34,30,42,0.08)]'}`}
+      className={`w-full z-40 transition-all duration-300 ${isSticky ? 'fixed top-[88px] left-0 bg-white border-b border-[rgba(34,30,42,0.08)]' : 'absolute bottom-0 translate-y-full bg-white border-b border-[rgba(34,30,42,0.08)]'}`}
       style={{ opacity: isSticky ? 1 : 0, pointerEvents: isSticky ? 'auto' : 'none' }}
     >
-      <div className="w-full h-[52px] overflow-x-auto hide-scrollbar flex items-center bg-white px-mobile md:px-desktop max-w-7xl mx-auto">
+      <div className="w-full h-[52px] overflow-x-auto hide-scrollbar flex items-center bg-white px-6 md:px-12 max-w-7xl mx-auto">
         {/* Links */}
         <nav className="flex items-center whitespace-nowrap">
           {SECTIONS.map((section) => {

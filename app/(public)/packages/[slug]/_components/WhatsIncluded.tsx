@@ -20,7 +20,7 @@ export default function WhatsIncluded({ pkg }: { pkg: Package }) {
   const otherExclusions = pkg.exclusions || [];
 
   return (
-    <section id="inclusions" className="w-full bg-[#F0F7F8] py-[64px] md:py-[96px] px-mobile md:px-desktop">
+    <section id="inclusions" className="w-full bg-[#F0F7F8] py-[64px] md:py-[96px] px-6 md:px-12">
       <div className="max-w-7xl mx-auto">
 
         {/* Section Header */}

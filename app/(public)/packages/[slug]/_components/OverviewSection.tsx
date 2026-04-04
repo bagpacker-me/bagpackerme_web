@@ -19,7 +19,7 @@ export default function OverviewSection({ pkg }: { pkg: Package }) {
   const whatsappUrl = `https://wa.me/919920992026?text=${encodeURIComponent(`Hi, I'm interested in the ${pkg.title} trip.`)}`;
 
   return (
-    <section id="overview" className="w-full bg-white py-[64px] md:py-[96px] px-mobile md:px-desktop">
+    <section id="overview" className="w-full bg-white py-[64px] md:py-[96px] px-6 md:px-12">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-[48px] lg:gap-[64px] relative items-start">
 
