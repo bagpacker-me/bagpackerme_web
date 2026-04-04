@@ -22,7 +22,7 @@ import {
   Activity
 } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { Booking, Package, Enquiry, BlogPost, Customer, Subscriber, GalleryImage } from '@/types';
+import { Booking, Package, Enquiry, BlogPost } from '@/types';
 
 interface AnalyticsData {
   customers: { total: number };

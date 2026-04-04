@@ -2,9 +2,8 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, ArrowLeft, Plus, Star } from 'lucide-react';
+import { Plus, Star } from 'lucide-react';
 import Image from 'next/image';
-import Link from 'next/link';
 
 const destinations = [
   {
@@ -87,11 +86,6 @@ export default function HeroInteractive() {
     resetTimer();
   }, [totalSlides, resetTimer]);
 
-  const handlePrev = useCallback(() => {
-    setDirection(-1);
-    setCurrentIndex((prev) => (prev - 1 + totalSlides) % totalSlides);
-    resetTimer();
-  }, [totalSlides, resetTimer]);
 
   if (!isClient) {
     return <div className="h-screen w-screen bg-void" />;

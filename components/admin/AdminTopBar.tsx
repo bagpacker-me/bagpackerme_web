@@ -36,7 +36,6 @@ export default function AdminTopBar({ onMenuClick }: AdminTopBarProps) {
   const title = segments[segments.length - 1] 
     ? segments[segments.length - 1].charAt(0).toUpperCase() + segments[segments.length - 1].slice(1)
     : 'Admin';
-  const breadcrumb = segments.map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' / ');
 
   return (
     <div className="sticky top-0 h-[64px] bg-[#FFFFFF] dark:bg-[#1A1625] border-b border-[#E9F5F7] dark:border-[rgba(255,255,255,0.06)] px-[16px] lg:px-[32px] flex items-center justify-between z-30 transition-colors">
