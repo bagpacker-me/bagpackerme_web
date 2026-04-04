@@ -292,7 +292,7 @@ export default function AdminEnquiriesPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-[#FFFFFF] dark:bg-[#1A1625] overflow-x-auto">
+      <div className="bg-[#FFFFFF] dark:bg-[#1A1625] overflow-x-auto rounded-lg border border-[rgba(34,30,42,0.06)] dark:border-[rgba(255,255,255,0.06)]">
         <table className="w-full">
           <thead>
             <tr className="bg-[#F7F9FA] dark:bg-[rgba(255,255,255,0.02)] border-b-[2px] border-[#E9F5F7] dark:border-[rgba(255,255,255,0.06)]">

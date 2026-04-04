@@ -40,6 +40,15 @@ export default function EffortlessPlanning() {
     <section className="bg-surface-lowest pt-24 pb-0 relative">
       {/* Intro Text Section */}
       <div className="container mx-auto px-6 lg:px-8 text-center max-w-4xl relative z-10 mb-32">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="section-label justify-center mb-6"
+        >
+          HOW WE WORK
+        </motion.div>
+
         <motion.p 
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -79,6 +88,7 @@ export default function EffortlessPlanning() {
           </p>
         </motion.div>
       </div>
+
 
       {/* Stats Ticket Section */}
       <div ref={containerRef} className="relative w-full py-32 md:py-48 overflow-hidden px-4 md:px-8">

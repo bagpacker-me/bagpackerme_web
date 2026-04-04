@@ -140,9 +140,9 @@ function Row({ label, value }: { label: string; value: string }) {
 // ─── stat card ───────────────────────────────────────────────────────────────
 function StatCard({ label, value, icon, loading }: StatsCard) {
   return (
-    <div className="relative bg-[#FFFFFF] dark:bg-[#1A1625] border border-[#E9F5F7] dark:border-[rgba(255,255,255,0.06)] rounded-[4px] p-[24px] shadow-sm flex flex-col justify-between items-start transition-all hover:shadow-md hover:-translate-y-[2px] overflow-hidden group">
+    <div className="relative bg-[#FFFFFF] dark:bg-[#1A1625] border border-[#E9F5F7] dark:border-[rgba(255,255,255,0.06)] rounded-lg p-[24px] shadow-sm flex flex-col justify-between items-start transition-all hover:shadow-md hover:-translate-y-[2px] overflow-hidden group">
       {/* Left accent bar */}
-      <div className="absolute top-0 left-0 w-[4px] h-full bg-[#285056]" />
+      <div className="absolute top-0 left-0 w-[4px] h-full bg-[#285056] group-hover:bg-lime transition-colors duration-300" />
       <div className="flex w-full justify-between items-start">
         <div className="flex flex-col pl-[8px]">
           {loading ? (
@@ -250,23 +250,23 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Quick Actions */}
-        <div className="bg-[#FFFFFF] dark:bg-[#1A1625] border border-[rgba(34,30,42,0.06)] dark:border-[rgba(255,255,255,0.06)] p-[24px]">
-          <h2 className="font-display text-[14px] font-semibold text-[#221E2A] dark:text-white mb-[16px]">Quick Actions</h2>
+        <div className="bg-[#FFFFFF] dark:bg-[#1A1625] border border-[rgba(34,30,42,0.06)] dark:border-[rgba(255,255,255,0.06)] rounded-lg p-[24px]">
+          <h2 className="font-display text-[14px] font-semibold text-[#221E2A] dark:text-white mb-[16px] tracking-wide">Quick Actions</h2>
           <div className="flex flex-wrap gap-3">
             <Link
               href="/admin/packages/new"
-              className="flex items-center h-[44px] px-[16px] font-body text-[14px] font-normal border border-[rgba(34,30,42,0.08)] dark:border-[rgba(255,255,255,0.1)] rounded-[2px] transition-colors hover:bg-[#F7F9FA] dark:hover:bg-[rgba(255,255,255,0.05)] text-[#221E2A] dark:text-white"
+              className="flex items-center h-[44px] px-[16px] font-body text-[14px] font-normal border border-[rgba(34,30,42,0.08)] dark:border-[rgba(255,255,255,0.1)] rounded-lg transition-all hover:bg-[#F7F9FA] dark:hover:bg-[rgba(255,255,255,0.05)] hover:border-teal/30 text-[#221E2A] dark:text-white group"
             >
-              <svg className="w-[16px] h-[16px] mr-[10px] text-[#285056] dark:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg className="w-[16px] h-[16px] mr-[10px] text-[#285056] dark:text-white group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
               </svg>
               New Package
             </Link>
             <Link
               href="/admin/blog/new"
-              className="flex items-center h-[44px] px-[16px] font-body text-[14px] font-normal border border-[rgba(34,30,42,0.08)] dark:border-[rgba(255,255,255,0.1)] rounded-[2px] transition-colors hover:bg-[#F7F9FA] dark:hover:bg-[rgba(255,255,255,0.05)] text-[#221E2A] dark:text-white"
+              className="flex items-center h-[44px] px-[16px] font-body text-[14px] font-normal border border-[rgba(34,30,42,0.08)] dark:border-[rgba(255,255,255,0.1)] rounded-lg transition-all hover:bg-[#F7F9FA] dark:hover:bg-[rgba(255,255,255,0.05)] hover:border-teal/30 text-[#221E2A] dark:text-white group"
             >
-              <svg className="w-[16px] h-[16px] mr-[10px] text-[#285056] dark:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg className="w-[16px] h-[16px] mr-[10px] text-[#285056] dark:text-white group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
               New Blog Post
@@ -289,7 +289,7 @@ export default function AdminDashboardPage() {
             </Link>
           </div>
 
-          <div className="bg-[#FFFFFF] dark:bg-[#1A1625] rounded-none overflow-x-auto">
+          <div className="bg-[#FFFFFF] dark:bg-[#1A1625] rounded-lg overflow-x-auto border border-[rgba(34,30,42,0.06)] dark:border-[rgba(255,255,255,0.06)]">
             <table className="w-full border-collapse">
               <thead>
                 <tr className="bg-[#F7F9FA] dark:bg-[rgba(255,255,255,0.02)] border-b-[2px] border-[#E9F5F7] dark:border-[rgba(255,255,255,0.06)]">

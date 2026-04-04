@@ -306,7 +306,7 @@ export default function ContactPage() {
                       id="contact-submit"
                       type="submit"
                       disabled={isSubmitting}
-                      className="px-[32px] py-[16px] bg-teal text-white font-body font-medium rounded-full hover:bg-teal/90 transition-colors disabled:opacity-60 flex items-center justify-center gap-[12px]"
+                      className="btn-teal btn-shimmer disabled:opacity-60 flex items-center justify-center gap-3"
                     >
                       {isSubmitting ? (
                         <>

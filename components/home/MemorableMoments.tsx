@@ -3,6 +3,8 @@
 import React from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 
 const MOMENTS = [
   {
@@ -45,6 +47,16 @@ const MOMENTS = [
 export default function MemorableMoments() {
   return (
     <section className="bg-surface-lowest overflow-hidden py-32">
+      {/* Section Eyebrow */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        className="section-label justify-center mb-5"
+      >
+        TRAVELER STORIES
+      </motion.div>
+
       <div className="container mx-auto px-6 lg:px-8 text-center max-w-4xl relative z-10 mb-20">
         <motion.p 
           initial={{ opacity: 0, y: 10 }}
@@ -111,9 +123,10 @@ export default function MemorableMoments() {
         viewport={{ once: true }}
         className="mt-16 text-center"
       >
-        <button className="bg-void text-white font-body px-8 py-4 rounded-full text-sm font-medium hover:bg-teal hover:shadow-glow-cyan transition-all duration-300">
-          See more happiness
-        </button>
+        <Link href="/contact" className="btn-teal btn-shimmer inline-flex">
+          Plan Your Journey
+          <ArrowRight className="w-4 h-4 ml-2" />
+        </Link>
       </motion.div>
     </section>
   );

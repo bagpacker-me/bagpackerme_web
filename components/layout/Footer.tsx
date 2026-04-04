@@ -3,20 +3,11 @@ import { ArrowRight } from 'lucide-react';
 import { Logo } from '../ui/Logo';
 import { getSiteSettings } from '@/lib/firestore';
 
-const exploreLinks = [
-  { name: 'All Packages', href: '/packages' },
-  { name: 'Culinary Trail', href: '/packages' },
-  { name: 'Spiritual Circuit', href: '/packages' },
-  { name: 'Adventure Route', href: '/packages' },
-  { name: 'Heritage Walk', href: '/packages' },
-  { name: 'Hippy Trail', href: '/packages' },
-];
+
 
 const companyLinks = [
   { name: 'About', href: '/about' },
   { name: 'Blog', href: '/blog' },
-  { name: 'Media', href: '/media' },
-  { name: 'Partnerships', href: '/partnerships' },
   { name: 'Contact', href: '/contact' },
 ];
 
@@ -34,7 +25,7 @@ export async function Footer() {
   return (
     <footer className="bg-void text-white pt-20 pb-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 lg:gap-8 mb-16">
           {/* Column 1 - Brand */}
           <div className="space-y-6">
             <Logo variant="text" className="origin-left" />
@@ -71,23 +62,11 @@ export async function Footer() {
             </p>
           </div>
 
-          {/* Column 2 - Trips */}
-          <div className="space-y-6">
-            <h3 className="font-heading text-[11px] tracking-widest text-white/50 uppercase">Explore</h3>
-            <ul className="space-y-3">
-              {exploreLinks.map((link) => (
-                <li key={link.name}>
-                  <Link href={link.href} className="footer-link link-underline">
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+
 
           {/* Column 3 - Company */}
           <div className="space-y-6">
-            <h3 className="font-heading text-[11px] tracking-widest text-white/50 uppercase">Company</h3>
+            <h3 className="font-display text-[11px] tracking-widest text-white/50 uppercase">Company</h3>
             <ul className="space-y-3">
               {companyLinks.map((link) => (
                 <li key={link.name}>
@@ -101,7 +80,7 @@ export async function Footer() {
 
           {/* Column 4 - Connect */}
           <div className="space-y-6 flex flex-col items-start lg:col-span-1">
-            <h3 className="font-heading text-[11px] tracking-widest text-white/50 uppercase">Get In Touch</h3>
+            <h3 className="font-display text-[11px] tracking-widest text-white/50 uppercase">Get In Touch</h3>
             <div className="space-y-2 text-sm text-white/80 flex flex-col items-start w-full">
               <a href={`mailto:${contactEmail}`} className="hover:text-cyan transition-colors truncate w-full block">{contactEmail}</a>
               <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="hover:text-cyan transition-colors block">{contactPhone}</a>
@@ -110,7 +89,7 @@ export async function Footer() {
             
             <div className="pt-4 w-full">
               <p className="text-sm text-white/80 mb-3 block">Join 2,000+ travelers</p>
-              <form className="relative flex items-center w-full max-w-sm rounded-none bg-white/5 border border-white/10 p-1 focus-within:border-lime/50 focus-within:ring-1 focus-within:ring-lime/50 transition-all">
+              <form className="relative flex items-center w-full max-w-sm rounded-sm bg-white/5 border border-white/10 p-1 focus-within:border-lime/50 focus-within:ring-1 focus-within:ring-lime/50 transition-all">
                 <input 
                   type="email" 
                   placeholder="Email address" 

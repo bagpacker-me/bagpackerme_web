@@ -4,6 +4,8 @@ import React from 'react';
 import Image from 'next/image';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
+import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 
 export default function LimitedTimePromo() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -32,7 +34,7 @@ export default function LimitedTimePromo() {
       </motion.div>
 
       {/* Dark Overlay Mask */}
-      <div className="absolute inset-0 z-10 bg-gradient-to-t from-void/90 via-void/50 to-transparent" />
+      <div className="absolute inset-0 z-10 bg-gradient-to-b from-void/60 via-void/50 to-void/90" />
 
       {/* Content */}
       <div className="container relative z-20 mx-auto px-6 lg:px-8 text-center max-w-4xl mt-32">
@@ -62,9 +64,10 @@ export default function LimitedTimePromo() {
           viewport={{ once: true }}
           transition={{ delay: 0.4, duration: 0.5 }}
         >
-          <button className="bg-white text-void font-body px-10 py-5 rounded-full text-base font-bold hover:bg-lime hover:text-teal hover:shadow-glow-lime transition-all duration-300">
+          <Link href="/contact" className="btn-lime btn-shimmer inline-flex">
             Claim My Trip Now
-          </button>
+            <ArrowRight className="w-4 h-4 ml-2" />
+          </Link>
         </motion.div>
       </div>
     </section>

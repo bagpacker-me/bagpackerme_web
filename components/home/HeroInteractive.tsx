@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, ArrowLeft, Plus, Star } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const destinations = [
   {
@@ -52,6 +53,10 @@ export default function HeroInteractive() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(1);
   const [isClient, setIsClient] = useState(false);
+  const [progressKey, setProgressKey] = useState(0); // resets CSS animation
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const INTERVAL_MS = 6000;
 
   useEffect(() => {
     setIsClient(true);
@@ -59,15 +64,34 @@ export default function HeroInteractive() {
 
   const totalSlides = destinations.length;
 
-  const handleNext = () => {
+  const resetTimer = useCallback(() => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    setProgressKey(k => k + 1); // restart progress bar CSS animation
+    timerRef.current = setInterval(() => {
+      setDirection(1);
+      setCurrentIndex(prev => (prev + 1) % totalSlides);
+      setProgressKey(k => k + 1);
+    }, INTERVAL_MS);
+  }, [totalSlides]);
+
+  // Start auto-advance once client is ready
+  useEffect(() => {
+    if (!isClient) return;
+    resetTimer();
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+  }, [isClient, resetTimer]);
+
+  const handleNext = useCallback(() => {
     setDirection(1);
     setCurrentIndex((prev) => (prev + 1) % totalSlides);
-  };
+    resetTimer();
+  }, [totalSlides, resetTimer]);
 
-  const handlePrev = () => {
+  const handlePrev = useCallback(() => {
     setDirection(-1);
     setCurrentIndex((prev) => (prev - 1 + totalSlides) % totalSlides);
-  };
+    resetTimer();
+  }, [totalSlides, resetTimer]);
 
   if (!isClient) {
     return <div className="h-screen w-screen bg-void" />;
@@ -131,10 +155,13 @@ export default function HeroInteractive() {
             <p className="text-base md:text-lg mb-8 max-w-md opacity-80 leading-relaxed">
               {activeDest.description}
             </p>
-            <button className="flex items-center gap-3 px-8 py-4 rounded-full bg-white/10 backdrop-blur-md border border-white/30 hover:bg-white/20 hover:border-white/50 transition-all group font-medium uppercase tracking-widest text-sm">
-              Explore
+            <Link
+              href="/packages"
+              className="flex items-center gap-3 px-8 py-4 rounded-full bg-lime text-void backdrop-blur-md border border-lime hover:bg-lime/90 hover:shadow-[0_8px_32px_rgba(193,234,0,0.4)] transition-all group font-display font-bold uppercase tracking-widest text-sm"
+            >
+              Explore Trips
               <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-            </button>
+            </Link>
           </motion.div>
         </AnimatePresence>
       </div>
@@ -231,15 +258,19 @@ export default function HeroInteractive() {
           </button>
         </div>
 
-        {/* Right Side: Pagination */}
+        {/* Right Side: Pagination + Auto-Progress */}
         <div className="flex items-center gap-3 text-sm font-medium tracking-widest min-w-[120px] justify-end">
           <span className="opacity-100">{stringIndex}</span>
-          <div className="w-12 h-[2px] bg-white/30 relative">
-            <motion.div 
-              className="absolute top-0 left-0 bottom-0 bg-white"
-              initial={{ width: 0 }}
-              animate={{ width: `${((currentIndex + 1) / totalSlides) * 100}%` }}
-              transition={{ duration: 0.5 }}
+          <div className="relative w-16 h-[2px] bg-white/20 overflow-hidden">
+            {/* Static fill showing position */}
+            <div
+              className="absolute top-0 left-0 h-full bg-white/30 transition-all duration-500"
+              style={{ width: `${((currentIndex + 1) / totalSlides) * 100}%` }}
+            />
+            {/* Animated progress filling over 6s before auto-advance */}
+            <div
+              key={progressKey}
+              className="absolute top-0 left-0 h-full bg-lime hero-progress-bar"
             />
           </div>
           <span className="opacity-50">{stringTotal}</span>

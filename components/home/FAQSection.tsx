@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowDown, ArrowUp } from 'lucide-react';
+import { Plus, Minus } from 'lucide-react';
 
 const FAQS = [
   {
@@ -23,7 +23,7 @@ const FAQS = [
   },
   {
     question: 'Does BagPackerMe offer special deals or discounts?',
-    answer: 'We regularly provide early-bird specials and seasonal discounts for our newsletter subscribers. Subscribe below so you don\'t miss out!'
+    answer: "We regularly provide early-bird specials and seasonal discounts for our newsletter subscribers. Subscribe below so you don't miss out!"
   }
 ];
 
@@ -39,15 +39,20 @@ export default function FAQSection() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
+          {/* Eyebrow */}
+          <div className="section-label justify-center mb-5">
+            FAQ
+          </div>
+
           <h2 className="font-display text-4xl md:text-5xl font-bold text-void mb-6 tracking-tight">
             Frequently Asked Questions
           </h2>
           <p className="text-void/60 text-base md:text-lg font-body leading-relaxed max-w-2xl mx-auto">
-            Got questions before your next trip? We&apos;ve got you covered here&apos;s everything you need to know about using BagPackerMe.
+            Got questions before your next trip? We&apos;ve got you covered — here&apos;s everything you need to know about using BagPackerMe.
           </p>
         </motion.div>
 
-        <div className="space-y-4">
+        <div className="space-y-3">
           {FAQS.map((faq, idx) => {
             const isOpen = openIndex === idx;
             return (
@@ -56,37 +61,45 @@ export default function FAQSection() {
                 initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: idx * 0.1 }}
-                className={`rounded-[20px] transition-all duration-300 ${
+                transition={{ delay: idx * 0.08 }}
+                className={`rounded-2xl border transition-all duration-300 overflow-hidden ${
                   isOpen 
-                    ? 'bg-white shadow-card-teal border border-subtle p-6 md:p-8' 
-                    : 'bg-transparent border border-medium p-6 md:p-8 hover:border-strong cursor-pointer'
+                    ? 'bg-white shadow-card-teal border-teal/20' 
+                    : 'bg-transparent border-medium hover:border-teal/30 cursor-pointer'
                 }`}
                 onClick={() => setOpenIndex(isOpen ? -1 : idx)}
               >
-                <div className="flex justify-between items-center gap-4">
-                  <h3 className={`font-display font-medium text-lg md:text-xl transition-colors ${
-                    isOpen ? 'text-void' : 'text-void/80'
+                <div className="flex justify-between items-center gap-4 p-6 md:p-8">
+                  <h3 className={`font-display font-semibold text-lg md:text-xl transition-colors ${
+                    isOpen ? 'text-teal' : 'text-void/80'
                   }`}>
                     {faq.question}
                   </h3>
-                  <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
-                    isOpen ? 'bg-void text-white' : 'bg-void/5 text-void/50'
+
+                  {/* Premium Plus/Minus toggle */}
+                  <div className={`flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 ${
+                    isOpen 
+                      ? 'bg-teal text-white rotate-0' 
+                      : 'bg-void/5 text-void/50 hover:bg-teal/10 hover:text-teal'
                   }`}>
-                    {isOpen ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />}
+                    {isOpen 
+                      ? <Minus className="w-4 h-4" /> 
+                      : <Plus className="w-4 h-4" />
+                    }
                   </div>
                 </div>
 
-                <AnimatePresence>
+                <AnimatePresence initial={false}>
                   {isOpen && (
                     <motion.div
+                      key="answer"
                       initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
+                      animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3, ease: "easeInOut" }}
+                      transition={{ duration: 0.32, ease: [0.25, 0.46, 0.45, 0.94] }}
                       className="overflow-hidden"
                     >
-                      <p className="pt-6 font-body text-void/70 text-sm md:text-base leading-relaxed pr-8">
+                      <p className="px-6 md:px-8 pb-6 md:pb-8 font-body text-void/70 text-sm md:text-base leading-relaxed pr-16">
                         {faq.answer}
                       </p>
                     </motion.div>
