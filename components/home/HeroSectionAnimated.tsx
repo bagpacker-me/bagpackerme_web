@@ -2,6 +2,7 @@
 
 import React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { AnimatedGroup } from '@/components/ui/animated-group'
 
@@ -123,12 +124,12 @@ export function HeroSectionAnimated() {
                                     className="bg-gradient-to-b to-[#221E2A] absolute inset-0 z-10 from-transparent from-35%"
                                 />
                                 <div className="relative mx-auto max-w-5xl overflow-hidden rounded-2xl border border-[#0ED2E9]/20 p-2 shadow-2xl shadow-[#0ED2E9]/10 bg-[#285056]/50 backdrop-blur-sm">
-                                    <img
+                                    <Image
                                         className="aspect-video relative rounded-xl object-cover"
                                         src="https://images.unsplash.com/photo-1571509618118-c2b3e404b901?q=80&w=2700&auto=format&fit=crop"
                                         alt="Mount Bromo View"
-                                        width="1920"
-                                        height="1080"
+                                        width={1920}
+                                        height={1080}
                                     />
                                 </div>
                             </div>

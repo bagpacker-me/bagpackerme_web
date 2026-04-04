@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, ArrowLeft, Bookmark, Plus, Star } from 'lucide-react';
-import Link from 'next/link';
 import Image from 'next/image';
 
 const destinations = [
