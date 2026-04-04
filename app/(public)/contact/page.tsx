@@ -125,13 +125,13 @@ export default function ContactPage() {
   };
 
   const fieldCls = (hasError: boolean) =>
-    `w-full px-[16px] py-[16px] rounded-xl border font-body text-[15px] outline-none transition-all duration-200 ${
+    `w-full px-[20px] py-[18px] rounded-[20px] border font-body text-[15px] outline-none transition-all duration-300 ${
       hasError
         ? 'border-red-400 focus:border-red-500 animate-[shake_0.3s_ease-in-out] bg-red-50 text-red-900 placeholder-red-300'
-        : 'border-void/10 bg-[#fafafa] hover:bg-white text-void placeholder-void/40 focus:border-teal focus:bg-white focus:ring-4 focus:ring-teal/5'
+        : 'border-void/5 bg-ice/40 hover:bg-ice/70 text-void placeholder-void/40 focus:border-teal/40 focus:bg-white focus:ring-4 focus:ring-teal/10 shadow-sm'
     }`;
 
-  const labelCls = "block font-body text-[14px] font-medium text-void mb-2";
+  const labelCls = "block font-display text-[14px] font-bold text-void mb-3 ml-2 tracking-wide";
 
   return (
     <>
@@ -301,30 +301,33 @@ export default function ContactPage() {
                     </div>
                   )}
 
-                  <div className="flex justify-start sm:justify-end border-t border-void/5 pt-6 mt-4">
+                  <div className="flex justify-start sm:justify-end border-t border-void/5 pt-8 mt-6">
                     <button
                       id="contact-submit"
                       type="submit"
                       disabled={isSubmitting}
-                      className="btn-teal btn-shimmer disabled:opacity-60 flex items-center justify-center gap-3"
+                      className="px-[40px] py-[18px] bg-teal text-white font-display font-bold uppercase tracking-widest text-[13px] rounded-full hover:bg-teal/90 transition-all duration-300 shadow-[0_8px_24px_rgba(40,80,86,0.25)] hover:shadow-[0_12px_32px_rgba(40,80,86,0.4)] hover:-translate-y-1 disabled:opacity-60 flex items-center justify-center gap-3 relative overflow-hidden group"
                     >
-                      {isSubmitting ? (
-                        <>
-                          <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                            <circle cx="12" cy="12" r="10" strokeWidth="2" opacity="0.3" />
-                            <path d="M12 2a10 10 0 0 1 10 10" strokeWidth="2" strokeLinecap="round" />
-                          </svg>
-                          Sending...
-                        </>
-                      ) : (
-                        <>
-                          Send Message
-                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <line x1="7" y1="17" x2="17" y2="7"></line>
-                            <polyline points="7 7 17 7 17 17"></polyline>
-                          </svg>
-                        </>
-                      )}
+                      <div className="absolute inset-0 bg-white/20 w-[120%] -translate-x-[150%] skew-x-[30deg] group-hover:animate-[shimmer_1.5s_ease-in-out_infinite]" />
+                      <span className="relative z-10 flex items-center gap-3">
+                        {isSubmitting ? (
+                          <>
+                            <svg className="w-5 h-5 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                              <circle cx="12" cy="12" r="10" strokeWidth="2" opacity="0.3" />
+                              <path d="M12 2a10 10 0 0 1 10 10" strokeWidth="2" strokeLinecap="round" />
+                            </svg>
+                            Sending...
+                          </>
+                        ) : (
+                          <>
+                            Send Message
+                            <svg className="transition-transform duration-300 group-hover:translate-x-1" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <line x1="7" y1="17" x2="17" y2="7"></line>
+                              <polyline points="7 7 17 7 17 17"></polyline>
+                            </svg>
+                          </>
+                        )}
+                      </span>
                     </button>
                   </div>
                 </motion.form>

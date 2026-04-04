@@ -179,22 +179,28 @@ export default function PackagesPage() {
                   <motion.div 
                     key="empty-state"
                     layout
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="flex flex-col items-center justify-center py-[80px] px-[24px] bg-[#FFFFFF] border border-[rgba(34,30,42,0.06)] mt-[32px]"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    className="flex flex-col items-center justify-center py-[100px] px-[24px] bg-white rounded-[32px] border border-void/5 shadow-card-teal-hover mt-[32px] overflow-hidden relative"
                   >
-                    <div className="w-[64px] h-[64px] bg-[#F7F9FA] flex items-center justify-center mb-[16px]">
-                      <span className="text-[24px] opacity-20">🌍</span>
+                    <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-teal/5 rounded-full blur-[80px] pointer-events-none" />
+                    <div className="absolute bottom-0 left-0 w-[200px] h-[200px] bg-lime/10 rounded-full blur-[60px] pointer-events-none" />
+                    
+                    <div className="relative mb-[24px] z-10">
+                       <div className="absolute inset-0 bg-lime/30 blur-2xl rounded-full" />
+                       <div className="relative w-[80px] h-[80px] rounded-full bg-gradient-to-tr from-ice to-white border border-white flex items-center justify-center shadow-lg">
+                         <span className="text-[32px]">🏕️</span>
+                       </div>
                     </div>
-                    <h3 className="font-display text-[20px] font-bold text-[#221E2A] mb-[8px] text-center">No packages found</h3>
-                    <p className="font-body text-[#718096] mb-[24px] text-center max-w-[400px]">
+                    <h3 className="font-display text-[28px] font-bold text-void mb-[12px] text-center relative z-10">No journeys found</h3>
+                    <p className="font-body text-void/60 mb-[32px] text-center max-w-[420px] text-[16px] relative z-10">
                       We couldn&apos;t find any journeys matching your current filters. 
                       Try exploring other categories or duration lengths.
                     </p>
                     <button 
                       onClick={() => { setFilters({ category: 'All', duration: 'Any', priceRange: [0, 200000] }); }}
-                      className="btn-primary"
+                      className="relative z-10 px-[32px] py-[16px] bg-teal text-white font-display font-bold tracking-widest uppercase text-[12px] rounded-full hover:bg-teal/90 transition-all duration-300 shadow-[0_8px_24px_rgba(40,80,86,0.25)] hover:shadow-[0_12px_32px_rgba(40,80,86,0.4)] hover:-translate-y-1"
                     >
                       Reset Filters
                     </button>

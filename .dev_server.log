@@ -1,0 +1,16 @@
+
+> bagpackerme@0.1.0 dev
+> next dev
+
+ ⚠ Port 3000 is in use, trying 3001 instead.
+  ▲ Next.js 14.2.35
+  - Local:        http://localhost:3001
+  - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 1528ms
+ ○ Compiling / ...
+ ✓ Compiled / in 4s (1788 modules)
+ ✓ Compiled in 515ms (745 modules)
+ GET / 200 in 5203ms
+ ✓ Compiled in 1384ms (1761 modules)

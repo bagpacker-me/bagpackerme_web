@@ -320,10 +320,10 @@ export default function BlogListingClient({ initialBlogs }: { initialBlogs: Blog
                   <button
                     key={cat}
                     onClick={() => handleCategoryChange(cat)}
-                    className={`px-4 py-2 rounded-full font-body text-[13px] font-medium transition-all duration-250 ${
+                    className={`px-[18px] py-[8px] rounded-full font-body text-[13px] font-medium transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 focus-visible:ring-offset-[#F5F5F5] ${
                       activeCategory === cat
-                        ? 'bg-void text-white shadow-md'
-                        : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
+                        ? 'bg-teal text-white shadow-glow-teal cursor-default'
+                        : 'bg-white text-void/70 border border-void/10 hover:border-teal/30 hover:bg-ice hover:text-teal hover:shadow-sm'
                     }`}
                   >
                     {cat}
@@ -332,12 +332,12 @@ export default function BlogListingClient({ initialBlogs }: { initialBlogs: Blog
               </div>
 
               {/* Sort dropdown */}
-              <div className="flex items-center gap-2 flex-shrink-0">
-                <span className="font-body text-[13px] text-gray-500">Sort by</span>
+              <div className="flex items-center gap-3 flex-shrink-0 bg-white rounded-full pl-4 pr-1 py-1 border border-void/10 shadow-sm focus-within:border-teal/40 focus-within:ring-2 focus-within:ring-teal/20 transition-all duration-300 hover:shadow-md">
+                <span className="font-body text-[12px] font-medium text-void/50 uppercase tracking-wider">Sort by</span>
                 <select
                   value={sortBy}
                   onChange={(e) => { setSortBy(e.target.value); setCurrentPage(1); }}
-                  className="bg-white border border-gray-200 rounded-full px-3 py-2 font-body text-[13px] text-void outline-none focus:border-teal cursor-pointer"
+                  className="bg-transparent border-none py-[6px] pl-1 pr-6 font-display font-bold text-[14px] text-teal outline-none cursor-pointer appearance-none hover:text-teal/80 transition-colors"
                 >
                   {SORT_OPTIONS.map(o => <option key={o}>{o}</option>)}
                 </select>
@@ -351,17 +351,24 @@ export default function BlogListingClient({ initialBlogs }: { initialBlogs: Blog
       <section className="w-full px-5 md:px-8 lg:px-12 pb-10 bg-[#F5F5F5]">
         <div className="max-w-[1400px] mx-auto">
           {currentGridPosts.length === 0 ? (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-24 bg-white rounded-[20px] flex flex-col items-center justify-center">
-              <div className="w-16 h-16 bg-ice rounded-full flex items-center justify-center mb-6">
-                <span className="text-teal text-2xl">✦</span>
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center py-[100px] px-6 bg-white rounded-[32px] border border-void/5 shadow-card-teal flex flex-col items-center justify-center relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-cyan/5 rounded-full blur-[80px] pointer-events-none" />
+              <div className="absolute bottom-0 left-0 w-[200px] h-[200px] bg-lime/5 rounded-full blur-[60px] pointer-events-none" />
+              
+              <div className="relative mb-6 z-10">
+                <div className="absolute inset-0 bg-lime/20 blur-xl rounded-full" />
+                <div className="w-20 h-20 bg-gradient-to-tr from-ice to-white rounded-full border border-white flex items-center justify-center shadow-lg relative z-10">
+                  <span className="text-teal text-3xl">✦</span>
+                </div>
               </div>
-              <h3 className="font-display font-bold text-2xl text-void mb-3">No Stories Found</h3>
-              <p className="font-body text-gray-500 max-w-sm mx-auto mb-8">
-                We couldn&apos;t find any travel stories matching your criteria.
+              
+              <h3 className="font-display font-bold text-[28px] text-void mb-3 relative z-10">No Stories Found</h3>
+              <p className="font-body text-void/60 max-w-[420px] text-[16px] mx-auto mb-8 relative z-10">
+                We couldn&apos;t find any travel stories matching your criteria. Try selecting another category or check back later!
               </p>
               <button
                 onClick={() => { setActiveCategory('All'); }}
-                className="px-6 py-3 bg-teal text-white rounded-full font-display font-bold text-[13px] uppercase tracking-widest hover:bg-void transition-colors"
+                className="relative z-10 px-[32px] py-[16px] bg-teal text-white font-display font-bold uppercase tracking-widest text-[12px] rounded-full hover:bg-teal/90 transition-all duration-300 shadow-glow-teal hover:-translate-y-1"
               >
                 Clear filters
               </button>
