@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Star } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import Image from 'next/image';
 
 const destinations = [
@@ -196,13 +196,9 @@ export default function HeroInteractive() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                   
-                  {/* Top Left: Destination Name & Rating */}
+                  {/* Top Left: Destination Name */}
                   <div className="absolute top-4 left-4 right-16">
                     <h3 className="font-bold text-lg leading-tight mb-1">{slide.location}</h3>
-                    <div className="flex items-center gap-1 text-lime text-xs font-semibold">
-                      <Star size={12} fill="currentColor" />
-                      <span>{slide.rating}</span>
-                    </div>
                   </div>
 
                 </motion.div>
