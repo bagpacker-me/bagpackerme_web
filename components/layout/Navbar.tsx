@@ -73,7 +73,7 @@ export function Navbar() {
                                                 href={item.href}
                                                 className={cn(
                                                     "block duration-150 transition-colors font-medium",
-                                                    isActive || (!isScrolled && pathname === '/') ? "text-[#C1EA00]" : (isScrolled ? "text-white hover:text-[#C1EA00]" : "text-white drop-shadow-md hover:text-[#C1EA00]")
+                                                    isActive ? "text-[#C1EA00]" : (isScrolled ? "text-white hover:text-[#C1EA00]" : "text-white drop-shadow-md hover:text-[#C1EA00]")
                                                 )}>
                                                 <span>{item.name}</span>
                                             </Link>

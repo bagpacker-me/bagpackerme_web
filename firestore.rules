@@ -37,5 +37,20 @@ service cloud.firestore {
       allow read: if true;
       allow write: if isAdmin();
     }
+
+    // Customers: admin only
+    match /customers/{docId} {
+      allow read, write: if isAdmin();
+    }
+
+    // Bookings: admin only
+    match /bookings/{docId} {
+      allow read, write: if isAdmin();
+    }
+
+    // Gallery: admin only
+    match /gallery/{docId} {
+      allow read, write: if isAdmin();
+    }
   }
 }

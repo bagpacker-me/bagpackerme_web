@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, ArrowLeft, Bookmark, Plus, Star } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Plus, Star } from 'lucide-react';
 import Image from 'next/image';
 
 const destinations = [
@@ -190,10 +190,6 @@ export default function HeroInteractive() {
                     </div>
                   </div>
 
-                  {/* Top Right: Bookmark Button */}
-                  <button className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center hover:bg-white/40 transition-colors">
-                    <Bookmark size={16} className="text-white" />
-                  </button>
                 </motion.div>
               );
             })}

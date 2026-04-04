@@ -147,19 +147,30 @@ export default function ContactPage() {
 
       <main className="min-h-screen bg-white">
         {/* ── Top Header ──────────────────────────────────────────────────── */}
-        <div className="pt-[80px] md:pt-[120px] pb-[40px] px-[24px] text-center max-w-[800px] mx-auto">
-          <motion.div
-            initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.7 }}
-          >
-            <h1 className="font-display text-teal text-[44px] md:text-[64px] font-bold leading-[1.1] mb-6">
-              Get in Touch with Us
-            </h1>
-            <p className="font-body text-teal/80 text-[16px] md:text-[18px] leading-relaxed">
-              Have questions about our outdoor adventures or looking to plan your next thrilling getaway? We&apos;re here to help! Reach out for any inquiries, rental assistance, or adventure advice
-            </p>
-          </motion.div>
+        <div className="relative bg-teal pt-[160px] md:pt-[200px] pb-[100px] md:pb-[140px] overflow-hidden rounded-b-[40px] md:rounded-b-[80px] mb-[60px] md:mb-[100px]">
+          {/* Abstract Background Elements */}
+          <div className="absolute inset-0 bg-gradient-to-b from-void/40 to-transparent pointer-events-none" />
+          <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-lime/20 rounded-full blur-[120px] pointer-events-none" />
+          <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-cyan/20 rounded-full blur-[100px] pointer-events-none" />
+          
+          <div className="relative text-center max-w-[800px] mx-auto px-[24px]">
+            <motion.div
+              initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.8, ease: "easeOut" }}
+            >
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-lime font-display text-sm font-bold tracking-widest uppercase mb-6">
+                <span className="w-2 h-2 rounded-full bg-lime animate-pulse"></span>
+                Contact Us
+              </div>
+              <h1 className="font-display text-white text-[44px] md:text-[72px] font-bold leading-[1.1] mb-6">
+                Get in Touch with Us
+              </h1>
+              <p className="font-body text-white/80 text-[16px] md:text-[20px] leading-relaxed">
+                Have questions about our outdoor adventures or looking to plan your next thrilling getaway? We&apos;re here to help! Reach out for any inquiries, rental assistance, or adventure advice
+              </p>
+            </motion.div>
+          </div>
         </div>
 
         {/* ── Two-column Layout ────────────────────────────────────────────── */}

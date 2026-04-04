@@ -62,40 +62,48 @@ export default function AboutPage() {
   return (
     <main className="min-h-screen bg-white">
       {/* ── Section 1: Hero Header ───────────────────────────────────────────── */}
-      <div className="pt-[80px] md:pt-[120px] pb-[40px] px-[24px] text-center max-w-[800px] mx-auto">
-        <motion.div
-          initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.7 }}
-        >
-          <div className="section-label justify-center text-teal before:bg-teal mb-[24px]">
-            ✦ About Us
-          </div>
-          <h1 className="font-display text-teal text-[44px] md:text-[64px] font-bold leading-[1.1] mb-6">
-            We Are Bagpackerme
-          </h1>
-          <p className="font-body text-teal/80 text-[16px] md:text-[18px] leading-relaxed max-w-[600px] mx-auto">
-            A travel community built on real journeys, authentic connections, and a deep love for India.
-          </p>
-        </motion.div>
+      <div className="relative bg-teal pt-[160px] md:pt-[200px] pb-[160px] md:pb-[240px] overflow-hidden">
+        {/* Abstract Background Elements */}
+        <div className="absolute inset-0 bg-gradient-to-b from-void/40 to-transparent pointer-events-none" />
+        <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-lime/20 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-cyan/20 rounded-full blur-[100px] pointer-events-none" />
+        
+        <div className="relative text-center max-w-[800px] mx-auto px-[24px]">
+          <motion.div
+            initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.8, ease: "easeOut" }}
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-lime font-display text-sm font-bold tracking-widest uppercase mb-6">
+              <span className="w-2 h-2 rounded-full bg-lime animate-pulse"></span>
+              About Us
+            </div>
+            <h1 className="font-display text-white text-[44px] md:text-[72px] font-bold leading-[1.1] mb-6">
+              We Are Bagpackerme
+            </h1>
+            <p className="font-body text-white/80 text-[16px] md:text-[20px] leading-relaxed max-w-[600px] mx-auto">
+              A travel community built on real journeys, authentic connections, and a deep love for India.
+            </p>
+          </motion.div>
+        </div>
       </div>
 
       {/* ── Section 2: Hero Image Banner ─────────────────────────────────────── */}
-      <div className="max-w-[1200px] mx-auto px-[24px] pb-[80px] md:pb-[120px]">
+      <div className="max-w-[1200px] mx-auto px-[24px] pb-[80px] md:pb-[120px] -mt-[100px] md:-mt-[160px] relative z-10">
         <motion.div 
-          initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.8, delay: 0.2 }}
-          className="bg-teal rounded-3xl md:rounded-[40px] overflow-hidden relative aspect-video md:aspect-[21/9] w-full isolate shadow-xl"
+          initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.8, delay: 0.2, ease: "easeOut" }}
+          className="bg-void rounded-3xl md:rounded-[40px] overflow-hidden relative aspect-video md:aspect-[21/9] w-full shadow-2xl"
         >
           <Image 
             src="https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=1920&q=85" 
             alt="India Travel Group" 
             fill 
             priority
-            className="object-cover object-[center_30%] mix-blend-overlay opacity-60 z-0" 
+            className="object-cover object-[center_30%] mix-blend-overlay opacity-60 z-0 scale-105 hover:scale-100 transition-transform duration-1000" 
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-teal/40 via-teal/5 to-transparent z-10 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-void/60 via-transparent to-transparent z-10 pointer-events-none" />
         </motion.div>
       </div>
 

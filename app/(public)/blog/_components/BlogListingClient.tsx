@@ -1,44 +1,271 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { BlogPost } from '@/types';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Search, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ArrowRight, User } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const CATEGORIES = ['All', 'Adventure', 'Culture', 'Food', 'Spiritual', 'Tips & Guides', 'Corporate Travel'];
-const POSTS_PER_PAGE = 6;
+const SORT_OPTIONS = ['Newest', 'Oldest', 'Popular'];
+const POSTS_PER_PAGE = 9;
 
+// ── Animation variants ──────────────────────────────────────────────────────
+const EASE = [0.25, 0.46, 0.45, 0.94] as [number, number, number, number];
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 28 },
+  visible: (i = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.55, ease: EASE, delay: i * 0.08 },
+  }),
+};
+
+const stagger = {
+  visible: { transition: { staggerChildren: 0.07 } },
+};
+
+function useInView(ref: React.RefObject<Element>, threshold = 0.15) {
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    if (!ref.current) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setInView(true); },
+      { threshold }
+    );
+    obs.observe(ref.current);
+    return () => obs.disconnect();
+  }, [ref, threshold]);
+  return inView;
+}
+
+// ── Sub-components ──────────────────────────────────────────────────────────
+
+function FeaturedHero({ post, formatDate }: { post: BlogPost; formatDate: (d?: string) => string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref as React.RefObject<Element>);
+
+  return (
+    // Full-bleed: no side padding, starts from top-0 behind the fixed navbar
+    <motion.div
+      ref={ref}
+      initial="hidden"
+      animate={inView ? 'visible' : 'hidden'}
+      variants={fadeUp}
+      className="w-full relative"
+    >
+      <Link
+        href={`/blog/${post.slug}`}
+        className="group block relative w-full overflow-hidden bg-void"
+        style={{ aspectRatio: '16/7', minHeight: '480px' }}
+      >
+        <Image
+          src={post.featuredImageUrl || 'https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&q=80&w=1400'}
+          alt={post.title}
+          fill
+          priority
+          className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+        />
+        {/* Top gradient — ensures white navbar text is readable */}
+        <div className="absolute top-0 left-0 right-0 h-[140px] bg-gradient-to-b from-void/70 to-transparent z-10" />
+        {/* Bottom gradient */}
+        <div className="absolute inset-0 bg-gradient-to-t from-void/90 via-void/40 to-transparent" />
+
+        {/* Category pill — positioned below navbar */}
+        <div className="absolute top-[88px] left-6 z-20">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/25 text-white font-display text-[11px] font-bold tracking-widest uppercase">
+            <span className="w-1.5 h-1.5 rounded-full bg-lime" />
+            {post.category}
+          </span>
+        </div>
+
+        {/* Bottom content */}
+        <div className="absolute bottom-0 left-0 right-0 p-6 md:p-12 z-20">
+          <h2 className="font-display font-bold text-white text-[clamp(1.8rem,4vw,3.2rem)] leading-[1.05] mb-5 [text-wrap:balance] max-w-[70%]">
+            {post.title}
+          </h2>
+          <div className="flex items-center gap-3 text-white/80 font-body text-[13px]">
+            <div className="w-7 h-7 rounded-full bg-teal/60 backdrop-blur-sm flex items-center justify-center border border-white/20 flex-shrink-0">
+              <User size={14} className="text-white" />
+            </div>
+            <span className="text-white font-medium">{post.author || 'BagPackerMe'}</span>
+            <span className="text-white/40">•</span>
+            <span>{formatDate(post.publishDate)}</span>
+            {post.readTimeMinutes && (
+              <>
+                <span className="text-white/40">•</span>
+                <span>{post.readTimeMinutes} min read</span>
+              </>
+            )}
+          </div>
+        </div>
+      </Link>
+    </motion.div>
+  );
+}
+
+function BlogCard({ post, formatDate, index }: { post: BlogPost; formatDate: (d?: string) => string; index: number }) {
+  return (
+    <motion.div variants={fadeUp} custom={index}>
+      <Link
+        href={`/blog/${post.slug}`}
+        className="group flex flex-col bg-white rounded-[14px] overflow-hidden shadow-sm hover:shadow-[0_16px_40px_rgba(34,30,42,0.12)] hover:-translate-y-1.5 transition-all duration-350 h-full"
+      >
+        {/* Image */}
+        <div className="relative aspect-[4/3] w-full overflow-hidden flex-shrink-0">
+          <Image
+            src={post.featuredImageUrl || 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=700'}
+            alt={post.title}
+            fill
+            className="object-cover transition-transform duration-600 ease-out group-hover:scale-[1.06]"
+          />
+          {/* Category badge */}
+          <span className="absolute top-3 left-3 z-10 inline-block bg-white/90 backdrop-blur-sm text-void px-2.5 py-1 rounded-full font-display text-[10px] font-bold uppercase tracking-widest shadow-sm">
+            {post.category}
+          </span>
+        </div>
+
+        {/* Content */}
+        <div className="flex flex-col flex-grow p-5 md:p-6">
+          <p className="font-body text-[12px] text-gray-400 mb-2.5">
+            {formatDate(post.publishDate)}
+            {post.readTimeMinutes && <span className="mx-1.5 text-gray-300">•</span>}
+            {post.readTimeMinutes && <span>{post.readTimeMinutes} min read</span>}
+          </p>
+
+          <h3 className="font-display font-bold text-[18px] md:text-[20px] text-void leading-[1.25] mb-3 group-hover:text-teal transition-colors duration-300 line-clamp-2">
+            {post.title}
+          </h3>
+
+          <p className="font-body text-[14px] text-gray-500 leading-[1.7] line-clamp-2 mb-4 flex-grow">
+            {post.excerpt}
+          </p>
+
+          {/* Author */}
+          <div className="flex items-center gap-2.5 mt-auto pt-4 border-t border-gray-100">
+            <div className="w-7 h-7 rounded-full bg-ice flex items-center justify-center text-teal flex-shrink-0 border border-gray-100">
+              <User size={13} />
+            </div>
+            <span className="font-body font-medium text-[13px] text-void line-clamp-1">{post.author || 'BagPackerMe'}</span>
+          </div>
+        </div>
+      </Link>
+    </motion.div>
+  );
+}
+
+function PromoBanners({ articleCount }: { articleCount: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref as React.RefObject<Element>, 0.1);
+
+  return (
+    <motion.div
+      ref={ref}
+      initial="hidden"
+      animate={inView ? 'visible' : 'hidden'}
+      variants={stagger}
+      className="w-full px-5 md:px-8 lg:px-12 pb-12 md:pb-20 pt-4"
+    >
+      <div className="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-5">
+        {/* Left column */}
+        <div className="flex flex-col gap-5">
+          {/* Dark CTA card */}
+          <motion.div
+            variants={fadeUp}
+            className="relative bg-void rounded-[20px] overflow-hidden p-8 md:p-10 flex flex-col justify-between min-h-[220px]"
+          >
+            <div className="absolute top-0 right-0 w-48 h-48 bg-teal/20 rounded-full blur-[80px] -mr-16 -mt-16 pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-32 h-32 bg-lime/10 rounded-full blur-[60px] -ml-8 -mb-8 pointer-events-none" />
+            <div className="relative z-10">
+              <div className="w-10 h-10 rounded-full bg-white/10 border border-white/15 flex items-center justify-center mb-6">
+                <span className="text-lime text-xl">✦</span>
+              </div>
+              <h3 className="font-display font-bold text-white text-[22px] md:text-[26px] leading-tight mb-3 max-w-[240px]">
+                Explore more to get your comfort zone
+              </h3>
+              <p className="font-body text-white/55 text-[14px] mb-6 max-w-[280px]">
+                As it&apos;s your perfect trip, tell us.
+              </p>
+              <Link
+                href="/packages"
+                className="inline-flex items-center gap-2 bg-white text-void font-display font-bold text-[12px] uppercase tracking-widest px-5 py-3 rounded-full hover:bg-lime transition-colors duration-300 group/btn"
+              >
+                Booking Now
+                <ArrowRight size={14} className="transition-transform duration-300 group-hover/btn:translate-x-1" />
+              </Link>
+            </div>
+          </motion.div>
+
+          {/* Article count card */}
+          <motion.div
+            variants={fadeUp}
+            className="relative bg-teal rounded-[20px] overflow-hidden p-8 flex items-center gap-6"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-teal to-[#1a3438]" />
+            <div className="relative z-10">
+              <span className="font-display font-bold text-[52px] md:text-[64px] text-white leading-none">{articleCount}</span>
+              <p className="font-body text-white/70 text-[14px] mt-1">Articles Available</p>
+            </div>
+            <div className="relative z-10 ml-auto">
+              <div className="w-16 h-16 rounded-full bg-white/10 border border-white/20 flex items-center justify-center">
+                <span className="text-lime text-2xl font-bold">✦</span>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Right column – big image card */}
+        <motion.div variants={fadeUp} className="relative rounded-[20px] overflow-hidden min-h-[380px] md:min-h-[460px] group">
+          <Image
+            src="https://images.unsplash.com/photo-1512100356356-de1b84283e18?auto=format&fit=crop&q=80&w=900"
+            alt="Beyond accommodation, creating memories of a lifetime"
+            fill
+            className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-void/70 via-void/20 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 p-8 md:p-10">
+            <h3 className="font-display font-bold text-white text-[22px] md:text-[28px] leading-tight [text-wrap:balance]">
+              Beyond accommodation, creating memories of a lifetime
+            </h3>
+          </div>
+        </motion.div>
+      </div>
+    </motion.div>
+  );
+}
+
+// ── Main Component ──────────────────────────────────────────────────────────
 export default function BlogListingClient({ initialBlogs }: { initialBlogs: BlogPost[] }) {
   const [activeCategory, setActiveCategory] = useState('All');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [sortBy, setSortBy] = useState('Newest');
   const [currentPage, setCurrentPage] = useState(1);
-  const [email, setEmail] = useState('');
-  const [isSubscribing, setIsSubscribing] = useState(false);
 
   const handleCategoryChange = (cat: string) => {
     setActiveCategory(cat);
     setCurrentPage(1);
   };
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
-    setCurrentPage(1);
-  };
-
   const filteredBlogs = useMemo(() => {
-    return initialBlogs.filter((blog) => {
-      const matchCategory = activeCategory === 'All' || blog.category === activeCategory;
-      const matchSearch = 
-        blog.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-        blog.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchCategory && matchSearch;
+    let result = initialBlogs.filter((blog) => {
+      return activeCategory === 'All' || blog.category === activeCategory;
     });
-  }, [initialBlogs, activeCategory, searchQuery]);
 
-  // Only use featuredPost layout when there are MORE than 1 result — otherwise
-  // the single post would be consumed by the featured section leaving the grid empty.
-  const isDefaultView = activeCategory === 'All' && !searchQuery && filteredBlogs.length > 1;
+    if (sortBy === 'Newest') {
+      result = [...result].sort((a, b) =>
+        new Date(b.publishDate || 0).getTime() - new Date(a.publishDate || 0).getTime()
+      );
+    } else if (sortBy === 'Oldest') {
+      result = [...result].sort((a, b) =>
+        new Date(a.publishDate || 0).getTime() - new Date(b.publishDate || 0).getTime()
+      );
+    }
+    return result;
+  }, [initialBlogs, activeCategory, sortBy]);
+
+  // Always show the first post as a featured hero on the default view
+  const isDefaultView = activeCategory === 'All' && sortBy === 'Newest' && filteredBlogs.length > 0;
   const featuredPost = isDefaultView ? filteredBlogs[0] : null;
   const gridPosts = isDefaultView ? filteredBlogs.slice(1) : filteredBlogs;
 
@@ -46,275 +273,157 @@ export default function BlogListingClient({ initialBlogs }: { initialBlogs: Blog
     (currentPage - 1) * POSTS_PER_PAGE,
     currentPage * POSTS_PER_PAGE
   );
-
   const totalPages = Math.ceil(gridPosts.length / POSTS_PER_PAGE);
 
   const formatDate = (dateString?: string) => {
     if (!dateString) return '';
-    return new Date(dateString).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
+    return new Date(dateString).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' });
   };
 
-  const handleSubscribe = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email) return;
-    setIsSubscribing(true);
-    setTimeout(() => {
-      alert("Thanks for subscribing!");
-      setEmail("");
-      setIsSubscribing(false);
-    }, 1000);
-  };
+  const gridRef = useRef<HTMLDivElement>(null);
+  const gridInView = useInView(gridRef as React.RefObject<Element>, 0.05);
+
+  const headerRef = useRef<HTMLDivElement>(null);
+  const headerInView = useInView(headerRef as React.RefObject<Element>);
 
   return (
-    <>
-      {/* 2. FEATURED POST */}
-      {isDefaultView && currentPage === 1 && featuredPost && (
-        <section className="w-full bg-[#F7F9FA] pt-[clamp(40px,5vw,64px)] pb-[clamp(32px,4vw,48px)] px-mobile md:px-desktop relative z-10">
-          <div className="max-w-7xl mx-auto">
-            <div className="flex flex-col lg:flex-row gap-0 items-stretch bg-white border border-gray-100 shadow-md transition-all duration-500 hover:shadow-[0_24px_56px_rgba(34,30,42,0.12)] group/feature relative overflow-hidden">
-              {/* Accent line on hover */}
-              <div className="absolute top-0 left-0 h-full w-[4px] bg-lime scale-y-0 group-hover/feature:scale-y-100 origin-bottom transition-transform duration-500" />
-              {/* Left (55%) */}
-              <div className="w-full lg:w-[55%] relative overflow-hidden">
-                <Link href={`/blog/${featuredPost.slug}`}>
-                  <div className="absolute top-[16px] left-[16px] z-10 bg-cyan text-void px-[14px] py-[5px] font-display text-[10px] font-bold uppercase tracking-widest leading-none shadow-sm">
-                    {featuredPost.category}
-                  </div>
-                  <div className="aspect-[16/9] lg:aspect-[4/3] relative w-full overflow-hidden">
-                    <Image
-                      src={featuredPost.featuredImageUrl || 'https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&q=80'}
-                      alt={featuredPost.title}
-                      fill
-                      className="object-cover transition-transform duration-700 ease-[var(--ease-default)] group-hover/feature:scale-[1.04]"
-                    />
-                  </div>
-                </Link>
-              </div>
+    <div className="min-h-screen bg-[#F5F5F5]">
 
-              {/* Right (45%) */}
-              <div className="w-full lg:w-[45%] flex flex-col items-start p-[40px] lg:p-[56px]">
-                <span className="section-label text-teal before:bg-teal mb-[16px]">
-                  ✦ Featured Story
-                </span>
-                <Link href={`/blog/${featuredPost.slug}`} className="block group/title">
-                  <h2 className="font-display text-[clamp(1.75rem,2.5vw,2.5rem)] text-void font-bold leading-[1.15] mb-[20px] group-hover/title:text-teal transition-colors duration-300" style={{ textWrap: 'balance' }}>
-                    {featuredPost.title}
-                  </h2>
-                </Link>
-                
-                <p className="font-body text-[16px] text-gray-500 leading-[1.75] max-w-[90%] mb-[32px] line-clamp-3">
-                  {featuredPost.excerpt}
-                </p>
-                <div className="flex items-center gap-4 mb-[32px] w-full">
-                  <div className="w-10 h-10 bg-ice flex items-center justify-center text-teal font-display font-bold text-sm border border-gray-100">
-                    {featuredPost.author ? featuredPost.author.charAt(0) : 'B'}
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="font-body font-bold text-[14px] text-void">{featuredPost.author || 'BagPackerMe'}</span>
-                    <span className="font-body text-[13px] text-gray-400">
-                      {formatDate(featuredPost.publishDate)} 
-                      {featuredPost.readTimeMinutes && <span className="mx-2">&bull;</span>}
-                      {featuredPost.readTimeMinutes && <span>{featuredPost.readTimeMinutes} min read</span>}
-                    </span>
-                  </div>
-                </div>
-                <Link href={`/blog/${featuredPost.slug}`} className="btn-teal text-[12px] flex items-center gap-2">
-                  Read Story
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                  </svg>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </section>
+      {/* ── Featured Post Hero (full-bleed, behind navbar) ───── */}
+      {featuredPost && currentPage === 1 && (
+        <FeaturedHero post={featuredPost} formatDate={formatDate} />
       )}
 
-      {/* 3. MAIN GRID + SIDEBAR */}
-      <section className="w-full bg-[#F7F9FA] pb-[clamp(64px,10vw,120px)] pt-8 px-mobile md:px-desktop relative z-10">
-        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-[48px] lg:gap-[64px]">
-          
-          {/* Main Content (2/3) */}
-          <div className="w-full lg:w-[66.666%]">
-            
-            {gridPosts.length === 0 ? (
-               <div className="text-center py-24 bg-white border border-dashed border-gray-200 flex flex-col items-center justify-center">
-                  <div className="w-16 h-16 bg-ice flex items-center justify-center mb-6">
-                    <Search className="text-teal" size={24} />
-                  </div>
-                  <h3 className="font-display font-bold text-2xl text-void mb-3">No Stories Found</h3>
-                  <p className="font-body text-gray-500 max-w-sm mx-auto">We couldn&apos;t find any travel stories matching your criteria. Try adjusting your search or categories.</p>
-                  <button onClick={() => { setSearchQuery(''); setActiveCategory('All'); }} className="mt-8 text-teal font-display font-medium border-b border-teal pb-0.5 hover:text-void hover:border-void transition-colors">
-                    Clear all filters
+      {/* ── Blog Header + Filters ────────────────────────────── */}
+      {/* When no hero (filtered/paginated), add top padding for fixed navbar */}
+      <section className={`w-full px-5 md:px-8 lg:px-12 py-8 md:py-10 bg-[#F5F5F5] ${!featuredPost || currentPage > 1 ? 'pt-[110px]' : ''}`}>
+        <div className="max-w-[1400px] mx-auto">
+          <motion.div
+            ref={headerRef}
+            initial="hidden"
+            animate={headerInView ? 'visible' : 'hidden'}
+            variants={stagger}
+          >
+            {/* Title row */}
+            <motion.div variants={fadeUp} className="mb-6">
+              <h1 className="font-display font-bold text-[36px] md:text-[44px] text-void leading-[1.1]">Blog</h1>
+              <p className="font-body text-[15px] text-gray-500 mt-2">
+                Here, we share travel tips, destination guides, and stories that inspire your next adventure.
+              </p>
+            </motion.div>
+
+            {/* Filter row */}
+            <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 flex-wrap">
+              {/* Category pills */}
+              <div className="flex flex-wrap gap-2">
+                {CATEGORIES.map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => handleCategoryChange(cat)}
+                    className={`px-4 py-2 rounded-full font-body text-[13px] font-medium transition-all duration-250 ${
+                      activeCategory === cat
+                        ? 'bg-void text-white shadow-md'
+                        : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
+                    }`}
+                  >
+                    {cat}
                   </button>
-               </div>
-            ) : (
-               <>
-                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-[64px]">
-                   {currentGridPosts.map(post => (
-                     <Link href={`/blog/${post.slug}`} key={post.id} className="group flex flex-col bg-white border border-gray-100 overflow-hidden shadow-sm hover:shadow-[0_12px_30px_rgba(34,30,42,0.10)] hover:-translate-y-1 transition-all duration-300 relative">
-                        <div className="absolute top-0 left-0 w-[3px] h-full bg-teal scale-y-0 group-hover:scale-y-100 origin-bottom transition-transform duration-400" />
-                        <div className="relative aspect-[4/3] w-full overflow-hidden">
-                          <Image 
-                            src={post.featuredImageUrl || 'https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&q=80'}
-                            alt={post.title}
-                            fill
-                            className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.05]"
-                          />
-                          <div className="absolute top-[16px] left-[16px] z-10 bg-cyan text-void px-[12px] py-[4px] font-display text-[10px] font-bold uppercase tracking-widest shadow-sm">
-                            {post.category}
-                          </div>
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                        </div>
-                        <div className="p-[28px] flex flex-col flex-grow bg-white">
-                            <div className="flex items-center text-xs font-body text-gray-400 mb-4 gap-2">
-                              <span>{formatDate(post.publishDate)}</span>
-                              {post.readTimeMinutes && (
-                                <>
-                                  <span className="w-1 h-1 bg-gray-300"></span>
-                                  <span>{post.readTimeMinutes} min read</span>
-                                </>
-                              )}
-                           </div>
-                           <h3 className="font-display font-bold text-[22px] text-void mb-[14px] leading-[1.3] group-hover:text-teal transition-colors duration-300 line-clamp-2">
-                             {post.title}
-                           </h3>
-                           <p className="font-body text-[15px] text-gray-500 leading-[1.65] line-clamp-3 mb-6 flex-grow">
-                             {post.excerpt}
-                           </p>
-                           <div className="mt-auto flex items-center font-display text-[13px] font-medium text-teal">
-                             Read article 
-                             <ChevronRight size={14} className="ml-1 transition-transform group-hover:translate-x-1" />
-                           </div>
-                        </div>
-                     </Link>
-                   ))}
-                 </div>
+                ))}
+              </div>
 
-                 {/* Pagination */}
-                 {totalPages > 1 && (
-                   <div className="flex items-center justify-center gap-2 mt-16">
-                     <button 
-                       onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                       disabled={currentPage === 1}
-                       className="w-10 h-10 flex items-center justify-center border border-gray-200 bg-white text-void hover:border-teal hover:text-teal hover:bg-ice disabled:opacity-40 disabled:cursor-not-allowed transition-all"
-                       aria-label="Previous Page"
-                     >
-                       <ChevronLeft size={18} />
-                     </button>
-                     
-                     <div className="flex items-center gap-2 mx-2">
-                       {Array.from({ length: totalPages }).map((_, i) => (
-                         <button
-                           key={i}
-                           onClick={() => setCurrentPage(i + 1)}
-                           className={`w-10 h-10 flex items-center justify-center font-display font-bold text-[14px] transition-all ${
-                             currentPage === i + 1
-                               ? 'bg-teal text-white shadow-md'
-                               : 'bg-white border border-gray-200 text-void hover:border-teal hover:text-teal'
-                           }`}
-                         >
-                           {i + 1}
-                         </button>
-                       ))}
-                     </div>
-
-                     <button 
-                       onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                       disabled={currentPage === totalPages}
-                       className="w-10 h-10 flex items-center justify-center border border-gray-200 bg-white text-void hover:border-teal hover:text-teal hover:bg-ice disabled:opacity-40 disabled:cursor-not-allowed transition-all"
-                       aria-label="Next Page"
-                     >
-                       <ChevronRight size={18} />
-                     </button>
-                   </div>
-                 )}
-               </>
-            )}
-
-          </div>
-
-          {/* Sidebar (1/3) */}
-          <div className="hidden lg:block lg:w-[33.333%] relative">
-             <div className="sticky top-[120px] flex flex-col gap-8">
-                
-                {/* Search */}
-                <div className="relative group">
-                  <Search className="absolute left-[20px] top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-teal transition-colors" size={20} />
-                  <input 
-                    type="text" 
-                    placeholder="Search stories..." 
-                    value={searchQuery}
-                    onChange={handleSearchChange}
-                    className="w-full pl-[56px] pr-[20px] py-[18px] border border-gray-200 bg-white shadow-sm text-void font-body text-[15px] focus:border-teal focus:ring-4 focus:ring-teal/10 focus:shadow-[0_0_0_3px_rgba(40,80,86,0.08)] transition-all outline-none"
-                  />
-                </div>
-
-                {/* Categories Filter */}
-                <div className="bg-white border border-gray-100 p-[32px] shadow-sm">
-                   <h4 className="font-display text-[11px] font-bold tracking-[0.2em] uppercase text-void/70 mb-[24px]">
-                     Topics
-                   </h4>
-                   <ul className="flex flex-col gap-1.5">
-                     {CATEGORIES.map(cat => {
-                       const count = cat === 'All' ? initialBlogs.length : initialBlogs.filter(b => b.category === cat).length;
-                       const isActive = activeCategory === cat;
-                       return (
-                         <li key={cat}>
-                           <button
-                             onClick={() => handleCategoryChange(cat)}
-                             className={`w-full flex items-center justify-between px-[16px] py-[12px] transition-all duration-200 group ${isActive ? 'bg-ice text-teal border-l-[3px] border-teal' : 'hover:bg-gray-50 hover:scale-[1.01] border-l-[3px] border-transparent'}`}
-                           >
-                             <span className={`font-body text-[15px] transition-colors ${isActive ? 'font-semibold' : 'text-gray-600 group-hover:text-void'}`}>
-                               {cat}
-                             </span>
-                             <span className={`font-display font-semibold text-[11px] px-[10px] py-[3px] transition-colors ${isActive ? 'bg-teal/10 text-teal' : 'bg-gray-100 text-gray-500 group-hover:bg-gray-200'}`}>
-                               {count}
-                             </span>
-                           </button>
-                         </li>
-                       );
-                     })}
-                   </ul>
-                </div>
-
-                {/* Newsletter CTA */}
-                <div className="bg-void p-[36px] relative overflow-hidden shadow-xl">
-                   {/* Background decoration */}
-                   <div className="absolute top-0 right-0 w-32 h-32 bg-teal/30 blur-3xl -mr-16 -mt-16 pointer-events-none" />
-                   <div className="grain absolute inset-0 pointer-events-none opacity-50" />
-                   
-                   <div className="relative z-10">
-                     <h4 className="font-display font-bold text-[22px] text-white leading-tight">Travel Inspiration <br />in your inbox</h4>
-                     <p className="font-body text-[14px] text-white/70 mt-[12px] mb-[28px] leading-relaxed">
-                       Get destination guides, practical tips, and our latest honest travel stories. No spam.
-                     </p>
-                     <form onSubmit={handleSubscribe} className="flex flex-col gap-3">
-                       <input 
-                         type="email" 
-                         placeholder="Your email address" 
-                         required
-                         value={email}
-                         onChange={(e) => setEmail(e.target.value)}
-                         className="w-full bg-white/10 border border-white/20 text-white font-body text-[15px] px-[20px] py-[16px] focus:border-cyan focus:bg-white/15 focus:ring-0 transition-all outline-none placeholder:text-white/40"
-                       />
-                       <button 
-                         type="submit" 
-                         disabled={isSubscribing}
-                         className="btn-lime w-full disabled:opacity-70 disabled:cursor-not-allowed"
-                       >
-                         {isSubscribing ? 'Subscribing...' : 'Subscribe'}
-                         {!isSubscribing && <ChevronRight size={16} className="transition-transform group-hover:translate-x-1" />}
-                       </button>
-                     </form>
-                   </div>
-                </div>
-             </div>
-          </div>
-
+              {/* Sort dropdown */}
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <span className="font-body text-[13px] text-gray-500">Sort by</span>
+                <select
+                  value={sortBy}
+                  onChange={(e) => { setSortBy(e.target.value); setCurrentPage(1); }}
+                  className="bg-white border border-gray-200 rounded-full px-3 py-2 font-body text-[13px] text-void outline-none focus:border-teal cursor-pointer"
+                >
+                  {SORT_OPTIONS.map(o => <option key={o}>{o}</option>)}
+                </select>
+              </div>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
-    </>
+      {/* ── Blog Grid ────────────────────────────────────────── */}
+      <section className="w-full px-5 md:px-8 lg:px-12 pb-10 bg-[#F5F5F5]">
+        <div className="max-w-[1400px] mx-auto">
+          {currentGridPosts.length === 0 ? (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-24 bg-white rounded-[20px] flex flex-col items-center justify-center">
+              <div className="w-16 h-16 bg-ice rounded-full flex items-center justify-center mb-6">
+                <span className="text-teal text-2xl">✦</span>
+              </div>
+              <h3 className="font-display font-bold text-2xl text-void mb-3">No Stories Found</h3>
+              <p className="font-body text-gray-500 max-w-sm mx-auto mb-8">
+                We couldn&apos;t find any travel stories matching your criteria.
+              </p>
+              <button
+                onClick={() => { setActiveCategory('All'); }}
+                className="px-6 py-3 bg-teal text-white rounded-full font-display font-bold text-[13px] uppercase tracking-widest hover:bg-void transition-colors"
+              >
+                Clear filters
+              </button>
+            </motion.div>
+          ) : (
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={`${activeCategory}-${currentPage}`}
+                ref={gridRef}
+                initial="hidden"
+                animate={gridInView ? 'visible' : 'hidden'}
+                variants={stagger}
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+              >
+                {currentGridPosts.map((post, i) => (
+                  <BlogCard key={post.id} post={post} formatDate={formatDate} index={i} />
+                ))}
+              </motion.div>
+            </AnimatePresence>
+          )}
+
+          {/* ── Pagination ──────────────────────────────────── */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-center gap-2 mt-12">
+              <button
+                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="w-9 h-9 flex items-center justify-center rounded-full border border-gray-200 bg-white text-void hover:border-teal hover:text-teal disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                aria-label="Previous Page"
+              >
+                <ChevronLeft size={16} />
+              </button>
+
+              {Array.from({ length: totalPages }).map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentPage(i + 1)}
+                  className={`w-9 h-9 flex items-center justify-center rounded-full font-display font-bold text-[14px] transition-all ${
+                    currentPage === i + 1
+                      ? 'bg-void text-white shadow-md'
+                      : 'bg-white border border-gray-200 text-void hover:border-teal hover:text-teal'
+                  }`}
+                >
+                  {i + 1}
+                </button>
+              ))}
+
+              <button
+                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                disabled={currentPage === totalPages}
+                className="w-9 h-9 flex items-center justify-center rounded-full border border-gray-200 bg-white text-void hover:border-teal hover:text-teal disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                aria-label="Next Page"
+              >
+                <ChevronRight size={16} />
+              </button>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* ── Promo Banners ────────────────────────────────────── */}
+      <PromoBanners articleCount={initialBlogs.length} />
+    </div>
   );
 }

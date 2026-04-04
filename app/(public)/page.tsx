@@ -1,11 +1,10 @@
 import React from 'react';
 import HeroInteractive from '@/components/home/HeroInteractive';
-import FeaturedTrips from '@/components/home/FeaturedTrips';
-import AboutSection from '@/components/home/AboutSection';
-import WhatWeDo from '@/components/home/WhatWeDo';
-import BlogPreview from '@/components/home/BlogPreview';
-import AudienceSplit from '@/components/home/AudienceSplit';
-import NewsletterSection from '@/components/home/NewsletterSection';
+import DiscoverTheWorld from '@/components/home/DiscoverTheWorld';
+import EffortlessPlanning from '@/components/home/EffortlessPlanning';
+import MemorableMoments from '@/components/home/MemorableMoments';
+import FAQSection from '@/components/home/FAQSection';
+import LimitedTimePromo from '@/components/home/LimitedTimePromo';
 
 export const metadata = {
   title: 'Experiential Journeys through India | BagPackerMe',
@@ -14,14 +13,13 @@ export const metadata = {
 
 export default function HomePage() {
   return (
-    <main className="flex flex-col min-h-screen bg-void">
+    <main className="flex flex-col min-h-screen bg-surface-lowest">
       <HeroInteractive />
-      <FeaturedTrips />
-      <AboutSection />
-      <WhatWeDo />
-      <BlogPreview />
-      <AudienceSplit />
-      <NewsletterSection />
+      <DiscoverTheWorld />
+      <EffortlessPlanning />
+      <MemorableMoments />
+      <FAQSection />
+      <LimitedTimePromo />
     </main>
   );
 }
