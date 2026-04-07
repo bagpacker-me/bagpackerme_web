@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description: 'Destination guides, cultural deep-dives, and honest travel stories from the road to inspire your next adventure.',
 };
 
-export const revalidate = 600;
+export const revalidate = 60;
 
 export default async function BlogPage() {
   let blogs: BlogPost[] = [];
