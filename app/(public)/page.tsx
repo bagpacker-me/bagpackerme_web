@@ -4,7 +4,8 @@ import DiscoverTheWorld from '@/components/home/DiscoverTheWorld';
 import EffortlessPlanning from '@/components/home/EffortlessPlanning';
 import MemorableMoments from '@/components/home/MemorableMoments';
 import FAQSection from '@/components/home/FAQSection';
-import LimitedTimePromo from '@/components/home/LimitedTimePromo';
+import ImageGallery from '@/components/ui/image-gallery';
+
 
 export const metadata = {
   title: 'Experiential Journeys through India | BagPackerMe',
@@ -18,8 +19,9 @@ export default function HomePage() {
       <DiscoverTheWorld />
       <EffortlessPlanning />
       <MemorableMoments />
+      <ImageGallery />
       <FAQSection />
-      <LimitedTimePromo />
+
     </main>
   );
 }

@@ -9,42 +9,42 @@ const destinations = [
   {
     id: 'delhi',
     title: 'DELHI',
+    stateName: 'DELHI',
     location: 'New Delhi',
     description: 'Discover the heart of India. A bustling metropolis where ancient history intertwines with vibrant modernity.',
     image: '/web_photos/hero_1.webp',
-    rating: '5.0',
   },
   {
     id: 'agra',
     title: 'AGRA',
+    stateName: 'UTTAR PRADESH',
     location: 'Agra, Uttar Pradesh',
     description: 'Home to the iconic Taj Mahal. Experience the timeless symbol of love and marvel at the stunning Mughal architecture.',
     image: '/web_photos/hero_2.webp',
-    rating: '5.0',
   },
   {
     id: 'jaipur',
     title: 'JAIPUR',
+    stateName: 'RAJASTHAN',
     location: 'Jaipur, Rajasthan',
     description: 'Step into the land of kings. Discover majestic forts, opulent palaces, and the vibrant colors of the Pink City.',
     image: '/web_photos/hero_3.webp',
-    rating: '5.0',
   },
   {
     id: 'varanasi',
     title: 'VARANASI',
+    stateName: 'UTTAR PRADESH',
     location: 'Varanasi, Uttar Pradesh',
     description: 'Experience the spiritual soul of India. Witness the mesmerising Ganga Aarti and explore the ancient, winding ghats along the sacred river.',
     image: '/web_photos/hero_4.webp',
-    rating: '4.9',
   },
   {
     id: 'goa',
     title: 'GOA',
+    stateName: 'GOA',
     location: 'Goa',
     description: 'Beyond the pristine beaches lies a rich Portuguese heritage. Enjoy vibrant nightlife, historic churches, and serene sunsets.',
     image: '/web_photos/hero_5.webp',
-    rating: '4.8',
   }
 ];
 
@@ -214,14 +214,14 @@ export default function HeroInteractive() {
         <div className="w-[30%]">
           <AnimatePresence mode="wait">
             <motion.h2
-              key={nextDest.id}
+              key={activeDest.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.5 }}
               className="text-6xl md:text-8xl font-display font-extrabold uppercase text-white/5 whitespace-nowrap pointer-events-none tracking-tighter"
             >
-              {nextDest.title}
+              {activeDest.stateName}
             </motion.h2>
           </AnimatePresence>
         </div>
