@@ -102,8 +102,6 @@ export default function HeroInteractive() {
     destinations[(currentIndex + 3) % totalSlides],
   ];
 
-  const nextDest = destinations[(currentIndex + 1) % totalSlides];
-
   return (
     <section className="relative h-[100vh] w-full overflow-hidden bg-void font-sans text-white">
       {/* Background Images Crossfade */}
