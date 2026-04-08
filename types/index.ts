@@ -9,8 +9,8 @@ export interface Package {
   galleryUrls: string[];
   duration: string;
   groupSize: string;
-  priceInr: number;
-  priceUsd?: number;
+  priceInr?: number | null;
+  priceUsd?: number | null;
   destinations: string[];
   overviewHtml: string;
   itinerary: ItineraryDay[];

@@ -45,7 +45,7 @@ const DEFAULT_FORM: FormState = {
   galleryUrls: [],
   duration: '',
   groupSize: '',
-  priceInr: 0,
+  priceInr: null,
   priceUsd: undefined,
   destinations: [],
   overviewHtml: '',
@@ -276,13 +276,13 @@ function TabBasicInfo({
       </Field>
 
       <Field>
-        <Label required>Price (INR)</Label>
+        <Label>Price (INR) <span className="text-gray-400 font-normal text-xs">optional</span></Label>
         <input
           type="number"
           className={inputCls()}
-          value={form.priceInr || ''}
-          onChange={(e) => setForm((f) => ({ ...f, priceInr: Number(e.target.value) }))}
-          placeholder="e.g. 85000"
+          value={form.priceInr ?? ''}
+          onChange={(e) => setForm((f) => ({ ...f, priceInr: e.target.value ? Number(e.target.value) : null }))}
+          placeholder="Leave blank to show ON REQUEST"
         />
       </Field>
 
@@ -753,12 +753,6 @@ export default function PackageForm({ initialData }: PackageFormProps) {
       setTab('basic');
       return;
     }
-    if (!form.priceInr) {
-      toast.error('Price (INR) is required');
-      setTab('basic');
-      return;
-    }
-
     setSaving(true);
     try {
       // Prevent Firestore "Unsupported field value: undefined" errors

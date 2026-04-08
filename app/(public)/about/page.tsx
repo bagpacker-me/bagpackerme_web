@@ -308,10 +308,10 @@ export default function AboutPage() {
         <div className="max-w-[800px] mx-auto">
           <div className="text-center mb-[48px]">
             <div className="section-label text-teal before:bg-teal justify-center mb-[16px]">
-               ✦ Our Series
+               ✦ How We Help
             </div>
-            <h2 className="font-display text-void text-[32px] md:text-[48px] mb-[8px] font-bold">Watch Our Series</h2>
-            <p className="font-accent text-teal/80 text-[24px] italic tracking-wide">Balancing the Act</p>
+            <h2 className="font-display text-void text-[32px] md:text-[48px] mb-[8px] font-bold">See How BagpackerMe Can Help</h2>
+            <p className="font-accent text-teal/80 text-[24px] italic tracking-wide">From planning support to the journey itself</p>
           </div>
 
           <div className="mb-[48px]">

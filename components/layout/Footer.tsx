@@ -84,7 +84,6 @@ export function Footer() {
             <div className="space-y-2 text-sm text-white/80 flex flex-col items-start w-full">
               <a href={`mailto:${contactEmail}`} className="hover:text-cyan transition-colors truncate w-full block">{contactEmail}</a>
               <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="hover:text-cyan transition-colors block">{contactPhone}</a>
-              <a href="https://www.bagpackerme.com" target="_blank" rel="noopener noreferrer" className="hover:text-cyan transition-colors block">www.bagpackerme.com</a>
             </div>
             
             <div className="pt-4 w-full">

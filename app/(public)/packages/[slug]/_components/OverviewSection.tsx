@@ -1,5 +1,6 @@
 'use client';
 
+import { formatPackagePriceInr, hasPackagePrice } from '@/lib/packagePricing';
 import { Package } from '@/types';
 import { BadgeCheck, ShieldCheck, HeartHandshake } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
@@ -9,6 +10,9 @@ const EASE = [0.25, 0.46, 0.45, 0.94] as const;
 
 export default function OverviewSection({ pkg }: { pkg: Package }) {
   const shouldReduceMotion = useReducedMotion();
+  const hasPrice = hasPackagePrice(pkg.priceInr);
+  const displayPrice = formatPackagePriceInr(pkg.priceInr);
+
   const scrollToForm = () => {
     const el = document.getElementById('book');
     if (el) {
@@ -52,9 +56,9 @@ export default function OverviewSection({ pkg }: { pkg: Package }) {
           >
             <div className="mb-[20px]">
               <div className="font-display font-bold text-[34px] text-[#221E2A] leading-[1.05]">
-                 ₹{pkg.priceInr.toLocaleString('en-IN')}
+                 {displayPrice}
               </div>
-              <span className="text-[12px] font-body text-[#718096]">per person</span>
+              <span className="text-[12px] font-body text-[#718096]">{hasPrice ? 'per person' : 'pricing available on request'}</span>
             </div>
 
             <div className="space-y-[10px] mb-[24px]">
@@ -116,15 +120,15 @@ export default function OverviewSection({ pkg }: { pkg: Package }) {
       <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-[rgba(34,30,42,0.08)] p-4 flex items-center justify-between z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
         <div className="flex flex-col">
           <span className="font-display font-bold text-[20px] text-[#221E2A] leading-none">
-            ₹{pkg.priceInr.toLocaleString('en-IN')}
+            {displayPrice}
           </span>
-          <span className="text-[10px] font-body text-[#718096]">per person</span>
+          <span className="text-[10px] font-body text-[#718096]">{hasPrice ? 'per person' : 'pricing on request'}</span>
         </div>
         <button
           onClick={scrollToForm}
           className="bg-lime text-void font-display font-bold uppercase tracking-widest text-[11px] px-6 h-12 flex items-center justify-center hover:bg-[#221E2A] hover:text-white transition-colors duration-300"
         >
-          Book Now
+          {hasPrice ? 'Book Now' : 'Enquire Now'}
         </button>
       </div>
     </section>

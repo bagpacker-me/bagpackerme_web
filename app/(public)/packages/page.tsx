@@ -4,11 +4,13 @@ import React, { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { getPublishedPackages } from '@/lib/firestore';
+import { hasPackagePrice } from '@/lib/packagePricing';
 import { Package } from '@/types';
 import PackageCard, { PackageCardSkeleton } from '@/components/home/PackageCard';
 import { CARD_GRID_VARIANTS, CARD_ITEM_VARIANTS } from '@/components/ui/FadeInSection';
 import { PremiumFilter, type PremiumFilterState } from '@/components/packages/PremiumFilter';
 
+const DEFAULT_MAX_PRICE = 200000;
 const CATEGORIES = ['All', 'Culinary', 'Spiritual', 'Adventure', 'Heritage', 'Hippy Trail'];
 
 const DURATIONS = [
@@ -35,7 +37,7 @@ export default function PackagesPage() {
   const [filters, setFilters] = useState<PremiumFilterState>({
     category: 'All',
     duration: 'Any',
-    priceRange: [0, 200000]
+    priceRange: [0, DEFAULT_MAX_PRICE]
   });
   const shouldReduceMotion = useReducedMotion();
 
@@ -83,7 +85,15 @@ export default function PackagesPage() {
       }
     }
 
-    result = result.filter(p => p.priceInr >= filters.priceRange[0] && p.priceInr <= filters.priceRange[1]);
+    const usingDefaultPriceRange = filters.priceRange[0] === 0 && filters.priceRange[1] === DEFAULT_MAX_PRICE;
+
+    result = result.filter((p) => {
+      if (!hasPackagePrice(p.priceInr)) {
+        return usingDefaultPriceRange;
+      }
+
+      return p.priceInr >= filters.priceRange[0] && p.priceInr <= filters.priceRange[1];
+    });
 
     return result;
   }, [packages, filters]);
@@ -130,7 +140,7 @@ export default function PackagesPage() {
             setFilters={setFilters}
             categories={CATEGORIES}
             durations={DURATIONS}
-            maxPrice={200000}
+            maxPrice={DEFAULT_MAX_PRICE}
           />
         </div>
       </section>
@@ -199,7 +209,7 @@ export default function PackagesPage() {
                       Try exploring other categories or duration lengths.
                     </p>
                     <button 
-                      onClick={() => { setFilters({ category: 'All', duration: 'Any', priceRange: [0, 200000] }); }}
+                      onClick={() => { setFilters({ category: 'All', duration: 'Any', priceRange: [0, DEFAULT_MAX_PRICE] }); }}
                       className="relative z-10 px-[32px] py-[16px] bg-teal text-white font-display font-bold tracking-widest uppercase text-[12px] rounded-full hover:bg-teal/90 transition-all duration-300 shadow-[0_8px_24px_rgba(40,80,86,0.25)] hover:shadow-[0_12px_32px_rgba(40,80,86,0.4)] hover:-translate-y-1"
                     >
                       Reset Filters

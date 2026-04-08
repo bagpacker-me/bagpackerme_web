@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getPackages, deletePackage, updatePackage } from '@/lib/firestore';
+import { formatPackagePriceInr } from '@/lib/packagePricing';
 import { Package } from '@/types';
 import { format } from 'date-fns';
 import toast from 'react-hot-toast';
@@ -225,7 +226,7 @@ export default function AdminPackagesPage() {
                     {/* Price */}
                     <td className="px-[16px] hidden sm:table-cell font-body text-[14px] text-[#221E2A] dark:text-[rgba(255,255,255,0.9)]">
                       <span>
-                        ₹{pkg.priceInr.toLocaleString('en-IN')}
+                        {formatPackagePriceInr(pkg.priceInr)}
                       </span>
                     </td>
 

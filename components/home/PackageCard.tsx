@@ -1,9 +1,12 @@
 import React from 'react';
 import Link from 'next/link';
+import { formatPackagePriceInr, hasPackagePrice } from '@/lib/packagePricing';
 import { Package } from '@/types';
 import { ArrowRight } from 'lucide-react';
 
 export default function PackageCard({ pkg }: { pkg: Package }) {
+  const hasPrice = hasPackagePrice(pkg.priceInr);
+
   return (
     <Link href={`/packages/${pkg.slug}`} className="flex flex-col bg-white border border-subtle rounded-none overflow-hidden group hover:shadow-diffuse hover:-translate-y-[6px] transition-all duration-700">
       {/* Image Area with 3/2 Mobile and 4/5 Desktop Aspect Ratio and Hover Overlay */}
@@ -61,10 +64,10 @@ export default function PackageCard({ pkg }: { pkg: Package }) {
         {/* Price & Link Area */}
         <div className="mt-auto pt-[16px] border-t border-subtle flex items-center justify-between">
           <div className="flex flex-col">
-            <span className="text-[10px] text-gray-500 uppercase tracking-[0.05em] font-body mb-[2px]">Starts From</span>
+            <span className="text-[10px] text-gray-500 uppercase tracking-[0.05em] font-body mb-[2px]">{hasPrice ? 'Starts From' : 'Pricing'}</span>
             <span className="font-display font-semibold text-[18px] text-primary">
-              {new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumSignificantDigits: 3 }).format(pkg.priceInr)}
-              <span className="text-[12px] font-normal text-gray-500 ml-[4px]">/psn</span>
+              {formatPackagePriceInr(pkg.priceInr)}
+              {hasPrice && <span className="text-[12px] font-normal text-gray-500 ml-[4px]">/psn</span>}
             </span>
           </div>
           <span className="font-display text-primary font-bold text-[13px] tracking-[0.1em] uppercase group-hover:text-cyan transition-colors flex items-center gap-[4px]">

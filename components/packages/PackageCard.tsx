@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ArrowRight, Clock } from 'lucide-react';
+import { formatPackagePriceInr, hasPackagePrice } from '@/lib/packagePricing';
 import { Package } from '@/types';
 
 // ─── Shimmer Skeleton ────────────────────────────────────────────────────────
@@ -100,6 +101,7 @@ export default function PackageCard({
 }: PackageCardProps) {
   const prefersReducedMotion = useReducedMotion();
   const [isHovered, setIsHovered] = useState(false);
+  const hasPrice = hasPackagePrice(pkg.priceInr);
 
   if (showSkeleton) return <PackageCardSkeleton />;
 
@@ -352,7 +354,7 @@ export default function PackageCard({
                   fontVariantNumeric: 'oldstyle-nums',
                 }}
               >
-                From ₹{pkg.priceInr.toLocaleString('en-IN')}/person
+                {hasPrice ? `From ${formatPackagePriceInr(pkg.priceInr)}/person` : 'ON REQUEST'}
               </span>
             </div>
 
