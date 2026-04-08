@@ -16,7 +16,7 @@ const STATS = [
   { value: 1200, suffix: '+', label: 'Travelers Hosted' },
   { value: 25, suffix: '+', label: 'Destinations' },
   { value: 4.9, suffix: '★', label: 'Satisfaction' },
-  { value: 2020, suffix: '', label: 'Founded' },
+  { value: 2020, suffix: '', label: 'Founded', useGrouping: false },
 ];
 
 const EASE = [0.25, 0.46, 0.45, 0.94] as const;
@@ -27,16 +27,23 @@ function AnimatedNumber({
   isDecimal,
   active,
   reduced,
+  useGrouping = true,
 }: {
   target: number;
   isDecimal: boolean;
   active: boolean;
   reduced: boolean;
+  useGrouping?: boolean;
 }) {
   const motionVal = useMotionValue(reduced || !active ? target : 0);
   const springVal = useSpring(motionVal, { stiffness: 100, damping: 30 });
   const displayVal = useTransform(springVal, (v) =>
-    isDecimal ? v.toFixed(1) : Math.round(v).toLocaleString()
+    isDecimal
+      ? v.toFixed(1)
+      : new Intl.NumberFormat('en-US', {
+          useGrouping,
+          maximumFractionDigits: 0,
+        }).format(Math.round(v))
   );
 
   useEffect(() => {
@@ -99,6 +106,7 @@ function StatItem({
           isDecimal={isDecimal}
           active={active}
           reduced={reduced}
+          useGrouping={stat.useGrouping}
         />
         {stat.suffix && (
           <span

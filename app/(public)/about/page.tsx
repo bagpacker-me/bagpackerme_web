@@ -19,21 +19,28 @@ function AnimatedCounter({
   target,
   suffix = '',
   prefix = '',
+  useGrouping = true,
 }: {
   target: number;
   suffix?: string;
   prefix?: string;
+  useGrouping?: boolean;
 }) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
   const shouldReduceMotion = useReducedMotion();
+  const isDecimal = target % 1 !== 0;
+  const formatValue = (value: number) =>
+    isDecimal
+      ? value.toFixed(1)
+      : new Intl.NumberFormat('en-US', {
+          useGrouping,
+          maximumFractionDigits: 0,
+        }).format(Math.round(value));
 
   const motionVal = useMotionValue(0);
   const springVal = useSpring(motionVal, { stiffness: 100, damping: 30 });
-  const isDecimal = target % 1 !== 0;
-  const displayVal = useTransform(springVal, (v) =>
-    isDecimal ? v.toFixed(1) : Math.round(v).toLocaleString()
-  );
+  const displayVal = useTransform(springVal, formatValue);
 
   useEffect(() => {
     if (inView && !shouldReduceMotion) {
@@ -44,7 +51,7 @@ function AnimatedCounter({
   if (shouldReduceMotion) {
     return (
       <span ref={ref}>
-        {prefix}{isDecimal ? target.toFixed(1) : target.toLocaleString()}{suffix}
+        {prefix}{formatValue(target)}{suffix}
       </span>
     );
   }
@@ -197,7 +204,7 @@ export default function AboutPage() {
               { target: 1200, suffix: '+', label: 'Travellers' },
               { target: 25, suffix: '+', label: 'Destinations' },
               { isStatic: true, display: '4.9', suffix: '★', label: 'Avg Rating' },
-              { target: 2020, label: 'Founded' },
+              { target: 2020, label: 'Founded', useGrouping: false },
             ].map((stat, i) => (
               <FadeInSection
                 key={stat.label}
@@ -210,7 +217,11 @@ export default function AboutPage() {
                       {stat.display}<span className="text-lime text-[32px] md:text-[40px]">{stat.suffix}</span>
                     </span>
                   ) : (
-                    <AnimatedCounter target={stat.target!} suffix={stat.suffix} />
+                    <AnimatedCounter
+                      target={stat.target!}
+                      suffix={stat.suffix}
+                      useGrouping={stat.useGrouping}
+                    />
                   )}
                 </div>
                 <div className="font-body font-bold text-void/60 text-[13px] md:text-[14px] tracking-widest uppercase">{stat.label}</div>
@@ -305,7 +316,7 @@ export default function AboutPage() {
 
       {/* ── Section 6: Media / YouTube ───────────────────────────────────────── */}
       <section className="py-[80px] md:py-[120px] px-[24px] bg-white">
-        <div className="max-w-[800px] mx-auto">
+        <div className="max-w-[900px] mx-auto">
           <div className="text-center mb-[48px]">
             <div className="section-label text-teal before:bg-teal justify-center mb-[16px]">
                ✦ How We Help
