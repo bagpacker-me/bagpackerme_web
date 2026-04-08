@@ -13,11 +13,8 @@ export default function NewsletterCard() {
     if (!email) return;
     setIsSubscribing(true);
     try {
-      const { createSubscriber } = await import('@/lib/firestore');
-      await createSubscriber({
-        email,
-        createdAt: new Date().toISOString()
-      });
+      const { subscribeToNewsletter } = await import('@/lib/firestore');
+      await subscribeToNewsletter(email);
       toast.success("Thanks for subscribing!");
       setEmail('');
     } catch (error) {

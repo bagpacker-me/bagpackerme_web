@@ -1,9 +1,16 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import Image from 'next/image';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { useRef } from 'react';
+import {
+  motion,
+  useInView,
+  useMotionValue,
+  useReducedMotion,
+  useScroll,
+  useSpring,
+  useTransform,
+} from 'framer-motion';
 
 const AVATARS = [
   'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=150&auto=format&fit=crop', // Woman
@@ -14,18 +21,69 @@ const AVATARS = [
 
 const STATS = [
   {
-    value: '1,200+',
+    target: 1200,
+    suffix: '+',
     desc: 'Happy explorers who found their dream trips with BagPackerMe'
   },
   {
-    value: '25+',
+    target: 25,
+    suffix: '+',
     desc: 'Handpicked destinations curated for every kind of traveler'
   },
   {
-    value: '10%',
+    target: 10,
+    suffix: '%',
     desc: 'Book your next trip today and enjoy exclusive member deals'
   }
 ];
+
+function AnimatedCounter({
+  target,
+  suffix = '',
+  prefix = '',
+  useGrouping = true,
+}: {
+  target: number;
+  suffix?: string;
+  prefix?: string;
+  useGrouping?: boolean;
+}) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: true, margin: '-80px' });
+  const shouldReduceMotion = useReducedMotion();
+  const isDecimal = target % 1 !== 0;
+  const formatValue = (value: number) =>
+    isDecimal
+      ? value.toFixed(1)
+      : new Intl.NumberFormat('en-US', {
+          useGrouping,
+          maximumFractionDigits: 0,
+        }).format(Math.round(value));
+
+  const motionVal = useMotionValue(0);
+  const springVal = useSpring(motionVal, { stiffness: 100, damping: 30 });
+  const displayVal = useTransform(springVal, formatValue);
+
+  useEffect(() => {
+    if (inView && !shouldReduceMotion) {
+      motionVal.set(target);
+    }
+  }, [inView, motionVal, shouldReduceMotion, target]);
+
+  if (shouldReduceMotion) {
+    return (
+      <span ref={ref}>
+        {prefix}{formatValue(target)}{suffix}
+      </span>
+    );
+  }
+
+  return (
+    <span ref={ref}>
+      {prefix}<motion.span>{displayVal}</motion.span>{suffix}
+    </span>
+  );
+}
 
 export default function EffortlessPlanning() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -136,7 +194,10 @@ export default function EffortlessPlanning() {
                 )}
 
                 <h3 className="font-display text-6xl lg:text-7xl font-bold text-void mb-6">
-                  {stat.value}
+                  <AnimatedCounter
+                    target={stat.target}
+                    suffix={stat.suffix}
+                  />
                 </h3>
                 <p className="font-body text-void/70 text-sm lg:text-base leading-relaxed max-w-[250px]">
                   {stat.desc}

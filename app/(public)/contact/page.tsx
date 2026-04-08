@@ -3,28 +3,11 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { createEnquiry } from '@/lib/firestore';
+import { contactFormSchema, type ContactFormData } from '@/lib/contact-form';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
 import Image from 'next/image';
-
-// ─── Zod Schema ───────────────────────────────────────────────────────────────
-const schema = z.object({
-  firstName: z.string().min(2, 'First name is required'),
-  lastName: z.string().min(2, 'Last name is required'),
-  email: z.string().email('Please enter a valid email address'),
-  phone: z
-    .string()
-    .regex(/^(\+91[\-\s]?)?[6-9]\d{9}$/, 'Enter a valid Indian phone number'),
-  inquiryType: z.enum(
-    ['Group Trip', 'Personalised Itinerary', 'Corporate Retreat', 'Media & Partnership', 'Other'] as const,
-    { error: 'Please select an inquiry type' }
-  ),
-  message: z.string().min(20, 'Message must be at least 20 characters'),
-});
-
-type FormData = z.infer<typeof schema>;
 
 // ─── Success Checkmark ────────────────────────────────────────────────────────
 const SuccessState = ({ whatsappNumber = '919920992026' }: { whatsappNumber?: string }) => {
@@ -93,21 +76,45 @@ export default function ContactPage() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<FormData>({ resolver: zodResolver(schema) });
+  } = useForm<ContactFormData>({ resolver: zodResolver(contactFormSchema) });
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmit = async (data: ContactFormData) => {
     setServerError(null);
+
     try {
-      const { firstName, lastName, ...rest } = data;
-      await createEnquiry({
-        name: `${firstName} ${lastName}`,
-        ...rest,
-        status: 'new',
-        createdAt: new Date().toISOString(),
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
       });
+
+      if (!response.ok) {
+        const result = (await response.json().catch(() => null)) as { error?: string } | null;
+        throw new Error(result?.error || 'Something went wrong. Please try again or reach out via WhatsApp.');
+      }
+
+      const { firstName, lastName, ...rest } = data;
+
+      try {
+        await createEnquiry({
+          name: `${firstName} ${lastName}`,
+          ...rest,
+          status: 'new',
+          createdAt: new Date().toISOString(),
+        });
+      } catch (firestoreError) {
+        console.error('Failed to save contact enquiry to Firestore:', firestoreError);
+      }
+
       setSubmitted(true);
-    } catch {
-      setServerError('Something went wrong. Please try again or reach out via WhatsApp.');
+    } catch (error) {
+      setServerError(
+        error instanceof Error
+          ? error.message
+          : 'Something went wrong. Please try again or reach out via WhatsApp.'
+      );
     }
   };
 

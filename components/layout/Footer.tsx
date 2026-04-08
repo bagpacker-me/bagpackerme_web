@@ -1,8 +1,10 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
 import { ArrowRight } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 import { Logo } from '../ui/Logo';
 
 const companyLinks = [
@@ -13,6 +15,8 @@ const companyLinks = [
 
 export function Footer() {
   const settings = useSiteSettings();
+  const [email, setEmail] = useState('');
+  const [isSubscribing, setIsSubscribing] = useState(false);
 
   const instagramUrl = settings.instagramUrl;
   const youtubeUrl = settings.youtubeUrl;
@@ -21,6 +25,24 @@ export function Footer() {
   const address = settings.address;
   const contactEmail = settings.contactEmail;
   const contactPhone = settings.contactPhone;
+
+  const handleNewsletterSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!email) return;
+
+    try {
+      setIsSubscribing(true);
+      const { subscribeToNewsletter } = await import('@/lib/firestore');
+      await subscribeToNewsletter(email);
+      toast.success("Thanks for subscribing! We'll be in touch.");
+      setEmail('');
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong. Please try again later.");
+    } finally {
+      setIsSubscribing(false);
+    }
+  };
 
   return (
     <footer className="bg-void text-white pt-20 pb-10">
@@ -88,17 +110,24 @@ export function Footer() {
             
             <div className="pt-4 w-full">
               <p className="text-sm text-white/80 mb-3 block">Join 2,000+ travelers</p>
-              <form className="relative flex items-center w-full max-w-sm rounded-sm bg-white/5 border border-white/10 p-1 focus-within:border-lime/50 focus-within:ring-1 focus-within:ring-lime/50 transition-all">
+              <form
+                onSubmit={handleNewsletterSubmit}
+                className="relative flex items-center w-full max-w-sm rounded-sm bg-white/5 border border-white/10 p-1 focus-within:border-lime/50 focus-within:ring-1 focus-within:ring-lime/50 transition-all"
+              >
                 <input 
                   type="email" 
                   placeholder="Email address" 
                   required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  aria-label="Email address"
                   className="w-full bg-transparent text-white text-sm px-4 py-2 focus:outline-none placeholder:text-white/40"
                 />
                 <button 
                   type="submit" 
                   aria-label="Subscribe"
-                  className="bg-lime/20 hover:bg-lime text-lime hover:text-void p-2 rounded-none transition-colors flex-shrink-0"
+                  disabled={isSubscribing}
+                  className="bg-lime/20 hover:bg-lime text-lime hover:text-void p-2 rounded-none transition-colors flex-shrink-0 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   <ArrowRight className="w-4 h-4" />
                 </button>

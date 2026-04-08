@@ -14,11 +14,8 @@ export default function NewsletterSection() {
 
     try {
       setLoading(true);
-      const { createSubscriber } = await import('@/lib/firestore');
-      await createSubscriber({
-        email,
-        createdAt: new Date().toISOString()
-      });
+      const { subscribeToNewsletter } = await import('@/lib/firestore');
+      await subscribeToNewsletter(email);
 
       toast.success("Thanks for subscribing! We'll be in touch.");
       setEmail('');
