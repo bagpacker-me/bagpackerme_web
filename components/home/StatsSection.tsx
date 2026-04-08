@@ -15,7 +15,7 @@ import { useRef, useEffect } from 'react';
 const STATS = [
   { value: 1200, suffix: '+', label: 'Travelers Hosted' },
   { value: 25, suffix: '+', label: 'Destinations' },
-  { value: 4.9, suffix: '★', label: 'Satisfaction' },
+  { value: 4.7, suffix: '★', label: 'Satisfaction' },
   { value: 2020, suffix: '', label: 'Founded', useGrouping: false },
 ];
 

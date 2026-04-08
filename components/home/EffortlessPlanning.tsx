@@ -14,15 +14,15 @@ const AVATARS = [
 
 const STATS = [
   {
-    value: '44K+',
+    value: '1,200+',
     desc: 'Happy explorers who found their dream trips with BagPackerMe'
   },
   {
-    value: '300+',
+    value: '25+',
     desc: 'Handpicked destinations curated for every kind of traveler'
   },
   {
-    value: '30%',
+    value: '10%',
     desc: 'Book your next trip today and enjoy exclusive member deals'
   }
 ];

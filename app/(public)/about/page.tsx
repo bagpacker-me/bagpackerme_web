@@ -203,7 +203,7 @@ export default function AboutPage() {
             {[
               { target: 1200, suffix: '+', label: 'Travellers' },
               { target: 25, suffix: '+', label: 'Destinations' },
-              { isStatic: true, display: '4.9', suffix: '★', label: 'Avg Rating' },
+              { isStatic: true, display: '4.7', suffix: '★', label: 'Avg Rating' },
               { target: 2020, label: 'Founded', useGrouping: false },
             ].map((stat, i) => (
               <FadeInSection
