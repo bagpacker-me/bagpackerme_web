@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import { Outfit, DM_Sans, Cormorant_Garamond } from 'next/font/google';
+import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import '@/styles/globals.css';
 
 // ── DESIGN-SYSTEM FONT STACK ──────────────────────────────────────────────────
@@ -68,6 +70,8 @@ export default function AppRootLayout({ children }: { children: React.ReactNode 
     >
       <body>
         {children}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
