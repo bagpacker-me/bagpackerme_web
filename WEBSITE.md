@@ -362,7 +362,7 @@ Fetches package data via `getPackageBySlug(slug)` and renders 8 sub-components f
 
 **Right Column (40%) — Sticky Sidebar:**
 - Contact info card (teal background):
-  - Email: partnerships@bagpackerme.com
+  - Email: bagpackerme.world@gmail.com
   - Location: Mumbai, India
   - Website: www.bagpackerme.com
   - WhatsApp button: +91 9920992026
@@ -408,7 +408,7 @@ Wraps all public pages with:
 | **Brand** | Logo, tagline "Experiential Journeys Through India", social icons (Instagram, YouTube, X/Twitter, WhatsApp), "Based in Mumbai, India" |
 | **Explore** | All Packages, Culinary Trail, Spiritual Circuit, Adventure Route, Heritage Walk, Hippy Trail |
 | **Company** | About, Blog, Media, Partnerships, Contact |
-| **Get In Touch** | Email (partnerships@bagpackerme.com), WhatsApp (+91 9920992026), Website, newsletter form ("Join 2,000+ travelers") |
+| **Get In Touch** | Email (bagpackerme.world@gmail.com), WhatsApp (+91 9920992026), Website, newsletter form ("Join 2,000+ travelers") |
 
 **Bottom bar:** Copyright notice, Privacy Policy link, Terms link
 

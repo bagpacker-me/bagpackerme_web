@@ -12,6 +12,7 @@ import {
 import Link from 'next/link';
 import Image from 'next/image';
 import { FadeInSection } from '@/components/ui/FadeInSection';
+import VideoPlayer from '@/components/ui/video-player';
 
 // ─── Animated Counter ────────────────────────────────────────────────────────
 function AnimatedCounter({
@@ -94,14 +95,14 @@ export default function AboutPage() {
           initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.8, delay: 0.2, ease: "easeOut" }}
-          className="bg-void rounded-3xl md:rounded-[40px] overflow-hidden relative aspect-video md:aspect-[21/9] w-full shadow-2xl"
+          className="bg-void rounded-3xl md:rounded-[40px] overflow-hidden relative aspect-[4/3] md:aspect-[16/7] w-full shadow-2xl"
         >
           <Image 
-            src="https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=1920&q=85" 
-            alt="India Travel Group" 
+            src="/web_photos/about_us.webp" 
+            alt="About BagpackerMe" 
             fill 
             priority
-            className="object-cover object-[center_30%] mix-blend-overlay opacity-60 z-0 scale-105 hover:scale-100 transition-transform duration-1000" 
+            className="object-cover object-bottom opacity-90 z-0 scale-105 hover:scale-100 transition-transform duration-1000" 
           />
           <div className="absolute inset-0 bg-gradient-to-t from-void/60 via-transparent to-transparent z-10 pointer-events-none" />
         </motion.div>
@@ -115,7 +116,7 @@ export default function AboutPage() {
             <div className="grid grid-cols-2 gap-[12px] md:gap-[16px]">
               <div className="col-span-2 overflow-hidden relative h-[240px] md:h-[340px] rounded-2xl">
                 <Image
-                  src="https://images.unsplash.com/photo-1477587458883-47145ed31f2f?auto=format&fit=crop&w=800&q=80"
+                  src="/web_photos/about_1.webp"
                   alt="India travel"
                   fill
                   className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-[1.03]"
@@ -123,15 +124,15 @@ export default function AboutPage() {
               </div>
               <div className="overflow-hidden relative h-[160px] md:h-[220px] rounded-2xl">
                 <Image
-                  src="https://images.unsplash.com/photo-1561361058-c24cecae35ca?auto=format&fit=crop&w=400&q=80"
-                  alt="India stairs"
+                  src="/web_photos/about_2.webp"
+                  alt="India journey"
                   fill
                   className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-[1.03]"
                 />
               </div>
               <div className="overflow-hidden relative h-[160px] md:h-[220px] rounded-2xl">
                 <Image
-                  src="https://images.unsplash.com/photo-1506461883276-594a12b5bca4?auto=format&fit=crop&w=400&q=80"
+                  src="/web_photos/about_3.webp"
                   alt="India group"
                   fill
                   className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-[1.03]"
@@ -227,7 +228,7 @@ export default function AboutPage() {
             {/* Image Side */}
             <div className="lg:w-2/5 relative h-[400px] lg:h-auto">
               <Image
-                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80"
+                src="/web_photos/about_kevin.webp"
                 alt="Kevin — Founder of BagpackerMe"
                 fill
                 className="object-cover object-center"
@@ -313,33 +314,14 @@ export default function AboutPage() {
             <p className="font-accent text-teal/80 text-[24px] italic tracking-wide">Balancing the Act</p>
           </div>
 
-          <div className="overflow-hidden shadow-2xl border border-void/5 rounded-[24px] md:rounded-[32px] aspect-video mb-[48px] bg-[#fafafa] hover:shadow-teal/20 transition-all duration-500">
-            <iframe
-              className="w-full h-full"
-              src="https://www.youtube.com/embed?listType=user_uploads&list=BagpackerMe&autoplay=0"
-              title="BagpackerMe YouTube Channel"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
+          <div className="mb-[48px]">
+            <VideoPlayer
+              src="/web_photos/about_video.webm"
+              poster="/web_photos/about_us.webp"
             />
           </div>
 
-          <div className="text-center">
-            <a
-              href="https://www.youtube.com/@BagpackerMe"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-[8px] px-[32px] py-[16px] bg-[#FAF9F6] border border-void/10 rounded-full font-display font-bold tracking-widest uppercase text-[12px] text-teal hover:border-teal hover:bg-teal/5 transition-all group"
-            >
-              Watch on YouTube
-              <svg
-                width="16" height="16"
-                className="w-[16px] h-[16px] flex-shrink-0 transition-transform group-hover:translate-x-1"
-                fill="none" stroke="currentColor" viewBox="0 0 24 24"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
-            </a>
-          </div>
+
         </div>
       </section>
 
@@ -361,22 +343,22 @@ export default function AboutPage() {
           <p className="font-body text-void/60 text-[16px] md:text-[20px] font-light mb-[48px] max-w-[500px] leading-[1.7]">
             Let us craft a journey that goes beyond the ordinary. Speak directly with our experts step-by-step.
           </p>
-          <div className="flex flex-col sm:flex-row gap-[16px] justify-center items-center w-full max-w-sm mx-auto">
+          <div className="flex flex-row gap-[12px] justify-center items-center">
             <Link
               href="/packages"
-              className="w-full sm:w-auto justify-center px-[32px] py-[16px] bg-teal text-white font-display font-medium rounded-full hover:bg-teal/90 transition-colors flex items-center gap-[12px] shadow-lg shadow-teal/20 hover:shadow-teal/40"
+              className="px-[24px] py-[10px] bg-teal text-white font-display text-[14px] font-medium rounded-full hover:bg-teal/90 transition-colors flex items-center gap-[8px] shadow-md shadow-teal/20 hover:shadow-teal/40"
             >
               Explore Trips
             </Link>
             <a
               href="https://wa.me/919920992026"
               target="_blank" rel="noopener noreferrer"
-              className="w-full sm:w-auto justify-center px-[32px] py-[16px] bg-white border border-void/10 text-void font-display font-medium rounded-full hover:border-[#25D366] hover:text-[#25D366] transition-colors flex items-center gap-[12px]"
+              className="px-[24px] py-[10px] bg-white border border-void/10 text-void font-display text-[14px] font-medium rounded-full hover:border-[#25D366] hover:text-[#25D366] transition-colors flex items-center gap-[8px]"
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" className="w-[18px] h-[18px] flex-shrink-0">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="w-[16px] h-[16px] flex-shrink-0">
                 <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/>
               </svg>
-              Chat on WhatsApp
+              WhatsApp
             </a>
           </div>
         </FadeInSection>

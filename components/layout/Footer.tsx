@@ -1,9 +1,9 @@
+'use client';
+
 import Link from 'next/link';
+import { useSiteSettings } from '@/hooks/useSiteSettings';
 import { ArrowRight } from 'lucide-react';
 import { Logo } from '../ui/Logo';
-import { getSiteSettings } from '@/lib/firestore';
-
-
 
 const companyLinks = [
   { name: 'About', href: '/about' },
@@ -11,16 +11,16 @@ const companyLinks = [
   { name: 'Contact', href: '/contact' },
 ];
 
-export async function Footer() {
-  const settings = await getSiteSettings();
+export function Footer() {
+  const settings = useSiteSettings();
 
-  const instagramUrl = settings?.instagramUrl || 'https://instagram.com/bagpackerme';
-  const youtubeUrl = settings?.youtubeUrl || 'https://youtube.com/@bagpackerme';
-  const twitterUrl = settings?.twitterUrl || 'https://twitter.com/bagpackerme';
-  const whatsappUrl = `https://wa.me/${settings?.whatsappNumber || '919920992026'}`;
-  const address = settings?.address || 'Mumbai, India';
-  const contactEmail = settings?.contactEmail || 'partnerships@bagpackerme.com';
-  const contactPhone = settings?.contactPhone || '+91 9920992026';
+  const instagramUrl = settings.instagramUrl;
+  const youtubeUrl = settings.youtubeUrl;
+  const twitterUrl = settings.twitterUrl;
+  const whatsappUrl = `https://wa.me/${settings.whatsappNumber}`;
+  const address = settings.address;
+  const contactEmail = settings.contactEmail;
+  const contactPhone = settings.contactPhone;
 
   return (
     <footer className="bg-void text-white pt-20 pb-10">

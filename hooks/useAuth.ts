@@ -23,7 +23,7 @@ export function useAuth(): AuthState {
   }, []);
 
   const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL || '';
-  const isAdmin = !!user && (user.email === adminEmail || user.email === 'admin@bagpackerme.com');
+  const isAdmin = !!user && (user.email === adminEmail || user.email === 'bagpackerme.world@gmail.com');
 
   return { user, loading, isAdmin };
 }

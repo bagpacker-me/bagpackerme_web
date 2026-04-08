@@ -55,7 +55,7 @@
 
 - `isAdmin` computed by checking user email against:
   - `NEXT_PUBLIC_ADMIN_EMAIL` environment variable, OR
-  - Hardcoded fallback: `admin@bagpackerme.com`
+  - Hardcoded fallback: `bagpackerme.world@gmail.com`
 
 ### Auth Functions
 **File:** `lib/auth.ts`
@@ -678,4 +678,4 @@ All functions defined in `lib/firestore.ts`:
 | `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID` | Firebase messaging sender ID |
 | `NEXT_PUBLIC_FIREBASE_APP_ID` | Firebase app ID |
 | `NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID` | Firebase Analytics measurement ID |
-| `NEXT_PUBLIC_ADMIN_EMAIL` | Admin email for auth verification (fallback: `admin@bagpackerme.com`) |
+| `NEXT_PUBLIC_ADMIN_EMAIL` | Admin email for auth verification (fallback: `bagpackerme.world@gmail.com`) |

@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { createEnquiry, getSiteSettings } from '@/lib/firestore';
-import { SiteSettings } from '@/types';
+import { createEnquiry } from '@/lib/firestore';
+import { useSiteSettings } from '@/hooks/useSiteSettings';
 import Image from 'next/image';
 
 // ─── Zod Schema ───────────────────────────────────────────────────────────────
@@ -82,25 +82,12 @@ export default function ContactPage() {
   const shouldReduceMotion = useReducedMotion();
   const [submitted, setSubmitted] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
-  const [settings, setSettings] = useState<SiteSettings | null>(null);
-
-  useEffect(() => {
-    const fetchSettings = async () => {
-      try {
-        const data = await getSiteSettings();
-        if (data) setSettings(data);
-      } catch (error) {
-        console.error('Error fetching site settings', error);
-      }
-    };
-    fetchSettings();
-  }, []);
-
-  const contactEmail = settings?.contactEmail || 'partnerships@bagpackerme.com';
-  const contactPhone = settings?.contactPhone || '+91 9920992026';
-  const whatsappNumber = settings?.whatsappNumber || '919920992026';
-  const address = settings?.address || 'Mumbai, India';
-  const workingHours = settings?.workingHours || 'Mon-Fri: 9:00 AM - 6:00 PM (IST)';
+  const settings = useSiteSettings();
+  const contactEmail = settings.contactEmail;
+  const contactPhone = settings.contactPhone;
+  const whatsappNumber = settings.whatsappNumber;
+  const address = settings.address;
+  const workingHours = settings.workingHours;
 
   const {
     register,
@@ -340,27 +327,14 @@ export default function ContactPage() {
           <div className="lg:col-span-5 flex flex-col gap-6">
             
             {/* Image Banner */}
-            <div className="bg-teal rounded-3xl overflow-hidden relative aspect-video md:aspect-[4/3] w-full isolate">
+            <div className="bg-white rounded-3xl overflow-hidden relative aspect-video md:aspect-[4/3] w-full isolate border border-void/8 shadow-sm">
               <Image 
-                src="/images/expert-support.png" 
-                alt="Travel Expert" 
+                src="/logo_b.webp" 
+                alt="BagPackerMe Logo" 
                 fill 
-                className="object-cover object-center mix-blend-luminosity opacity-40 z-0" 
+                className="object-contain object-center opacity-90 z-0 p-10" 
               />
-              <div className="absolute inset-0 bg-teal/40 z-10 pointer-events-none" />
-              <div className="absolute inset-0 bg-gradient-to-t from-teal/90 via-teal/20 to-transparent z-10 pointer-events-none" />
-              <div className="absolute inset-0 z-20 flex flex-col p-8 md:p-10 justify-between pointer-events-none">
-                <div className="flex items-center gap-2 text-white/90">
-                  <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2L2 7l10 5 10-5-10-5zm0 7.5L4 6l8 4 8-4-8 3.5z" />
-                    <path d="M2 12l10 5 10-5v5l-10 5-10-5v-5z" />
-                  </svg>
-                  <span className="font-display font-medium text-lg leading-none mt-1">BagPackerMe</span>
-                </div>
-                <h3 className="font-display text-white text-[32px] md:text-[36px] leading-[1.1] font-bold max-w-[280px]">
-                  Our experts will always help you
-                </h3>
-              </div>
+
             </div>
 
             {/* Info Cards */}

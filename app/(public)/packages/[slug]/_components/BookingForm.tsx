@@ -155,11 +155,11 @@ export default function BookingForm({ pkg }: { pkg: Package }) {
               <span className="font-display text-[16px] group-hover:text-white transition-colors duration-300">+91 99209 92026</span>
             </a>
             
-            <a href="mailto:hello@bagpackerme.com" className="flex items-center gap-[24px] p-[16px] rounded-none hover:bg-[rgba(255,255,255,0.05)] transition-colors border border-transparent hover:border-[rgba(255,255,255,0.1)] group">
+            <a href="mailto:bagpackerme.world@gmail.com" className="flex items-center gap-[24px] p-[16px] rounded-none hover:bg-[rgba(255,255,255,0.05)] transition-colors border border-transparent hover:border-[rgba(255,255,255,0.1)] group">
               <div className="w-[48px] h-[48px] bg-[#D4E839]/10 group-hover:bg-[#D4E839] text-[#D4E839] group-hover:text-[#221E2A] flex items-center justify-center transition-colors duration-300">
                 <Mail size={24} />
               </div>
-              <span className="font-display text-[16px] group-hover:text-white transition-colors duration-300">hello@bagpackerme.com</span>
+              <span className="font-display text-[16px] group-hover:text-white transition-colors duration-300">bagpackerme.world@gmail.com</span>
             </a>
             
             <a href="https://instagram.com/bagpackerme" target="_blank" rel="noopener noreferrer" className="flex items-center gap-[24px] p-[16px] rounded-none hover:bg-[rgba(255,255,255,0.05)] transition-colors border border-transparent hover:border-[rgba(255,255,255,0.1)] group">

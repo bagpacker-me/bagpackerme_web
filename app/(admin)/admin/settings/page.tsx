@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { getSiteSettings, updateSiteSettings } from '@/lib/firestore';
+import { resolveSiteSettings } from '@/lib/site-settings';
 import type { SiteSettings } from '@/types';
 import { Save, Loader2, CheckCircle2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -22,31 +23,14 @@ export default function SettingsPage() {
     async function loadSettings() {
       try {
         const settings = await getSiteSettings();
-        
-        const defaultSettings = {
-          contactEmail: 'partnerships@bagpackerme.com',
-          contactPhone: '+91 9920992026',
-          whatsappNumber: '919920992026',
-          workingHours: 'Mon-Fri: 9:00 AM - 6:00 PM (IST)',
-          address: 'Mumbai, India',
-          instagramUrl: 'https://instagram.com/bagpackerme',
-          facebookUrl: 'https://facebook.com/bagpackerme',
-          twitterUrl: 'https://twitter.com/bagpackerme',
-          youtubeUrl: 'https://youtube.com/@bagpackerme',
-        };
-
-        if (settings) {
-          reset({ ...defaultSettings, ...settings });
-        } else {
-          reset(defaultSettings);
-        }
+        reset(resolveSiteSettings(settings));
       } catch (error) {
         console.error('Error loading settings:', error);
       } finally {
         setIsLoading(false);
       }
     }
-    loadSettings();
+    void loadSettings();
   }, [reset]);
 
   const onSubmit = async (data: SiteSettings) => {
@@ -106,7 +90,7 @@ export default function SettingsPage() {
               <label className={labelCls}>Contact Email</label>
               <input
                 type="email"
-                placeholder="partnerships@bagpackerme.com"
+                placeholder="bagpackerme.world@gmail.com"
                 className={inputCls}
                 {...register('contactEmail')}
               />

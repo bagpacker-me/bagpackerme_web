@@ -55,7 +55,7 @@ export default function AdminLoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              placeholder="admin@bagpackerme.com"
+              placeholder="bagpackerme.world@gmail.com"
               className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-[rgba(255,255,255,0.1)] bg-white dark:bg-[rgba(255,255,255,0.02)] text-sm text-gray-800 dark:text-white placeholder-gray-300 dark:placeholder-gray-600 outline-none transition-all focus:border-teal-900 dark:focus:border-[#C1EA00] focus:ring-1 focus:ring-teal-900 dark:focus:ring-[#C1EA00]"
             />
           </div>
