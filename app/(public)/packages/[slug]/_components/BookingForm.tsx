@@ -33,6 +33,8 @@ export default function BookingForm({ pkg }: { pkg: Package }) {
   const onSubmit = async (data: BookingFormValues) => {
     setIsSubmitting(true);
     try {
+      const submittedAt = new Date().toISOString();
+
       // 1. Save to Firestore
       await createEnquiry({
         name: data.name,
@@ -44,10 +46,28 @@ export default function BookingForm({ pkg }: { pkg: Package }) {
         travelDate: data.travelDate,
         message: data.message || '',
         status: 'new',
-        createdAt: new Date().toISOString()
+        createdAt: submittedAt
       });
 
-      // 2. Open WhatsApp
+      // 2. Forward the package booking to n8n
+      const response = await fetch('/api/package-booking', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...data,
+          packageSlug: pkg.slug,
+          packageTitle: pkg.title,
+        }),
+      });
+
+      if (!response.ok) {
+        const result = (await response.json().catch(() => null)) as { error?: string } | null;
+        throw new Error(result?.error || 'Something went wrong. Please try again or contact us directly on WhatsApp.');
+      }
+
+      // 3. Open WhatsApp
       const waText = encodeURIComponent(`Hi! I'm ${data.name} and I'm interested in booking the "${pkg.title}" trip for ${data.groupSize} people around ${data.travelDate}.${data.message ? `\n\nExtra Info: ${data.message}` : ''}`);
       window.open(`https://wa.me/919920992026?text=${waText}`, '_blank');
       
@@ -55,7 +75,11 @@ export default function BookingForm({ pkg }: { pkg: Package }) {
       toast.success('Your enquiry has been sent!');
     } catch (error) {
       console.error('Error submitting enquiry:', error);
-      toast.error('Something went wrong. Please try again or contact us directly on WhatsApp.');
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : 'Something went wrong. Please try again or contact us directly on WhatsApp.'
+      );
     } finally {
       setIsSubmitting(false);
     }

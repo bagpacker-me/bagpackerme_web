@@ -247,10 +247,13 @@ export default function ContactPage() {
                     <input
                       id="phone"
                       type="tel"
-                      placeholder="+91 800234756"
+                      placeholder="Include country code if needed, e.g. +1 555 123 4567"
                       {...register('phone')}
                       className={fieldCls(!!errors.phone)}
                     />
+                    <p className="mt-2 text-xs text-void/50 font-body">
+                      You can enter your number in any format. Adding your country code helps us reach you faster.
+                    </p>
                     {errors.phone && (
                       <p className="mt-2 text-xs text-red-500 font-body">{errors.phone.message}</p>
                     )}
