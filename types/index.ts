@@ -2,6 +2,7 @@ export const PACKAGE_CATEGORIES = [
   'Culinary',
   'Spiritual',
   'Adventure',
+  'Wildlife',
   'Heritage',
   'Hippy Trail',
   'Corporate Retreat',
