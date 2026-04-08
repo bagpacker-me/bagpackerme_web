@@ -5,13 +5,13 @@ import Image from 'next/image';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { getPublishedPackages } from '@/lib/firestore';
 import { hasPackagePrice } from '@/lib/packagePricing';
-import { Package } from '@/types';
+import { Package, PACKAGE_CATEGORIES } from '@/types';
 import PackageCard, { PackageCardSkeleton } from '@/components/home/PackageCard';
 import { CARD_GRID_VARIANTS, CARD_ITEM_VARIANTS } from '@/components/ui/FadeInSection';
 import { PremiumFilter, type PremiumFilterState } from '@/components/packages/PremiumFilter';
 
 const DEFAULT_MAX_PRICE = 200000;
-const CATEGORIES = ['All', 'Culinary', 'Spiritual', 'Adventure', 'Heritage', 'Hippy Trail'];
+const CATEGORIES = ['All', ...PACKAGE_CATEGORIES];
 
 const DURATIONS = [
   { label: 'Any', value: 'Any' },

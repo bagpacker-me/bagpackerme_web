@@ -5,28 +5,40 @@ import Image from "next/image";
 
 const GALLERY_IMAGES = [
   {
-    src: "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?q=80&h=800&w=800&auto=format&fit=crop",
-    alt: "Taj Mahal at sunrise",
+    src: "/web_photos/gallery_1.webp",
+    alt: "A traditional houseboat gliding through Kerala backwaters beneath coconut palms",
+    title: "Kerala Backwaters",
+    tagline: "Drift through quiet canals framed by swaying palms.",
   },
   {
-    src: "https://images.unsplash.com/photo-1477587458883-47145ed94245?q=80&h=800&w=800&auto=format&fit=crop",
-    alt: "Varanasi ghats on the Ganges",
+    src: "/web_photos/gallery_2.webp",
+    alt: "The Golden Temple in Amritsar reflected in the sacred pool",
+    title: "Golden Temple",
+    tagline: "Find stillness where gold, water, and prayer meet.",
   },
   {
-    src: "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?q=80&h=800&w=800&auto=format&fit=crop",
-    alt: "Kerala backwaters at dusk",
+    src: "/web_photos/gallery_3.webp",
+    alt: "Boats resting along the Varanasi ghats at sunset",
+    title: "Varanasi Ghats",
+    tagline: "Follow the river into a city that never loses its soul.",
   },
   {
-    src: "https://images.unsplash.com/photo-1506461883276-594a12b11cf3?q=80&h=800&w=800&auto=format&fit=crop",
-    alt: "Rajasthan desert dunes",
+    src: "/web_photos/gallery_4.webp",
+    alt: "The Taj Mahal glowing above its reflection at dusk",
+    title: "Taj Mahal",
+    tagline: "Stand before India's timeless ode to love and symmetry.",
   },
   {
-    src: "https://images.unsplash.com/photo-1598043596592-1a3d1e52d2c0?q=80&h=800&w=800&auto=format&fit=crop",
-    alt: "Himalayan mountain village",
+    src: "/web_photos/gallery_5.webp",
+    alt: "Pangong Lake beneath dramatic mountain peaks in Ladakh",
+    title: "Ladakh Highlands",
+    tagline: "Chase thin-air horizons and impossible shades of blue.",
   },
   {
-    src: "https://images.unsplash.com/photo-1567157577867-05ccb1388e66?q=80&h=800&w=800&auto=format&fit=crop",
-    alt: "Colourful spice market in India",
+    src: "/web_photos/gallery_6.webp",
+    alt: "Fishing boats floating off the palm-lined shore of Lakshadweep",
+    title: "Lakshadweep",
+    tagline: "Slip into slow coastal mornings and crystal-clear water.",
   },
 ];
 
@@ -42,8 +54,8 @@ export default function ImageGallery() {
           Glimpses of Incredible India
         </h2>
         <p className="text-sm text-slate-500 dark:text-slate-400 mt-3 font-body">
-          Every frame tells a story — mountains, rivers, temples, and the
-          vibrant people who make India truly unforgettable.
+          From sacred cities and marble icons to high-altitude lakes and
+          palm-lined shores, each frame reveals a different rhythm of India.
         </p>
       </div>
 
@@ -65,10 +77,15 @@ export default function ImageGallery() {
               sizes="(max-width: 768px) 100vw, 16vw"
             />
             {/* Overlay label */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            <p className="absolute bottom-4 left-4 right-4 text-white text-sm font-body font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-y-2 group-hover:translate-y-0">
-              {img.alt}
-            </p>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300" />
+            <div className="absolute bottom-4 left-4 right-4 opacity-100 md:opacity-0 transition-all duration-300 translate-y-0 md:translate-y-2 md:group-hover:translate-y-0 md:group-hover:opacity-100">
+              <p className="text-[11px] font-display font-semibold uppercase tracking-[0.24em] text-white/70">
+                {img.title}
+              </p>
+              <p className="mt-1 text-white text-sm font-body font-medium leading-snug">
+                {img.tagline}
+              </p>
+            </div>
           </div>
         ))}
       </div>

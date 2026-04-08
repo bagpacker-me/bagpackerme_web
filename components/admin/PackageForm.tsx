@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage';
 import { storage } from '@/lib/firebase';
 import { createPackage, updatePackage } from '@/lib/firestore';
-import { Package, ItineraryDay, Inclusions } from '@/types';
+import { Package, ItineraryDay, Inclusions, PACKAGE_CATEGORIES } from '@/types';
 import RichTextEditor from './RichTextEditor';
 import TagInput from './TagInput';
 import toast from 'react-hot-toast';
@@ -17,14 +17,7 @@ type Tab = 'basic' | 'content' | 'itinerary' | 'inclusions';
 
 type FormState = Omit<Package, 'id' | 'createdAt'>;
 
-const CATEGORIES: Package['category'][] = [
-  'Culinary',
-  'Spiritual',
-  'Adventure',
-  'Heritage',
-  'Hippy Trail',
-  'Corporate Retreat',
-];
+const CATEGORIES: Package['category'][] = [...PACKAGE_CATEGORIES];
 
 const DEFAULT_INCLUSIONS: Inclusions = {
   accommodation: false,

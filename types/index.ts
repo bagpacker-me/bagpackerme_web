@@ -1,8 +1,21 @@
+export const PACKAGE_CATEGORIES = [
+  'Culinary',
+  'Spiritual',
+  'Adventure',
+  'Heritage',
+  'Hippy Trail',
+  'Corporate Retreat',
+  'Romance',
+  'Wellness',
+] as const;
+
+export type PackageCategory = (typeof PACKAGE_CATEGORIES)[number];
+
 export interface Package {
   id: string;
   title: string;
   slug: string;
-  category: 'Culinary' | 'Spiritual' | 'Adventure' | 'Heritage' | 'Hippy Trail' | 'Corporate Retreat';
+  category: PackageCategory;
   subTheme?: string;
   tagline: string;
   heroImageUrl: string;

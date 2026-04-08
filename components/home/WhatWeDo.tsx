@@ -7,7 +7,7 @@ import { Compass, Newspaper, MapPin } from 'lucide-react';
 const SERVICES = [
   {
     title: 'Curated Trips',
-    desc: '5 signature experiential journeys across India — Culinary, Spiritual, Adventure, Heritage, and the Hippy Trail. Small groups, deep immersion, local expertise.',
+    desc: 'Signature experiential journeys across India — from Culinary, Spiritual, Adventure, and Heritage trips to Hippy Trail, Romance, Wellness, and Corporate Retreat escapes. Small groups, deep immersion, local expertise.',
     icon: <Compass className="w-8 h-8" style={{ color: '#0ED2E9' }} />,
     number: '01',
   },
