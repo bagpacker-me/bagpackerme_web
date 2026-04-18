@@ -82,6 +82,7 @@ export interface Enquiry {
   travelDate?: string;
   message: string;
   status: 'new' | 'in_progress' | 'responded';
+  affiliateCode?: string;
   createdAt: string;
 }
 
@@ -103,6 +104,7 @@ export interface Booking {
   groupSize: number;
   status: 'pending' | 'confirmed' | 'completed' | 'cancelled';
   totalPrice: number;
+  affiliateCode?: string;
   createdAt: string;
 }
 
@@ -132,4 +134,36 @@ export interface SiteSettings {
   twitterUrl?: string;
   youtubeUrl?: string;
   updatedAt?: string;
+}
+
+export type AffiliateStatus = 'pending' | 'active' | 'paused' | 'rejected';
+
+export interface Affiliate {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  socialHandle?: string;
+  code: string;               // e.g. "BP-JOHN42" — unique
+  status: AffiliateStatus;
+  commissionRate: number;     // percentage, default 10
+  totalClicks: number;
+  totalLeads: number;         // enquiries attributed
+  totalBookings: number;
+  notes?: string;             // admin-only notes
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AffiliateClick {
+  id: string;
+  affiliateCode: string;
+  affiliateId: string;
+  pageUrl: string;
+  packageSlug?: string;
+  referrer?: string;
+  sessionId: string;          // for deduplication
+  convertedToEnquiry: boolean;
+  convertedToBooking: boolean;
+  createdAt: string;
 }

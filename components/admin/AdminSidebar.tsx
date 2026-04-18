@@ -15,6 +15,7 @@ import {
   Calendar,
   Users,
   Mail,
+  Link as LinkIcon,
   Settings,
   LogOut,
   X
@@ -42,11 +43,12 @@ const SECTIONS = [
     ],
   },
   {
-    title: 'BOOKINGS',
+    title: 'BOOKINGS & CRM',
     items: [
       { icon: MessageSquare, label: 'Enquiries', href: '/admin/enquiries', badge: 0 },
       { icon: Calendar, label: 'Bookings', href: '/admin/bookings' },
       { icon: Users, label: 'Customers', href: '/admin/customers' },
+      { icon: LinkIcon, label: 'Affiliates', href: '/admin/affiliates' },
       { icon: Mail, label: 'Newsletter', href: '/admin/newsletter' },
     ],
   },

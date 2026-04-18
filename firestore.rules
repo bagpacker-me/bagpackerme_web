@@ -52,5 +52,17 @@ service cloud.firestore {
     match /gallery/{docId} {
       allow read, write: if isAdmin();
     }
+
+    // Affiliates: anyone can register (create), admin can manage
+    match /affiliates/{docId} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // Affiliate Clicks: anyone can log a click (create), admin can read/manage
+    match /affiliate_clicks/{docId} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
   }
 }

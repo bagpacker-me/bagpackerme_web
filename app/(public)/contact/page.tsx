@@ -7,6 +7,7 @@ import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { createEnquiry } from '@/lib/firestore';
 import { contactFormSchema, type ContactFormData } from '@/lib/contact-form';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
+import { getStoredAffiliateCode } from '@/hooks/useAffiliateTracking';
 import Image from 'next/image';
 
 // ─── Success Checkmark ────────────────────────────────────────────────────────
@@ -98,10 +99,12 @@ export default function ContactPage() {
       const { firstName, lastName, ...rest } = data;
 
       try {
+        const affiliateCode = getStoredAffiliateCode();
         await createEnquiry({
           name: `${firstName} ${lastName}`,
           ...rest,
           status: 'new',
+          ...(affiliateCode ? { affiliateCode } : {}),
           createdAt: new Date().toISOString(),
         });
       } catch (firestoreError) {

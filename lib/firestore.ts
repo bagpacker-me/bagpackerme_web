@@ -1,6 +1,6 @@
-import { collection, doc, getDocs, addDoc, updateDoc, deleteDoc, query, where, orderBy, getDoc, limit, setDoc } from 'firebase/firestore';
+import { collection, doc, getDocs, addDoc, updateDoc, deleteDoc, query, where, orderBy, getDoc, limit, setDoc, increment } from 'firebase/firestore';
 import { db } from './firebase';
-import { Package, BlogPost, Enquiry, Customer, Booking, GalleryImage } from '@/types';
+import { Package, BlogPost, Enquiry, Customer, Booking, GalleryImage, Affiliate, AffiliateClick } from '@/types';
 
 // Packages
 const packagesCol = collection(db, 'packages');
@@ -146,4 +146,74 @@ export const getSiteSettings = async () => {
 };
 export const updateSiteSettings = async (data: Partial<import('@/types').SiteSettings>) => {
   return setDoc(doc(db, 'settings', 'site'), { ...data, updatedAt: new Date().toISOString() }, { merge: true });
+};
+
+// ──────────────────────────────────────────────────────────────────────────────
+// Affiliates
+// ──────────────────────────────────────────────────────────────────────────────
+const affiliatesCol = collection(db, 'affiliates');
+
+export const getAffiliates = async () =>
+  getDocs(query(affiliatesCol, orderBy('createdAt', 'desc')));
+
+export const getAffiliate = async (id: string) =>
+  getDoc(doc(db, 'affiliates', id));
+
+export const getAffiliateByCode = async (code: string) => {
+  const q = query(affiliatesCol, where('code', '==', code.toUpperCase()));
+  const snap = await getDocs(q);
+  if (snap.empty) return null;
+  return { id: snap.docs[0].id, ...snap.docs[0].data() } as Affiliate;
+};
+
+export const getAffiliateByEmail = async (email: string) => {
+  const q = query(affiliatesCol, where('email', '==', email.toLowerCase()));
+  const snap = await getDocs(q);
+  if (snap.empty) return null;
+  return { id: snap.docs[0].id, ...snap.docs[0].data() } as Affiliate;
+};
+
+export const createAffiliate = async (data: Omit<Affiliate, 'id'>) =>
+  addDoc(affiliatesCol, data);
+
+export const updateAffiliate = async (id: string, data: Partial<Affiliate>) =>
+  updateDoc(doc(db, 'affiliates', id), { ...data, updatedAt: new Date().toISOString() });
+
+export const deleteAffiliate = async (id: string) =>
+  deleteDoc(doc(db, 'affiliates', id));
+
+/** Atomically increment click counter on the affiliate document */
+export const incrementAffiliateClicks = async (id: string) =>
+  updateDoc(doc(db, 'affiliates', id), { totalClicks: increment(1), updatedAt: new Date().toISOString() });
+
+/** Atomically increment lead counter on the affiliate document */
+export const incrementAffiliateLeads = async (id: string) =>
+  updateDoc(doc(db, 'affiliates', id), { totalLeads: increment(1), updatedAt: new Date().toISOString() });
+
+/** Atomically increment booking counter on the affiliate document */
+export const incrementAffiliateBookings = async (id: string) =>
+  updateDoc(doc(db, 'affiliates', id), { totalBookings: increment(1), updatedAt: new Date().toISOString() });
+
+// ──────────────────────────────────────────────────────────────────────────────
+// Affiliate Clicks
+// ──────────────────────────────────────────────────────────────────────────────
+const affiliateClicksCol = collection(db, 'affiliate_clicks');
+
+export const logAffiliateClick = async (data: Omit<AffiliateClick, 'id'>) =>
+  addDoc(affiliateClicksCol, data);
+
+export const getAffiliateClicks = async () =>
+  getDocs(query(affiliateClicksCol, orderBy('createdAt', 'desc')));
+
+export const getClicksByAffiliate = async (affiliateCode: string) =>
+  getDocs(query(affiliateClicksCol, where('affiliateCode', '==', affiliateCode), orderBy('createdAt', 'desc')));
+
+export const getAffiliateClicksBySession = async (sessionId: string, affiliateCode: string) => {
+  const q = query(
+    affiliateClicksCol,
+    where('sessionId', '==', sessionId),
+    where('affiliateCode', '==', affiliateCode)
+  );
+  const snap = await getDocs(q);
+  return snap.docs.length > 0;
 };
