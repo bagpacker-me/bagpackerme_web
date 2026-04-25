@@ -97,7 +97,7 @@ export function HeroSectionAnimated() {
                                         size="lg"
                                         variant="outline"
                                         className="h-12 rounded-xl px-8 border-[#0ED2E9]/30 text-[#0ED2E9] hover:bg-[#0ED2E9]/10 bg-transparent font-medium">
-                                        <Link href="/contact">
+                                        <Link href="/contact?intent=trip">
                                             <span className="text-nowrap">Plan Custom Trip</span>
                                         </Link>
                                     </Button>
@@ -145,5 +145,4 @@ export function HeroSectionAnimated() {
         </>
     )
 }
-
 

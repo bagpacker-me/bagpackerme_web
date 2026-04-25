@@ -123,7 +123,7 @@ export default function MemorableMoments() {
         viewport={{ once: true }}
         className="mt-16 text-center"
       >
-        <Link href="/contact" className="btn-teal btn-shimmer inline-flex">
+        <Link href="/contact?intent=trip" className="btn-teal btn-shimmer inline-flex">
           Plan Your Journey
           <ArrowRight className="w-4 h-4 ml-2" />
         </Link>

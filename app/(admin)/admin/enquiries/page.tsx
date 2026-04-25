@@ -20,6 +20,84 @@ const STATUS_STYLES: Record<string, string> = {
   responded: 'bg-[#DCFCE7] dark:bg-[#DCFCE7]/20 text-[#166534] dark:text-[#4ade80]',
 };
 
+const FORM_VARIANT_LABELS: Record<string, string> = {
+  contact: 'General Enquiry',
+  'package-booking': 'Package Booking',
+  b2c: 'Trip Enquiry',
+  corporate: 'Corporate Retreat',
+};
+
+const FORM_DATA_LABELS: Record<string, string> = {
+  firstName: 'First name',
+  lastName: 'Last name',
+  fullName: 'Full name',
+  email: 'Email',
+  phone: 'Phone / WhatsApp',
+  inquiryType: 'Inquiry type',
+  destinationMode: 'Destination approach',
+  destinationName: 'Destination name',
+  tripType: 'Trip type',
+  duration: 'Duration',
+  tripVibe: 'Trip vibe',
+  travelers: 'Travelers',
+  travelMonth: 'Preferred travel month',
+  note: 'Extra notes',
+  companyName: 'Company or organization',
+  retreatType: 'Retreat format',
+  primaryGoal: 'Primary goal',
+  attendeeCount: 'Attendee count',
+  attendeeProfile: 'Attendee profile',
+  roomingStyle: 'Rooming style',
+  preferredMonth: 'Preferred travel month',
+  originCities: 'Departure cities',
+  accommodationStyle: 'Accommodation style',
+  transfersSupport: 'Transfers support',
+  meetingSetup: 'Meeting setup',
+  avRequirements: 'AV requirements',
+  sessionNotes: 'Session notes',
+  mealStyle: 'Food style',
+  dietaryRequirements: 'Dietary requirements',
+  socialPlans: 'Social plans',
+  activityTypes: 'Activity types',
+  activityNotes: 'Activity notes',
+  budgetRange: 'Budget range',
+  contactName: 'Contact name',
+  contactEmail: 'Work email',
+  contactPhone: 'Phone / WhatsApp',
+  extraNotes: 'Extra notes',
+};
+
+function startCase(value: string) {
+  return value
+    .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+    .replace(/[-_]+/g, ' ')
+    .replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
+function formatVariant(value?: string) {
+  if (!value) {
+    return 'Legacy Enquiry';
+  }
+
+  return FORM_VARIANT_LABELS[value] ?? startCase(value);
+}
+
+function formatSource(value?: string) {
+  return value ? startCase(value) : '—';
+}
+
+function formatFormDataLabel(key: string) {
+  return FORM_DATA_LABELS[key] ?? startCase(key);
+}
+
+function formatFormDataValue(value: string | string[]) {
+  if (Array.isArray(value)) {
+    return value.length > 0 ? value.join(', ') : '—';
+  }
+
+  return value.trim() || '—';
+}
+
 function SkeletonRow() {
   return (
     <tr className="border-b border-gray-100">
@@ -42,6 +120,7 @@ function EnquirySlideOver({
   onClose: () => void;
   onStatusChange: (id: string, status: Enquiry['status']) => void;
 }) {
+  const formDataEntries = Object.entries(enquiry.formData ?? {}).filter(([key]) => key !== 'message');
   const whatsappMsg = encodeURIComponent(
     `Hi ${enquiry.name}! Thank you for your enquiry${enquiry.packageSlug ? ` about "${enquiry.packageSlug}"` : ''}. We'd love to help you plan your trip. Here are some details...`
   );
@@ -65,6 +144,9 @@ function EnquirySlideOver({
           <div>
             <h2 className="text-base font-semibold text-gray-900 dark:text-white">{enquiry.name}</h2>
             <p className="text-xs text-gray-400 dark:text-[rgba(255,255,255,0.6)] mt-0.5">{enquiry.email}</p>
+            <p className="text-xs text-gray-500 dark:text-[rgba(255,255,255,0.5)] mt-1">
+              {formatVariant(enquiry.formVariant)} · {formatSource(enquiry.source)}
+            </p>
           </div>
           <button
             onClick={onClose}
@@ -97,9 +179,12 @@ function EnquirySlideOver({
             {[
               { label: 'Phone', value: enquiry.phone },
               { label: 'Inquiry Type', value: enquiry.inquiryType },
+              { label: 'Form Variant', value: formatVariant(enquiry.formVariant) },
+              { label: 'Source', value: formatSource(enquiry.source) },
               { label: 'Package', value: enquiry.packageSlug ?? '—' },
               { label: 'Group Size', value: enquiry.groupSize ? `${enquiry.groupSize} people` : '—' },
               { label: 'Travel Date', value: enquiry.travelDate ? format(new Date(enquiry.travelDate), 'd MMM yyyy') : '—' },
+              { label: 'Submitted Via', value: formatSource(enquiry.submittedVia) },
               { label: 'Submitted', value: enquiry.createdAt ? format(new Date(enquiry.createdAt), 'd MMM yyyy, h:mm a') : '—' },
             ].map(({ label, value }) => (
               <div key={label} className="bg-gray-50 dark:bg-[rgba(255,255,255,0.02)] rounded-xl p-3 border border-transparent dark:border-[rgba(255,255,255,0.04)]">
@@ -116,6 +201,27 @@ function EnquirySlideOver({
               {enquiry.message || <span className="italic text-gray-300 dark:text-[rgba(255,255,255,0.3)]">No message</span>}
             </div>
           </div>
+
+          {formDataEntries.length > 0 && (
+            <div>
+              <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Form Details</label>
+              <div className="space-y-2">
+                {formDataEntries.map(([key, value]) => (
+                  <div
+                    key={key}
+                    className="flex items-start justify-between gap-4 rounded-xl bg-gray-50 dark:bg-[rgba(255,255,255,0.02)] px-4 py-3 border border-transparent dark:border-[rgba(255,255,255,0.04)]"
+                  >
+                    <p className="text-xs font-semibold uppercase tracking-wide text-gray-400 dark:text-[rgba(255,255,255,0.5)]">
+                      {formatFormDataLabel(key)}
+                    </p>
+                    <p className="text-sm text-right text-gray-700 dark:text-[rgba(255,255,255,0.82)] whitespace-pre-wrap">
+                      {formatFormDataValue(value)}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Actions Footer */}
@@ -335,6 +441,9 @@ export default function AdminEnquiriesPage() {
                   >
                     <td className="px-[16px]">
                       <p className="font-body text-[14px] text-[#221E2A] dark:text-[rgba(255,255,255,0.9)]">{enq.name}</p>
+                      <p className="font-body text-[11px] text-[#718096] dark:text-[rgba(255,255,255,0.55)] mt-0.5">
+                        {formatVariant(enq.formVariant)} · {formatSource(enq.source)}
+                      </p>
                       {/* Show email on small mobile under name */}
                       <p className="font-body text-[12px] text-[#718096] sm:hidden mt-0.5">{enq.email}</p>
                     </td>

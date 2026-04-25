@@ -150,7 +150,7 @@ export default function HeroInteractive() {
             </p>
             <div className="flex flex-col gap-4 sm:flex-row">
               <Link
-                href="/book"
+                href="/contact?intent=trip"
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-lime px-7 py-4 font-display text-[12px] font-bold uppercase tracking-widest text-teal transition-all duration-300 hover:-translate-y-0.5 hover:bg-lime/90 hover:shadow-glow-lime-sm"
               >
                 Book Now

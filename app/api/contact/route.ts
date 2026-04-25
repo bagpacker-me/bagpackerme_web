@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { contactFormSchema } from '@/lib/contact-form';
+import { buildContactWhatsAppMessage, contactFormSchema } from '@/lib/contact-form';
 import { persistEnquiryWithAffiliateAttribution } from '@/lib/enquiry-submission';
 
 const CONTACT_WEBHOOK_URL = 'https://n8n.srv1046139.hstgr.cloud/webhook/bpm-enquiry';
@@ -22,6 +22,7 @@ export async function POST(request: Request) {
     }
 
     const data = parsed.data;
+    const whatsappMessage = buildContactWhatsAppMessage(data);
     const webhookResponse = await fetch(CONTACT_WEBHOOK_URL, {
       method: 'POST',
       headers: {
@@ -30,7 +31,7 @@ export async function POST(request: Request) {
       body: JSON.stringify({
         ...data,
         name: `${data.firstName} ${data.lastName}`.trim(),
-        source: 'contact-us-page',
+        source: 'contact-page',
         submittedAt: new Date().toISOString(),
       }),
       cache: 'no-store',
@@ -53,11 +54,19 @@ export async function POST(request: Request) {
           email: data.email,
           phone: data.phone,
           inquiryType: data.inquiryType,
-          message: data.message,
+          message: whatsappMessage,
           status: 'new',
-          source: 'contact-us-page',
+          source: 'contact-page',
           submittedVia: 'contact-form',
           formVariant: 'contact',
+          formData: {
+            firstName: data.firstName.trim(),
+            lastName: data.lastName.trim(),
+            email: data.email.trim(),
+            phone: data.phone.trim(),
+            inquiryType: data.inquiryType,
+            message: data.message.trim(),
+          },
           affiliateCode: data.affiliateCode,
           affiliateSessionId: data.affiliateSessionId,
           createdAt: new Date().toISOString(),

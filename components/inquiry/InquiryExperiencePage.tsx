@@ -1,19 +1,30 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   ArrowLeft,
   ArrowRight,
+  Building2,
   Check,
+  Compass,
   Mail,
   MapPin,
+  MessageSquareText,
   MessageCircle,
   Phone,
 } from 'lucide-react';
 import { getStoredAffiliateCode, getStoredAffiliateSessionId } from '@/hooks/useAffiliateTracking';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
+import {
+  buildContactWhatsAppMessage,
+  contactFormSchema,
+  CONTACT_INQUIRY_TYPE_OPTIONS,
+  type ContactFormData,
+} from '@/lib/contact-form';
 import { cn } from '@/lib/utils';
 import {
   B2C_DESTINATION_OPTIONS,
@@ -36,10 +47,10 @@ import {
   CORPORATE_TRANSFER_OPTIONS,
   CORPORATE_RETREAT_TYPE_OPTIONS,
   type B2CFormState,
+  type ContactIntent,
   type CorporateFormState,
   type CorporateStepId,
   type InquiryOption,
-  type InquiryVariant,
   buildB2CEnquiryPayload,
   buildB2CWhatsAppMessage,
   buildCorporateEnquiryPayload,
@@ -52,12 +63,12 @@ import {
   validateCorporateForm,
 } from '@/lib/inquiry-form';
 
-const variantCopy = {
-  b2c: {
+const intentCopy = {
+  trip: {
     badge: 'Trip Inquiry',
-    title: 'Plan your next India journey on WhatsApp.',
+    title: 'Plan your next India journey in one conversation.',
     description:
-      "Share the essentials once and we'll continue the conversation with a WhatsApp-ready trip brief.",
+      "Choose the trip path, share the essentials once, and we'll continue the conversation on WhatsApp with your brief already structured.",
     formTitle: 'Tell us what kind of trip you want',
     formDescription:
       'This form is built for fast planning. Fill it once, and your details open directly in WhatsApp.',
@@ -73,7 +84,7 @@ const variantCopy = {
   },
   corporate: {
     badge: 'Corporate Retreats',
-    title: 'Brief us once. Plan the retreat over WhatsApp.',
+    title: 'Brief us once. Plan the retreat without switching pages.',
     description:
       'A 7-step corporate and MICE intake that captures travel, rooming, meetings, food, activities, and budget in one flow.',
     formTitle: 'Build your retreat brief step by step',
@@ -89,7 +100,71 @@ const variantCopy = {
       'Budget range plus a single point of contact for follow-up.',
     ],
   },
+  general: {
+    badge: 'General Enquiry',
+    title: 'Ask the right question without hunting for the right page.',
+    description:
+      'Use the same contact hub for partnerships, custom ideas, media requests, or anything else that does not fit a standard trip brief.',
+    formTitle: 'Tell us what you need',
+    formDescription:
+      'We will save your enquiry, route it to the team, and open WhatsApp so you can continue the conversation immediately.',
+    successTitle: 'Your message is on its way',
+    successDescription:
+      'We saved your enquiry and opened WhatsApp so you can keep the conversation moving with the team.',
+    panelTitle: 'Best for',
+    panelPoints: [
+      'Partnerships, collaborations, press, and media requests.',
+      'Custom ideas that do not fit the trip or corporate flows.',
+      'General questions when you want a quick human response.',
+    ],
+  },
 } as const;
+
+const defaultCopy = {
+  badge: 'Enquiries',
+  title: 'One contact page. The right form, based on what you need.',
+  description:
+    'Pick whether you are planning a trip, organizing a corporate retreat, or sending a general enquiry, and the page adapts in place.',
+  formTitle: 'Choose your enquiry type',
+  formDescription:
+    'Start with the option that matches your intent. You can switch paths at any time without leaving the page.',
+  panelTitle: 'Why this works better',
+  panelPoints: [
+    'Everyone starts in the same place, so the contact flow stays simple.',
+    'Each path asks only for the details needed for that kind of enquiry.',
+    'Every submission is still stored in Firebase and visible in admin.',
+  ],
+} as const;
+
+const INTENT_OPTIONS: {
+  intent: ContactIntent;
+  label: string;
+  shortLabel: string;
+  description: string;
+  icon: typeof Compass;
+}[] = [
+  {
+    intent: 'trip',
+    label: 'Plan a Trip',
+    shortLabel: 'Trip',
+    description: 'For personal travel planning, custom itineraries, and destination ideas.',
+    icon: Compass,
+  },
+  {
+    intent: 'corporate',
+    label: 'Corporate Retreat',
+    shortLabel: 'Corporate',
+    description: 'For retreats, offsites, incentive trips, and MICE-style requirements.',
+    icon: Building2,
+  },
+  {
+    intent: 'general',
+    label: 'General Enquiry',
+    shortLabel: 'General',
+    description: 'For partnerships, media requests, or anything else you want to ask.',
+    icon: MessageSquareText,
+  },
+];
 
 const emptyCorporateAttempts: Record<CorporateStepId, boolean> = {
   overview: false,
@@ -111,6 +186,14 @@ const fieldToCorporateStep = Object.entries(CORPORATE_STEP_FIELDS).reduce(
   },
   {} as Record<keyof CorporateFormState, CorporateStepId>
 );
+
+export function normalizeContactIntent(value?: string | null): ContactIntent | null {
+  if (value === 'trip' || value === 'corporate' || value === 'general') {
+    return value;
+  }
+
+  return null;
+}
 
 const labelCls = 'mb-3 ml-2 block font-display text-[14px] font-bold tracking-wide text-void';
 
@@ -377,6 +460,217 @@ function InquirySuccessState({
   );
 }
 
+function IntentChooser({
+  selectedIntent,
+  onSelect,
+}: {
+  selectedIntent: ContactIntent | null;
+  onSelect: (intent: ContactIntent) => void;
+}) {
+  return (
+    <div className="mb-8 grid gap-4 md:grid-cols-3">
+      {INTENT_OPTIONS.map((option) => {
+        const Icon = option.icon;
+        const isActive = selectedIntent === option.intent;
+
+        return (
+          <button
+            key={option.intent}
+            type="button"
+            onClick={() => onSelect(option.intent)}
+            className={cn(
+              'rounded-[28px] border p-5 text-left transition-all duration-300',
+              isActive
+                ? 'border-teal bg-teal text-white shadow-[0_14px_34px_rgba(40,80,86,0.22)]'
+                : 'border-void/8 bg-[#F7FBFC] text-void hover:-translate-y-1 hover:border-teal/20 hover:shadow-sm'
+            )}
+          >
+            <div
+              className={cn(
+                'mb-4 flex h-12 w-12 items-center justify-center rounded-2xl border transition-colors',
+                isActive ? 'border-white/20 bg-white/10 text-white' : 'border-teal/10 bg-white text-teal'
+              )}
+            >
+              <Icon className="h-5 w-5" />
+            </div>
+            <p
+              className={cn(
+                'mb-2 font-display text-[12px] font-bold uppercase tracking-[0.18em]',
+                isActive ? 'text-lime' : 'text-teal'
+              )}
+            >
+              {option.shortLabel}
+            </p>
+            <h3 className="mb-2 font-display text-[20px] font-bold leading-tight">{option.label}</h3>
+            <p className={cn('font-body text-[14px] leading-relaxed', isActive ? 'text-white/80' : 'text-void/65')}>
+              {option.description}
+            </p>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function GeneralContactForm({
+  whatsappNumber,
+  onSuccess,
+}: {
+  whatsappNumber: string;
+  onSuccess: (submittedUrl: string) => void;
+}) {
+  const [serverError, setServerError] = useState<string | null>(null);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<ContactFormData>({
+    resolver: zodResolver(contactFormSchema),
+  });
+
+  const onSubmit = async (data: ContactFormData) => {
+    setServerError(null);
+    const popup = window.open('', '_blank');
+
+    try {
+      const affiliateCode = getStoredAffiliateCode();
+      const affiliateSessionId = getStoredAffiliateSessionId();
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...data,
+          ...(affiliateCode ? { affiliateCode } : {}),
+          ...(affiliateSessionId ? { affiliateSessionId } : {}),
+        }),
+      });
+
+      if (!response.ok) {
+        const result = (await response.json().catch(() => null)) as { error?: string } | null;
+        throw new Error(result?.error || 'Something went wrong. Please try again or reach out via WhatsApp.');
+      }
+
+      const submittedUrl = buildWhatsAppUrl(whatsappNumber, buildContactWhatsAppMessage(data));
+      if (popup && !popup.closed) {
+        popup.location.href = submittedUrl;
+      } else {
+        window.location.href = submittedUrl;
+      }
+
+      onSuccess(submittedUrl);
+    } catch (error) {
+      popup?.close();
+      setServerError(
+        error instanceof Error
+          ? error.message
+          : 'Something went wrong. Please try again or reach out via WhatsApp.'
+      );
+    }
+  };
+
+  return (
+    <form className="space-y-6" noValidate onSubmit={handleSubmit(onSubmit)}>
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <div>
+          <FieldLabel label="First Name" required />
+          <input
+            type="text"
+            placeholder="First name"
+            {...register('firstName')}
+            className={fieldCls(Boolean(errors.firstName))}
+          />
+          <ErrorText error={errors.firstName?.message} />
+        </div>
+        <div>
+          <FieldLabel label="Last Name" required />
+          <input
+            type="text"
+            placeholder="Last name"
+            {...register('lastName')}
+            className={fieldCls(Boolean(errors.lastName))}
+          />
+          <ErrorText error={errors.lastName?.message} />
+        </div>
+      </div>
+
+      <div>
+        <FieldLabel label="E-mail" required />
+        <input
+          type="email"
+          placeholder="you@example.com"
+          {...register('email')}
+          className={fieldCls(Boolean(errors.email))}
+        />
+        <ErrorText error={errors.email?.message} />
+      </div>
+
+      <div>
+        <FieldLabel label="Phone Number" required />
+        <input
+          type="tel"
+          placeholder="Include country code if needed, e.g. +1 555 123 4567"
+          {...register('phone')}
+          className={fieldCls(Boolean(errors.phone))}
+        />
+        <FieldHint hint="You can enter your number in any format. Adding your country code helps us reach you faster." />
+        <ErrorText error={errors.phone?.message} />
+      </div>
+
+      <div>
+        <FieldLabel label="Subject" required />
+        <select
+          defaultValue=""
+          {...register('inquiryType')}
+          className={cn(fieldCls(Boolean(errors.inquiryType)), 'cursor-pointer appearance-none')}
+        >
+          <option value="" disabled>
+            Choose message subject
+          </option>
+          {CONTACT_INQUIRY_TYPE_OPTIONS.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+        <ErrorText error={errors.inquiryType?.message} />
+      </div>
+
+      <div>
+        <FieldLabel label="Message" required />
+        <textarea
+          rows={5}
+          placeholder="Leave us a message..."
+          {...register('message')}
+          className={cn(fieldCls(Boolean(errors.message)), 'resize-none')}
+        />
+        <ErrorText error={errors.message?.message} />
+      </div>
+
+      {serverError && (
+        <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-body text-red-600">
+          {serverError}
+        </div>
+      )}
+
+      <div className="flex justify-start border-t border-void/5 pt-8 sm:justify-end">
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="group relative flex items-center justify-center gap-3 overflow-hidden rounded-full bg-teal px-[40px] py-[18px] font-display text-[13px] font-bold uppercase tracking-widest text-white shadow-[0_8px_24px_rgba(40,80,86,0.25)] transition-all duration-300 hover:-translate-y-1 hover:bg-teal/90 hover:shadow-[0_12px_32px_rgba(40,80,86,0.4)] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 disabled:hover:bg-teal"
+        >
+          <span className="absolute inset-0 w-[120%] -translate-x-[150%] skew-x-[30deg] bg-white/20 group-hover:animate-[shimmer_1.5s_ease-in-out_infinite]" />
+          <span className="relative z-10 flex items-center gap-3">
+            {isSubmitting ? 'Saving Enquiry...' : 'Send Message'}
+            <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+          </span>
+        </button>
+      </div>
+    </form>
+  );
+}
+
 function ProgressIndicator({ activeStep }: { activeStep: number }) {
   return (
     <div className="mb-8 overflow-x-auto pb-2">
@@ -426,21 +720,21 @@ function ProgressIndicator({ activeStep }: { activeStep: number }) {
 }
 
 function ContactRail({
-  variant,
+  intent,
   contactEmail,
   contactPhone,
   whatsappNumber,
   address,
   workingHours,
 }: {
-  variant: InquiryVariant;
+  intent: ContactIntent | null;
   contactEmail: string;
   contactPhone: string;
   whatsappNumber: string;
   address: string;
   workingHours: string;
 }) {
-  const panel = variantCopy[variant];
+  const panel = intent ? intentCopy[intent] : defaultCopy;
   const whatsappUrl = `https://wa.me/${whatsappNumber}`;
 
   return (
@@ -988,11 +1282,17 @@ function CorporateForm({
   );
 }
 
-export function InquiryExperiencePage({ variant }: { variant: InquiryVariant }) {
+export function InquiryExperiencePage({
+  initialIntent = null,
+}: {
+  initialIntent?: ContactIntent | null;
+}) {
   const settings = useSiteSettings();
-  const pageCopy = variantCopy[variant];
+  const [selectedIntent, setSelectedIntent] = useState<ContactIntent | null>(initialIntent);
+  const pageCopy = selectedIntent ? intentCopy[selectedIntent] : defaultCopy;
   const [submittedUrl, setSubmittedUrl] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [generalFormVersion, setGeneralFormVersion] = useState(0);
   const [b2cForm, setB2CForm] = useState(initialB2CFormState);
   const [b2cSubmitAttempted, setB2CSubmitAttempted] = useState(false);
   const [corporateForm, setCorporateForm] = useState(initialCorporateFormState);
@@ -1000,6 +1300,24 @@ export function InquiryExperiencePage({ variant }: { variant: InquiryVariant }) 
   const [corporateAttempts, setCorporateAttempts] =
     useState<Record<CorporateStepId, boolean>>(emptyCorporateAttempts);
   const [corporateFinalAttempted, setCorporateFinalAttempted] = useState(false);
+
+  useEffect(() => {
+    setSelectedIntent(initialIntent);
+    setSubmittedUrl(null);
+  }, [initialIntent]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const nextUrl =
+      selectedIntent === 'trip' || selectedIntent === 'corporate'
+        ? `/contact?intent=${selectedIntent}`
+        : '/contact';
+
+    window.history.replaceState(window.history.state, '', nextUrl);
+  }, [selectedIntent]);
 
   const b2cErrors = b2cSubmitAttempted ? validateB2CForm(b2cForm) : {};
   const corporateErrors = validateCorporateForm(corporateForm);
@@ -1162,19 +1480,94 @@ export function InquiryExperiencePage({ variant }: { variant: InquiryVariant }) 
     return corporateErrors[field];
   };
 
-  const resetVariant = () => {
+  const selectIntent = (intent: ContactIntent) => {
+    setSelectedIntent(intent);
+    setSubmittedUrl(null);
+  };
+
+  const resetActiveIntent = () => {
     setSubmittedUrl(null);
 
-    if (variant === 'b2c') {
+    if (selectedIntent === 'trip') {
       setB2CForm(initialB2CFormState);
       setB2CSubmitAttempted(false);
       return;
     }
 
-    setCorporateForm(initialCorporateFormState);
-    setCorporateStepIndex(0);
-    setCorporateAttempts(emptyCorporateAttempts);
-    setCorporateFinalAttempted(false);
+    if (selectedIntent === 'corporate') {
+      setCorporateForm(initialCorporateFormState);
+      setCorporateStepIndex(0);
+      setCorporateAttempts(emptyCorporateAttempts);
+      setCorporateFinalAttempted(false);
+      return;
+    }
+
+    if (selectedIntent === 'general') {
+      setGeneralFormVersion((current) => current + 1);
+    }
+  };
+
+  const renderActiveForm = () => {
+    if (submittedUrl && selectedIntent) {
+      return (
+        <InquirySuccessState
+          title={intentCopy[selectedIntent].successTitle}
+          description={intentCopy[selectedIntent].successDescription}
+          submittedUrl={submittedUrl}
+          onReset={resetActiveIntent}
+        />
+      );
+    }
+
+    if (selectedIntent === 'trip') {
+      return (
+        <B2CForm
+          form={b2cForm}
+          errors={b2cErrors}
+          isSubmitting={isSubmitting}
+          onChange={updateB2C}
+          onSubmit={submitB2C}
+        />
+      );
+    }
+
+    if (selectedIntent === 'corporate') {
+      return (
+        <CorporateForm
+          form={corporateForm}
+          activeStepIndex={corporateStepIndex}
+          getError={getCorporateError}
+          isSubmitting={isSubmitting}
+          onChange={updateCorporate}
+          onBack={() => setCorporateStepIndex((current) => Math.max(current - 1, 0))}
+          onNext={moveCorporateNext}
+          onSubmit={submitCorporate}
+        />
+      );
+    }
+
+    if (selectedIntent === 'general') {
+      return (
+        <GeneralContactForm
+          key={generalFormVersion}
+          whatsappNumber={settings.whatsappNumber}
+          onSuccess={setSubmittedUrl}
+        />
+      );
+    }
+
+    return (
+      <div className="rounded-[28px] border border-dashed border-teal/20 bg-[#F7FBFC] px-6 py-10 text-center">
+        <p className="mb-2 font-display text-[11px] font-bold uppercase tracking-[0.18em] text-teal">
+          Choose A Path
+        </p>
+        <h3 className="mb-3 font-display text-[28px] font-bold text-void">Start with your intent</h3>
+        <p className="mx-auto max-w-[520px] font-body text-[15px] leading-relaxed text-void/65">
+          Select the option that matches what you need and the form below will switch instantly. Every path still saves
+          to Firebase and lands in your admin enquiries dashboard.
+        </p>
+      </div>
+    );
   };
 
   return (
@@ -1216,38 +1609,29 @@ export function InquiryExperiencePage({ variant }: { variant: InquiryVariant }) 
                 <p className="font-body text-[16px] text-void/60">{pageCopy.formDescription}</p>
               </div>
 
-              {submittedUrl ? (
-                <InquirySuccessState
-                  title={pageCopy.successTitle}
-                  description={pageCopy.successDescription}
-                  submittedUrl={submittedUrl}
-                  onReset={resetVariant}
-                />
-              ) : variant === 'b2c' ? (
-                <B2CForm
-                  form={b2cForm}
-                  errors={b2cErrors}
-                  isSubmitting={isSubmitting}
-                  onChange={updateB2C}
-                  onSubmit={submitB2C}
-                />
-              ) : (
-                <CorporateForm
-                  form={corporateForm}
-                  activeStepIndex={corporateStepIndex}
-                  getError={getCorporateError}
-                  isSubmitting={isSubmitting}
-                  onChange={updateCorporate}
-                  onBack={() => setCorporateStepIndex((current) => Math.max(current - 1, 0))}
-                  onNext={moveCorporateNext}
-                  onSubmit={submitCorporate}
-                />
+              <IntentChooser selectedIntent={selectedIntent} onSelect={selectIntent} />
+
+              {selectedIntent && (
+                <div className="mb-8 flex justify-end">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedIntent(null);
+                      setSubmittedUrl(null);
+                    }}
+                    className="inline-flex items-center gap-2 rounded-full border border-void/10 px-4 py-2 font-display text-[11px] font-bold uppercase tracking-widest text-void/70 transition-colors hover:border-teal/30 hover:text-teal"
+                  >
+                    Choose A Different Enquiry
+                  </button>
+                </div>
               )}
+
+              {renderActiveForm()}
             </div>
 
             <div className="lg:col-span-5">
               <ContactRail
-                variant={variant}
+                intent={selectedIntent}
                 contactEmail={settings.contactEmail}
                 contactPhone={settings.contactPhone}
                 whatsappNumber={settings.whatsappNumber}

@@ -64,7 +64,7 @@ export default function LimitedTimePromo() {
           viewport={{ once: true }}
           transition={{ delay: 0.4, duration: 0.5 }}
         >
-          <Link href="/contact" className="btn-lime btn-shimmer inline-flex">
+          <Link href="/contact?intent=trip" className="btn-lime btn-shimmer inline-flex">
             Claim My Trip Now
             <ArrowRight className="w-4 h-4 ml-2" />
           </Link>

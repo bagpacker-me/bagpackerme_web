@@ -1,6 +1,7 @@
 import type { Enquiry, EnquiryFormData } from '@/types';
 
 export type InquiryVariant = 'b2c' | 'corporate';
+export type ContactIntent = 'trip' | 'corporate' | 'general';
 
 export interface InquiryOption {
   label: string;
@@ -468,7 +469,7 @@ export function buildB2CEnquiryPayload(
     inquiryType: 'Trip Inquiry',
     message: buildB2CWhatsAppMessage(form),
     status: 'new',
-    source: 'book-page',
+    source: 'contact-page',
     submittedVia: 'whatsapp-handoff',
     formVariant: 'b2c',
     formData,
@@ -519,7 +520,7 @@ export function buildCorporateEnquiryPayload(
     inquiryType: 'Corporate Retreat Inquiry',
     message: buildCorporateWhatsAppMessage(form),
     status: 'new',
-    source: 'corporate-page',
+    source: 'contact-page',
     submittedVia: 'whatsapp-handoff',
     formVariant: 'corporate',
     formData,

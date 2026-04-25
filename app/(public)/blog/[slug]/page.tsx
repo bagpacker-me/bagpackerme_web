@@ -168,7 +168,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                 </p>
               </div>
               <Link
-                href="/book"
+                href="/contact?intent=trip"
                 className="group inline-flex items-center gap-2 self-start rounded-full bg-white px-6 py-4 font-display text-[12px] font-bold uppercase tracking-widest text-teal transition-all duration-300 hover:-translate-y-0.5 hover:bg-lime"
               >
                 Plan this trip
