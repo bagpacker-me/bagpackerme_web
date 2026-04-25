@@ -187,14 +187,6 @@ const fieldToCorporateStep = Object.entries(CORPORATE_STEP_FIELDS).reduce(
   {} as Record<keyof CorporateFormState, CorporateStepId>
 );
 
-export function normalizeContactIntent(value?: string | null): ContactIntent | null {
-  if (value === 'trip' || value === 'corporate' || value === 'general') {
-    return value;
-  }
-
-  return null;
-}
-
 const labelCls = 'mb-3 ml-2 block font-display text-[14px] font-bold tracking-wide text-void';
 
 function fieldCls(hasError: boolean) {

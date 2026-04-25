@@ -1,8 +1,6 @@
 import type { Metadata } from 'next';
-import {
-  InquiryExperiencePage,
-  normalizeContactIntent,
-} from '@/components/inquiry/InquiryExperiencePage';
+import { InquiryExperiencePage } from '@/components/inquiry/InquiryExperiencePage';
+import { normalizeContactIntent } from '@/lib/contact-intent';
 
 export const metadata: Metadata = {
   title: 'Contact, Trip Planning & Corporate Retreats',
