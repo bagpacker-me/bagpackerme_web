@@ -154,6 +154,29 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
 
           {!secondHalf && <NewsletterCard />}
 
+          <div className="my-12 rounded-[24px] bg-teal p-7 text-white md:p-10">
+            <p className="mb-2 font-display text-[11px] font-bold uppercase tracking-widest text-lime">
+              BagPackerMe Planning
+            </p>
+            <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+              <div className="max-w-[460px]">
+                <h2 className="mb-3 font-display text-[28px] font-bold leading-tight md:text-[34px]">
+                  Want us to shape a version of this trip for you?
+                </h2>
+                <p className="font-body text-[15px] leading-relaxed text-white/80">
+                  Tell us the destination, vibe, timing, and group size you have in mind. We&apos;ll take it forward on WhatsApp.
+                </p>
+              </div>
+              <Link
+                href="/book"
+                className="group inline-flex items-center gap-2 self-start rounded-full bg-white px-6 py-4 font-display text-[12px] font-bold uppercase tracking-widest text-teal transition-all duration-300 hover:-translate-y-0.5 hover:bg-lime"
+              >
+                Plan this trip
+                <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
+              </Link>
+            </div>
+          </div>
+
           {/* Share */}
           <div className="my-12 pt-10 border-t border-gray-100">
             <ShareButtons title={blog.title} url={currentUrl} />

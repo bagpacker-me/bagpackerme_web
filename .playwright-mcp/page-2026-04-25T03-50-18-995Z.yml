@@ -1,0 +1,182 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - banner:
+      - navigation:
+        - generic [ref=e4]:
+          - link "home" [ref=e5] [cursor=pointer]:
+            - /url: /
+            - img "BagPackerMe Logo" [ref=e6]
+          - button "Open Menu" [ref=e8] [cursor=pointer]:
+            - img [ref=e9]
+    - main [ref=e10]:
+      - main [ref=e12]:
+        - generic [ref=e14]:
+          - generic [ref=e15]: Trip Inquiry
+          - heading "Plan your next India journey on WhatsApp." [level=1] [ref=e17]
+          - paragraph [ref=e18]: Share the essentials once and we'll continue the conversation with a WhatsApp-ready trip brief.
+        - generic [ref=e20]:
+          - generic [ref=e21]:
+            - generic [ref=e22]:
+              - heading "Tell us what kind of trip you want" [level=2] [ref=e23]
+              - paragraph [ref=e24]: This form is built for fast planning. Fill it once, and your details open directly in WhatsApp.
+            - generic [ref=e25]:
+              - generic [ref=e26]:
+                - generic [ref=e27]:
+                  - generic [ref=e28]: Full name *
+                  - textbox "Your name" [ref=e29]: Jordan Lee
+                - generic [ref=e30]:
+                  - generic [ref=e31]: Email *
+                  - textbox "you@example.com" [ref=e32]: jordan@example.com
+              - generic [ref=e33]:
+                - generic [ref=e34]:
+                  - generic [ref=e35]: Phone / WhatsApp *
+                  - textbox "+91 99209 92026" [ref=e36]: +1 415 555 0198
+                  - paragraph [ref=e37]: Include your country code if you can.
+                - generic [ref=e38]:
+                  - generic [ref=e39]: How many travelers? *
+                  - combobox [ref=e40] [cursor=pointer]:
+                    - option "Select your traveler count" [disabled]
+                    - option "1 traveler"
+                    - option "2 travelers" [selected]
+                    - option "3 to 4 travelers"
+                    - option "5 to 8 travelers"
+                    - option "9+ travelers"
+              - generic [ref=e41]:
+                - generic [ref=e42]: Where do you want to go? *
+                - generic [ref=e43]:
+                  - button "I have a destination in mind" [ref=e44] [cursor=pointer]
+                  - button "Open to suggestions" [ref=e45] [cursor=pointer]
+              - generic [ref=e200]:
+                - generic [ref=e201]: Destination name *
+                - textbox "Tell us the place or route" [ref=e202]
+                - paragraph [ref=e203]: Destination name is required
+              - generic [ref=e46]:
+                - generic [ref=e47]: Trip type *
+                - generic [ref=e48]:
+                  - button "Adventure escape" [ref=e49] [cursor=pointer]
+                  - button "Cultural immersion" [ref=e50] [cursor=pointer]
+                  - button "Food journey" [ref=e51] [cursor=pointer]
+                  - button "Wellness break" [ref=e52] [cursor=pointer]
+                  - button "Celebration trip" [ref=e53] [cursor=pointer]
+              - generic [ref=e54]:
+                - generic [ref=e55]:
+                  - generic [ref=e56]: Duration *
+                  - generic [ref=e57]:
+                    - button "Weekend escape" [ref=e58] [cursor=pointer]
+                    - button "3 to 5 days" [ref=e59] [cursor=pointer]
+                    - button "6 to 8 days" [ref=e60] [cursor=pointer]
+                    - button "9+ days" [ref=e61] [cursor=pointer]
+                - generic [ref=e62]:
+                  - generic [ref=e63]: Preferred travel month *
+                  - textbox [ref=e64]: 2026-08
+              - generic [ref=e65]:
+                - generic [ref=e66]: Trip vibe *
+                - generic [ref=e67]:
+                  - button "Culture" [ref=e68] [cursor=pointer]
+                  - button "Food" [ref=e69] [cursor=pointer]
+                  - button "Nature" [ref=e70] [cursor=pointer]
+                  - button "Adventure" [ref=e71] [cursor=pointer]
+                  - button "Wellness" [ref=e72] [cursor=pointer]
+                  - button "Luxury" [ref=e73] [cursor=pointer]
+                  - button "Slow travel" [ref=e74] [cursor=pointer]
+                - paragraph [ref=e75]: Choose as many as you want.
+              - generic [ref=e76]:
+                - generic [ref=e77]: Anything else we should know?
+                - textbox "Special occasions, pace, must-sees, or anything that will help us shape the right trip." [ref=e78]
+              - button "Send Trip Brief" [active] [ref=e80] [cursor=pointer]:
+                - generic [ref=e82]:
+                  - text: Send Trip Brief
+                  - img [ref=e83]
+          - generic [ref=e86]:
+            - img "BagPackerMe logo" [ref=e89]
+            - generic [ref=e90]:
+              - paragraph [ref=e91]: What we need from you
+              - list [ref=e92]:
+                - listitem [ref=e93]:
+                  - generic [ref=e95]: Where you want to go, or whether you want suggestions.
+                - listitem [ref=e96]:
+                  - generic [ref=e98]: The trip format, duration, and vibe you are chasing.
+                - listitem [ref=e99]:
+                  - generic [ref=e101]: Your preferred month, traveler count, and any extra context.
+            - link "Email bagpackerme.world@gmail.com" [ref=e102] [cursor=pointer]:
+              - /url: mailto:bagpackerme.world@gmail.com
+              - img [ref=e104]
+              - generic [ref=e107]:
+                - paragraph [ref=e108]: Email
+                - paragraph [ref=e109]: bagpackerme.world@gmail.com
+            - link "Phone / WhatsApp +91 9920992026" [ref=e110] [cursor=pointer]:
+              - /url: https://wa.me/919920992026
+              - img [ref=e112]
+              - generic [ref=e114]:
+                - paragraph [ref=e115]: Phone / WhatsApp
+                - paragraph [ref=e116]: +91 9920992026
+            - generic [ref=e117]:
+              - img [ref=e119]
+              - generic [ref=e122]:
+                - paragraph [ref=e123]: Address
+                - paragraph [ref=e124]: Mumbai, India
+            - generic [ref=e125]:
+              - paragraph [ref=e126]: Support Window
+              - paragraph [ref=e127]: Real people, not a ticket queue.
+              - paragraph [ref=e128]: "Mon-Fri: 9:00 AM - 6:00 PM (IST)"
+    - contentinfo [ref=e129]:
+      - generic [ref=e130]:
+        - generic [ref=e131]:
+          - generic [ref=e132]:
+            - img "BagPackerMe Logo" [ref=e134]
+            - paragraph [ref=e135]: Experiential Journeys Through India
+            - generic [ref=e136]:
+              - link [ref=e137] [cursor=pointer]:
+                - /url: https://instagram.com/bagpackerme
+                - img [ref=e138]
+              - link [ref=e141] [cursor=pointer]:
+                - /url: https://youtube.com/@bagpackerme
+                - img [ref=e142]
+              - link [ref=e145] [cursor=pointer]:
+                - /url: https://twitter.com/bagpackerme
+                - img [ref=e146]
+              - link [ref=e148] [cursor=pointer]:
+                - /url: https://wa.me/919920992026
+                - img [ref=e149]
+            - paragraph [ref=e151]: Based in Mumbai, India
+          - generic [ref=e152]:
+            - heading "Company" [level=3] [ref=e153]
+            - list [ref=e154]:
+              - listitem [ref=e155]:
+                - link "About" [ref=e156] [cursor=pointer]:
+                  - /url: /about
+              - listitem [ref=e157]:
+                - link "Blog" [ref=e158] [cursor=pointer]:
+                  - /url: /blog
+              - listitem [ref=e159]:
+                - link "Corporate Retreats" [ref=e160] [cursor=pointer]:
+                  - /url: /corporate
+              - listitem [ref=e161]:
+                - link "Contact" [ref=e162] [cursor=pointer]:
+                  - /url: /contact
+          - generic [ref=e163]:
+            - heading "Get In Touch" [level=3] [ref=e164]
+            - generic [ref=e165]:
+              - link "bagpackerme.world@gmail.com" [ref=e166] [cursor=pointer]:
+                - /url: mailto:bagpackerme.world@gmail.com
+              - link "+91 9920992026" [ref=e167] [cursor=pointer]:
+                - /url: https://wa.me/919920992026
+            - generic [ref=e168]:
+              - paragraph [ref=e169]: Join 2,000+ travelers
+              - generic [ref=e170]:
+                - textbox "Email address" [ref=e171]
+                - button "Subscribe" [ref=e172] [cursor=pointer]:
+                  - img [ref=e173]
+        - generic [ref=e175]:
+          - paragraph [ref=e176]: © 2026 BAGPACKERME. All rights reserved.
+          - generic [ref=e177]:
+            - link "Privacy Policy" [ref=e178] [cursor=pointer]:
+              - /url: /privacy
+            - link "Terms" [ref=e179] [cursor=pointer]:
+              - /url: /terms
+    - generic [ref=e181]:
+      - generic: Chat with us on WhatsApp
+      - link "Chat with us on WhatsApp" [ref=e183] [cursor=pointer]:
+        - /url: https://wa.me/919920992026?text=Hi%2C%20I'm%20interested%20in%20a%20Bagpackerme%20trip!
+        - img [ref=e184]
+  - alert [ref=e186]

@@ -10,6 +10,7 @@ import { Logo } from '../ui/Logo';
 const companyLinks = [
   { name: 'About', href: '/about' },
   { name: 'Blog', href: '/blog' },
+  { name: 'Corporate Retreats', href: '/corporate' },
   { name: 'Contact', href: '/contact' },
 ];
 

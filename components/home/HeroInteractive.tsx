@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus } from 'lucide-react';
+import { ArrowRight, Plus } from 'lucide-react';
 import Image from 'next/image';
 
 const destinations = [
@@ -147,6 +148,21 @@ export default function HeroInteractive() {
             <p className="text-base md:text-lg mb-8 max-w-md opacity-80 leading-relaxed">
               {activeDest.description}
             </p>
+            <div className="flex flex-col gap-4 sm:flex-row">
+              <Link
+                href="/book"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-lime px-7 py-4 font-display text-[12px] font-bold uppercase tracking-widest text-teal transition-all duration-300 hover:-translate-y-0.5 hover:bg-lime/90 hover:shadow-glow-lime-sm"
+              >
+                Book Now
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link
+                href="/packages"
+                className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-7 py-4 font-display text-[12px] font-bold uppercase tracking-widest text-white transition-colors duration-300 hover:border-white/40 hover:bg-white/15"
+              >
+                Explore Trips
+              </Link>
+            </div>
 
           </motion.div>
         </AnimatePresence>

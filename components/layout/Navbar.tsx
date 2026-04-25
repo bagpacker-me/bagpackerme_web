@@ -88,7 +88,7 @@ export function Navbar() {
                                 asChild
                                 size="sm"
                                 className="hidden lg:inline-flex bg-lime text-teal hover:bg-lime/90 rounded-full px-6 font-bold font-display tracking-widest uppercase transition-all duration-300 hover:-translate-y-0.5 hover:shadow-glow-lime-sm">
-                                <Link href="/contact">Book Now</Link>
+                                <Link href="/book">Book Now</Link>
                             </Button>
 
                             <button
@@ -130,7 +130,7 @@ export function Navbar() {
                                 asChild
                                 size="lg"
                                 className="w-full bg-lime text-teal hover:bg-lime/90 rounded-full font-bold font-display tracking-widest uppercase transition-all duration-300 hover:shadow-glow-lime">
-                                <Link href="/contact">Book Now</Link>
+                                <Link href="/book">Book Now</Link>
                             </Button>
                         </div>
                     </div>
