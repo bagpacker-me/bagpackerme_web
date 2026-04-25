@@ -71,6 +71,10 @@ export interface BlogPost {
   createdAt: string;
 }
 
+export type StoredEnquiryVariant = 'contact' | 'package-booking' | 'b2c' | 'corporate';
+
+export type EnquiryFormData = Record<string, string | string[]>;
+
 export interface Enquiry {
   id: string;
   name: string;
@@ -83,6 +87,10 @@ export interface Enquiry {
   message: string;
   status: 'new' | 'in_progress' | 'responded';
   affiliateCode?: string;
+  source?: string;
+  submittedVia?: string;
+  formVariant?: StoredEnquiryVariant;
+  formData?: EnquiryFormData;
   createdAt: string;
 }
 

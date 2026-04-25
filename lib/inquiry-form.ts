@@ -1,3 +1,5 @@
+import type { Enquiry, EnquiryFormData } from '@/types';
+
 export type InquiryVariant = 'b2c' | 'corporate';
 
 export interface InquiryOption {
@@ -437,6 +439,93 @@ export function buildCorporateWhatsAppMessage(form: CorporateFormState) {
     `Phone / WhatsApp: ${form.contactPhone.trim()}`,
     `Extra notes: ${safeText(form.extraNotes)}`,
   ].join('\n');
+}
+
+export function buildB2CEnquiryPayload(
+  form: B2CFormState,
+  affiliateCode?: string | null
+): Omit<Enquiry, 'id'> {
+  const destinationName =
+    form.destinationMode === 'I have a destination in mind' ? form.destinationName.trim() : '';
+  const formData: EnquiryFormData = {
+    fullName: form.fullName.trim(),
+    email: form.email.trim(),
+    phone: form.phone.trim(),
+    destinationMode: form.destinationMode,
+    destinationName,
+    tripType: form.tripType,
+    duration: form.duration,
+    tripVibe: form.tripVibe,
+    travelers: form.travelers,
+    travelMonth: form.travelMonth,
+    note: form.note.trim(),
+  };
+
+  return {
+    name: form.fullName.trim(),
+    email: form.email.trim(),
+    phone: form.phone.trim(),
+    inquiryType: 'Trip Inquiry',
+    message: buildB2CWhatsAppMessage(form),
+    status: 'new',
+    source: 'book-page',
+    submittedVia: 'whatsapp-handoff',
+    formVariant: 'b2c',
+    formData,
+    ...(affiliateCode ? { affiliateCode } : {}),
+    createdAt: new Date().toISOString(),
+  };
+}
+
+export function buildCorporateEnquiryPayload(
+  form: CorporateFormState,
+  affiliateCode?: string | null
+): Omit<Enquiry, 'id'> {
+  const destinationName =
+    form.destinationMode === 'I have a destination in mind' ? form.destinationName.trim() : '';
+  const formData: EnquiryFormData = {
+    companyName: form.companyName.trim(),
+    retreatType: form.retreatType,
+    primaryGoal: form.primaryGoal.trim(),
+    destinationMode: form.destinationMode,
+    destinationName,
+    attendeeCount: form.attendeeCount,
+    attendeeProfile: form.attendeeProfile.trim(),
+    roomingStyle: form.roomingStyle,
+    preferredMonth: form.preferredMonth,
+    duration: form.duration,
+    originCities: form.originCities.trim(),
+    accommodationStyle: form.accommodationStyle,
+    transfersSupport: form.transfersSupport,
+    meetingSetup: form.meetingSetup,
+    avRequirements: form.avRequirements,
+    sessionNotes: form.sessionNotes.trim(),
+    mealStyle: form.mealStyle,
+    dietaryRequirements: form.dietaryRequirements.trim(),
+    socialPlans: form.socialPlans,
+    activityTypes: form.activityTypes,
+    activityNotes: form.activityNotes.trim(),
+    budgetRange: form.budgetRange,
+    contactName: form.contactName.trim(),
+    contactEmail: form.contactEmail.trim(),
+    contactPhone: form.contactPhone.trim(),
+    extraNotes: form.extraNotes.trim(),
+  };
+
+  return {
+    name: form.contactName.trim(),
+    email: form.contactEmail.trim(),
+    phone: form.contactPhone.trim(),
+    inquiryType: 'Corporate Retreat Inquiry',
+    message: buildCorporateWhatsAppMessage(form),
+    status: 'new',
+    source: 'corporate-page',
+    submittedVia: 'whatsapp-handoff',
+    formVariant: 'corporate',
+    formData,
+    ...(affiliateCode ? { affiliateCode } : {}),
+    createdAt: new Date().toISOString(),
+  };
 }
 
 export function buildWhatsAppUrl(whatsappNumber: string, message: string) {

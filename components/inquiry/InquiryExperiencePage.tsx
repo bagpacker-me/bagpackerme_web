@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import toast from 'react-hot-toast';
 import {
   ArrowLeft,
   ArrowRight,
@@ -11,7 +12,9 @@ import {
   MessageCircle,
   Phone,
 } from 'lucide-react';
+import { getStoredAffiliateCode } from '@/hooks/useAffiliateTracking';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
+import { createEnquiry } from '@/lib/firestore';
 import { cn } from '@/lib/utils';
 import {
   B2C_DESTINATION_OPTIONS,
@@ -38,7 +41,9 @@ import {
   type CorporateStepId,
   type InquiryOption,
   type InquiryVariant,
+  buildB2CEnquiryPayload,
   buildB2CWhatsAppMessage,
+  buildCorporateEnquiryPayload,
   buildCorporateWhatsAppMessage,
   buildWhatsAppUrl,
   getCorporateStepErrors,
@@ -514,13 +519,15 @@ function ContactRail({
 function B2CForm({
   form,
   errors,
+  isSubmitting,
   onChange,
   onSubmit,
 }: {
   form: B2CFormState;
   errors: Partial<Record<keyof B2CFormState, string>>;
+  isSubmitting: boolean;
   onChange: <K extends keyof B2CFormState>(field: K, value: B2CFormState[K]) => void;
-  onSubmit: () => void;
+  onSubmit: () => void | Promise<void>;
 }) {
   return (
     <form
@@ -645,11 +652,12 @@ function B2CForm({
       <div className="flex justify-start border-t border-void/5 pt-8 sm:justify-end">
         <button
           type="submit"
-          className="group relative flex items-center justify-center gap-3 overflow-hidden rounded-full bg-teal px-[40px] py-[18px] font-display text-[13px] font-bold uppercase tracking-widest text-white shadow-[0_8px_24px_rgba(40,80,86,0.25)] transition-all duration-300 hover:-translate-y-1 hover:bg-teal/90 hover:shadow-[0_12px_32px_rgba(40,80,86,0.4)]"
+          disabled={isSubmitting}
+          className="group relative flex items-center justify-center gap-3 overflow-hidden rounded-full bg-teal px-[40px] py-[18px] font-display text-[13px] font-bold uppercase tracking-widest text-white shadow-[0_8px_24px_rgba(40,80,86,0.25)] transition-all duration-300 hover:-translate-y-1 hover:bg-teal/90 hover:shadow-[0_12px_32px_rgba(40,80,86,0.4)] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 disabled:hover:bg-teal"
         >
           <span className="absolute inset-0 w-[120%] -translate-x-[150%] skew-x-[30deg] bg-white/20 group-hover:animate-[shimmer_1.5s_ease-in-out_infinite]" />
           <span className="relative z-10 flex items-center gap-3">
-            Send Trip Brief
+            {isSubmitting ? 'Saving Brief...' : 'Send Trip Brief'}
             <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
           </span>
         </button>
@@ -662,6 +670,7 @@ function CorporateForm({
   form,
   activeStepIndex,
   getError,
+  isSubmitting,
   onChange,
   onBack,
   onNext,
@@ -670,10 +679,11 @@ function CorporateForm({
   form: CorporateFormState;
   activeStepIndex: number;
   getError: (field: keyof CorporateFormState) => string | undefined;
+  isSubmitting: boolean;
   onChange: <K extends keyof CorporateFormState>(field: K, value: CorporateFormState[K]) => void;
   onBack: () => void;
   onNext: () => void;
-  onSubmit: () => void;
+  onSubmit: () => void | Promise<void>;
 }) {
   const activeStep = CORPORATE_STEPS[activeStepIndex];
   const isLastStep = activeStepIndex === CORPORATE_STEPS.length - 1;
@@ -959,7 +969,7 @@ function CorporateForm({
         <button
           type="button"
           onClick={onBack}
-          disabled={activeStepIndex === 0}
+          disabled={activeStepIndex === 0 || isSubmitting}
           className="inline-flex items-center justify-center gap-2 rounded-full border border-void/10 px-5 py-3 font-display text-[12px] font-bold uppercase tracking-widest text-void transition-colors hover:border-teal/30 hover:text-teal disabled:cursor-not-allowed disabled:opacity-45"
         >
           <ArrowLeft className="h-4 w-4" />
@@ -968,9 +978,10 @@ function CorporateForm({
 
         <button
           type="submit"
-          className="group inline-flex items-center justify-center gap-2 rounded-full bg-teal px-[28px] py-[16px] font-display text-[12px] font-bold uppercase tracking-widest text-white shadow-[0_8px_24px_rgba(40,80,86,0.25)] transition-all duration-300 hover:-translate-y-1 hover:bg-teal/90 hover:shadow-[0_12px_32px_rgba(40,80,86,0.4)]"
+          disabled={isSubmitting}
+          className="group inline-flex items-center justify-center gap-2 rounded-full bg-teal px-[28px] py-[16px] font-display text-[12px] font-bold uppercase tracking-widest text-white shadow-[0_8px_24px_rgba(40,80,86,0.25)] transition-all duration-300 hover:-translate-y-1 hover:bg-teal/90 hover:shadow-[0_12px_32px_rgba(40,80,86,0.4)] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 disabled:hover:bg-teal"
         >
-          {isLastStep ? 'Send Corporate Brief' : 'Next Step'}
+          {isSubmitting ? 'Saving Brief...' : isLastStep ? 'Send Corporate Brief' : 'Next Step'}
           <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
         </button>
       </div>
@@ -982,6 +993,7 @@ export function InquiryExperiencePage({ variant }: { variant: InquiryVariant }) 
   const settings = useSiteSettings();
   const pageCopy = variantCopy[variant];
   const [submittedUrl, setSubmittedUrl] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [b2cForm, setB2CForm] = useState(initialB2CFormState);
   const [b2cSubmitAttempted, setB2CSubmitAttempted] = useState(false);
   const [corporateForm, setCorporateForm] = useState(initialCorporateFormState);
@@ -1016,18 +1028,23 @@ export function InquiryExperiencePage({ variant }: { variant: InquiryVariant }) 
     });
   };
 
-  const openWhatsApp = (message: string) => {
+  const openWhatsApp = (message: string, popup?: Window | null) => {
     const url = buildWhatsAppUrl(settings.whatsappNumber, message);
     setSubmittedUrl(url);
 
-    const popup = window.open(url, '_blank', 'noopener,noreferrer');
+    if (popup && !popup.closed) {
+      popup.location.href = url;
+      return;
+    }
 
-    if (!popup) {
+    const nextPopup = window.open(url, '_blank', 'noopener,noreferrer');
+
+    if (!nextPopup) {
       window.location.href = url;
     }
   };
 
-  const submitB2C = () => {
+  const submitB2C = async () => {
     setB2CSubmitAttempted(true);
 
     const nextErrors = validateB2CForm(b2cForm);
@@ -1035,7 +1052,20 @@ export function InquiryExperiencePage({ variant }: { variant: InquiryVariant }) 
       return;
     }
 
-    openWhatsApp(buildB2CWhatsAppMessage(b2cForm));
+    const popup = window.open('', '_blank');
+    setIsSubmitting(true);
+    try {
+      const affiliateCode = getStoredAffiliateCode();
+      const message = buildB2CWhatsAppMessage(b2cForm);
+      await createEnquiry(buildB2CEnquiryPayload(b2cForm, affiliateCode));
+      openWhatsApp(message, popup);
+    } catch (error) {
+      popup?.close();
+      console.error('Failed to save B2C enquiry:', error);
+      toast.error('We could not save your trip brief right now. Please try again in a moment.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const currentCorporateStep = CORPORATE_STEPS[corporateStepIndex];
@@ -1051,7 +1081,7 @@ export function InquiryExperiencePage({ variant }: { variant: InquiryVariant }) 
     setCorporateStepIndex((current) => Math.min(current + 1, CORPORATE_STEPS.length - 1));
   };
 
-  const submitCorporate = () => {
+  const submitCorporate = async () => {
     setCorporateFinalAttempted(true);
     setCorporateAttempts({
       overview: true,
@@ -1076,7 +1106,20 @@ export function InquiryExperiencePage({ variant }: { variant: InquiryVariant }) 
       return;
     }
 
-    openWhatsApp(buildCorporateWhatsAppMessage(corporateForm));
+    const popup = window.open('', '_blank');
+    setIsSubmitting(true);
+    try {
+      const affiliateCode = getStoredAffiliateCode();
+      const message = buildCorporateWhatsAppMessage(corporateForm);
+      await createEnquiry(buildCorporateEnquiryPayload(corporateForm, affiliateCode));
+      openWhatsApp(message, popup);
+    } catch (error) {
+      popup?.close();
+      console.error('Failed to save corporate enquiry:', error);
+      toast.error('We could not save your corporate brief right now. Please try again in a moment.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const getCorporateError = (field: keyof CorporateFormState) => {
@@ -1150,12 +1193,19 @@ export function InquiryExperiencePage({ variant }: { variant: InquiryVariant }) 
                   onReset={resetVariant}
                 />
               ) : variant === 'b2c' ? (
-                <B2CForm form={b2cForm} errors={b2cErrors} onChange={updateB2C} onSubmit={submitB2C} />
+                <B2CForm
+                  form={b2cForm}
+                  errors={b2cErrors}
+                  isSubmitting={isSubmitting}
+                  onChange={updateB2C}
+                  onSubmit={submitB2C}
+                />
               ) : (
                 <CorporateForm
                   form={corporateForm}
                   activeStepIndex={corporateStepIndex}
                   getError={getCorporateError}
+                  isSubmitting={isSubmitting}
                   onChange={updateCorporate}
                   onBack={() => setCorporateStepIndex((current) => Math.max(current - 1, 0))}
                   onNext={moveCorporateNext}
