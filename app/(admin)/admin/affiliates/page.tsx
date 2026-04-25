@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { getAffiliates, updateAffiliate, deleteAffiliate } from '@/lib/firestore';
-import { Affiliate, AffiliateStatus } from '@/types';
+import { getAffiliates, getAffiliatePublicList, updateAffiliate, deleteAffiliate } from '@/lib/firestore';
+import { Affiliate, AffiliatePublic, AffiliateStatus } from '@/types';
 import { Users, TrendingUp, Clock, XCircle, ChevronRight, Search, Filter } from 'lucide-react';
+import { mergeAffiliatePublicStats, normalizeAffiliateCode } from '@/lib/affiliate';
 
 const STATUS_STYLES: Record<AffiliateStatus, string> = {
   active:   'bg-lime/20 text-teal border-lime/30',
@@ -25,8 +26,20 @@ export default function AdminAffiliatesPage() {
   const fetchAffiliates = async () => {
     setLoading(true);
     try {
-      const snap = await getAffiliates();
-      setAffiliates(snap.docs.map(d => ({ id: d.id, ...d.data() } as Affiliate)));
+      const [privateSnap, publicSnap] = await Promise.all([getAffiliates(), getAffiliatePublicList()]);
+      const publicByCode = new Map(
+        publicSnap.docs.map((doc) => [doc.id, doc.data() as AffiliatePublic])
+      );
+
+      setAffiliates(
+        privateSnap.docs.map((doc) => {
+          const affiliate = { id: doc.id, ...doc.data() } as Affiliate;
+          return mergeAffiliatePublicStats(
+            affiliate,
+            publicByCode.get(normalizeAffiliateCode(affiliate.code)) ?? null
+          );
+        })
+      );
     } finally {
       setLoading(false);
     }

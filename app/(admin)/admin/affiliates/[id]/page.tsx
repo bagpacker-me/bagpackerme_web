@@ -3,16 +3,17 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { getAffiliate, updateAffiliate, deleteAffiliate, getClicksByAffiliate } from '@/lib/firestore';
-import { Affiliate, AffiliateClick, AffiliateStatus } from '@/types';
+import { getAffiliate, updateAffiliate, deleteAffiliate, getAffiliatePublic, getAffiliatePublicEvents } from '@/lib/firestore';
+import { Affiliate, AffiliateEvent, AffiliatePublic, AffiliateStatus } from '@/types';
 import { ArrowLeft, Save, Trash2, Calendar, Link as LinkIcon, Globe, Phone, Mail } from 'lucide-react';
+import { mergeAffiliatePublicStats } from '@/lib/affiliate';
 
 const STATUS_OPTIONS: AffiliateStatus[] = ['active', 'pending', 'paused', 'rejected'];
 
 export default function AffiliateDetailPage({ params }: { params: { id: string } }) {
   const router = useRouter();
   const [affiliate, setAffiliate] = useState<Affiliate | null>(null);
-  const [clicks, setClicks] = useState<AffiliateClick[]>([]);
+  const [clicks, setClicks] = useState<AffiliateEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   
@@ -28,13 +29,20 @@ export default function AffiliateDetailPage({ params }: { params: { id: string }
         const docSnap = await getAffiliate(params.id);
         if (docSnap.exists()) {
           const data = { id: docSnap.id, ...docSnap.data() } as Affiliate;
-          setAffiliate(data);
-          setEditStatus(data.status);
+          const [publicSnap, eventsSnap] = await Promise.all([
+            getAffiliatePublic(data.code),
+            getAffiliatePublicEvents(data.code, 50),
+          ]);
+          const mergedAffiliate = mergeAffiliatePublicStats(
+            data,
+            publicSnap.exists() ? (publicSnap.data() as AffiliatePublic) : null
+          );
+
+          setAffiliate(mergedAffiliate);
+          setEditStatus(mergedAffiliate.status);
           setEditCommission(data.commissionRate || 10);
           setEditNotes(data.notes || '');
-
-          const clicksSnap = await getClicksByAffiliate(data.code);
-          setClicks(clicksSnap.docs.map(d => ({ id: d.id, ...d.data() } as AffiliateClick)));
+          setClicks(eventsSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() } as AffiliateEvent)));
         } else {
           router.push('/admin/affiliates');
         }
@@ -219,6 +227,7 @@ export default function AffiliateDetailPage({ params }: { params: { id: string }
                       <th className="px-5 py-3 font-display text-[11px] font-bold tracking-widest uppercase text-void/40 dark:text-white/30">Date</th>
                       <th className="px-5 py-3 font-display text-[11px] font-bold tracking-widest uppercase text-void/40 dark:text-white/30">Page</th>
                       <th className="px-5 py-3 font-display text-[11px] font-bold tracking-widest uppercase text-void/40 dark:text-white/30 text-center">Lead?</th>
+                      <th className="px-5 py-3 font-display text-[11px] font-bold tracking-widest uppercase text-void/40 dark:text-white/30 text-center">Booking?</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-void/5 dark:divide-white/5">
@@ -236,6 +245,13 @@ export default function AffiliateDetailPage({ params }: { params: { id: string }
                         <td className="px-5 py-3 text-center">
                           {c.convertedToEnquiry ? (
                             <span className="inline-block bg-teal/10 text-teal text-[11px] font-bold px-2 py-0.5 rounded-full">YES</span>
+                          ) : (
+                            <span className="text-void/20 dark:text-white/20">—</span>
+                          )}
+                        </td>
+                        <td className="px-5 py-3 text-center">
+                          {c.convertedToBooking ? (
+                            <span className="inline-block bg-lime/20 text-teal text-[11px] font-bold px-2 py-0.5 rounded-full">YES</span>
                           ) : (
                             <span className="text-void/20 dark:text-white/20">—</span>
                           )}

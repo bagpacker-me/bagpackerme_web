@@ -4,10 +4,9 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { createEnquiry } from '@/lib/firestore';
 import { contactFormSchema, type ContactFormData } from '@/lib/contact-form';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
-import { getStoredAffiliateCode } from '@/hooks/useAffiliateTracking';
+import { getStoredAffiliateCode, getStoredAffiliateSessionId } from '@/hooks/useAffiliateTracking';
 import Image from 'next/image';
 
 // ─── Success Checkmark ────────────────────────────────────────────────────────
@@ -83,32 +82,23 @@ export default function ContactPage() {
     setServerError(null);
 
     try {
+      const affiliateCode = getStoredAffiliateCode();
+      const affiliateSessionId = getStoredAffiliateSessionId();
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          ...data,
+          ...(affiliateCode ? { affiliateCode } : {}),
+          ...(affiliateSessionId ? { affiliateSessionId } : {}),
+        }),
       });
 
       if (!response.ok) {
         const result = (await response.json().catch(() => null)) as { error?: string } | null;
         throw new Error(result?.error || 'Something went wrong. Please try again or reach out via WhatsApp.');
-      }
-
-      const { firstName, lastName, ...rest } = data;
-
-      try {
-        const affiliateCode = getStoredAffiliateCode();
-        await createEnquiry({
-          name: `${firstName} ${lastName}`,
-          ...rest,
-          status: 'new',
-          ...(affiliateCode ? { affiliateCode } : {}),
-          createdAt: new Date().toISOString(),
-        });
-      } catch (firestoreError) {
-        console.error('Failed to save contact enquiry to Firestore:', firestoreError);
       }
 
       setSubmitted(true);

@@ -5,10 +5,10 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Package } from '@/types';
-import { createEnquiry } from '@/lib/firestore';
 import Image from 'next/image';
 import { CheckCircle2, Loader2, Phone, Mail, MapPin } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { getStoredAffiliateCode, getStoredAffiliateSessionId } from '@/hooks/useAffiliateTracking';
 
 const bookingSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -33,23 +33,8 @@ export default function BookingForm({ pkg }: { pkg: Package }) {
   const onSubmit = async (data: BookingFormValues) => {
     setIsSubmitting(true);
     try {
-      const submittedAt = new Date().toISOString();
-
-      // 1. Save to Firestore
-      await createEnquiry({
-        name: data.name,
-        email: data.email,
-        phone: data.phone,
-        inquiryType: 'Package Booking',
-        packageSlug: pkg.slug,
-        groupSize: Number(data.groupSize),
-        travelDate: data.travelDate,
-        message: data.message || '',
-        status: 'new',
-        createdAt: submittedAt
-      });
-
-      // 2. Forward the package booking to n8n
+      const affiliateCode = getStoredAffiliateCode();
+      const affiliateSessionId = getStoredAffiliateSessionId();
       const response = await fetch('/api/package-booking', {
         method: 'POST',
         headers: {
@@ -59,6 +44,8 @@ export default function BookingForm({ pkg }: { pkg: Package }) {
           ...data,
           packageSlug: pkg.slug,
           packageTitle: pkg.title,
+          ...(affiliateCode ? { affiliateCode } : {}),
+          ...(affiliateSessionId ? { affiliateSessionId } : {}),
         }),
       });
 
@@ -67,7 +54,7 @@ export default function BookingForm({ pkg }: { pkg: Package }) {
         throw new Error(result?.error || 'Something went wrong. Please try again or contact us directly on WhatsApp.');
       }
 
-      // 3. Open WhatsApp
+      // 2. Open WhatsApp
       const waText = encodeURIComponent(`Hi! I'm ${data.name} and I'm interested in booking the "${pkg.title}" trip for ${data.groupSize} people around ${data.travelDate}.${data.message ? `\n\nExtra Info: ${data.message}` : ''}`);
       window.open(`https://wa.me/919920992026?text=${waText}`, '_blank');
       

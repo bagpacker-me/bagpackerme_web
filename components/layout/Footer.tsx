@@ -11,6 +11,7 @@ const companyLinks = [
   { name: 'About', href: '/about' },
   { name: 'Blog', href: '/blog' },
   { name: 'Corporate Retreats', href: '/corporate' },
+  { name: 'Affiliate Program', href: '/affiliate' },
   { name: 'Contact', href: '/contact' },
 ];
 

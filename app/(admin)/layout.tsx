@@ -6,11 +6,12 @@ import { useAuth } from '@/hooks/useAuth';
 import AdminSidebar from '@/components/admin/AdminSidebar';
 import AdminTopBar from '@/components/admin/AdminTopBar';
 import { ThemeProvider } from '@/app/providers';
+import { logoutAdmin } from '@/lib/auth';
 
 const PUBLIC_PATHS = ['/admin/login'];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  const { user, loading } = useAuth();
+  const { user, loading, isAdmin } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -18,10 +19,21 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const isPublicPath = PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(p));
 
   useEffect(() => {
-    if (!loading && !user && !isPublicPath) {
-      router.replace('/admin/login');
+    if (loading || isPublicPath) {
+      return;
     }
-  }, [user, loading, isPublicPath, router]);
+
+    if (!user) {
+      router.replace('/admin/login');
+      return;
+    }
+
+    if (!isAdmin) {
+      logoutAdmin().finally(() => {
+        router.replace('/admin/login');
+      });
+    }
+  }, [user, loading, isAdmin, isPublicPath, router]);
 
   // Public paths (login) — render without sidebar or auth guard
   if (isPublicPath) {
@@ -42,7 +54,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     );
   }
 
-  if (!user) return null;
+  if (!user || !isAdmin) return null;
 
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>

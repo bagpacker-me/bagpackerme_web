@@ -5,7 +5,63 @@ service cloud.firestore {
     
     // Helper function: check if user is authenticated admin
     function isAdmin() {
-      return request.auth != null;
+      return request.auth != null
+        && request.auth.token.email != null
+        && request.auth.token.email == 'bagpackerme.world@gmail.com';
+    }
+
+    function isAffiliateStatus(status) {
+      return status == 'pending'
+        || status == 'active'
+        || status == 'paused'
+        || status == 'rejected';
+    }
+
+    function isAffiliatePublicDoc(data, code) {
+      return data.keys().hasOnly([
+          'code',
+          'name',
+          'status',
+          'totalClicks',
+          'totalLeads',
+          'totalBookings',
+          'createdAt',
+          'updatedAt',
+        ])
+        && data.code == code
+        && data.name is string
+        && isAffiliateStatus(data.status)
+        && data.totalClicks is int
+        && data.totalClicks >= 0
+        && data.totalLeads is int
+        && data.totalLeads >= 0
+        && data.totalBookings is int
+        && data.totalBookings >= 0
+        && data.createdAt is string
+        && data.updatedAt is string;
+    }
+
+    function isAffiliateEventDoc(data, code, sessionId) {
+      return data.keys().hasOnly([
+          'affiliateCode',
+          'pageUrl',
+          'packageSlug',
+          'referrer',
+          'sessionId',
+          'convertedToEnquiry',
+          'convertedToBooking',
+          'createdAt',
+          'updatedAt',
+        ])
+        && data.affiliateCode == code
+        && data.sessionId == sessionId
+        && data.pageUrl is string
+        && (!data.keys().hasAny(['packageSlug']) || data.packageSlug is string)
+        && (!data.keys().hasAny(['referrer']) || data.referrer is string)
+        && data.convertedToEnquiry is bool
+        && data.convertedToBooking is bool
+        && data.createdAt is string
+        && data.updatedAt is string;
     }
 
     // Packages: public can read published, only admin can write
@@ -59,9 +115,55 @@ service cloud.firestore {
       allow read, update, delete: if isAdmin();
     }
 
-    // Affiliate Clicks: anyone can log a click (create), admin can read/manage
+    // Public-safe affiliate mirror used by public tracking and dashboards
+    match /affiliate_public/{affiliateCode} {
+      allow read: if true;
+      allow create: if isAffiliatePublicDoc(request.resource.data, affiliateCode);
+      allow update: if isAffiliatePublicDoc(request.resource.data, affiliateCode)
+        && request.resource.data.diff(resource.data).changedKeys().hasOnly([
+          'name',
+          'status',
+          'totalClicks',
+          'totalLeads',
+          'totalBookings',
+          'updatedAt',
+        ]);
+      allow delete: if isAdmin();
+
+      match /events/{sessionId} {
+        allow read: if true;
+        allow create: if isAffiliateEventDoc(request.resource.data, affiliateCode, sessionId);
+        allow update: if isAffiliateEventDoc(request.resource.data, affiliateCode, sessionId)
+          && request.resource.data.diff(resource.data).changedKeys().hasOnly([
+            'convertedToEnquiry',
+            'convertedToBooking',
+            'updatedAt',
+          ])
+          && (resource.data.convertedToEnquiry == false || request.resource.data.convertedToEnquiry == true)
+          && (resource.data.convertedToBooking == false || request.resource.data.convertedToBooking == true);
+        allow delete: if isAdmin();
+      }
+    }
+
+    // Public duplicate-check index for affiliate registration
+    match /affiliate_registration_index/{emailHash} {
+      allow get: if true;
+      allow list: if false;
+      allow create: if request.resource.data.keys().hasOnly([
+          'emailHash',
+          'affiliateId',
+          'affiliateCode',
+          'createdAt',
+        ])
+        && request.resource.data.emailHash == emailHash
+        && request.resource.data.affiliateId is string
+        && request.resource.data.affiliateCode is string
+        && request.resource.data.createdAt is string;
+      allow delete: if isAdmin();
+    }
+
+    // Legacy affiliate clicks: admin-only access
     match /affiliate_clicks/{docId} {
-      allow create: if true;
       allow read, update, delete: if isAdmin();
     }
   }

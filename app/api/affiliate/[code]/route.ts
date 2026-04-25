@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAffiliateByCode, getClicksByAffiliate } from '@/lib/firestore';
+import { getAffiliatePublic, getAffiliatePublicEvents } from '@/lib/firestore';
+import type { AffiliateEvent, AffiliatePublic } from '@/types';
 
 /** Public GET /api/affiliate/[code] — affiliate self-service stats */
 export async function GET(
@@ -12,10 +13,12 @@ export async function GET(
       return NextResponse.json({ error: 'Code is required.' }, { status: 400 });
     }
 
-    const affiliate = await getAffiliateByCode(code);
-    if (!affiliate) {
+    const affiliateSnap = await getAffiliatePublic(code);
+    if (!affiliateSnap.exists()) {
       return NextResponse.json({ error: 'Affiliate not found.' }, { status: 404 });
     }
+
+    const affiliate = affiliateSnap.data() as AffiliatePublic;
 
     // Only return safe public fields — never expose notes, commissionRate, or internal ID to public
     const publicData = {
@@ -29,13 +32,14 @@ export async function GET(
     };
 
     // Fetch recent 20 clicks for the affiliate's dashboard
-    const clicksSnap = await getClicksByAffiliate(code);
+    const clicksSnap = await getAffiliatePublicEvents(code, 20);
     const recentClicks = clicksSnap.docs.slice(0, 20).map((d) => {
-      const data = d.data();
+      const data = d.data() as AffiliateEvent;
       return {
         pageUrl: data.pageUrl,
         packageSlug: data.packageSlug,
         convertedToEnquiry: data.convertedToEnquiry,
+        convertedToBooking: data.convertedToBooking,
         createdAt: data.createdAt,
       };
     });

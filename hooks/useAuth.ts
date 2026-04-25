@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { User } from 'firebase/auth';
 import { onAuthChange } from '@/lib/auth';
+import { isAdminEmail } from '@/lib/admin';
 
 interface AuthState {
   user: User | null;
@@ -22,8 +23,7 @@ export function useAuth(): AuthState {
     return () => unsubscribe();
   }, []);
 
-  const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL || '';
-  const isAdmin = !!user && (user.email === adminEmail || user.email === 'bagpackerme.world@gmail.com');
+  const isAdmin = !!user && isAdminEmail(user.email);
 
   return { user, loading, isAdmin };
 }

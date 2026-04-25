@@ -91,6 +91,7 @@ export interface Enquiry {
   submittedVia?: string;
   formVariant?: StoredEnquiryVariant;
   formData?: EnquiryFormData;
+  affiliateSessionId?: string;
   createdAt: string;
 }
 
@@ -113,6 +114,8 @@ export interface Booking {
   status: 'pending' | 'confirmed' | 'completed' | 'cancelled';
   totalPrice: number;
   affiliateCode?: string;
+  affiliateSessionId?: string;
+  affiliateBookingAttributedAt?: string;
   createdAt: string;
 }
 
@@ -150,6 +153,7 @@ export interface Affiliate {
   id: string;
   name: string;
   email: string;
+  emailHash?: string;
   phone?: string;
   socialHandle?: string;
   code: string;               // e.g. "BP-JOHN42" — unique
@@ -163,15 +167,37 @@ export interface Affiliate {
   updatedAt: string;
 }
 
-export interface AffiliateClick {
+export interface AffiliatePublic {
+  code: string;
+  name: string;
+  status: AffiliateStatus;
+  totalClicks: number;
+  totalLeads: number;
+  totalBookings: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AffiliateEvent {
   id: string;
   affiliateCode: string;
-  affiliateId: string;
   pageUrl: string;
   packageSlug?: string;
   referrer?: string;
   sessionId: string;          // for deduplication
   convertedToEnquiry: boolean;
   convertedToBooking: boolean;
+  createdAt: string;
+  updatedAt?: string;
+}
+
+export interface AffiliateClick extends AffiliateEvent {
+  affiliateId: string;
+}
+
+export interface AffiliateRegistrationIndex {
+  emailHash: string;
+  affiliateId: string;
+  affiliateCode: string;
   createdAt: string;
 }

@@ -19,8 +19,12 @@ export default function AdminLoginPage() {
     try {
       await loginAdmin(email, password);
       router.push('/admin/dashboard');
-    } catch {
-      setError('Invalid credentials. Please try again.');
+    } catch (error) {
+      setError(
+        error instanceof Error
+          ? error.message
+          : 'Invalid credentials. Please try again.'
+      );
     } finally {
       setLoading(false);
     }

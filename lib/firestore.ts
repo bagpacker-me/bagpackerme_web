@@ -1,6 +1,7 @@
-import { collection, doc, getDocs, addDoc, updateDoc, deleteDoc, query, where, orderBy, getDoc, limit, setDoc, increment } from 'firebase/firestore';
+import { collection, doc, getDocs, addDoc, updateDoc, deleteDoc, query, where, orderBy, getDoc, limit, setDoc, increment, runTransaction, writeBatch } from 'firebase/firestore';
 import { db } from './firebase';
-import { Package, BlogPost, Enquiry, Customer, Booking, GalleryImage, Affiliate, AffiliateClick } from '@/types';
+import { Package, BlogPost, Enquiry, Customer, Booking, GalleryImage, Affiliate, AffiliateClick, AffiliateEvent, AffiliatePublic, AffiliateRegistrationIndex } from '@/types';
+import { buildAffiliatePublicData, normalizeAffiliateCode, normalizeAffiliateSessionId } from './affiliate';
 
 // Packages
 const packagesCol = collection(db, 'packages');
@@ -130,7 +131,55 @@ const bookingsCol = collection(db, 'bookings');
 export const getBookings = async () => getDocs(query(bookingsCol, orderBy('createdAt', 'desc')));
 export const getBooking = async (id: string) => getDoc(doc(db, 'bookings', id));
 export const createBooking = async (data: Omit<Booking, 'id'>) => addDoc(bookingsCol, data);
-export const updateBooking = async (id: string, data: Partial<Booking>) => updateDoc(doc(db, 'bookings', id), data);
+export const updateBooking = async (id: string, data: Partial<Booking>) => {
+  const bookingRef = doc(db, 'bookings', id);
+  const bookingSnap = await getDoc(bookingRef);
+
+  if (!bookingSnap.exists()) {
+    throw new Error('Booking not found');
+  }
+
+  const currentBooking = { id: bookingSnap.id, ...bookingSnap.data() } as Booking;
+  const nextStatus = data.status ?? currentBooking.status;
+  const shouldAttributeAffiliate =
+    !!currentBooking.affiliateCode &&
+    !currentBooking.affiliateBookingAttributedAt &&
+    (nextStatus === 'confirmed' || nextStatus === 'completed');
+  const attributedAt = shouldAttributeAffiliate ? new Date().toISOString() : currentBooking.affiliateBookingAttributedAt;
+
+  await updateDoc(bookingRef, {
+    ...data,
+    ...(shouldAttributeAffiliate ? { affiliateBookingAttributedAt: attributedAt } : {}),
+  });
+
+  if (!shouldAttributeAffiliate) {
+    return;
+  }
+
+  const affiliateCode = normalizeAffiliateCode(currentBooking.affiliateCode);
+  if (!affiliateCode) {
+    return;
+  }
+
+  const affiliate = await getAffiliateByCode(affiliateCode);
+  if (affiliate) {
+    await incrementAffiliateBookings(affiliate.id);
+  }
+
+  if (currentBooking.affiliateSessionId) {
+    const attributed = await markAffiliatePublicEventConversion(
+      affiliateCode,
+      currentBooking.affiliateSessionId,
+      'booking'
+    );
+
+    if (!attributed) {
+      await incrementAffiliatePublicMetric(affiliateCode, 'totalBookings');
+    }
+  } else {
+    await incrementAffiliatePublicMetric(affiliateCode, 'totalBookings');
+  }
+};
 export const deleteBooking = async (id: string) => deleteDoc(doc(db, 'bookings', id));
 
 // Gallery
@@ -152,6 +201,14 @@ export const updateSiteSettings = async (data: Partial<import('@/types').SiteSet
 // Affiliates
 // ──────────────────────────────────────────────────────────────────────────────
 const affiliatesCol = collection(db, 'affiliates');
+const affiliatePublicCol = collection(db, 'affiliate_public');
+const affiliatePublicDoc = (code: string) => doc(db, 'affiliate_public', normalizeAffiliateCode(code));
+const affiliatePublicEventsCol = (code: string) =>
+  collection(db, 'affiliate_public', normalizeAffiliateCode(code), 'events');
+const affiliatePublicEventDoc = (code: string, sessionId: string) =>
+  doc(db, 'affiliate_public', normalizeAffiliateCode(code), 'events', normalizeAffiliateSessionId(sessionId));
+const affiliateRegistrationIndexDoc = (emailHash: string) =>
+  doc(db, 'affiliate_registration_index', emailHash);
 
 export const getAffiliates = async () =>
   getDocs(query(affiliatesCol, orderBy('createdAt', 'desc')));
@@ -176,11 +233,80 @@ export const getAffiliateByEmail = async (email: string) => {
 export const createAffiliate = async (data: Omit<Affiliate, 'id'>) =>
   addDoc(affiliatesCol, data);
 
-export const updateAffiliate = async (id: string, data: Partial<Affiliate>) =>
-  updateDoc(doc(db, 'affiliates', id), { ...data, updatedAt: new Date().toISOString() });
+export const createAffiliateWithPublicRecords = async (
+  data: Omit<Affiliate, 'id'> & { emailHash: string }
+) => {
+  const privateRef = doc(affiliatesCol);
+  const publicRef = affiliatePublicDoc(data.code);
+  const indexRef = affiliateRegistrationIndexDoc(data.emailHash);
+  const batch = writeBatch(db);
 
-export const deleteAffiliate = async (id: string) =>
-  deleteDoc(doc(db, 'affiliates', id));
+  batch.set(privateRef, data);
+  batch.set(publicRef, buildAffiliatePublicData(data));
+  batch.set(indexRef, {
+    emailHash: data.emailHash,
+    affiliateId: privateRef.id,
+    affiliateCode: normalizeAffiliateCode(data.code),
+    createdAt: data.createdAt,
+  } as AffiliateRegistrationIndex);
+
+  await batch.commit();
+
+  return privateRef;
+};
+
+export const syncAffiliatePublicFromAffiliate = async (
+  affiliate: Pick<Affiliate, 'name' | 'code' | 'status' | 'createdAt'> &
+    Partial<Pick<Affiliate, 'updatedAt' | 'totalClicks' | 'totalLeads' | 'totalBookings'>>
+) => {
+  const affiliatePublic = buildAffiliatePublicData(affiliate);
+  await setDoc(affiliatePublicDoc(affiliatePublic.code), affiliatePublic, { merge: true });
+  return affiliatePublic;
+};
+
+export const updateAffiliate = async (id: string, data: Partial<Affiliate>) => {
+  const affiliateSnap = await getAffiliate(id);
+  if (!affiliateSnap.exists()) {
+    throw new Error('Affiliate not found');
+  }
+
+  const now = new Date().toISOString();
+  const currentAffiliate = { id: affiliateSnap.id, ...affiliateSnap.data() } as Affiliate;
+  const publicSnap = await getAffiliatePublic(currentAffiliate.code);
+  const publicAffiliate = publicSnap.exists() ? (publicSnap.data() as AffiliatePublic) : null;
+  const nextAffiliate = {
+    ...currentAffiliate,
+    ...data,
+    totalClicks: publicAffiliate?.totalClicks ?? currentAffiliate.totalClicks,
+    totalLeads: publicAffiliate?.totalLeads ?? currentAffiliate.totalLeads,
+    totalBookings: publicAffiliate?.totalBookings ?? currentAffiliate.totalBookings,
+    updatedAt: now,
+  };
+
+  await updateDoc(doc(db, 'affiliates', id), { ...data, updatedAt: now });
+  await syncAffiliatePublicFromAffiliate(nextAffiliate);
+};
+
+export const deleteAffiliate = async (id: string) => {
+  const affiliateSnap = await getAffiliate(id);
+  if (!affiliateSnap.exists()) {
+    return;
+  }
+
+  const affiliate = { id: affiliateSnap.id, ...affiliateSnap.data() } as Affiliate;
+  const eventsSnap = await getDocs(affiliatePublicEventsCol(affiliate.code));
+  const batch = writeBatch(db);
+
+  batch.delete(doc(db, 'affiliates', id));
+  batch.delete(affiliatePublicDoc(affiliate.code));
+
+  if (affiliate.emailHash) {
+    batch.delete(affiliateRegistrationIndexDoc(affiliate.emailHash));
+  }
+
+  eventsSnap.docs.forEach((eventDoc) => batch.delete(eventDoc.ref));
+  await batch.commit();
+};
 
 /** Atomically increment click counter on the affiliate document */
 export const incrementAffiliateClicks = async (id: string) =>
@@ -193,6 +319,147 @@ export const incrementAffiliateLeads = async (id: string) =>
 /** Atomically increment booking counter on the affiliate document */
 export const incrementAffiliateBookings = async (id: string) =>
   updateDoc(doc(db, 'affiliates', id), { totalBookings: increment(1), updatedAt: new Date().toISOString() });
+
+export const getAffiliatePublicList = async () =>
+  getDocs(query(affiliatePublicCol, orderBy('createdAt', 'desc')));
+
+export const getAffiliatePublic = async (code: string) =>
+  getDoc(affiliatePublicDoc(code));
+
+export const getAffiliateRegistrationIndex = async (emailHash: string) =>
+  getDoc(affiliateRegistrationIndexDoc(emailHash));
+
+export const incrementAffiliatePublicMetric = async (
+  affiliateCode: string,
+  metric: 'totalClicks' | 'totalLeads' | 'totalBookings'
+) =>
+  updateDoc(affiliatePublicDoc(affiliateCode), {
+    [metric]: increment(1),
+    updatedAt: new Date().toISOString(),
+  });
+
+export const getAffiliatePublicEvent = async (affiliateCode: string, sessionId: string) =>
+  getDoc(affiliatePublicEventDoc(affiliateCode, sessionId));
+
+export const getAffiliatePublicEvents = async (affiliateCode: string, limitCount: number = 20) =>
+  getDocs(query(affiliatePublicEventsCol(affiliateCode), orderBy('createdAt', 'desc'), limit(limitCount)));
+
+export const trackAffiliatePublicClick = async (data: {
+  affiliateCode: string;
+  pageUrl: string;
+  packageSlug?: string;
+  referrer?: string;
+  sessionId: string;
+}) => {
+  const affiliateCode = normalizeAffiliateCode(data.affiliateCode);
+  const sessionId = normalizeAffiliateSessionId(data.sessionId);
+
+  if (!affiliateCode || !sessionId) {
+    return { tracked: false as const, reason: 'missing' };
+  }
+
+  const now = new Date().toISOString();
+
+  return runTransaction(db, async (transaction) => {
+    const publicRef = affiliatePublicDoc(affiliateCode);
+    const publicSnap = await transaction.get(publicRef);
+
+    if (!publicSnap.exists()) {
+      return { tracked: false as const, reason: 'missing' };
+    }
+
+    const affiliatePublic = publicSnap.data() as AffiliatePublic;
+    if (affiliatePublic.status !== 'active') {
+      return { tracked: false as const, reason: 'inactive' };
+    }
+
+    const eventRef = affiliatePublicEventDoc(affiliateCode, sessionId);
+    const eventSnap = await transaction.get(eventRef);
+
+    if (eventSnap.exists()) {
+      return { tracked: false as const, reason: 'duplicate' };
+    }
+
+    transaction.set(eventRef, {
+      affiliateCode,
+      pageUrl: data.pageUrl || '',
+      packageSlug: data.packageSlug || '',
+      referrer: data.referrer || '',
+      sessionId,
+      convertedToEnquiry: false,
+      convertedToBooking: false,
+      createdAt: now,
+      updatedAt: now,
+    } as Omit<AffiliateEvent, 'id'>);
+    transaction.update(publicRef, {
+      totalClicks: (affiliatePublic.totalClicks ?? 0) + 1,
+      updatedAt: now,
+    });
+
+    return { tracked: true as const };
+  });
+};
+
+export const markAffiliatePublicEventConversion = async (
+  affiliateCode: string,
+  sessionId: string,
+  conversion: 'enquiry' | 'booking'
+) => {
+  const normalizedCode = normalizeAffiliateCode(affiliateCode);
+  const normalizedSessionId = normalizeAffiliateSessionId(sessionId);
+
+  if (!normalizedCode || !normalizedSessionId) {
+    return false;
+  }
+
+  const eventField = conversion === 'booking' ? 'convertedToBooking' : 'convertedToEnquiry';
+  const metricField = conversion === 'booking' ? 'totalBookings' : 'totalLeads';
+  const now = new Date().toISOString();
+
+  return runTransaction(db, async (transaction) => {
+    const publicRef = affiliatePublicDoc(normalizedCode);
+    const publicSnap = await transaction.get(publicRef);
+
+    if (!publicSnap.exists()) {
+      return false;
+    }
+
+    const affiliatePublic = publicSnap.data() as AffiliatePublic;
+    const eventRef = affiliatePublicEventDoc(normalizedCode, normalizedSessionId);
+    const eventSnap = await transaction.get(eventRef);
+    const eventData = eventSnap.exists() ? (eventSnap.data() as AffiliateEvent) : null;
+
+    if (eventData?.[eventField]) {
+      return false;
+    }
+
+    if (eventData) {
+      transaction.update(eventRef, {
+        [eventField]: true,
+        updatedAt: now,
+      });
+    } else {
+      transaction.set(eventRef, {
+        affiliateCode: normalizedCode,
+        pageUrl: '',
+        packageSlug: '',
+        referrer: '',
+        sessionId: normalizedSessionId,
+        convertedToEnquiry: conversion === 'enquiry',
+        convertedToBooking: conversion === 'booking',
+        createdAt: now,
+        updatedAt: now,
+      } as Omit<AffiliateEvent, 'id'>);
+    }
+
+    transaction.update(publicRef, {
+      [metricField]: ((affiliatePublic[metricField] as number | undefined) ?? 0) + 1,
+      updatedAt: now,
+    });
+
+    return true;
+  });
+};
 
 // ──────────────────────────────────────────────────────────────────────────────
 // Affiliate Clicks

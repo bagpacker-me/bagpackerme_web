@@ -1,11 +1,17 @@
+import { createHash } from 'node:crypto';
 import { NextRequest, NextResponse } from 'next/server';
-import { createAffiliate, getAffiliateByEmail, getAffiliateByCode } from '@/lib/firestore';
+import { createAffiliateWithPublicRecords, getAffiliatePublic, getAffiliateRegistrationIndex } from '@/lib/firestore';
+import { normalizeAffiliateCode } from '@/lib/affiliate';
 
 /** Generates a unique affiliate code like BP-JOHN42 */
 function generateCode(name: string): string {
   const prefix = name.trim().split(' ')[0].toUpperCase().slice(0, 6).replace(/[^A-Z]/g, '');
   const suffix = Math.floor(10 + Math.random() * 90).toString();
   return `BP-${prefix}${suffix}`;
+}
+
+function hashAffiliateEmail(email: string) {
+  return createHash('sha256').update(email.trim().toLowerCase()).digest('hex');
 }
 
 export async function POST(req: NextRequest) {
@@ -22,9 +28,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid email address.' }, { status: 400 });
     }
 
-    // Duplicate check
-    const existing = await getAffiliateByEmail(email.toLowerCase());
-    if (existing) {
+    const normalizedEmail = email.toLowerCase().trim();
+    const emailHash = hashAffiliateEmail(normalizedEmail);
+    const registrationIndexSnap = await getAffiliateRegistrationIndex(emailHash);
+    if (registrationIndexSnap.exists()) {
       return NextResponse.json(
         { error: 'An affiliate account with this email already exists.' },
         { status: 409 }
@@ -32,17 +39,26 @@ export async function POST(req: NextRequest) {
     }
 
     // Generate a unique code (retry up to 5 times)
-    let code = generateCode(name);
+    let code = normalizeAffiliateCode(generateCode(name));
     for (let i = 0; i < 5; i++) {
-      const codeExists = await getAffiliateByCode(code);
-      if (!codeExists) break;
-      code = generateCode(name);
+      const codeExists = await getAffiliatePublic(code);
+      if (!codeExists.exists()) break;
+      code = normalizeAffiliateCode(generateCode(name));
+    }
+
+    const finalCodeCheck = await getAffiliatePublic(code);
+    if (finalCodeCheck.exists()) {
+      return NextResponse.json(
+        { error: 'Could not generate a unique affiliate code. Please try again.' },
+        { status: 500 }
+      );
     }
 
     const now = new Date().toISOString();
     const affiliateData = {
       name: name.trim(),
-      email: email.toLowerCase().trim(),
+      email: normalizedEmail,
+      emailHash,
       phone: phone?.trim() || '',
       socialHandle: socialHandle?.trim() || '',
       code,
@@ -56,7 +72,7 @@ export async function POST(req: NextRequest) {
       updatedAt: now,
     };
 
-    const ref = await createAffiliate(affiliateData);
+    const ref = await createAffiliateWithPublicRecords(affiliateData);
 
     return NextResponse.json({
       success: true,

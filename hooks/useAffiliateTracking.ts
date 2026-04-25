@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { normalizeAffiliateCode } from '@/lib/affiliate';
 
 const SESSION_KEY = 'bp_affiliate_code';
 const SESSION_ID_KEY = 'bp_session_id';
@@ -33,7 +34,7 @@ export function useAffiliateTracking() {
     const refCode = searchParams?.get('ref');
     if (refCode) {
       // Persist the code for the whole session
-      sessionStorage.setItem(SESSION_KEY, refCode.toUpperCase());
+      sessionStorage.setItem(SESSION_KEY, normalizeAffiliateCode(refCode));
     }
 
     const storedCode = sessionStorage.getItem(SESSION_KEY);
@@ -67,4 +68,9 @@ export function useAffiliateTracking() {
 export function getStoredAffiliateCode(): string | null {
   if (typeof window === 'undefined') return null;
   return sessionStorage.getItem(SESSION_KEY);
+}
+
+export function getStoredAffiliateSessionId(): string | null {
+  if (typeof window === 'undefined') return null;
+  return getOrCreateSessionId();
 }

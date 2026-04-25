@@ -12,9 +12,8 @@ import {
   MessageCircle,
   Phone,
 } from 'lucide-react';
-import { getStoredAffiliateCode } from '@/hooks/useAffiliateTracking';
+import { getStoredAffiliateCode, getStoredAffiliateSessionId } from '@/hooks/useAffiliateTracking';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
-import { createEnquiry } from '@/lib/firestore';
 import { cn } from '@/lib/utils';
 import {
   B2C_DESTINATION_OPTIONS,
@@ -1056,8 +1055,24 @@ export function InquiryExperiencePage({ variant }: { variant: InquiryVariant }) 
     setIsSubmitting(true);
     try {
       const affiliateCode = getStoredAffiliateCode();
+      const affiliateSessionId = getStoredAffiliateSessionId();
       const message = buildB2CWhatsAppMessage(b2cForm);
-      await createEnquiry(buildB2CEnquiryPayload(b2cForm, affiliateCode));
+      const response = await fetch('/api/enquiries', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...buildB2CEnquiryPayload(b2cForm, affiliateCode),
+          ...(affiliateSessionId ? { affiliateSessionId } : {}),
+        }),
+      });
+
+      if (!response.ok) {
+        const result = (await response.json().catch(() => null)) as { error?: string } | null;
+        throw new Error(result?.error || 'We could not save your trip brief right now. Please try again in a moment.');
+      }
+
       openWhatsApp(message, popup);
     } catch (error) {
       popup?.close();
@@ -1110,8 +1125,24 @@ export function InquiryExperiencePage({ variant }: { variant: InquiryVariant }) 
     setIsSubmitting(true);
     try {
       const affiliateCode = getStoredAffiliateCode();
+      const affiliateSessionId = getStoredAffiliateSessionId();
       const message = buildCorporateWhatsAppMessage(corporateForm);
-      await createEnquiry(buildCorporateEnquiryPayload(corporateForm, affiliateCode));
+      const response = await fetch('/api/enquiries', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...buildCorporateEnquiryPayload(corporateForm, affiliateCode),
+          ...(affiliateSessionId ? { affiliateSessionId } : {}),
+        }),
+      });
+
+      if (!response.ok) {
+        const result = (await response.json().catch(() => null)) as { error?: string } | null;
+        throw new Error(result?.error || 'We could not save your corporate brief right now. Please try again in a moment.');
+      }
+
       openWhatsApp(message, popup);
     } catch (error) {
       popup?.close();

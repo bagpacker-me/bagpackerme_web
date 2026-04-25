@@ -1,12 +1,18 @@
 import { NextResponse } from 'next/server';
+import { z } from 'zod';
 import { contactFormSchema } from '@/lib/contact-form';
+import { persistEnquiryWithAffiliateAttribution } from '@/lib/enquiry-submission';
 
 const CONTACT_WEBHOOK_URL = 'https://n8n.srv1046139.hstgr.cloud/webhook/bpm-enquiry';
+const contactSubmissionSchema = contactFormSchema.extend({
+  affiliateCode: z.string().trim().optional(),
+  affiliateSessionId: z.string().trim().optional(),
+});
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const parsed = contactFormSchema.safeParse(body);
+    const parsed = contactSubmissionSchema.safeParse(body);
 
     if (!parsed.success) {
       return NextResponse.json(
@@ -38,6 +44,28 @@ export async function POST(request: Request) {
         { error: 'We could not send your message right now. Please try again in a moment.' },
         { status: 502 }
       );
+    }
+
+    try {
+      await persistEnquiryWithAffiliateAttribution(
+        {
+          name: `${data.firstName} ${data.lastName}`.trim(),
+          email: data.email,
+          phone: data.phone,
+          inquiryType: data.inquiryType,
+          message: data.message,
+          status: 'new',
+          source: 'contact-us-page',
+          submittedVia: 'contact-form',
+          formVariant: 'contact',
+          affiliateCode: data.affiliateCode,
+          affiliateSessionId: data.affiliateSessionId,
+          createdAt: new Date().toISOString(),
+        },
+        data.affiliateSessionId
+      );
+    } catch (error) {
+      console.error('Contact enquiry persistence failed:', error);
     }
 
     return NextResponse.json({ success: true });

@@ -5,7 +5,8 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { collection, getDocs, query, where, orderBy, limit, Timestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
-import { Enquiry } from '@/types';
+import { Affiliate, AffiliatePublic, Enquiry } from '@/types';
+import { getAffiliates, getAffiliatePublicList } from '@/lib/firestore';
 
 // ─── types ───────────────────────────────────────────────────────────────────
 interface StatsCard {
@@ -169,6 +170,12 @@ export default function AdminDashboardPage() {
   const [blogs, setBlogs] = useState(0);
   const [newEnquiries, setNewEnquiries] = useState(0);
   const [subscribers, setSubscribers] = useState(0);
+  const [affiliateCount, setAffiliateCount] = useState(0);
+  const [pendingAffiliateCount, setPendingAffiliateCount] = useState(0);
+  const [affiliateClicks, setAffiliateClicks] = useState(0);
+  const [affiliateLeads, setAffiliateLeads] = useState(0);
+  const [affiliateBookings, setAffiliateBookings] = useState(0);
+  const [pendingAffiliates, setPendingAffiliates] = useState<Affiliate[]>([]);
   const [recentEnquiries, setRecentEnquiries] = useState<Enquiry[]>([]);
   const [enquiryLoading, setEnquiryLoading] = useState(true);
   const [selectedEnquiry, setSelectedEnquiry] = useState<Enquiry | null>(null);
@@ -176,11 +183,13 @@ export default function AdminDashboardPage() {
   useEffect(() => {
     async function loadStats() {
       try {
-        const [pkgSnap, blogSnap, subSnap, enquirySnap] = await Promise.all([
+        const [pkgSnap, blogSnap, subSnap, enquirySnap, affiliateSnap, affiliatePublicSnap] = await Promise.all([
           getDocs(query(collection(db, 'packages'), where('status', '==', 'published'))),
           getDocs(query(collection(db, 'blogs'), where('status', '==', 'published'))),
           getDocs(collection(db, 'subscribers')),
           getDocs(query(collection(db, 'enquiries'), where('status', '==', 'new'))),
+          getAffiliates(),
+          getAffiliatePublicList(),
         ]);
 
         // New enquiries this week
@@ -207,6 +216,16 @@ export default function AdminDashboardPage() {
         setBlogs(blogSnap.size);
         setSubscribers(subSnap.size);
         setNewEnquiries(newThisWeek);
+
+        const affiliates = affiliateSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Affiliate));
+        const affiliateStats = affiliatePublicSnap.docs.map((doc) => doc.data() as AffiliatePublic);
+
+        setAffiliateCount(affiliates.length);
+        setPendingAffiliateCount(affiliates.filter((affiliate) => affiliate.status === 'pending').length);
+        setPendingAffiliates(affiliates.filter((affiliate) => affiliate.status === 'pending').slice(0, 5));
+        setAffiliateClicks(affiliateStats.reduce((sum, affiliate) => sum + (affiliate.totalClicks || 0), 0));
+        setAffiliateLeads(affiliateStats.reduce((sum, affiliate) => sum + (affiliate.totalLeads || 0), 0));
+        setAffiliateBookings(affiliateStats.reduce((sum, affiliate) => sum + (affiliate.totalBookings || 0), 0));
       } catch (err) {
         console.error('Error loading stats:', err);
       } finally {
@@ -239,6 +258,13 @@ export default function AdminDashboardPage() {
     { label: 'Newsletter Subscribers', value: subscribers, icon: '📧', loading: statsLoading },
   ];
 
+  const affiliateStats: StatsCard[] = [
+    { label: 'Affiliate Partners', value: affiliateCount, icon: '🤝', loading: statsLoading },
+    { label: 'Pending Approval', value: pendingAffiliateCount, icon: '⏳', loading: statsLoading },
+    { label: 'Affiliate Clicks', value: affiliateClicks, icon: '👆', loading: statsLoading },
+    { label: 'Affiliate Leads', value: affiliateLeads, icon: '📋', loading: statsLoading },
+  ];
+
   return (
     <div className="max-w-[1100px] space-y-8">
 
@@ -247,6 +273,80 @@ export default function AdminDashboardPage() {
           {stats.map((s) => (
             <StatCard key={s.label} {...s} />
           ))}
+        </div>
+
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="font-display text-[11px] font-bold text-[#0ED2E9] uppercase tracking-[0.22em] flex items-center gap-[12px]">
+              <span className="block w-[32px] h-[1px] bg-[#0ED2E9] shrink-0" />
+              Affiliate Overview
+            </h2>
+            <Link
+              href="/admin/affiliates"
+              className="font-body text-[13px] text-[#285056] dark:text-[rgba(255,255,255,0.8)] hover:text-[#0ED2E9] dark:hover:text-[#0ED2E9] transition-colors"
+            >
+              Manage affiliates →
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,2fr)_minmax(320px,1fr)] gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+              {affiliateStats.map((s) => (
+                <StatCard key={s.label} {...s} />
+              ))}
+            </div>
+
+            <div className="bg-[#FFFFFF] dark:bg-[#1A1625] border border-[rgba(34,30,42,0.06)] dark:border-[rgba(255,255,255,0.06)] rounded-lg p-[24px]">
+              <div className="flex items-center justify-between mb-[16px]">
+                <div>
+                  <h3 className="font-display text-[14px] font-semibold text-[#221E2A] dark:text-white tracking-wide">
+                    Pending Affiliates
+                  </h3>
+                  <p className="font-body text-[13px] text-[#718096] dark:text-[rgba(255,255,255,0.6)] mt-[4px]">
+                    {affiliateBookings} confirmed affiliate bookings so far.
+                  </p>
+                </div>
+                <Link
+                  href="/admin/affiliates"
+                  className="font-body text-[13px] text-[#285056] dark:text-[rgba(255,255,255,0.8)] hover:text-[#0ED2E9] dark:hover:text-[#0ED2E9] transition-colors"
+                >
+                  View all
+                </Link>
+              </div>
+
+              {statsLoading ? (
+                <p className="font-body text-[14px] text-[#718096] dark:text-[rgba(255,255,255,0.6)]">
+                  Loading affiliate queue...
+                </p>
+              ) : pendingAffiliates.length === 0 ? (
+                <p className="font-body text-[14px] text-[#718096] dark:text-[rgba(255,255,255,0.6)]">
+                  No affiliates are waiting for approval right now.
+                </p>
+              ) : (
+                <div className="space-y-3">
+                  {pendingAffiliates.map((affiliate) => (
+                    <Link
+                      key={affiliate.id}
+                      href={`/admin/affiliates/${affiliate.id}`}
+                      className="flex items-center justify-between gap-4 rounded-lg border border-[rgba(34,30,42,0.06)] dark:border-[rgba(255,255,255,0.08)] px-[16px] py-[12px] hover:bg-[#F7F9FA] dark:hover:bg-[rgba(255,255,255,0.04)] transition-colors"
+                    >
+                      <div className="min-w-0">
+                        <p className="font-body text-[14px] text-[#221E2A] dark:text-[rgba(255,255,255,0.9)] truncate">
+                          {affiliate.name}
+                        </p>
+                        <p className="font-body text-[12px] text-[#718096] dark:text-[rgba(255,255,255,0.6)] truncate">
+                          {affiliate.email}
+                        </p>
+                      </div>
+                      <span className="shrink-0 inline-flex items-center rounded-full bg-[#FEF9C3] px-[10px] py-[4px] text-[11px] font-semibold uppercase tracking-[0.08em] text-[#854d0e]">
+                        Pending
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
 
         {/* Quick Actions */}
@@ -270,6 +370,15 @@ export default function AdminDashboardPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
               New Blog Post
+            </Link>
+            <Link
+              href="/admin/affiliates"
+              className="flex items-center h-[44px] px-[16px] font-body text-[14px] font-normal border border-[rgba(34,30,42,0.08)] dark:border-[rgba(255,255,255,0.1)] rounded-lg transition-all hover:bg-[#F7F9FA] dark:hover:bg-[rgba(255,255,255,0.05)] hover:border-teal/30 text-[#221E2A] dark:text-white group"
+            >
+              <svg className="w-[16px] h-[16px] mr-[10px] text-[#285056] dark:text-white group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-4l-4 4v-4z" />
+              </svg>
+              Review Affiliates
             </Link>
           </div>
         </div>
