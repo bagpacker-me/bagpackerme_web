@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { getAffiliates, updateAffiliate, deleteAffiliate } from '@/lib/firestore';
 import { Affiliate, AffiliateStatus } from '@/types';
@@ -17,7 +16,6 @@ const STATUS_STYLES: Record<AffiliateStatus, string> = {
 const STATUS_OPTIONS: AffiliateStatus[] = ['active', 'pending', 'paused', 'rejected'];
 
 export default function AdminAffiliatesPage() {
-  const router = useRouter();
   const [affiliates, setAffiliates] = useState<Affiliate[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');

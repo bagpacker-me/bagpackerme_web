@@ -57,7 +57,7 @@ export default function AffiliateDetailPage({ params }: { params: { id: string }
       await updateAffiliate(affiliate.id, updates);
       setAffiliate({ ...affiliate, ...updates });
       alert('Affiliate updated successfully.');
-    } catch (err) {
+    } catch {
       alert('Failed to update affiliate.');
     } finally {
       setSaving(false);
@@ -70,7 +70,7 @@ export default function AffiliateDetailPage({ params }: { params: { id: string }
     try {
       await deleteAffiliate(affiliate.id);
       router.push('/admin/affiliates');
-    } catch (err) {
+    } catch {
       alert('Failed to delete affiliate.');
     }
   };

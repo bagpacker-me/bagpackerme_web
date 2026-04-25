@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { motion, Variants } from 'framer-motion';
 import Link from 'next/link';
 
 interface AffiliateStats {
@@ -29,7 +29,7 @@ const STATUS_COLORS: Record<string, string> = {
   rejected: 'bg-red-50 text-red-600 border-red-200',
 };
 
-const fadeUp: any = {
+const fadeUp: Variants = {
   hidden: { opacity: 0, y: 20 },
   show: (i: number) => ({ opacity: 1, y: 0, transition: { duration: 0.5, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] } }),
 };
@@ -38,7 +38,6 @@ function AffiliateDashboard() {
   const searchParams = useSearchParams();
   const codeParam = searchParams?.get('code') ?? '';
 
-  const [code, setCode] = useState(codeParam);
   const [inputCode, setInputCode] = useState(codeParam);
   const [affiliate, setAffiliate] = useState<AffiliateStats | null>(null);
   const [clicks, setClicks] = useState<ClickEvent[]>([]);
@@ -126,7 +125,7 @@ function AffiliateDashboard() {
                 </p>
                 <form
                   className="flex gap-3"
-                  onSubmit={e => { e.preventDefault(); setCode(inputCode); fetchData(inputCode); }}
+                  onSubmit={e => { e.preventDefault(); fetchData(inputCode); }}
                 >
                   <input
                     id="affiliate-code-input"
@@ -177,7 +176,7 @@ function AffiliateDashboard() {
                   </p>
                 </div>
                 <button
-                  onClick={() => { setAffiliate(null); setCode(''); setInputCode(''); setClicks([]); }}
+                  onClick={() => { setAffiliate(null); setInputCode(''); setClicks([]); }}
                   className="text-[13px] font-body text-void/40 hover:text-teal transition-colors underline"
                 >
                   Switch account
