@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Minus } from 'lucide-react';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { Plus, Minus, ChevronDown, ChevronUp } from 'lucide-react';
 
 const FAQS = [
   {
@@ -73,21 +73,77 @@ const FAQS = [
 
 export default function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number>(0);
+  const [showAll, setShowAll] = useState<boolean>(false);
+  const shouldReduceMotion = useReducedMotion();
+
+  const defaultFaqsCount = 6;
+  const visibleFaqs = FAQS.slice(0, defaultFaqsCount);
+  const hiddenFaqs = FAQS.slice(defaultFaqsCount);
+
+  const renderFaqItem = (faq: typeof FAQS[0], idx: number) => {
+    const isOpen = openIndex === idx;
+    return (
+      <motion.div 
+        key={idx}
+        initial={shouldReduceMotion ? undefined : { opacity: 0, y: 10 }}
+        whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={shouldReduceMotion ? undefined : { duration: 0.4 }}
+        className={`rounded-2xl border transition-all duration-300 overflow-hidden ${
+          isOpen 
+            ? 'bg-white shadow-card-teal border-teal/20' 
+            : 'bg-transparent border-medium hover:border-teal/30 cursor-pointer'
+        }`}
+        onClick={() => setOpenIndex(isOpen ? -1 : idx)}
+      >
+        <div className="flex justify-between items-center gap-4 p-6 md:p-8">
+          <h3 className={`font-display font-semibold text-lg md:text-xl transition-colors ${
+            isOpen ? 'text-teal' : 'text-void/80'
+          }`}>
+            {faq.question}
+          </h3>
+
+          <div className={`flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 ${
+            isOpen 
+              ? 'bg-teal text-white rotate-0' 
+              : 'bg-void/5 text-void/50 hover:bg-teal/10 hover:text-teal'
+          }`}>
+            {isOpen 
+              ? <Minus strokeWidth={1.5} className="w-4 h-4" /> 
+              : <Plus strokeWidth={1.5} className="w-4 h-4" />
+            }
+          </div>
+        </div>
+
+        <AnimatePresence initial={false}>
+          {isOpen && (
+            <motion.div
+              key="answer"
+              initial={shouldReduceMotion ? undefined : { height: 0, opacity: 0 }}
+              animate={shouldReduceMotion ? undefined : { height: 'auto', opacity: 1 }}
+              exit={shouldReduceMotion ? undefined : { height: 0, opacity: 0 }}
+              transition={shouldReduceMotion ? undefined : { duration: 0.32, ease: [0.25, 0.46, 0.45, 0.94] }}
+              className="overflow-hidden"
+            >
+              <p className="px-6 md:px-8 pb-6 md:pb-8 font-body text-void/70 text-sm md:text-base leading-relaxed pr-16">
+                {faq.answer}
+              </p>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
+    );
+  };
 
   return (
     <section className="bg-surface-lowest py-32">
       <div className="container mx-auto px-6 lg:px-8 max-w-4xl">
         <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={shouldReduceMotion ? undefined : { opacity: 0, y: 20 }}
+          whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          {/* Eyebrow */}
-          <div className="section-label justify-center mb-5">
-            FAQ
-          </div>
-
           <h2 className="font-display text-4xl md:text-5xl font-bold text-void mb-6 tracking-tight">
             Frequently Asked Questions
           </h2>
@@ -97,61 +153,40 @@ export default function FAQSection() {
         </motion.div>
 
         <div className="space-y-3">
-          {FAQS.map((faq, idx) => {
-            const isOpen = openIndex === idx;
-            return (
-              <motion.div 
-                key={idx}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.08 }}
-                className={`rounded-2xl border transition-all duration-300 overflow-hidden ${
-                  isOpen 
-                    ? 'bg-white shadow-card-teal border-teal/20' 
-                    : 'bg-transparent border-medium hover:border-teal/30 cursor-pointer'
-                }`}
-                onClick={() => setOpenIndex(isOpen ? -1 : idx)}
+          {visibleFaqs.map((faq, idx) => renderFaqItem(faq, idx))}
+
+          <AnimatePresence initial={false}>
+            {showAll && (
+              <motion.div
+                initial={shouldReduceMotion ? undefined : { height: 0, opacity: 0 }}
+                animate={shouldReduceMotion ? undefined : { height: 'auto', opacity: 1 }}
+                exit={shouldReduceMotion ? undefined : { height: 0, opacity: 0 }}
+                transition={shouldReduceMotion ? undefined : { duration: 0.5, ease: "easeInOut" }}
+                className="overflow-hidden space-y-3 pt-3"
               >
-                <div className="flex justify-between items-center gap-4 p-6 md:p-8">
-                  <h3 className={`font-display font-semibold text-lg md:text-xl transition-colors ${
-                    isOpen ? 'text-teal' : 'text-void/80'
-                  }`}>
-                    {faq.question}
-                  </h3>
-
-                  {/* Premium Plus/Minus toggle */}
-                  <div className={`flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 ${
-                    isOpen 
-                      ? 'bg-teal text-white rotate-0' 
-                      : 'bg-void/5 text-void/50 hover:bg-teal/10 hover:text-teal'
-                  }`}>
-                    {isOpen 
-                      ? <Minus className="w-4 h-4" /> 
-                      : <Plus className="w-4 h-4" />
-                    }
-                  </div>
-                </div>
-
-                <AnimatePresence initial={false}>
-                  {isOpen && (
-                    <motion.div
-                      key="answer"
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.32, ease: [0.25, 0.46, 0.45, 0.94] }}
-                      className="overflow-hidden"
-                    >
-                      <p className="px-6 md:px-8 pb-6 md:pb-8 font-body text-void/70 text-sm md:text-base leading-relaxed pr-16">
-                        {faq.answer}
-                      </p>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                {hiddenFaqs.map((faq, idx) => renderFaqItem(faq, idx + defaultFaqsCount))}
               </motion.div>
-            );
-          })}
+            )}
+          </AnimatePresence>
+        </div>
+
+        <div className="mt-12 text-center">
+          <button
+            onClick={() => setShowAll(!showAll)}
+            className="inline-flex items-center gap-2 rounded-full border border-teal text-teal hover:bg-teal hover:text-white px-7 py-3.5 font-display text-[12px] font-bold uppercase tracking-widest transition-all duration-300 hover:shadow-card-teal active:scale-[0.98] cursor-pointer"
+          >
+            {showAll ? (
+              <>
+                Show Less Questions
+                <ChevronUp className="w-4 h-4" />
+              </>
+            ) : (
+              <>
+                Show All Questions ({FAQS.length})
+                <ChevronDown className="w-4 h-4" />
+              </>
+            )}
+          </button>
         </div>
       </div>
     </section>

@@ -1,7 +1,9 @@
 "use client";
 
+import React, { useState } from "react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import { motion, useReducedMotion } from "framer-motion";
 
 const GALLERY_IMAGES = [
   {
@@ -43,51 +45,80 @@ const GALLERY_IMAGES = [
 ];
 
 export default function ImageGallery() {
+  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
+  const shouldReduceMotion = useReducedMotion();
+
   return (
-    <section className="w-full flex flex-col items-center justify-start py-16 bg-surface-lowest">
+    <section className="w-full flex flex-col items-center justify-start py-24 bg-surface-lowest">
       {/* Heading */}
-      <div className="max-w-3xl text-center px-4">
-        <p className="text-sm font-semibold uppercase tracking-widest text-lime-500 font-display mb-2">
-          Visual Stories
-        </p>
-        <h2 className="text-3xl md:text-4xl font-bold font-display text-gray-900 dark:text-white">
+      <div className="max-w-3xl text-center px-4 mb-10">
+        <h2 className="text-3xl md:text-5xl font-bold font-display text-gray-900 dark:text-white tracking-tight">
           Glimpses of Incredible India
         </h2>
-        <p className="text-sm text-slate-500 dark:text-slate-400 mt-3 font-body">
+        <p className="text-base text-slate-500 dark:text-slate-400 mt-4 font-body leading-relaxed max-w-2xl mx-auto">
           From sacred cities and marble icons to high-altitude lakes and
           palm-lined shores, each frame reveals a different rhythm of India.
         </p>
       </div>
 
       {/* Accordion Gallery */}
-      <div className="flex items-center gap-2 h-[420px] w-full max-w-6xl mt-10 px-4">
-        {GALLERY_IMAGES.map((img, idx) => (
-          <div
-            key={idx}
-            className={cn(
-              "relative group flex-grow transition-all w-20 rounded-xl overflow-hidden h-[420px]",
-              "duration-500 ease-in-out hover:w-full"
-            )}
-          >
-            <Image
-              className="h-full w-full object-cover object-center"
-              src={img.src}
-              alt={img.alt}
-              fill
-              sizes="(max-width: 768px) 100vw, 16vw"
-            />
-            {/* Overlay label */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300" />
-            <div className="absolute bottom-4 left-4 right-4 opacity-100 md:opacity-0 transition-all duration-300 translate-y-0 md:translate-y-2 md:group-hover:translate-y-0 md:group-hover:opacity-100">
-              <p className="text-[11px] font-display font-semibold uppercase tracking-[0.24em] text-white/70">
-                {img.title}
-              </p>
-              <p className="mt-1 text-white text-sm font-body font-medium leading-snug">
-                {img.tagline}
-              </p>
-            </div>
-          </div>
-        ))}
+      <div 
+        className="flex items-center gap-3 h-[450px] w-full max-w-6xl px-4"
+        onMouseLeave={() => setHoveredIdx(null)}
+      >
+        {GALLERY_IMAGES.map((img, idx) => {
+          const isExpanded = hoveredIdx === idx;
+          const isAnyHovered = hoveredIdx !== null;
+          
+          return (
+            <motion.div
+              key={idx}
+              layout={shouldReduceMotion ? false : "size"}
+              transition={{ type: "spring", stiffness: 300, damping: 25 }}
+              onMouseEnter={() => setHoveredIdx(idx)}
+              className={cn(
+                "relative rounded-2xl overflow-hidden h-[450px] cursor-pointer origin-center flex-grow transition-all duration-300",
+                isExpanded 
+                  ? "flex-[4.5]" 
+                  : isAnyHovered 
+                    ? "flex-[0.6]" 
+                    : "flex-1"
+              )}
+            >
+              <Image
+                className="h-full w-full object-cover object-center transition-transform duration-700 hover:scale-105"
+                src={img.src}
+                alt={img.alt}
+                fill
+                sizes="(max-width: 768px) 100vw, 33vw"
+                priority={idx < 2}
+              />
+              
+              {/* Overlay label */}
+              <div className={cn(
+                "absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent transition-opacity duration-300 pointer-events-none",
+                (isExpanded || !isAnyHovered) ? "opacity-100" : "opacity-0"
+              )} />
+              
+              <div className={cn(
+                "absolute bottom-6 left-6 right-6 transition-all duration-500 pointer-events-none",
+                (isExpanded || !isAnyHovered) ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+              )}>
+                <p className="text-[11px] font-display font-semibold uppercase tracking-[0.24em] text-white/80">
+                  {img.title}
+                </p>
+                <div className={cn(
+                  "overflow-hidden transition-all duration-500 ease-out",
+                  isExpanded ? "max-h-[60px] opacity-100 mt-2" : "max-h-0 opacity-0 mt-0"
+                )}>
+                  <p className="text-white text-sm font-body font-medium leading-snug">
+                    {img.tagline}
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          );
+        })}
       </div>
     </section>
   );

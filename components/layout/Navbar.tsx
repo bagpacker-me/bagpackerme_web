@@ -84,10 +84,10 @@ export function Navbar() {
 
                         {/* Desktop CTA & Mobile Toggle */}
                         <div className="flex items-center gap-4 z-50">
-                            <Button
+                             <Button
                                 asChild
                                 size="sm"
-                                className="hidden lg:inline-flex bg-lime text-teal hover:bg-lime/90 rounded-full px-6 font-bold font-display tracking-widest uppercase transition-all duration-300 hover:-translate-y-0.5 hover:shadow-glow-lime-sm">
+                                className="hidden lg:inline-flex bg-lime text-teal hover:bg-lime/90 rounded-full px-6 font-bold font-display tracking-widest uppercase transition-all duration-300 hover:-translate-y-0.5 hover:shadow-glow-lime-sm active:scale-[0.98] active:translate-y-0">
                                 <Link href="/contact?intent=trip">Book Now</Link>
                             </Button>
 
@@ -95,8 +95,8 @@ export function Navbar() {
                                 onClick={() => setMenuState(!menuState)}
                                 aria-label={menuState ? 'Close Menu' : 'Open Menu'}
                                 className="relative block lg:hidden p-2 text-white hover:text-lime transition-colors">
-                                <Menu className={cn("size-7 transition-all duration-300", menuState ? "rotate-180 scale-0 opacity-0 absolute" : "rotate-0 scale-100 opacity-100")} />
-                                <X className={cn("size-7 transition-all duration-300", menuState ? "rotate-0 scale-100 opacity-100" : "-rotate-180 scale-0 opacity-0 absolute")} />
+                                <Menu strokeWidth={1.5} className={cn("size-7 transition-all duration-300", menuState ? "rotate-180 scale-0 opacity-0 absolute" : "rotate-0 scale-100 opacity-100")} />
+                                <X strokeWidth={1.5} className={cn("size-7 transition-all duration-300", menuState ? "rotate-0 scale-100 opacity-100" : "-rotate-180 scale-0 opacity-0 absolute")} />
                             </button>
                         </div>
                     </div>
@@ -126,10 +126,10 @@ export function Navbar() {
                             })}
                         </ul>
                         <div className="mt-12">
-                            <Button
+                             <Button
                                 asChild
                                 size="lg"
-                                className="w-full bg-lime text-teal hover:bg-lime/90 rounded-full font-bold font-display tracking-widest uppercase transition-all duration-300 hover:shadow-glow-lime">
+                                className="w-full bg-lime text-teal hover:bg-lime/90 rounded-full font-bold font-display tracking-widest uppercase transition-all duration-300 hover:shadow-glow-lime active:scale-[0.98]">
                                 <Link href="/contact?intent=trip">Book Now</Link>
                             </Button>
                         </div>

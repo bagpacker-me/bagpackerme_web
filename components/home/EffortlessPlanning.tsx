@@ -2,12 +2,13 @@
 
 import React, { useEffect, useRef } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 import {
   motion,
   useInView,
   useMotionValue,
   useReducedMotion,
-  useScroll,
   useSpring,
   useTransform,
 } from 'framer-motion';
@@ -86,30 +87,15 @@ function AnimatedCounter({
 }
 
 export default function EffortlessPlanning() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start end', 'end start']
-  });
-  
-  const yBg = useTransform(scrollYProgress, [0, 1], ['0%', '20%']);
+  const shouldReduceMotion = useReducedMotion();
 
   return (
-    <section className="bg-surface-lowest pt-24 pb-0 relative">
+    <section className="bg-surface-lowest pt-24 pb-24 relative">
       {/* Intro Text Section */}
-      <div className="container mx-auto px-6 lg:px-8 text-center max-w-4xl relative z-10 mb-32">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="section-label justify-center mb-6"
-        >
-          HOW WE WORK
-        </motion.div>
-
+      <div className="container mx-auto px-6 lg:px-8 text-center max-w-4xl relative z-10 mb-20">
         <motion.p 
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={shouldReduceMotion ? undefined : { opacity: 0, y: 10 }}
+          whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
           viewport={{ once: true }}
           className="text-void/60 mb-6 font-body text-sm uppercase tracking-widest"
         >
@@ -117,8 +103,8 @@ export default function EffortlessPlanning() {
         </motion.p>
         
         <motion.h2 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={shouldReduceMotion ? undefined : { opacity: 0, y: 20 }}
+          whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.1 }}
           className="font-display text-5xl md:text-7xl font-semibold text-void tracking-tight leading-[1.1] mb-16"
@@ -127,8 +113,8 @@ export default function EffortlessPlanning() {
         </motion.h2>
 
         <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
-          whileInView={{ opacity: 1, scale: 1 }}
+          initial={shouldReduceMotion ? undefined : { opacity: 0, scale: 0.9 }}
+          whileInView={shouldReduceMotion ? undefined : { opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ delay: 0.2 }}
           className="flex flex-col items-center"
@@ -137,7 +123,7 @@ export default function EffortlessPlanning() {
           <div className="flex -space-x-4 mb-6">
             {AVATARS.map((src, i) => (
               <div key={i} className="w-14 h-14 rounded-full border-2 border-white overflow-hidden relative shadow-md">
-                <Image src={src} alt="Traveler" fill className="object-cover" />
+                <Image src={src} alt="Traveler" fill sizes="56px" className="object-cover" />
               </div>
             ))}
           </div>
@@ -147,67 +133,80 @@ export default function EffortlessPlanning() {
         </motion.div>
       </div>
 
-
-      {/* Stats Ticket Section */}
-      <div ref={containerRef} className="relative w-full py-32 md:py-48 overflow-hidden px-4 md:px-8">
-        {/* Parallax Background */}
-        <motion.div 
-          style={{ y: yBg }}
-          className="absolute inset-0 z-0 scale-110"
-        >
-          <div className="absolute inset-0 bg-teal/50 mix-blend-multiply z-10" />
-          <Image 
-            src="https://images.unsplash.com/photo-1518877593221-1f28583780b4?q=80&w=2000&auto=format&fit=crop" 
-            alt="Deep Ocean" 
-            fill 
-            className="object-cover"
-          />
-        </motion.div>
-
-        {/* Content */}
-        <div className="container mx-auto relative z-20 max-w-5xl">
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
+      {/* Stats Bento Grid Section */}
+      <div className="container mx-auto px-6 lg:px-8 max-w-5xl">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Card 1: 1200+ Happy Explorers */}
+          <motion.div
+            initial={shouldReduceMotion ? undefined : { opacity: 0, y: 30 }}
+            whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="flex flex-col md:flex-row shadow-2xl relative bg-white mix-blend-normal"
-            style={{ 
-              borderRadius: '24px',
-              // A simple way to simulate stamp edges is using a repeating radial gradient mask on the container 
-              // but it can be very tricky for CSS across different browsers.
-              // Let's use standard border-radius and large circle cutouts via pseudo-elements to divide the sections
-            }}
+            whileHover={shouldReduceMotion ? undefined : { y: -6, scale: 1.01 }}
+            transition={{ type: 'spring', stiffness: 350, damping: 25 }}
+            className="md:col-span-2 relative p-8 md:p-12 rounded-3xl overflow-hidden bg-gradient-to-br from-teal/10 to-teal/5 border border-teal/10 flex flex-col justify-between min-h-[220px]"
           >
-            {STATS.map((stat, idx) => (
-              <div 
-                key={idx} 
-                className={`flex-1 relative p-12 lg:p-16 flex flex-col justify-center bg-white 
-                  ${idx !== STATS.length - 1 ? 'border-b md:border-b-0 md:border-r border-dashed border-gray-300' : ''}`
-                }
-              >
-                {/* Circle cutouts for the dashed lines between sections */}
-                {idx !== STATS.length - 1 && (
-                  <>
-                    <div className="hidden md:block absolute -top-4 -right-4 w-8 h-8 rounded-full bg-void/50 backdrop-blur-3xl z-10" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1518877593221-1f28583780b4?q=80&w=2000&auto=format&fit=crop')", backgroundAttachment: 'fixed' }} />
-                    <div className="hidden md:block absolute -bottom-4 -right-4 w-8 h-8 rounded-full bg-void/50 backdrop-blur-3xl z-10" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1518877593221-1f28583780b4?q=80&w=2000&auto=format&fit=crop')", backgroundAttachment: 'fixed' }} />
-                  </>
-                )}
-
-                <h3 className="font-display text-6xl lg:text-7xl font-bold text-void mb-6">
-                  <AnimatedCounter
-                    target={stat.target}
-                    suffix={stat.suffix}
-                  />
-                </h3>
-                <p className="font-body text-void/70 text-sm lg:text-base leading-relaxed max-w-[250px]">
-                  {stat.desc}
-                </p>
-              </div>
-            ))}
+            <div>
+              <h3 className="font-display text-6xl lg:text-7xl font-bold text-teal mb-4">
+                <AnimatedCounter target={STATS[0].target} suffix={STATS[0].suffix} />
+              </h3>
+              <p className="font-body text-void/80 text-base md:text-lg max-w-md leading-relaxed">
+                {STATS[0].desc}
+              </p>
+            </div>
           </motion.div>
-          <div className="text-center mt-6">
-              <span className="text-white font-body text-sm drop-shadow-md">Trusted by thousands of travelers around the world</span>
-          </div>
+
+          {/* Card 2: 25+ Handpicked Destinations */}
+          <motion.div
+            initial={shouldReduceMotion ? undefined : { opacity: 0, y: 30 }}
+            whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            whileHover={shouldReduceMotion ? undefined : { y: -6, scale: 1.01 }}
+            className="p-8 md:p-12 rounded-3xl bg-white border border-medium shadow-sm flex flex-col justify-between min-h-[220px]"
+          >
+            <div>
+              <h3 className="font-display text-6xl lg:text-7xl font-bold text-void mb-4">
+                <AnimatedCounter target={STATS[1].target} suffix={STATS[1].suffix} />
+              </h3>
+              <p className="font-body text-void/70 text-sm md:text-base leading-relaxed">
+                {STATS[1].desc}
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Card 3: 10% Member Deals */}
+          <motion.div
+            initial={shouldReduceMotion ? undefined : { opacity: 0, y: 30 }}
+            whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            whileHover={shouldReduceMotion ? undefined : { y: -6, scale: 1.01 }}
+            className="md:col-span-3 p-8 md:p-12 rounded-3xl bg-gradient-to-r from-ice to-white border border-medium shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-6 min-h-[160px]"
+          >
+            <div className="flex-1">
+              <h3 className="font-display text-5xl lg:text-6xl font-bold text-teal mb-2">
+                <AnimatedCounter target={STATS[2].target} suffix={STATS[2].suffix} />
+              </h3>
+              <p className="font-body text-void/80 text-base md:text-lg max-w-xl leading-relaxed">
+                {STATS[2].desc}
+              </p>
+            </div>
+            <div className="flex-shrink-0">
+              <Link 
+                href="/packages"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-teal text-white hover:bg-teal/95 px-6 py-3.5 font-display text-[12px] font-bold uppercase tracking-widest transition-all duration-300 hover:shadow-card-teal-hover active:scale-[0.98]"
+              >
+                Find Your Trip
+                <ArrowRight strokeWidth={2} className="h-4 w-4" />
+              </Link>
+            </div>
+          </motion.div>
+        </div>
+
+        <div className="text-center mt-12">
+          <span className="text-void/45 font-body text-sm font-medium tracking-wide">
+            Trusted by thousands of travelers around the world
+          </span>
         </div>
       </div>
     </section>

@@ -104,7 +104,7 @@ export default function HeroInteractive() {
   ];
 
   return (
-    <section className="relative h-[100vh] w-full overflow-hidden bg-void font-sans text-white">
+    <section className="relative min-h-[100dvh] w-full overflow-hidden bg-void font-sans text-white">
       {/* Background Images Crossfade */}
       <AnimatePresence initial={false} custom={direction}>
         <motion.div
@@ -151,14 +151,14 @@ export default function HeroInteractive() {
             <div className="flex flex-col gap-4 sm:flex-row">
               <Link
                 href="/contact?intent=trip"
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-lime px-7 py-4 font-display text-[12px] font-bold uppercase tracking-widest text-teal transition-all duration-300 hover:-translate-y-0.5 hover:bg-lime/90 hover:shadow-glow-lime-sm"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-lime px-7 py-4 font-display text-[12px] font-bold uppercase tracking-widest text-teal transition-all duration-300 hover:-translate-y-0.5 hover:bg-lime/90 hover:shadow-glow-lime-sm active:scale-[0.98] active:translate-y-0"
               >
                 Book Now
-                <ArrowRight className="h-4 w-4" />
+                <ArrowRight strokeWidth={2} className="h-4 w-4" />
               </Link>
               <Link
                 href="/packages"
-                className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-7 py-4 font-display text-[12px] font-bold uppercase tracking-widest text-white transition-colors duration-300 hover:border-white/40 hover:bg-white/15"
+                className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-7 py-4 font-display text-[12px] font-bold uppercase tracking-widest text-white transition-all duration-300 hover:border-white/40 hover:bg-white/15 active:scale-[0.98]"
               >
                 Explore Trips
               </Link>

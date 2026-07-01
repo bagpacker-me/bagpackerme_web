@@ -150,8 +150,10 @@ export default function DiscoverTheWorld() {
               whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: shouldReduceMotion ? 0 : index * 0.05, duration: 0.4 }}
+              whileHover={shouldReduceMotion ? undefined : { scale: 1.05, y: -2 }}
+              whileTap={shouldReduceMotion ? undefined : { scale: 0.95, y: 0 }}
               onClick={() => setActiveTab(category)}
-              className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 font-body border ${
+              className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 font-body border cursor-pointer ${
                 activeTab === category
                   ? 'bg-teal text-white border-teal shadow-card-teal'
                   : 'bg-white text-void border-medium hover:border-teal hover:text-teal'
@@ -183,7 +185,9 @@ export default function DiscoverTheWorld() {
                 <motion.div
                   key={pkg.id}
                   variants={shouldReduceMotion ? undefined : cardVariants}
-                  className="relative w-[85vw] md:w-[400px] flex-shrink-0 aspect-[4/5] rounded-3xl overflow-hidden snap-center group shadow-diffuse"
+                  whileHover={shouldReduceMotion ? undefined : { y: -8, scale: 1.01 }}
+                  transition={{ type: 'spring', stiffness: 350, damping: 25 }}
+                  className="relative w-[85vw] md:w-[400px] flex-shrink-0 aspect-[4/5] rounded-3xl overflow-hidden snap-center group shadow-diffuse cursor-pointer"
                 >
                   <Image
                     src={pkg.heroImageUrl || FALLBACK_IMAGE}
@@ -191,6 +195,7 @@ export default function DiscoverTheWorld() {
                     fill
                     sizes="(max-width: 768px) 85vw, 400px"
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    priority={packages.indexOf(pkg) < 2}
                   />
 
                   <div className="absolute inset-0 bg-gradient-to-t from-void/90 via-void/30 to-transparent opacity-90" />
@@ -221,7 +226,7 @@ export default function DiscoverTheWorld() {
 
                       <Link
                         href={`/packages/${pkg.slug}`}
-                        className="ml-auto w-10 h-10 rounded-full backdrop-blur-md bg-white/10 border border-white/20 flex items-center justify-center text-white group-hover:bg-lime group-hover:text-teal group-hover:border-lime transition-all duration-300"
+                        className="ml-auto w-10 h-10 rounded-full backdrop-blur-md bg-white/10 border border-white/20 flex items-center justify-center text-white group-hover:bg-lime group-hover:text-teal group-hover:border-lime transition-all duration-300 active:scale-90"
                         aria-label={`Explore ${pkg.title}`}
                       >
                         <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
