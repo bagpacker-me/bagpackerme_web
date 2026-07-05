@@ -12,11 +12,34 @@ import toast from 'react-hot-toast';
 function SkeletonRow() {
   return (
     <tr className="border-b border-gray-100">
-      {[40, 160, 100, 80, 80, 100, 100].map((w, i) => (
-        <td key={i} className="px-4 py-3">
-          <div className="h-4 bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.1)] rounded animate-pulse" style={{ width: w }} />
-        </td>
-      ))}
+      {/* Image */}
+      <td className="px-4 py-3 w-14">
+        <div className="w-10 h-10 bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.1)] rounded-lg animate-pulse" />
+      </td>
+      {/* Title */}
+      <td className="px-4 py-3">
+        <div className="h-4 bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.1)] rounded animate-pulse w-40" />
+      </td>
+      {/* Category */}
+      <td className="px-4 py-3 hidden md:table-cell">
+        <div className="h-4 bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.1)] rounded animate-pulse w-24" />
+      </td>
+      {/* Status */}
+      <td className="px-4 py-3">
+        <div className="h-4 bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.1)] rounded animate-pulse w-20" />
+      </td>
+      {/* Price */}
+      <td className="px-4 py-3 hidden sm:table-cell">
+        <div className="h-4 bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.1)] rounded animate-pulse w-20" />
+      </td>
+      {/* Created */}
+      <td className="px-4 py-3 hidden lg:table-cell">
+        <div className="h-4 bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.1)] rounded animate-pulse w-24" />
+      </td>
+      {/* Actions */}
+      <td className="px-4 py-3 text-right">
+        <div className="h-4 bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.1)] rounded animate-pulse w-24 ml-auto" />
+      </td>
     </tr>
   );
 }

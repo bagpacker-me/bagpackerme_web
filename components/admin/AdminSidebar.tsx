@@ -1,10 +1,12 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Logo } from '@/components/ui/Logo';
 import { useAuth } from '@/hooks/useAuth';
 import { logoutAdmin } from '@/lib/auth';
+import { listenNewEnquiriesCount } from '@/lib/firestore';
 import {
   LayoutDashboard,
   BarChart3,
@@ -64,6 +66,13 @@ export default function AdminSidebar({ isOpen = false, onClose }: AdminSidebarPr
   const pathname = usePathname();
   const router = useRouter();
   const { user } = useAuth();
+  const [newEnquiriesCount, setNewEnquiriesCount] = useState(0);
+
+  useEffect(() => {
+    if (!user) return;
+    const unsub = listenNewEnquiriesCount(setNewEnquiriesCount);
+    return () => unsub();
+  }, [user]);
 
   const handleLogout = async () => {
     await logoutAdmin();
@@ -111,6 +120,7 @@ export default function AdminSidebar({ isOpen = false, onClose }: AdminSidebarPr
             <ul>
               {section.items.map((item) => {
                 const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
+                const badgeCount = item.label === 'Enquiries' ? newEnquiriesCount : item.badge;
                 return (
                   <li key={item.href}>
                     <Link
@@ -130,9 +140,9 @@ export default function AdminSidebar({ isOpen = false, onClose }: AdminSidebarPr
                       <span className="font-display text-[12px] font-semibold tracking-[0.1em] uppercase flex-1">
                         {item.label}
                       </span>
-                      {typeof item.badge === 'number' && item.badge > 0 && (
+                      {typeof badgeCount === 'number' && badgeCount > 0 && (
                         <span className="ml-auto bg-[#C1EA00] text-[#221E2A] font-display text-[10px] font-bold py-[1px] px-[6px] rounded-full leading-none">
-                          {item.badge}
+                          {badgeCount}
                         </span>
                       )}
                     </Link>

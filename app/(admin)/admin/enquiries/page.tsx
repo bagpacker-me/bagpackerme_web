@@ -100,15 +100,71 @@ function formatFormDataValue(value: string | string[]) {
 
 function SkeletonRow() {
   return (
-    <tr className="border-b border-gray-100">
-      {[120, 160, 100, 120, 120, 100, 80, 80].map((w, i) => (
-        <td key={i} className="px-4 py-3">
-          <div className="h-4 bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.1)] rounded animate-pulse" style={{ width: w }} />
-        </td>
-      ))}
+    <tr className="border-b border-gray-100 dark:border-[rgba(255,255,255,0.06)]">
+      {/* Name */}
+      <td className="px-4 py-3">
+        <div className="h-4 bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.1)] rounded animate-pulse w-32" />
+        <div className="h-3 bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.1)] rounded animate-pulse w-24 mt-1.5 sm:hidden" />
+      </td>
+      {/* Email */}
+      <td className="px-4 py-3 hidden sm:table-cell">
+        <div className="h-4 bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.1)] rounded animate-pulse w-40" />
+      </td>
+      {/* Phone */}
+      <td className="px-4 py-3 hidden lg:table-cell">
+        <div className="h-4 bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.1)] rounded animate-pulse w-28" />
+      </td>
+      {/* Inquiry Type */}
+      <td className="px-4 py-3 hidden lg:table-cell">
+        <div className="h-4 bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.1)] rounded animate-pulse w-32" />
+      </td>
+      {/* Package */}
+      <td className="px-4 py-3 hidden lg:table-cell">
+        <div className="h-4 bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.1)] rounded animate-pulse w-32" />
+      </td>
+      {/* Date */}
+      <td className="px-4 py-3 hidden xl:table-cell">
+        <div className="h-4 bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.1)] rounded animate-pulse w-24" />
+      </td>
+      {/* Status */}
+      <td className="px-4 py-3">
+        <div className="h-4 bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.1)] rounded animate-pulse w-20" />
+      </td>
+      {/* Actions */}
+      <td className="px-4 py-3 text-right">
+        <div className="h-4 bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.1)] rounded animate-pulse w-20 ml-auto" />
+      </td>
     </tr>
   );
 }
+
+const formatTravelDate = (enq: Enquiry) => {
+  if (enq.travelDate) {
+    try {
+      const d = new Date(enq.travelDate);
+      if (!isNaN(d.getTime())) {
+        return format(d, 'd MMM yyyy');
+      }
+    } catch {
+      // ignore
+    }
+  }
+
+  // Fallbacks for B2C/Corporate forms inside formData:
+  const formMonth = enq.formData?.travelMonth || enq.formData?.preferredMonth || enq.formData?.travelDate;
+  if (formMonth && typeof formMonth === 'string') {
+    try {
+      const d = new Date(formMonth);
+      if (!isNaN(d.getTime())) {
+        return format(d, 'MMM yyyy');
+      }
+    } catch {
+      // ignore
+    }
+    return formMonth;
+  }
+  return '—';
+};
 
 // ─── Slide-over detail panel ─────────────────────────────────────────────────
 function EnquirySlideOver({
@@ -183,7 +239,7 @@ function EnquirySlideOver({
               { label: 'Source', value: formatSource(enquiry.source) },
               { label: 'Package', value: enquiry.packageSlug ?? '—' },
               { label: 'Group Size', value: enquiry.groupSize ? `${enquiry.groupSize} people` : '—' },
-              { label: 'Travel Date', value: enquiry.travelDate ? format(new Date(enquiry.travelDate), 'd MMM yyyy') : '—' },
+              { label: 'Travel Date', value: formatTravelDate(enquiry) },
               { label: 'Submitted Via', value: formatSource(enquiry.submittedVia) },
               { label: 'Submitted', value: enquiry.createdAt ? format(new Date(enquiry.createdAt), 'd MMM yyyy, h:mm a') : '—' },
             ].map(({ label, value }) => (

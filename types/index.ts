@@ -43,6 +43,8 @@ export interface ItineraryDay {
   location: string;
   description: string;
   imageUrl?: string;
+  activity?: string;
+  activityDetails?: string;
 }
 
 export interface Inclusions {

@@ -44,7 +44,7 @@ export default function PackageCard({ pkg }: { pkg: Package }) {
         
         {/* Destinations Tags */}
         {pkg.destinations && pkg.destinations.length > 0 && (
-          <div className={`flex flex-wrap gap-1.5 ${pkg.tagline?.trim() ? 'mb-3' : 'mb-4.5'}`}>
+          <div className={`flex flex-wrap gap-1.5 ${pkg.tagline?.trim() ? 'mb-3' : 'mb-5'}`}>
             {pkg.destinations.slice(0, 3).map((dest, idx) => (
               <span key={idx} className="bg-ice text-teal/80 border border-teal/5 px-2.5 py-1 rounded-full text-[10px] uppercase tracking-[0.05em] font-body font-medium">
                 {dest}

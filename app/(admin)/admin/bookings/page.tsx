@@ -25,14 +25,50 @@ const STATUS_STYLES: Record<string, string> = {
 function SkeletonRow() {
   return (
     <tr className="border-b border-gray-100">
-      {[120, 160, 100, 120, 120, 100, 80].map((w, i) => (
-        <td key={i} className="px-4 py-3">
-          <div className="h-4 bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.1)] rounded animate-pulse" style={{ width: w }} />
-        </td>
-      ))}
+      {/* Booking ID */}
+      <td className="px-4 py-3">
+        <div className="h-4 bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.1)] rounded animate-pulse w-24" />
+      </td>
+      {/* Customer */}
+      <td className="px-4 py-3">
+        <div className="h-4 bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.1)] rounded animate-pulse w-32" />
+      </td>
+      {/* Package */}
+      <td className="px-4 py-3 hidden lg:table-cell">
+        <div className="h-4 bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.1)] rounded animate-pulse w-24" />
+      </td>
+      {/* Travel Date */}
+      <td className="px-4 py-3 hidden lg:table-cell">
+        <div className="h-4 bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.1)] rounded animate-pulse w-28" />
+      </td>
+      {/* Total Price */}
+      <td className="px-4 py-3 hidden lg:table-cell">
+        <div className="h-4 bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.1)] rounded animate-pulse w-24" />
+      </td>
+      {/* Status */}
+      <td className="px-4 py-3">
+        <div className="h-4 bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.1)] rounded animate-pulse w-20" />
+      </td>
+      {/* Actions */}
+      <td className="px-4 py-3 text-right">
+        <div className="h-4 bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.1)] rounded animate-pulse w-20 ml-auto" />
+      </td>
     </tr>
   );
 }
+
+const formatSafeDate = (dateString?: string, formatStr: string = 'd MMM yyyy') => {
+  if (!dateString) return '—';
+  try {
+    const d = new Date(dateString);
+    if (!isNaN(d.getTime())) {
+      return format(d, formatStr);
+    }
+  } catch {
+    // ignore
+  }
+  return dateString;
+};
 
 // ─── Slide-over detail panel ─────────────────────────────────────────────────
 function BookingSlideOver({
@@ -92,10 +128,10 @@ function BookingSlideOver({
           {/* Details Grid */}
           <div className="grid grid-cols-2 gap-3">
             {[
-              { label: 'Travel Date', value: booking.travelDate ? format(new Date(booking.travelDate), 'd MMM yyyy') : '—' },
+              { label: 'Travel Date', value: formatSafeDate(booking.travelDate) },
               { label: 'Group Size', value: `${booking.groupSize} people` },
               { label: 'Total Price', value: `₹${booking.totalPrice?.toLocaleString() || 0}` },
-              { label: 'Booked On', value: booking.createdAt ? format(new Date(booking.createdAt), 'd MMM yyyy, h:mm a') : '—' },
+              { label: 'Booked On', value: formatSafeDate(booking.createdAt, 'd MMM yyyy, h:mm a') },
             ].map(({ label, value }) => (
               <div key={label} className="bg-gray-50 dark:bg-[rgba(255,255,255,0.02)] rounded-xl p-3 border border-transparent dark:border-[rgba(255,255,255,0.04)]">
                 <p className="text-xs text-gray-400 dark:text-[rgba(255,255,255,0.5)] font-medium mb-0.5">{label}</p>
@@ -307,7 +343,7 @@ export default function AdminBookingsPage() {
                       {booking.packageName || '—'}
                     </td>
                     <td className="px-[16px] font-body text-[14px] text-[#221E2A] whitespace-nowrap hidden lg:table-cell">
-                      {booking.travelDate ? format(new Date(booking.travelDate), 'd MMM yyyy') : '—'}
+                      {formatSafeDate(booking.travelDate)}
                     </td>
                     <td className="px-[16px] font-body text-[14px] text-[#221E2A] hidden lg:table-cell">
                        ₹{booking.totalPrice?.toLocaleString() || 0}

@@ -129,10 +129,28 @@ function CorporateItinerary({ itinerary }: { itinerary: Package['itinerary'] }) 
         {itinerary.map((day, index) => (
           <div key={index} className="flex flex-col border-t border-white/10 pt-[24px] first:border-t-0 md:first:border-t-0 md:[&:nth-child(2)]:border-t-0">
             <span className="font-body text-[11px] text-[#0ED2E9] mb-[8px] tracking-[0.1em] uppercase">Day {day.day}</span>
-            <h3 className="font-display text-[22px] font-bold text-white tracking-[-0.01em] mb-[12px]">{day.location}</h3>
-            <p className="font-body text-[15px] text-[rgba(255,255,255,0.68)] leading-[1.7] whitespace-pre-wrap">
-              {day.description}
-            </p>
+            <div className="grid grid-cols-1 gap-4">
+              <div>
+                <h3 className="font-display text-[22px] font-bold text-white tracking-[-0.01em] mb-[12px]">{day.location}</h3>
+                <p className="font-body text-[15px] text-[rgba(255,255,255,0.68)] leading-[1.7] whitespace-pre-wrap">
+                  {day.description}
+                </p>
+              </div>
+              {(day.activity || day.activityDetails) && (
+                <div className="border-t border-white/5 pt-3 mt-1">
+                  {day.activity && (
+                    <h4 className="font-display text-[15px] font-semibold text-lime tracking-wide mb-[6px]">
+                      {day.activity}
+                    </h4>
+                  )}
+                  {day.activityDetails && (
+                    <p className="font-body text-[13px] text-[rgba(255,255,255,0.5)] leading-[1.6] whitespace-pre-wrap">
+                      {day.activityDetails}
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         ))}
       </div>

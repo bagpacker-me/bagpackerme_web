@@ -479,8 +479,19 @@ function TabItinerary({
                   </div>
                   <div className="space-y-2">
                     <p className="text-xs text-gray-500 font-medium uppercase tracking-wider">Column 2</p>
-                    <input className={inputCls()} placeholder="Activity / Breakout" />
-                    <textarea className={`${inputCls()} resize-none`} rows={3} placeholder="Details" />
+                    <input
+                      className={inputCls()}
+                      value={day.activity || ''}
+                      onChange={(e) => updateDay(idx, { activity: e.target.value })}
+                      placeholder="Activity / Breakout"
+                    />
+                    <textarea
+                      className={`${inputCls()} resize-none`}
+                      rows={3}
+                      value={day.activityDetails || ''}
+                      onChange={(e) => updateDay(idx, { activityDetails: e.target.value })}
+                      placeholder="Details"
+                    />
                   </div>
                 </>
               ) : (

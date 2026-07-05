@@ -9,11 +9,31 @@ import toast from 'react-hot-toast';
 function SkeletonRow() {
   return (
     <tr className="border-b border-gray-100">
-      {[160, 200, 120, 100, 120, 80].map((w, i) => (
-        <td key={i} className="px-4 py-3">
-          <div className="h-4 bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.1)] rounded animate-pulse" style={{ width: w }} />
-        </td>
-      ))}
+      {/* Name */}
+      <td className="px-4 py-3">
+        <div className="h-4 bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.1)] rounded animate-pulse w-32" />
+        <div className="h-3 bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.1)] rounded animate-pulse w-24 mt-1.5 sm:hidden" />
+      </td>
+      {/* Email */}
+      <td className="px-4 py-3 hidden sm:table-cell">
+        <div className="h-4 bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.1)] rounded animate-pulse w-40" />
+      </td>
+      {/* Phone */}
+      <td className="px-4 py-3 hidden lg:table-cell">
+        <div className="h-4 bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.1)] rounded animate-pulse w-28" />
+      </td>
+      {/* Bookings */}
+      <td className="px-4 py-3">
+        <div className="h-4 bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.1)] rounded animate-pulse w-16" />
+      </td>
+      {/* Joined */}
+      <td className="px-4 py-3 hidden lg:table-cell">
+        <div className="h-4 bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.1)] rounded animate-pulse w-24" />
+      </td>
+      {/* Actions */}
+      <td className="px-4 py-3 text-right">
+        <div className="h-4 bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.1)] rounded animate-pulse w-12 ml-auto" />
+      </td>
     </tr>
   );
 }

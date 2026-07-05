@@ -1,4 +1,4 @@
-import { collection, doc, getDocs, addDoc, updateDoc, deleteDoc, query, where, orderBy, getDoc, limit, setDoc, increment, runTransaction, writeBatch } from 'firebase/firestore';
+import { collection, doc, getDocs, addDoc, updateDoc, deleteDoc, query, where, orderBy, getDoc, limit, setDoc, increment, runTransaction, writeBatch, onSnapshot } from 'firebase/firestore';
 import { db } from './firebase';
 import { Package, BlogPost, Enquiry, Customer, Booking, GalleryImage, Affiliate, AffiliateClick, AffiliateEvent, AffiliatePublic, AffiliateRegistrationIndex } from '@/types';
 import { buildAffiliatePublicData, normalizeAffiliateCode, normalizeAffiliateSessionId } from './affiliate';
@@ -95,6 +95,15 @@ export const getEnquiry = async (id: string) => getDoc(doc(db, 'enquiries', id))
 export const createEnquiry = async (data: Omit<Enquiry, 'id'>) => addDoc(enquiriesCol, data);
 export const updateEnquiry = async (id: string, data: Partial<Enquiry>) => updateDoc(doc(db, 'enquiries', id), data);
 export const deleteEnquiry = async (id: string) => deleteDoc(doc(db, 'enquiries', id));
+export const listenNewEnquiriesCount = (callback: (count: number) => void) => {
+  const q = query(enquiriesCol, where('status', '==', 'new'));
+  return onSnapshot(q, (snapshot) => {
+    callback(snapshot.size);
+  }, (error) => {
+    console.error('Error listening to new enquiries count:', error);
+  });
+};
+
 
 // Subscribers
 const subscribersCol = collection(db, 'subscribers');

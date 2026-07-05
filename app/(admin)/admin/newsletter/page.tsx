@@ -26,14 +26,18 @@ function exportToCSV(data: Subscriber[]) {
 function SkeletonRow() {
   return (
     <tr className="border-b border-gray-100 dark:border-[rgba(255,255,255,0.06)]">
-      {[260, 140, 100].map((w, i) => (
-        <td key={i} className="px-4 py-3">
-          <div
-            className="h-4 bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.1)] rounded animate-pulse"
-            style={{ width: w }}
-          />
-        </td>
-      ))}
+      {/* Email */}
+      <td className="px-4 py-3">
+        <div className="h-4 bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.1)] rounded animate-pulse w-60" />
+      </td>
+      {/* Subscribed On */}
+      <td className="px-4 py-3 hidden sm:table-cell">
+        <div className="h-4 bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.1)] rounded animate-pulse w-32" />
+      </td>
+      {/* Actions */}
+      <td className="px-4 py-3 text-right">
+        <div className="h-4 bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.1)] rounded animate-pulse w-24 ml-auto" />
+      </td>
     </tr>
   );
 }
