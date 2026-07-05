@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { Plus, Minus, ChevronDown, ChevronUp } from 'lucide-react';
+import { Plus, Minus, ChevronDown, ChevronUp, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 
 const FAQS = [
   {
@@ -96,21 +97,21 @@ export default function FAQSection() {
         }`}
         onClick={() => setOpenIndex(isOpen ? -1 : idx)}
       >
-        <div className="flex justify-between items-center gap-4 p-6 md:p-8">
-          <h3 className={`font-display font-semibold text-lg md:text-xl transition-colors ${
+        <div className="flex justify-between items-center gap-4 p-6 md:p-7">
+          <h3 className={`font-display font-semibold text-base md:text-lg transition-colors ${
             isOpen ? 'text-teal' : 'text-void/80'
           }`}>
             {faq.question}
           </h3>
 
-          <div className={`flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 ${
+          <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${
             isOpen 
               ? 'bg-teal text-white rotate-0' 
-              : 'bg-void/5 text-void/50 hover:bg-teal/10 hover:text-teal'
+              : 'bg-void/5 text-void/50'
           }`}>
             {isOpen 
-              ? <Minus strokeWidth={1.5} className="w-4 h-4" /> 
-              : <Plus strokeWidth={1.5} className="w-4 h-4" />
+              ? <Minus strokeWidth={2} className="w-3.5 h-3.5" /> 
+              : <Plus strokeWidth={2} className="w-3.5 h-3.5" />
             }
           </div>
         </div>
@@ -122,10 +123,10 @@ export default function FAQSection() {
               initial={shouldReduceMotion ? undefined : { height: 0, opacity: 0 }}
               animate={shouldReduceMotion ? undefined : { height: 'auto', opacity: 1 }}
               exit={shouldReduceMotion ? undefined : { height: 0, opacity: 0 }}
-              transition={shouldReduceMotion ? undefined : { duration: 0.32, ease: [0.25, 0.46, 0.45, 0.94] }}
+              transition={shouldReduceMotion ? undefined : { duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
               className="overflow-hidden"
             >
-              <p className="px-6 md:px-8 pb-6 md:pb-8 font-body text-void/70 text-sm md:text-base leading-relaxed pr-16">
+              <p className="px-6 md:px-7 pb-6 md:pb-7 font-body text-void/70 text-sm md:text-base leading-relaxed pr-8">
                 {faq.answer}
               </p>
             </motion.div>
@@ -136,57 +137,72 @@ export default function FAQSection() {
   };
 
   return (
-    <section className="bg-surface-lowest py-32">
-      <div className="container mx-auto px-6 lg:px-8 max-w-4xl">
-        <motion.div 
-          initial={shouldReduceMotion ? undefined : { opacity: 0, y: 20 }}
-          whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <h2 className="font-display text-4xl md:text-5xl font-bold text-void mb-6 tracking-tight">
-            Frequently Asked Questions
-          </h2>
-          <p className="text-void/60 text-base md:text-lg font-body leading-relaxed max-w-2xl mx-auto">
-            Got questions before your next trip? We&apos;ve got you covered — here&apos;s everything you need to know about using BagPackerMe.
-          </p>
-        </motion.div>
+    <section className="bg-surface-lowest py-24 md:py-32">
+      <div className="container mx-auto px-6 lg:px-8 max-w-6xl">
+        <div className="split-layout">
+          {/* Left Column: Heading and Info card */}
+          <div className="lg:sticky lg:top-28">
+            <div className="accent-line-cyan" />
+            <h2 className="font-display text-4xl md:text-5xl font-bold text-void mb-5 tracking-tight">
+              Frequently asked questions
+            </h2>
+            <p className="text-void/60 text-base font-body leading-relaxed mb-8">
+              Got questions before your next trip? Here is everything you need to know about starting your journey with BagPackerMe.
+            </p>
 
-        <div className="space-y-3">
-          {visibleFaqs.map((faq, idx) => renderFaqItem(faq, idx))}
-
-          <AnimatePresence initial={false}>
-            {showAll && (
-              <motion.div
-                initial={shouldReduceMotion ? undefined : { height: 0, opacity: 0 }}
-                animate={shouldReduceMotion ? undefined : { height: 'auto', opacity: 1 }}
-                exit={shouldReduceMotion ? undefined : { height: 0, opacity: 0 }}
-                transition={shouldReduceMotion ? undefined : { duration: 0.5, ease: "easeInOut" }}
-                className="overflow-hidden space-y-3 pt-3"
+            {/* Quick Contact Card */}
+            <div className="bg-ice/40 border border-medium rounded-2xl p-6 md:p-8">
+              <h3 className="font-display font-semibold text-lg text-void mb-2">Still have questions?</h3>
+              <p className="font-body text-sm text-void/60 mb-6 leading-relaxed">
+                Can&apos;t find what you are looking for? Send us a quick inquiry and we&apos;ll get right back to you.
+              </p>
+              <Link 
+                href="/contact"
+                className="inline-flex items-center gap-2 text-teal font-display text-xs font-bold uppercase tracking-widest hover:text-teal/85 group"
               >
-                {hiddenFaqs.map((faq, idx) => renderFaqItem(faq, idx + defaultFaqsCount))}
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+                Let&apos;s chat
+                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
+              </Link>
+            </div>
+          </div>
 
-        <div className="mt-12 text-center">
-          <button
-            onClick={() => setShowAll(!showAll)}
-            className="inline-flex items-center gap-2 rounded-full border border-teal text-teal hover:bg-teal hover:text-white px-7 py-3.5 font-display text-[12px] font-bold uppercase tracking-widest transition-all duration-300 hover:shadow-card-teal active:scale-[0.98] cursor-pointer"
-          >
-            {showAll ? (
-              <>
-                Show Less Questions
-                <ChevronUp className="w-4 h-4" />
-              </>
-            ) : (
-              <>
-                Show All Questions ({FAQS.length})
-                <ChevronDown className="w-4 h-4" />
-              </>
-            )}
-          </button>
+          {/* Right Column: Accordions list */}
+          <div className="space-y-3">
+            {visibleFaqs.map((faq, idx) => renderFaqItem(faq, idx))}
+
+            <AnimatePresence initial={false}>
+              {showAll && (
+                <motion.div
+                  initial={shouldReduceMotion ? undefined : { height: 0, opacity: 0 }}
+                  animate={shouldReduceMotion ? undefined : { height: 'auto', opacity: 1 }}
+                  exit={shouldReduceMotion ? undefined : { height: 0, opacity: 0 }}
+                  transition={shouldReduceMotion ? undefined : { duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+                  className="overflow-hidden space-y-3 pt-3"
+                >
+                  {hiddenFaqs.map((faq, idx) => renderFaqItem(faq, idx + defaultFaqsCount))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <div className="pt-6">
+              <button
+                onClick={() => setShowAll(!showAll)}
+                className="inline-flex items-center gap-2 rounded-full border border-teal text-teal hover:bg-teal hover:text-white px-6 py-3 font-display text-[12px] font-bold uppercase tracking-widest transition-all duration-300 hover:shadow-card-teal active:scale-[0.98] cursor-pointer"
+              >
+                {showAll ? (
+                  <>
+                    Show less questions
+                    <ChevronUp className="w-4 h-4" />
+                  </>
+                ) : (
+                  <>
+                    Show all questions ({FAQS.length})
+                    <ChevronDown className="w-4 h-4" />
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </section>

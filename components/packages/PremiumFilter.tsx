@@ -12,8 +12,8 @@ const filterBadgeVariants = cva(
   {
     variants: {
       variant: {
-        default: "rounded-md gap-x-1.5 py-1 pl-2.5 pr-1 bg-white border border-gray-200 shadow-sm text-gray-600",
-        pill: "rounded-full gap-x-1.5 py-1 pl-3 pr-1.5 bg-white border border-gray-200 shadow-sm text-gray-600",
+        default: "rounded-md gap-x-1.5 py-1 pl-2.5 pr-1 bg-white border border-medium shadow-sm text-void/60",
+        pill: "rounded-full gap-x-1.5 py-1 pl-3 pr-1.5 bg-white border border-medium shadow-sm text-void/60",
       },
     },
     defaultVariants: {
@@ -32,12 +32,12 @@ function FilterBadge({ className, variant, label, value, onRemove, ...props }: F
   return (
     <span className={cn(filterBadgeVariants({ variant }), className)} {...props}>
       <span className="opacity-70">{label}:</span>
-      <span className="text-teal font-semibold">{value}</span>
+      <span className="text-teal font-semibold ml-1">{value}</span>
       {onRemove && (
         <button
           type="button"
           onClick={onRemove}
-          className="ml-0.5 flex size-4 items-center justify-center rounded-full bg-gray-100/80 text-gray-400 hover:bg-gray-200 hover:text-gray-900 transition-colors"
+          className="ml-1.5 flex size-4 items-center justify-center rounded-full bg-void/5 text-void/40 hover:bg-void/10 hover:text-void transition-colors"
           aria-label="Remove"
         >
           <X className="size-2.5 shrink-0" aria-hidden={true} />
@@ -160,7 +160,7 @@ const PriceRangeSlider = forwardRef<HTMLDivElement, PriceRangeSliderProps>(
           <span>{formatCurrency(minVal)}</span>
           <span>{formatCurrency(maxVal)}{maxVal === max ? '+' : ''}</span>
         </div>
-        <div className="relative w-full h-[4px] bg-slate-200/80 rounded-full" ref={sliderRef}>
+        <div className="relative w-full h-[4px] bg-void/10 rounded-full" ref={sliderRef}>
           <div 
             className="absolute top-0 bottom-0 bg-teal rounded-full" 
             style={{ left: `${minPercent}%`, right: `${100 - maxPercent}%` }} 
@@ -250,7 +250,7 @@ export function PremiumFilter({
       <div className="bg-white/95 backdrop-blur-xl shadow-card-teal rounded-3xl md:rounded-full p-2 w-full max-w-[900px] mx-auto border border-white/80 flex flex-col md:flex-row items-center gap-2 md:gap-4 transition-all hover:bg-white border-subtle mt-[-40px] md:mt-[-36px]">
         
         {/* Category Select */}
-        <div className="relative flex-1 w-full bg-slate-50/50 hover:bg-slate-100/50 rounded-2xl md:rounded-full transition-colors group">
+        <div className="relative flex-1 w-full bg-void/[0.02] hover:bg-void/[0.04] rounded-2xl md:rounded-full transition-colors group">
           <MapPin className="absolute left-4 md:left-5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-teal/40 group-hover:text-teal transition-colors pointer-events-none" />
           <select 
              className="w-full h-12 md:h-14 bg-transparent appearance-none pl-12 md:pl-14 pr-10 text-[14px] font-medium text-void outline-none cursor-pointer font-body"
@@ -260,13 +260,13 @@ export function PremiumFilter({
             <option value="All">All Categories</option>
             {categories.filter(c => c !== 'All').map(cat => <option key={cat} value={cat}>{cat}</option>)}
           </select>
-          <ChevronDown className="absolute right-4 md:right-5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-hover:text-teal/70 transition-colors pointer-events-none" />
+          <ChevronDown className="absolute right-4 md:right-5 top-1/2 -translate-y-1/2 w-4 h-4 text-void/30 group-hover:text-teal/70 transition-colors pointer-events-none" />
         </div>
 
-        <div className="hidden md:block w-px h-8 bg-gradient-to-b from-transparent via-gray-200 to-transparent" />
+        <div className="hidden md:block w-px h-8 bg-gradient-to-b from-transparent via-void/10 to-transparent" />
 
         {/* Duration Select */}
-        <div className="relative flex-1 w-full bg-slate-50/50 hover:bg-slate-100/50 rounded-2xl md:rounded-full transition-colors group">
+        <div className="relative flex-1 w-full bg-void/[0.02] hover:bg-void/[0.04] rounded-2xl md:rounded-full transition-colors group">
           <Calendar className="absolute left-4 md:left-5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-teal/40 group-hover:text-teal transition-colors pointer-events-none" />
           <select 
              className="w-full h-12 md:h-14 bg-transparent appearance-none pl-12 md:pl-14 pr-10 text-[14px] font-medium text-void outline-none cursor-pointer font-body"
@@ -275,13 +275,13 @@ export function PremiumFilter({
           >
             {durations.map(dur => <option key={dur.value} value={dur.value}>{dur.label}</option>)}
           </select>
-          <ChevronDown className="absolute right-4 md:right-5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-hover:text-teal/70 transition-colors pointer-events-none" />
+          <ChevronDown className="absolute right-4 md:right-5 top-1/2 -translate-y-1/2 w-4 h-4 text-void/30 group-hover:text-teal/70 transition-colors pointer-events-none" />
         </div>
 
-        <div className="hidden md:block w-px h-8 bg-gradient-to-b from-transparent via-gray-200 to-transparent" />
+        <div className="hidden md:block w-px h-8 bg-gradient-to-b from-transparent via-void/10 to-transparent" />
 
         {/* Price Range Slider */}
-        <div className="relative flex-[1.2] w-full px-4 md:px-6 h-12 md:h-14 flex items-center justify-center group bg-slate-50/30 md:bg-transparent rounded-2xl md:rounded-none">
+        <div className="relative flex-[1.2] w-full px-4 md:px-6 h-12 md:h-14 flex items-center justify-center group bg-void/[0.01] md:bg-transparent rounded-2xl md:rounded-none">
           <PriceRangeSlider 
             min={0}
             max={maxPrice}
@@ -305,7 +305,7 @@ export function PremiumFilter({
         {activeFilters.length > 0 && (
           <button
             onClick={() => setFilters({ category: 'All', duration: 'Any', priceRange: [0, maxPrice] })}
-            className="text-[12px] font-medium text-gray-400 hover:text-teal ml-2 transition-colors underline-offset-4 hover:underline font-body"
+            className="text-[12px] font-medium text-void/45 hover:text-teal ml-2 transition-colors underline-offset-4 hover:underline font-body"
           >
             Clear all
           </button>

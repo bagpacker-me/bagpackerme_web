@@ -99,11 +99,11 @@ export default function PackagesPage() {
   }, [packages, filters]);
 
   return (
-    <main className="flex flex-col min-h-screen bg-white">
+    <main className="flex flex-col min-h-screen bg-ice/30">
       {/* Hero Section */}
-      <section className="relative w-full h-[480px] flex items-center justify-center overflow-hidden">
+      <section className="relative w-full h-[460px] flex items-center justify-center overflow-hidden bg-void">
         {/* Background Overlay */}
-        <div className="absolute inset-0 bg-[#0B1517]/80 z-10" />
+        <div className="absolute inset-0 bg-void/70 z-10" />
         
         {/* BG Image */}
         <Image
@@ -111,30 +111,40 @@ export default function PackagesPage() {
           alt="India Landscape"
           fill
           priority
-          className="object-cover z-0"
+          className="object-cover z-0 opacity-80"
+        />
+
+        {/* Grain overlay for texture */}
+        <div 
+          className="absolute inset-0 z-20 pointer-events-none opacity-[0.03]"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E")`,
+            backgroundRepeat: 'repeat',
+            backgroundSize: '128px 128px',
+          }}
         />
 
         {/* Hero Content */}
-        <div className="relative z-30 text-center flex flex-col items-center px-[24px] w-full max-w-[800px]">
-
-          <div className="section-label mb-[24px]">
-            OUR JOURNEYS
+        <div className="relative z-30 text-center flex flex-col items-center px-6 w-full max-w-[800px] mt-12">
+          <div className="flex items-center gap-3 mb-5 justify-center">
+            <div className="w-6 h-[1.5px] bg-lime" />
+            <span className="font-display text-[11px] font-bold tracking-[0.22em] uppercase text-lime">
+              OUR JOURNEYS
+            </span>
+            <div className="w-6 h-[1.5px] bg-lime" />
           </div>
-          <h1 className="font-display text-[40px] md:text-[64px] text-[#FFFFFF] font-bold leading-[1.1] mb-[24px]" style={{ textWrap: 'balance', letterSpacing: '-0.02em' }}>
-            Curated Trips Across India
+          <h1 className="font-display text-5xl md:text-6xl text-white font-extrabold leading-[1.1] mb-6 tracking-tight" style={{ textWrap: 'balance' }}>
+            Curated trips across India
           </h1>
-          <p className="font-body text-[#FFFFFF]/80 text-[16px] md:text-[18px] leading-relaxed max-w-[600px] text-center">
-            From culinary trails to corporate retreats — every journey is deeply intentional.
+          <p className="font-body text-white/70 text-base md:text-lg leading-relaxed max-w-[540px] text-center">
+            From culinary trails to spiritual paths — experience the sub-continent through deeply intentional travel.
           </p>
         </div>
       </section>
 
-      {/* Filter Section - Premium Floating Card Style */}
-      <section className="relative z-40 bg-[#F7F9FA]">
-        {/* Decorative top shape to bridge background */}
-        <div className="absolute top-0 left-0 right-0 h-[40%] bg-gradient-to-b from-[rgba(11,21,23,0.1)] to-transparent opacity-100 pointer-events-none" />
-        
-        <div className="container mx-auto px-[16px] md:px-[24px] max-w-[1400px]">
+      {/* Filter Section */}
+      <section className="relative z-40">
+        <div className="container mx-auto px-6 max-w-6xl">
           <PremiumFilter 
             filters={filters}
             setFilters={setFilters}
@@ -146,18 +156,18 @@ export default function PackagesPage() {
       </section>
 
       {/* Packages Grid */}
-      <section className="bg-[#F7F9FA] min-h-[500px] py-[80px] lg:py-[120px]">
-        <div className="container mx-auto px-[24px] max-w-[1400px]">
+      <section className="min-h-[500px] py-20 lg:py-28">
+        <div className="container mx-auto px-6 max-w-6xl">
           
-          <div className="mb-[32px] flex items-center gap-[12px]">
-            <span className="block w-[24px] h-[1px] bg-[#0ED2E9]" aria-hidden="true" />
-            <span className="font-display text-[11px] text-[#0ED2E9] font-bold tracking-[0.22em] uppercase">
-              {filteredPackages.length} {filteredPackages.length === 1 ? 'Journey' : 'Journeys'} Found
+          <div className="mb-10 flex items-center gap-3 justify-center md:justify-start">
+            <span className="block w-6 h-[1.5px] bg-teal/30" aria-hidden="true" />
+            <span className="font-display text-xs text-teal font-bold tracking-[0.15em] uppercase">
+              {filteredPackages.length} {filteredPackages.length === 1 ? 'Journey' : 'Journeys'} found
             </span>
           </div>
 
           {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[24px]">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {Array.from({ length: 6 }).map((_, i) => (
                 <PackageCardSkeleton key={i} />
               ))}
@@ -165,12 +175,10 @@ export default function PackagesPage() {
           ) : (
             <AnimatePresence mode="popLayout">
               {filteredPackages.length > 0 ? (
-                /* Spec #4: stagger 0.10 with animate (not whileInView — avoids
-                   IntersectionObserver race with AnimatePresence popLayout) */
                 <motion.div
                   key={`package-grid-${filters.category}-${filters.duration}-${filters.priceRange[0]}-${filters.priceRange[1]}`}
                   layout
-                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[24px]"
+                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
                   variants={shouldReduceMotion ? undefined : CARD_GRID_VARIANTS}
                   initial={shouldReduceMotion ? undefined : 'hidden'}
                   animate={shouldReduceMotion ? undefined : 'visible'}
@@ -180,44 +188,44 @@ export default function PackagesPage() {
                       layout
                       key={pkg.id}
                       variants={shouldReduceMotion ? undefined : CARD_ITEM_VARIANTS}
+                      className="h-full"
                     >
                       <PackageCard pkg={pkg} />
                     </motion.div>
                   ))}
-                  </motion.div>
-                ) : (
-                  <motion.div 
-                    key="empty-state"
-                    layout
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    className="flex flex-col items-center justify-center py-[100px] px-[24px] bg-white rounded-[32px] border border-void/5 shadow-card-teal-hover mt-[32px] overflow-hidden relative"
-                  >
-                    <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-teal/5 rounded-full blur-[80px] pointer-events-none" />
-                    <div className="absolute bottom-0 left-0 w-[200px] h-[200px] bg-lime/10 rounded-full blur-[60px] pointer-events-none" />
-                    
-                    <div className="relative mb-[24px] z-10">
-                       <div className="absolute inset-0 bg-lime/30 blur-2xl rounded-full" />
-                       <div className="relative w-[80px] h-[80px] rounded-full bg-gradient-to-tr from-ice to-white border border-white flex items-center justify-center shadow-lg">
-                         <span className="text-[32px]">🏕️</span>
-                       </div>
+                </motion.div>
+              ) : (
+                <motion.div 
+                  key="empty-state"
+                  layout
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  className="flex flex-col items-center justify-center py-24 px-6 bg-white rounded-[24px] border border-medium/10 shadow-[0_8px_32px_rgba(40,80,86,0.06)] mt-8 overflow-hidden relative"
+                >
+                  <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-teal/5 rounded-full blur-[80px] pointer-events-none" />
+                  <div className="absolute bottom-0 left-0 w-[200px] h-[200px] bg-lime/5 rounded-full blur-[60px] pointer-events-none" />
+                  
+                  <div className="relative mb-6 z-10">
+                    <div className="absolute inset-0 bg-lime/20 blur-2xl rounded-full" />
+                    <div className="relative w-16 h-16 rounded-full bg-gradient-to-tr from-ice to-white border border-white flex items-center justify-center shadow-md">
+                      <span className="text-2xl">🏕️</span>
                     </div>
-                    <h3 className="font-display text-[28px] font-bold text-void mb-[12px] text-center relative z-10">No journeys found</h3>
-                    <p className="font-body text-void/60 mb-[32px] text-center max-w-[420px] text-[16px] relative z-10">
-                      We couldn&apos;t find any journeys matching your current filters. 
-                      Try exploring other categories or duration lengths.
-                    </p>
-                    <button 
-                      onClick={() => { setFilters({ category: 'All', duration: 'Any', priceRange: [0, DEFAULT_MAX_PRICE] }); }}
-                      className="relative z-10 px-[32px] py-[16px] bg-teal text-white font-display font-bold tracking-widest uppercase text-[12px] rounded-full hover:bg-teal/90 transition-all duration-300 shadow-[0_8px_24px_rgba(40,80,86,0.25)] hover:shadow-[0_12px_32px_rgba(40,80,86,0.4)] hover:-translate-y-1"
-                    >
-                      Reset Filters
-                    </button>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            )}
+                  </div>
+                  <h3 className="font-display text-2xl font-bold text-void mb-3 text-center relative z-10">No journeys found</h3>
+                  <p className="font-body text-void/60 mb-8 text-center max-w-[380px] text-sm relative z-10 leading-relaxed">
+                    We couldn&apos;t find any journeys matching your current filters. Try adjusting categories or pricing range.
+                  </p>
+                  <button 
+                    onClick={() => { setFilters({ category: 'All', duration: 'Any', priceRange: [0, DEFAULT_MAX_PRICE] }); }}
+                    className="relative z-10 px-8 py-3.5 bg-teal text-white font-display font-bold tracking-widest uppercase text-[11px] rounded-full hover:bg-teal/90 transition-all duration-300 shadow-[0_8px_24px_rgba(40,80,86,0.2)] hover:-translate-y-0.5 active:scale-98"
+                  >
+                    Reset Filters
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          )}
         </div>
       </section>
     </main>

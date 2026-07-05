@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import {
@@ -13,28 +12,24 @@ import {
   useTransform,
 } from 'framer-motion';
 
-const AVATARS = [
-  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=150&auto=format&fit=crop', // Woman
-  'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=150&auto=format&fit=crop', // Man
-  'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=150&auto=format&fit=crop', // Woman
-  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=150&auto=format&fit=crop', // Man
-];
-
 const STATS = [
   {
     target: 1200,
     suffix: '+',
-    desc: 'Happy explorers who found their dream trips with BagPackerMe'
+    label: 'Happy explorers',
+    desc: 'Travelers who found their dream trip with us'
   },
   {
     target: 25,
     suffix: '+',
-    desc: 'Handpicked destinations curated for every kind of traveler'
+    label: 'Destinations',
+    desc: 'Handpicked locations curated for every kind of traveler'
   },
   {
     target: 10,
     suffix: '%',
-    desc: 'Book your next trip today and enjoy exclusive member deals'
+    label: 'Member deals',
+    desc: 'Exclusive savings when you book your next journey'
   }
 ];
 
@@ -90,123 +85,114 @@ export default function EffortlessPlanning() {
   const shouldReduceMotion = useReducedMotion();
 
   return (
-    <section className="bg-surface-lowest pt-24 pb-24 relative">
-      {/* Intro Text Section */}
-      <div className="container mx-auto px-6 lg:px-8 text-center max-w-4xl relative z-10 mb-20">
-        <motion.p 
-          initial={shouldReduceMotion ? undefined : { opacity: 0, y: 10 }}
-          whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-void/60 mb-6 font-body text-sm uppercase tracking-widest"
-        >
-          Travel made simple, stories made unforgettable.
-        </motion.p>
-        
-        <motion.h2 
+    <section className="bg-white pt-28 pb-28 relative overflow-hidden">
+      {/* Subtle decorative gradient */}
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-bl from-ice/80 to-transparent rounded-full blur-3xl pointer-events-none" />
+
+      {/* Intro — left-aligned for variety */}
+      <div className="container mx-auto px-6 lg:px-8 max-w-6xl relative z-10">
+        <motion.div
           initial={shouldReduceMotion ? undefined : { opacity: 0, y: 20 }}
           whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.1 }}
-          className="font-display text-5xl md:text-7xl font-semibold text-void tracking-tight leading-[1.1] mb-16"
+          className="max-w-2xl mb-16"
         >
-          We make planning effortless so you can focus on what really matters
-        </motion.h2>
-
-        <motion.div 
-          initial={shouldReduceMotion ? undefined : { opacity: 0, scale: 0.9 }}
-          whileInView={shouldReduceMotion ? undefined : { opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.2 }}
-          className="flex flex-col items-center"
-        >
-          {/* Avatar Group */}
-          <div className="flex -space-x-4 mb-6">
-            {AVATARS.map((src, i) => (
-              <div key={i} className="w-14 h-14 rounded-full border-2 border-white overflow-hidden relative shadow-md">
-                <Image src={src} alt="Traveler" fill sizes="56px" className="object-cover" />
-              </div>
-            ))}
-          </div>
-          <p className="text-void/60 font-body max-w-sm text-sm">
-            Founded by travelers, for travelers. because every journey deserves a personal touch.
+          <h2 className="font-display text-4xl md:text-6xl font-bold text-void tracking-tight leading-[1.05] mb-5">
+            We make planning effortless so you can focus on the journey
+          </h2>
+          <p className="text-void/55 font-body text-base md:text-lg leading-relaxed max-w-lg">
+            Founded by travelers, for travelers. Every journey deserves a personal touch.
           </p>
         </motion.div>
-      </div>
 
-      {/* Stats Bento Grid Section */}
-      <div className="container mx-auto px-6 lg:px-8 max-w-5xl">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Card 1: 1200+ Happy Explorers */}
+        {/* Asymmetric Bento Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
+          {/* Hero stat — spans 7 columns */}
           <motion.div
             initial={shouldReduceMotion ? undefined : { opacity: 0, y: 30 }}
             whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            whileHover={shouldReduceMotion ? undefined : { y: -6, scale: 1.01 }}
-            transition={{ type: 'spring', stiffness: 350, damping: 25 }}
-            className="md:col-span-2 relative p-8 md:p-12 rounded-3xl overflow-hidden bg-gradient-to-br from-teal/10 to-teal/5 border border-teal/10 flex flex-col justify-between min-h-[220px]"
+            className="md:col-span-7 card-bezel"
           >
-            <div>
-              <h3 className="font-display text-6xl lg:text-7xl font-bold text-teal mb-4">
-                <AnimatedCounter target={STATS[0].target} suffix={STATS[0].suffix} />
-              </h3>
-              <p className="font-body text-void/80 text-base md:text-lg max-w-md leading-relaxed">
-                {STATS[0].desc}
-              </p>
+            <div className="card-bezel-inner p-10 md:p-14 min-h-[240px] flex flex-col justify-between">
+              <div>
+                <h3 className="font-display text-6xl lg:text-8xl font-bold text-teal mb-3 tracking-tight">
+                  <AnimatedCounter target={STATS[0].target} suffix={STATS[0].suffix} />
+                </h3>
+                <span className="font-display text-xs font-bold uppercase tracking-[0.2em] text-teal/60 block mb-3">
+                  {STATS[0].label}
+                </span>
+                <p className="font-body text-void/65 text-base max-w-md leading-relaxed">
+                  {STATS[0].desc}
+                </p>
+              </div>
             </div>
           </motion.div>
 
-          {/* Card 2: 25+ Handpicked Destinations */}
+          {/* Second stat — spans 5 columns */}
           <motion.div
             initial={shouldReduceMotion ? undefined : { opacity: 0, y: 30 }}
             whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            whileHover={shouldReduceMotion ? undefined : { y: -6, scale: 1.01 }}
-            className="p-8 md:p-12 rounded-3xl bg-white border border-medium shadow-sm flex flex-col justify-between min-h-[220px]"
+            className="md:col-span-5 card-bezel"
           >
-            <div>
-              <h3 className="font-display text-6xl lg:text-7xl font-bold text-void mb-4">
-                <AnimatedCounter target={STATS[1].target} suffix={STATS[1].suffix} />
-              </h3>
-              <p className="font-body text-void/70 text-sm md:text-base leading-relaxed">
-                {STATS[1].desc}
-              </p>
+            <div className="card-bezel-inner p-10 md:p-12 min-h-[240px] flex flex-col justify-between">
+              <div>
+                <h3 className="font-display text-6xl lg:text-7xl font-bold text-void mb-3 tracking-tight">
+                  <AnimatedCounter target={STATS[1].target} suffix={STATS[1].suffix} />
+                </h3>
+                <span className="font-display text-xs font-bold uppercase tracking-[0.2em] text-void/40 block mb-3">
+                  {STATS[1].label}
+                </span>
+                <p className="font-body text-void/60 text-sm leading-relaxed">
+                  {STATS[1].desc}
+                </p>
+              </div>
             </div>
           </motion.div>
 
-          {/* Card 3: 10% Member Deals */}
+          {/* Third stat — full-width CTA row */}
           <motion.div
             initial={shouldReduceMotion ? undefined : { opacity: 0, y: 30 }}
             whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            whileHover={shouldReduceMotion ? undefined : { y: -6, scale: 1.01 }}
-            className="md:col-span-3 p-8 md:p-12 rounded-3xl bg-gradient-to-r from-ice to-white border border-medium shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-6 min-h-[160px]"
+            className="md:col-span-12"
           >
-            <div className="flex-1">
-              <h3 className="font-display text-5xl lg:text-6xl font-bold text-teal mb-2">
-                <AnimatedCounter target={STATS[2].target} suffix={STATS[2].suffix} />
-              </h3>
-              <p className="font-body text-void/80 text-base md:text-lg max-w-xl leading-relaxed">
-                {STATS[2].desc}
-              </p>
-            </div>
-            <div className="flex-shrink-0">
-              <Link 
-                href="/packages"
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-teal text-white hover:bg-teal/95 px-6 py-3.5 font-display text-[12px] font-bold uppercase tracking-widest transition-all duration-300 hover:shadow-card-teal-hover active:scale-[0.98]"
-              >
-                Find Your Trip
-                <ArrowRight strokeWidth={2} className="h-4 w-4" />
-              </Link>
+            <div className="bg-gradient-to-r from-teal to-teal/90 rounded-[24px] p-10 md:p-12 flex flex-col md:flex-row md:items-center md:justify-between gap-6 relative overflow-hidden">
+              {/* Subtle grain on dark card */}
+              <div 
+                className="absolute inset-0 pointer-events-none opacity-[0.04]"
+                style={{
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E")`,
+                  backgroundRepeat: 'repeat',
+                  backgroundSize: '128px 128px',
+                }}
+              />
+              <div className="flex-1 relative z-10">
+                <h3 className="font-display text-5xl lg:text-6xl font-bold text-white mb-2 tracking-tight">
+                  <AnimatedCounter target={STATS[2].target} suffix={STATS[2].suffix} />
+                </h3>
+                <span className="font-display text-xs font-bold uppercase tracking-[0.2em] text-white/50 block mb-2">
+                  {STATS[2].label}
+                </span>
+                <p className="font-body text-white/75 text-base max-w-xl leading-relaxed">
+                  {STATS[2].desc}
+                </p>
+              </div>
+              <div className="flex-shrink-0 relative z-10">
+                <Link 
+                  href="/packages"
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-lime text-void px-7 py-4 font-display text-[12px] font-bold uppercase tracking-widest transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(193,234,0,0.3)] active:scale-[0.98]"
+                >
+                  Find your trip
+                  <ArrowRight strokeWidth={2} className="h-4 w-4" />
+                </Link>
+              </div>
             </div>
           </motion.div>
-        </div>
-
-        <div className="text-center mt-12">
-          <span className="text-void/45 font-body text-sm font-medium tracking-wide">
-            Trusted by thousands of travelers around the world
-          </span>
         </div>
       </div>
     </section>

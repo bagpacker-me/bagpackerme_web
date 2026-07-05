@@ -121,50 +121,52 @@ export default function DiscoverTheWorld() {
   }, [activeTab, packages]);
 
   return (
-    <section className="py-24 bg-surface-lowest overflow-hidden">
+    <section className="py-28 bg-ice/50 overflow-hidden">
+      {/* Header — Left-aligned with filters to the right on desktop */}
       <div className="container mx-auto px-6 lg:px-8 mb-12">
-        <motion.div
-          initial={shouldReduceMotion ? undefined : { opacity: 0, y: 20 }}
-          whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-100px' }}
-          transition={{ duration: 0.6 }}
-          className="text-center max-w-3xl mx-auto"
-        >
-          <div className="section-label justify-center mb-5">
-            EXPLORE INDIA
+        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
+          <motion.div
+            initial={shouldReduceMotion ? undefined : { opacity: 0, y: 20 }}
+            whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-100px' }}
+            transition={{ duration: 0.6 }}
+            className="max-w-xl"
+          >
+            <div className="accent-line-cyan" />
+
+            <h2 className="font-display text-4xl md:text-5xl font-bold text-void mb-4 tracking-tight">
+              Discover India&apos;s hidden gems
+            </h2>
+            <p className="text-void/60 text-base md:text-lg font-body leading-relaxed">
+              Live journeys curated for the experiences travelers seek right now.
+            </p>
+          </motion.div>
+
+          {/* Filter pills — right-aligned on desktop */}
+          <div className="flex flex-wrap gap-2 lg:justify-end lg:max-w-lg">
+            {availableCategories.map((category, index) => (
+              <motion.button
+                key={category}
+                initial={shouldReduceMotion ? undefined : { opacity: 0, y: 10 }}
+                whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: shouldReduceMotion ? 0 : index * 0.04, duration: 0.4 }}
+                whileTap={shouldReduceMotion ? undefined : { scale: 0.95 }}
+                onClick={() => setActiveTab(category)}
+                className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 font-body border cursor-pointer ${
+                  activeTab === category
+                    ? 'bg-teal text-white border-teal shadow-card-teal'
+                    : 'bg-white text-void/70 border-void/8 hover:border-teal/30 hover:text-teal'
+                }`}
+              >
+                {category}
+              </motion.button>
+            ))}
           </div>
-
-          <h2 className="font-display text-4xl md:text-5xl font-bold text-void mb-6 tracking-tight">
-            Discover India&apos;s Hidden Gems
-          </h2>
-          <p className="text-void/70 text-lg md:text-xl font-body leading-relaxed">
-            Live journeys from our backend, filtered by the experiences travelers can book right now.
-          </p>
-        </motion.div>
-
-        <div className="mt-10 flex flex-wrap justify-center gap-3 overflow-x-auto pb-4 hide-scrollbar">
-          {availableCategories.map((category, index) => (
-            <motion.button
-              key={category}
-              initial={shouldReduceMotion ? undefined : { opacity: 0, y: 10 }}
-              whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: shouldReduceMotion ? 0 : index * 0.05, duration: 0.4 }}
-              whileHover={shouldReduceMotion ? undefined : { scale: 1.05, y: -2 }}
-              whileTap={shouldReduceMotion ? undefined : { scale: 0.95, y: 0 }}
-              onClick={() => setActiveTab(category)}
-              className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 font-body border cursor-pointer ${
-                activeTab === category
-                  ? 'bg-teal text-white border-teal shadow-card-teal'
-                  : 'bg-white text-void border-medium hover:border-teal hover:text-teal'
-              }`}
-            >
-              {category}
-            </motion.button>
-          ))}
         </div>
       </div>
 
+      {/* Cards Carousel */}
       <div className="w-full relative px-6 lg:px-8 max-w-[1600px] mx-auto">
         {loading ? (
           <div className="flex gap-6 overflow-x-auto snap-x snap-mandatory hide-scrollbar pb-10 pt-4 -mx-6 px-6 lg:mx-0 lg:px-0">
@@ -185,40 +187,43 @@ export default function DiscoverTheWorld() {
                 <motion.div
                   key={pkg.id}
                   variants={shouldReduceMotion ? undefined : cardVariants}
-                  whileHover={shouldReduceMotion ? undefined : { y: -8, scale: 1.01 }}
+                  whileHover={shouldReduceMotion ? undefined : { y: -6 }}
                   transition={{ type: 'spring', stiffness: 350, damping: 25 }}
-                  className="relative w-[85vw] md:w-[400px] flex-shrink-0 aspect-[4/5] rounded-3xl overflow-hidden snap-center group shadow-diffuse cursor-pointer"
+                  className="relative w-[85vw] md:w-[380px] flex-shrink-0 aspect-[4/5] rounded-[24px] overflow-hidden snap-center group cursor-pointer"
+                  style={{ boxShadow: '0 8px 40px rgba(40,80,86,0.10)' }}
                 >
                   <Image
                     src={pkg.heroImageUrl || FALLBACK_IMAGE}
                     alt={pkg.title}
                     fill
-                    sizes="(max-width: 768px) 85vw, 400px"
+                    sizes="(max-width: 768px) 85vw, 380px"
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
                     priority={packages.indexOf(pkg) < 2}
                   />
 
-                  <div className="absolute inset-0 bg-gradient-to-t from-void/90 via-void/30 to-transparent opacity-90" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-void/85 via-void/25 to-transparent" />
 
-                  <div className="absolute top-6 left-6">
-                    <span className="backdrop-blur-md bg-white/20 text-white border border-white/30 text-xs font-medium px-4 py-2 rounded-full">
+                  {/* Duration chip */}
+                  <div className="absolute top-5 left-5">
+                    <span className="backdrop-blur-md bg-white/15 text-white border border-white/20 text-xs font-medium px-4 py-2 rounded-full">
                       {getCardChip(pkg)}
                     </span>
                   </div>
 
-                  <div className="absolute inset-x-0 bottom-0 p-8 flex flex-col justify-end">
-                    <h3 className="text-3xl font-display font-bold text-white mb-3">
+                  {/* Card content */}
+                  <div className="absolute inset-x-0 bottom-0 p-7 flex flex-col justify-end">
+                    <h3 className="text-2xl font-display font-bold text-white mb-2 leading-tight">
                       {pkg.title}
                     </h3>
-                    <p className="text-white/80 font-body text-sm leading-relaxed mb-6 line-clamp-3">
+                    <p className="text-white/70 font-body text-sm leading-relaxed mb-5 line-clamp-2">
                       {pkg.tagline}
                     </p>
 
-                    <div className="flex items-center gap-3 mt-auto">
+                    <div className="flex items-center gap-2 mt-auto">
                       {getCardTags(pkg).map((tag) => (
                         <span
                           key={`${pkg.id}-${tag}`}
-                          className="backdrop-blur-md bg-white/10 border border-white/20 text-white text-xs px-4 py-2 rounded-full"
+                          className="backdrop-blur-md bg-white/8 border border-white/12 text-white/80 text-[11px] font-medium px-3 py-1.5 rounded-full"
                         >
                           {tag}
                         </span>
@@ -226,10 +231,10 @@ export default function DiscoverTheWorld() {
 
                       <Link
                         href={`/packages/${pkg.slug}`}
-                        className="ml-auto w-10 h-10 rounded-full backdrop-blur-md bg-white/10 border border-white/20 flex items-center justify-center text-white group-hover:bg-lime group-hover:text-teal group-hover:border-lime transition-all duration-300 active:scale-90"
+                        className="ml-auto w-10 h-10 rounded-full backdrop-blur-md bg-white/8 border border-white/15 flex items-center justify-center text-white group-hover:bg-lime group-hover:text-void group-hover:border-lime transition-all duration-300 active:scale-90"
                         aria-label={`Explore ${pkg.title}`}
                       >
-                        <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                        <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
                       </Link>
                     </div>
                   </div>
@@ -238,17 +243,16 @@ export default function DiscoverTheWorld() {
             </motion.div>
           </AnimatePresence>
         ) : (
-          <div className="relative overflow-hidden rounded-3xl border border-subtle bg-white/80 px-8 py-16 text-center shadow-diffuse">
+          <div className="relative overflow-hidden rounded-3xl border border-subtle bg-white px-8 py-16 text-center" style={{ boxShadow: '0 8px 40px rgba(40,80,86,0.08)' }}>
             <div className="mx-auto max-w-xl">
-              <div className="section-label justify-center mb-5">SIGNATURE JOURNEYS</div>
               <h3 className="font-display text-3xl md:text-4xl font-bold text-void mb-4">
                 No published journeys yet
               </h3>
-              <p className="font-body text-void/65 text-base md:text-lg leading-relaxed mb-8">
-                This section is now reading directly from the live backend, and there are no published packages to show at the moment.
+              <p className="font-body text-void/60 text-base md:text-lg leading-relaxed mb-8">
+                This section reads directly from the live backend. No published packages at the moment.
               </p>
               <Link href="/packages" className="btn-teal btn-shimmer inline-flex">
-                Browse All Journeys
+                Browse all journeys
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Link>
             </div>
@@ -262,10 +266,10 @@ export default function DiscoverTheWorld() {
           whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-center mt-4"
+          className="text-center mt-6"
         >
           <Link href="/packages" className="btn-teal btn-shimmer inline-flex">
-            View All Journeys
+            View all journeys
             <ArrowRight className="w-4 h-4 ml-2" />
           </Link>
         </motion.div>

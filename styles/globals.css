@@ -997,3 +997,126 @@ blockquote,
     display: none !important;
   }
 }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   PREMIUM REDESIGN — Dark Section with Auto-Grain
+   ───────────────────────────────────────────────────────────────────────────── */
+.section-dark-grain {
+  position: relative;
+  background: var(--void);
+  color: var(--white);
+}
+.section-dark-grain::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 128px 128px;
+  pointer-events: none;
+  z-index: 1;
+}
+.section-dark-grain > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   PREMIUM REDESIGN — Glassmorphism Cards (Dark Section)
+   ───────────────────────────────────────────────────────────────────────────── */
+.glass-card-dark {
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.10);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    0 8px 32px rgba(0,0,0,0.25);
+  transition:
+    transform var(--duration-mid) var(--ease-smooth),
+    box-shadow var(--duration-mid) var(--ease-smooth),
+    border-color var(--duration-mid) var(--ease-smooth),
+    background var(--duration-mid) var(--ease-smooth);
+}
+.glass-card-dark:hover {
+  background: rgba(255,255,255,0.09);
+  border-color: rgba(255,255,255,0.18);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.12),
+    0 16px 48px rgba(0,0,0,0.35);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   PREMIUM REDESIGN — Double-Bezel Cards (Light Section)
+   Outer shell + inner core per soft-skill §4.A
+   ───────────────────────────────────────────────────────────────────────────── */
+.card-bezel {
+  background: rgba(40,80,86,0.03);
+  border: 1px solid rgba(40,80,86,0.06);
+  padding: 6px;
+  border-radius: 28px;
+  transition: box-shadow var(--duration-mid) var(--ease-smooth);
+}
+.card-bezel:hover {
+  box-shadow: 0 20px 60px rgba(40,80,86,0.12);
+}
+.card-bezel-inner {
+  background: #FFFFFF;
+  border-radius: 22px;
+  box-shadow: inset 0 1px 1px rgba(255,255,255,0.6);
+  overflow: hidden;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   PREMIUM REDESIGN — Horizontal Scroll Strip
+   ───────────────────────────────────────────────────────────────────────────── */
+.scroll-strip {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding-bottom: 8px;
+}
+.scroll-strip::-webkit-scrollbar {
+  display: none;
+}
+.scroll-strip > * {
+  scroll-snap-align: start;
+  flex-shrink: 0;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   PREMIUM REDESIGN — Split Layout Utility
+   Section header left, content right
+   ───────────────────────────────────────────────────────────────────────────── */
+.split-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 48px;
+  align-items: start;
+}
+@media (min-width: 1024px) {
+  .split-layout {
+    grid-template-columns: 380px 1fr;
+    gap: 64px;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   PREMIUM REDESIGN — Accent Line (replaces eyebrow on some sections)
+   ───────────────────────────────────────────────────────────────────────────── */
+.accent-line {
+  width: 48px;
+  height: 2px;
+  background: var(--color-accent);
+  margin-bottom: 24px;
+}
+.accent-line-cyan {
+  width: 48px;
+  height: 2px;
+  background: var(--color-highlight);
+  margin-bottom: 24px;
+}
+

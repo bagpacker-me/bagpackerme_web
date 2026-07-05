@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Plus } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 
 const destinations = [
@@ -12,7 +12,7 @@ const destinations = [
     title: 'DELHI',
     stateName: 'DELHI',
     location: 'New Delhi',
-    description: 'Discover the heart of India. A bustling metropolis where ancient history intertwines with vibrant modernity.',
+    description: 'A bustling metropolis where ancient history intertwines with vibrant modernity.',
     image: '/web_photos/hero_1.webp',
   },
   {
@@ -20,7 +20,7 @@ const destinations = [
     title: 'AGRA',
     stateName: 'UTTAR PRADESH',
     location: 'Agra, Uttar Pradesh',
-    description: 'Home to the iconic Taj Mahal. Experience the timeless symbol of love and marvel at the stunning Mughal architecture.',
+    description: 'Home to the iconic Taj Mahal, a timeless symbol of love and Mughal artistry.',
     image: '/web_photos/hero_2.webp',
   },
   {
@@ -28,7 +28,7 @@ const destinations = [
     title: 'JAIPUR',
     stateName: 'RAJASTHAN',
     location: 'Jaipur, Rajasthan',
-    description: 'Step into the land of kings. Discover majestic forts, opulent palaces, and the vibrant colors of the Pink City.',
+    description: 'Majestic forts, opulent palaces, and the vibrant colors of the Pink City.',
     image: '/web_photos/hero_3.webp',
   },
   {
@@ -36,7 +36,7 @@ const destinations = [
     title: 'VARANASI',
     stateName: 'UTTAR PRADESH',
     location: 'Varanasi, Uttar Pradesh',
-    description: 'Experience the spiritual soul of India. Witness the mesmerising Ganga Aarti and explore the ancient, winding ghats along the sacred river.',
+    description: 'The spiritual soul of India. Ancient ghats along the sacred Ganges.',
     image: '/web_photos/hero_4.webp',
   },
   {
@@ -44,7 +44,7 @@ const destinations = [
     title: 'GOA',
     stateName: 'GOA',
     location: 'Goa',
-    description: 'Beyond the pristine beaches lies a rich Portuguese heritage. Enjoy vibrant nightlife, historic churches, and serene sunsets.',
+    description: 'Pristine beaches, Portuguese heritage, and golden coastal sunsets.',
     image: '/web_photos/hero_5.webp',
   }
 ];
@@ -53,7 +53,7 @@ export default function HeroInteractive() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(1);
   const [isClient, setIsClient] = useState(false);
-  const [progressKey, setProgressKey] = useState(0); // resets CSS animation
+  const [progressKey, setProgressKey] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const INTERVAL_MS = 6000;
@@ -66,7 +66,7 @@ export default function HeroInteractive() {
 
   const resetTimer = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current);
-    setProgressKey(k => k + 1); // restart progress bar CSS animation
+    setProgressKey(k => k + 1);
     timerRef.current = setInterval(() => {
       setDirection(1);
       setCurrentIndex(prev => (prev + 1) % totalSlides);
@@ -74,7 +74,6 @@ export default function HeroInteractive() {
     }, INTERVAL_MS);
   }, [totalSlides]);
 
-  // Start auto-advance once client is ready
   useEffect(() => {
     if (!isClient) return;
     resetTimer();
@@ -87,20 +86,17 @@ export default function HeroInteractive() {
     resetTimer();
   }, [totalSlides, resetTimer]);
 
-
   if (!isClient) {
-    return <div className="h-screen w-screen bg-void" />;
+    return <div className="min-h-[100dvh] w-screen bg-void" />;
   }
 
   const activeDest = destinations[currentIndex];
   const stringIndex = String(currentIndex + 1).padStart(2, '0');
   const stringTotal = String(totalSlides).padStart(2, '0');
   
-  // Calculate the upcoming slides for the carousel
   const upcomingSlides = [
     destinations[(currentIndex + 1) % totalSlides],
     destinations[(currentIndex + 2) % totalSlides],
-    destinations[(currentIndex + 3) % totalSlides],
   ];
 
   return (
@@ -110,10 +106,10 @@ export default function HeroInteractive() {
         <motion.div
           key={activeDest.id}
           custom={direction}
-          initial={{ opacity: 0, scale: 1.1 }}
+          initial={{ opacity: 0, scale: 1.08 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 1.2, ease: [0.25, 0.1, 0.25, 1] }}
+          transition={{ duration: 1.4, ease: [0.25, 0.1, 0.25, 1] }}
           className="absolute inset-0"
         >
           <Image 
@@ -123,81 +119,85 @@ export default function HeroInteractive() {
             className="object-cover"
             priority
           />
-          {/* Subtle dark overlay for text readability */}
-          <div className="absolute inset-0 bg-black/40" />
+          {/* Layered gradient scrims for depth */}
+          <div className="absolute inset-0 bg-gradient-to-r from-void/80 via-void/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-void/70 via-transparent to-void/20" />
         </motion.div>
       </AnimatePresence>
 
+      {/* Grain overlay for texture */}
+      <div 
+        className="absolute inset-0 z-10 pointer-events-none opacity-[0.035]"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E")`,
+          backgroundRepeat: 'repeat',
+          backgroundSize: '128px 128px',
+        }}
+      />
 
-
-      {/* Main Content Area (Left Side) */}
-      <div className="absolute inset-y-0 left-[5vw] z-40 flex flex-col justify-center w-[90%] md:w-[45%] pointer-events-none">
+      {/* Main Content Area */}
+      <div className="absolute inset-y-0 left-0 z-40 flex flex-col justify-center w-full md:w-[55%] px-6 md:px-12 lg:px-16 pointer-events-none">
         <AnimatePresence mode="popLayout" custom={direction}>
           <motion.div
             key={activeDest.id}
             custom={direction}
-            initial={{ opacity: 0, y: direction > 0 ? 50 : -50 }}
+            initial={{ opacity: 0, y: direction > 0 ? 40 : -40 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: direction > 0 ? -50 : 50 }}
-            transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+            exit={{ opacity: 0, y: direction > 0 ? -40 : 40 }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
             className="pointer-events-auto"
           >
-            <h1 className="font-display text-6xl md:text-8xl lg:text-9xl font-extrabold uppercase tracking-tight leading-[0.9] mb-4">
+            {/* Location tag */}
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-8 h-[1px] bg-lime" />
+              <span className="font-display text-[11px] font-bold uppercase tracking-[0.22em] text-lime">
+                {activeDest.location}
+              </span>
+            </div>
+
+            <h1 className="font-display text-[clamp(56px,10vw,120px)] font-extrabold uppercase tracking-[-0.03em] leading-[0.88] mb-5">
               {activeDest.title}
             </h1>
-            <p className="text-base md:text-lg mb-8 max-w-md opacity-80 leading-relaxed">
+            <p className="text-base md:text-lg mb-8 max-w-md text-white/75 leading-relaxed font-body">
               {activeDest.description}
             </p>
-            <div className="flex flex-col gap-4 sm:flex-row">
+            <div className="flex flex-col gap-3 sm:flex-row">
               <Link
                 href="/contact?intent=trip"
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-lime px-7 py-4 font-display text-[12px] font-bold uppercase tracking-widest text-teal transition-all duration-300 hover:-translate-y-0.5 hover:bg-lime/90 hover:shadow-glow-lime-sm active:scale-[0.98] active:translate-y-0"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-lime px-7 py-4 font-display text-[12px] font-bold uppercase tracking-widest text-void transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(193,234,0,0.3)] active:scale-[0.98] active:translate-y-0"
               >
-                Book Now
+                Book now
                 <ArrowRight strokeWidth={2} className="h-4 w-4" />
               </Link>
               <Link
                 href="/packages"
-                className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-7 py-4 font-display text-[12px] font-bold uppercase tracking-widest text-white transition-all duration-300 hover:border-white/40 hover:bg-white/15 active:scale-[0.98]"
+                className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/5 backdrop-blur-sm px-7 py-4 font-display text-[12px] font-bold uppercase tracking-widest text-white transition-all duration-300 hover:border-white/30 hover:bg-white/10 active:scale-[0.98]"
               >
-                Explore Trips
+                Explore trips
               </Link>
             </div>
-
           </motion.div>
         </AnimatePresence>
       </div>
 
-      {/* Left Edge Accent */}
-      <div className="absolute left-0 top-1/2 -translate-y-1/2 flex flex-col items-center gap-4 z-40 w-[5vw]">
-        <span className="text-xs font-medium rotate-[-90deg] uppercase tracking-widest opacity-60">
-          Slide {stringIndex}
-        </span>
-        <div className="w-[1px] h-24 bg-white/30" />
-        <Plus size={14} className="opacity-60" />
-      </div>
-
-      {/* The Carousel / Card Slider (Right Side) */}
-      <div className="absolute top-[15%] bottom-[15%] right-0 w-[45vw] z-40 hidden md:flex items-center">
+      {/* Card Carousel (Right Side — Desktop Only) */}
+      <div className="absolute top-[18%] bottom-[18%] right-[4vw] w-[38vw] z-40 hidden lg:flex items-center">
         <div className="relative w-full h-full flex items-center">
           <AnimatePresence mode="popLayout">
             {upcomingSlides.map((slide, i) => {
-              // Creating a staggered visual layout for the cards
-              const xOffset = i * 280; 
-              const scale = 1 - (i * 0.1);
-              const opacity = 1 - (i * 0.2);
+              const xOffset = i * 260; 
+              const scale = 1 - (i * 0.08);
+              const opacity = 1 - (i * 0.25);
               const zIndex = 30 - i;
-              
-              if (i > 1.5) return null; // Show only about 2.5 cards
 
               return (
                 <motion.div
-                  key={`${slide.id}-${currentIndex}`} // Force re-animation on index change
-                  initial={{ x: xOffset + 100, opacity: 0 }}
+                  key={`${slide.id}-${currentIndex}`}
+                  initial={{ x: xOffset + 80, opacity: 0 }}
                   animate={{ x: xOffset, scale, opacity }}
-                  exit={{ x: -100, opacity: 0, scale: 1.1 }}
-                  transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
-                  className="absolute w-[240px] h-[360px] rounded-[24px] overflow-hidden shadow-2xl cursor-pointer"
+                  exit={{ x: -80, opacity: 0, scale: 1.05 }}
+                  transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                  className="absolute w-[220px] h-[330px] rounded-[20px] overflow-hidden cursor-pointer glass-card-dark"
                   style={{ zIndex, transformOrigin: 'left center' }}
                   onClick={handleNext}
                 >
@@ -206,15 +206,17 @@ export default function HeroInteractive() {
                     alt={slide.location}
                     fill
                     className="object-cover"
-                    sizes="240px"
+                    sizes="220px"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-void/80 via-void/20 to-transparent" />
                   
-                  {/* Top Left: Destination Name */}
-                  <div className="absolute top-4 left-4 right-16">
-                    <h3 className="font-bold text-lg leading-tight mb-1">{slide.location}</h3>
+                  {/* Card label */}
+                  <div className="absolute bottom-5 left-5 right-5">
+                    <span className="font-display text-[10px] font-bold uppercase tracking-[0.2em] text-white/60 block mb-1">
+                      Next
+                    </span>
+                    <h3 className="font-display font-bold text-lg leading-tight text-white">{slide.location}</h3>
                   </div>
-
                 </motion.div>
               );
             })}
@@ -222,42 +224,38 @@ export default function HeroInteractive() {
         </div>
       </div>
 
-      {/* Bottom Controls (Footer Area) */}
-      <div className="absolute bottom-0 left-0 right-0 z-50 flex items-center justify-between px-[5vw] py-8">
-        {/* Left Side: Watermark Text */}
-        <div className="w-[30%]">
+      {/* Bottom Controls */}
+      <div className="absolute bottom-0 left-0 right-0 z-50 flex items-end justify-between px-6 md:px-12 lg:px-16 pb-8">
+        {/* Watermark */}
+        <div className="hidden md:block">
           <AnimatePresence mode="wait">
-            <motion.h2
+            <motion.span
               key={activeDest.id}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.5 }}
-              className="text-6xl md:text-8xl font-display font-extrabold uppercase text-white/5 whitespace-nowrap pointer-events-none tracking-tighter"
+              exit={{ opacity: 0, y: -16 }}
+              transition={{ duration: 0.4 }}
+              className="text-[clamp(48px,7vw,96px)] font-display font-extrabold uppercase text-white/[0.04] whitespace-nowrap pointer-events-none tracking-tighter leading-none"
             >
               {activeDest.stateName}
-            </motion.h2>
+            </motion.span>
           </AnimatePresence>
         </div>
 
-
-
-        {/* Right Side: Pagination + Auto-Progress */}
-        <div className="flex items-center gap-3 text-sm font-medium tracking-widest min-w-[120px] justify-end">
-          <span className="opacity-100">{stringIndex}</span>
-          <div className="relative w-16 h-[2px] bg-white/20 overflow-hidden">
-            {/* Static fill showing position */}
+        {/* Pagination + Auto-Progress */}
+        <div className="flex items-center gap-3 text-sm font-medium tracking-widest font-display">
+          <span className="text-white">{stringIndex}</span>
+          <div className="relative w-16 h-[2px] bg-white/15 overflow-hidden rounded-full">
             <div
-              className="absolute top-0 left-0 h-full bg-white/30 transition-all duration-500"
+              className="absolute top-0 left-0 h-full bg-white/20 transition-all duration-500"
               style={{ width: `${((currentIndex + 1) / totalSlides) * 100}%` }}
             />
-            {/* Animated progress filling over 6s before auto-advance */}
             <div
               key={progressKey}
               className="absolute top-0 left-0 h-full bg-lime hero-progress-bar"
             />
           </div>
-          <span className="opacity-50">{stringTotal}</span>
+          <span className="text-white/40">{stringTotal}</span>
         </div>
       </div>
     </section>
