@@ -215,9 +215,11 @@ export default function DiscoverTheWorld() {
                     <h3 className="text-2xl font-display font-bold text-white mb-2 leading-tight">
                       {pkg.title}
                     </h3>
-                    <p className="text-white/70 font-body text-sm leading-relaxed mb-5 line-clamp-2">
-                      {pkg.tagline}
-                    </p>
+                    {pkg.tagline?.trim() && (
+                      <p className="text-white/70 font-body text-sm leading-relaxed mb-5 line-clamp-2">
+                        {pkg.tagline}
+                      </p>
+                    )}
 
                     <div className="flex items-center gap-2 mt-auto">
                       {getCardTags(pkg).map((tag) => (

@@ -33,18 +33,18 @@ export default function PackageCard({ pkg }: { pkg: Package }) {
 
       {/* Content Area */}
       <div className="p-6 md:p-7 flex flex-col flex-1">
-        <div className="mb-4">
+        <div className="mb-2.5">
           <span className="bg-void/5 text-void/65 border border-void/5 px-3 py-1 rounded-full text-[10px] font-bold uppercase font-display tracking-[0.1em]">
             {pkg.category}
           </span>
         </div>
-        <h3 className="font-display text-xl font-bold text-void mb-3 leading-[1.25] group-hover:text-teal transition-colors">
+        <h3 className="font-display text-xl font-bold text-void mb-2 leading-[1.25] group-hover:text-teal transition-colors">
           {pkg.title}
         </h3>
         
         {/* Destinations Tags */}
         {pkg.destinations && pkg.destinations.length > 0 && (
-          <div className="flex flex-wrap gap-1.5 mb-4">
+          <div className={`flex flex-wrap gap-1.5 ${pkg.tagline?.trim() ? 'mb-3' : 'mb-4.5'}`}>
             {pkg.destinations.slice(0, 3).map((dest, idx) => (
               <span key={idx} className="bg-ice text-teal/80 border border-teal/5 px-2.5 py-1 rounded-full text-[10px] uppercase tracking-[0.05em] font-body font-medium">
                 {dest}
@@ -58,12 +58,14 @@ export default function PackageCard({ pkg }: { pkg: Package }) {
           </div>
         )}
 
-        <p className="font-body text-sm text-void/60 mb-5 line-clamp-2 min-h-[40px] leading-relaxed">
-          {pkg.tagline}
-        </p>
+        {pkg.tagline?.trim() && (
+          <p className="font-body text-sm text-void/60 mb-4 line-clamp-2 leading-relaxed">
+            {pkg.tagline}
+          </p>
+        )}
 
         {/* Details Row */}
-        <div className="flex items-center gap-5 text-[11px] font-body text-void/60 mb-6">
+        <div className="flex items-center gap-5 text-[11px] font-body text-void/60 mb-5">
           <div className="flex items-center gap-1.5">
             <Clock className="w-3.5 h-3.5 text-void/40" />
             <span>{pkg.duration || 'Flexible'}</span>
@@ -76,7 +78,7 @@ export default function PackageCard({ pkg }: { pkg: Package }) {
         </div>
 
         {/* Price & Link Area */}
-        <div className="mt-auto pt-5 border-t border-void/5 flex items-center justify-between">
+        <div className="mt-auto pt-4 border-t border-void/5 flex items-center justify-between">
           <div className="flex flex-col">
             <span className="text-[10px] text-void/45 uppercase tracking-[0.08em] font-display font-bold mb-[2px]">
               {hasPrice ? 'Starts From' : 'Pricing'}
@@ -100,12 +102,21 @@ export function PackageCardSkeleton() {
     <div className="flex flex-col bg-white border border-medium/10 rounded-[24px] overflow-hidden animate-pulse">
       <div className="relative w-full aspect-[3/2] md:aspect-[4/5] bg-void/5" />
       <div className="p-6 md:p-7 flex flex-col flex-1">
-        <div className="mb-4 w-20 h-5 bg-void/5 rounded-full" />
-        <div className="w-full h-6 bg-void/5 rounded mb-2" />
-        <div className="w-3/4 h-6 bg-void/5 rounded mb-4" />
-        <div className="w-full h-4 bg-void/5 rounded mb-5" />
+        {/* Category */}
+        <div className="mb-2.5 w-20 h-5 bg-void/5 rounded-full" />
+        
+        {/* Title */}
+        <div className="w-full h-6 bg-void/5 rounded mb-1.5" />
+        <div className="w-3/4 h-6 bg-void/5 rounded mb-3" />
+        
+        {/* Destination tags */}
+        <div className="w-1/3 h-5 bg-void/5 rounded-full mb-4" />
+
+        {/* Details Row */}
         <div className="w-1/2 h-4 bg-void/5 rounded mb-5" />
-        <div className="mt-auto pt-5 border-t border-void/5 flex items-center justify-between">
+
+        {/* Price & Link Area */}
+        <div className="mt-auto pt-4 border-t border-void/5 flex items-center justify-between">
           <div className="w-24 h-10 bg-void/5 rounded" />
           <div className="w-20 h-4 bg-void/5 rounded" />
         </div>

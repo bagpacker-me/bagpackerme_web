@@ -258,23 +258,25 @@ export default function PackageCard({
             </h3>
 
             {/* Tagline */}
-            <p
-              style={{
-                fontFamily: 'var(--font-body)',
-                fontSize: 14,
-                fontWeight: 400,
-                color: '#718096',
-                marginBottom: 12,
-                marginTop: 0,
-                lineHeight: 1.6,
-                display: '-webkit-box',
-                WebkitLineClamp: 2,
-                WebkitBoxOrient: 'vertical',
-                overflow: 'hidden',
-              }}
-            >
-              {pkg.tagline}
-            </p>
+            {pkg.tagline?.trim() && (
+              <p
+                style={{
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 14,
+                  fontWeight: 400,
+                  color: '#718096',
+                  marginBottom: 12,
+                  marginTop: 0,
+                  lineHeight: 1.6,
+                  display: '-webkit-box',
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: 'vertical',
+                  overflow: 'hidden',
+                }}
+              >
+                {pkg.tagline}
+              </p>
+            )}
 
             {/* Destination tags — only on listing page */}
             {showDestinations && pkg.destinations && pkg.destinations.length > 0 && (() => {
