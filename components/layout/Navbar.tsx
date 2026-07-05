@@ -19,6 +19,8 @@ export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
 
+  const isBlogDetail = pathname?.startsWith('/blog/') && pathname !== '/blog';
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
@@ -31,6 +33,10 @@ export function Navbar() {
   useEffect(() => {
     setMenuOpen(false);
   }, [pathname]);
+
+  if (isBlogDetail) {
+    return null;
+  }
 
   const menuContainerVariants: Variants = {
     hidden: { opacity: 0, y: -20 },

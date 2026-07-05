@@ -2,7 +2,7 @@
 
 import React, { useRef } from 'react';
 import Image from 'next/image';
-import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import Link from 'next/link';
 import { ArrowRight, Star } from 'lucide-react';
 
@@ -47,11 +47,6 @@ const MOMENTS = [
 export default function MemorableMoments() {
   const shouldReduceMotion = useReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ['start end', 'end start']
-  });
-  const x = useTransform(scrollYProgress, [0, 1], ['0%', '-15%']);
 
   return (
     <section 
@@ -91,52 +86,53 @@ export default function MemorableMoments() {
         </div>
       </div>
 
-      {/* Horizontal scroll strip — parallax driven */}
-      <motion.div 
-        style={shouldReduceMotion ? undefined : { x }}
-        className="flex gap-5 px-6 lg:px-8"
-      >
-        {MOMENTS.map((moment, idx) => (
-          <motion.div
-            key={idx}
-            initial={shouldReduceMotion ? undefined : { opacity: 0, y: 40 }}
-            whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={shouldReduceMotion ? undefined : { delay: idx * 0.06, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            whileHover={shouldReduceMotion ? undefined : { y: -6 }}
-            className="glass-card-dark rounded-[20px] p-5 w-[300px] md:w-[340px] flex-shrink-0 cursor-default"
-          >
-            {/* Image + profile row */}
-            <div className="flex items-start gap-4 mb-4">
-              <div className="relative w-12 h-12 rounded-full overflow-hidden flex-shrink-0 border border-white/15">
-                <Image 
-                  src={moment.image} 
-                  alt={moment.name} 
-                  fill 
-                  sizes="48px"
-                  className="object-cover"
-                />
-              </div>
-              <div className="flex-1 min-w-0">
-                <h4 className="font-display font-bold text-base text-white leading-tight">{moment.name}</h4>
-                <p className="font-body text-[11px] text-white/45 tracking-wide">{moment.location}</p>
-              </div>
-            </div>
+      {/* Grid container aligned with the header */}
+      <div className="container mx-auto px-6 lg:px-8 max-w-6xl">
+        <div className="flex flex-wrap justify-center gap-6 lg:gap-8">
+          {MOMENTS.map((moment, idx) => (
+            <motion.div
+              key={idx}
+              initial={shouldReduceMotion ? undefined : { opacity: 0, y: 40 }}
+              whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={shouldReduceMotion ? undefined : { delay: idx * 0.06, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+              whileHover={shouldReduceMotion ? undefined : { y: -6 }}
+              className="glass-card-dark rounded-[20px] p-6 cursor-default flex flex-col justify-between w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-22px)]"
+            >
+              <div>
+                {/* Image + profile row */}
+                <div className="flex items-start gap-4 mb-4">
+                  <div className="relative w-12 h-12 rounded-full overflow-hidden flex-shrink-0 border border-white/15">
+                    <Image 
+                      src={moment.image} 
+                      alt={moment.name} 
+                      fill 
+                      sizes="48px"
+                      className="object-cover"
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h4 className="font-display font-bold text-base text-white leading-tight">{moment.name}</h4>
+                    <p className="font-body text-[11px] text-white/45 tracking-wide">{moment.location}</p>
+                  </div>
+                </div>
 
-            {/* Stars */}
-            <div className="flex gap-0.5 mb-3">
-              {Array.from({ length: moment.rating }).map((_, i) => (
-                <Star key={i} className="w-3.5 h-3.5 fill-lime text-lime" />
-              ))}
-            </div>
+                {/* Stars */}
+                <div className="flex gap-0.5 mb-3">
+                  {Array.from({ length: moment.rating }).map((_, i) => (
+                    <Star key={i} className="w-3.5 h-3.5 fill-lime text-lime" />
+                  ))}
+                </div>
 
-            {/* Quote */}
-            <p className="font-body text-sm text-white/70 leading-relaxed">
-              &ldquo;{moment.text}&rdquo;
-            </p>
-          </motion.div>
-        ))}
-      </motion.div>
+                {/* Quote */}
+                <p className="font-body text-sm text-white/70 leading-relaxed italic">
+                  &ldquo;{moment.text}&rdquo;
+                </p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
     </section>
   );
 }
