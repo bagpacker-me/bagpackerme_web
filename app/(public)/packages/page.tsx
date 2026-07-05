@@ -165,15 +165,15 @@ export default function PackagesPage() {
           ) : (
             <AnimatePresence mode="popLayout">
               {filteredPackages.length > 0 ? (
-                /* Spec #4: stagger 0.08 with useInView */
+                /* Spec #4: stagger 0.10 with animate (not whileInView — avoids
+                   IntersectionObserver race with AnimatePresence popLayout) */
                 <motion.div
                   key={`package-grid-${filters.category}-${filters.duration}-${filters.priceRange[0]}-${filters.priceRange[1]}`}
                   layout
                   className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[24px]"
                   variants={shouldReduceMotion ? undefined : CARD_GRID_VARIANTS}
                   initial={shouldReduceMotion ? undefined : 'hidden'}
-                  whileInView={shouldReduceMotion ? undefined : 'visible'}
-                  viewport={{ once: true, amount: 0.05 }}
+                  animate={shouldReduceMotion ? undefined : 'visible'}
                 >
                   {filteredPackages.map(pkg => (
                     <motion.div
