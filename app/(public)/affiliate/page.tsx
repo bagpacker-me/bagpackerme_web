@@ -17,7 +17,7 @@ const BENEFITS = [
   {
     icon: '🔗',
     title: 'Your Unique Link',
-    desc: 'Get a personal tracking link for every package. Share it anywhere — Instagram, WhatsApp, email, or your blog.',
+    desc: 'Get a personal tracking link for every package. Share it anywhere: Instagram, WhatsApp, email, or your blog.',
   },
   {
     icon: '📊',
@@ -32,7 +32,7 @@ const BENEFITS = [
   {
     icon: '🌍',
     title: 'Curated Packages',
-    desc: 'Promote India\'s most unique travel experiences — hand-crafted itineraries your audience will love.',
+    desc: 'Promote curated global journeys with hand-crafted itineraries your audience will love.',
   },
 ];
 
@@ -45,7 +45,7 @@ const STEPS = [
 const FAQS = [
   {
     q: 'Who can become an affiliate?',
-    a: 'Anyone — travel bloggers, influencers, tour guides, or just passionate travellers with an audience. If you love travel and want to earn while sharing it, you\'re welcome.',
+    a: 'Anyone with a travel-minded audience can apply, including travel bloggers, influencers, tour guides, and passionate travellers.',
   },
   {
     q: 'How are conversions tracked?',
@@ -115,7 +115,7 @@ export default function AffiliatePage() {
               <span className="text-lime">Inspire Travel</span>
             </h1>
             <p className="font-body text-white/80 text-[17px] md:text-[21px] leading-relaxed max-w-[640px] mx-auto mb-10">
-              Share India&apos;s most extraordinary journeys with your audience and earn 10% commission on every confirmed booking.
+              Share curated global journeys with your audience and earn 10% commission on every confirmed booking.
             </p>
             <a
               href="#register"
@@ -254,7 +254,7 @@ export default function AffiliatePage() {
                   <input
                     id="affiliate-phone"
                     type="tel"
-                    placeholder="+91 98765 43210"
+                    placeholder="Include country code, e.g. +1 555 123 4567"
                     value={form.phone}
                     onChange={e => setForm(f => ({ ...f, phone: e.target.value }))}
                     className={inputCls}

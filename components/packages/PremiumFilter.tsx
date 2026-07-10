@@ -51,10 +51,12 @@ const valueToPercent = (value: number, min: number, max: number) => {
   return ((value - min) / (max - min)) * 100;
 };
 
-const formatCurrency = (value: number) => {
-  return new Intl.NumberFormat("en-IN", {
+type FilterCurrency = "INR" | "USD";
+
+const formatCurrency = (value: number, currency: FilterCurrency) => {
+  return new Intl.NumberFormat(currency === "USD" ? "en-US" : "en-IN", {
     style: "currency",
-    currency: "INR",
+    currency,
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(value);
@@ -65,12 +67,13 @@ interface PriceRangeSliderProps {
   min?: number;
   max?: number;
   step?: number;
+  currency?: FilterCurrency;
   defaultValue?: [number, number];
   onValueChange?: (value: [number, number]) => void;
 }
 
 const PriceRangeSlider = forwardRef<HTMLDivElement, PriceRangeSliderProps>(
-  ({ className, min = 0, max = 200000, step = 5000, defaultValue = [0, 200000], onValueChange, ...props }, ref) => {
+  ({ className, min = 0, max = 200000, step = 5000, currency = "INR", defaultValue = [0, 200000], onValueChange, ...props }, ref) => {
     const [localValues, setLocalValues] = useState<[number, number]>(defaultValue);
     const [isMinThumbDragging, setIsMinThumbDragging] = useState(false);
     const [isMaxThumbDragging, setIsMaxThumbDragging] = useState(false);
@@ -157,8 +160,8 @@ const PriceRangeSlider = forwardRef<HTMLDivElement, PriceRangeSliderProps>(
     return (
       <div className={cn("w-full relative flex flex-col justify-center", className)} {...props} ref={ref}>
         <div className="flex justify-between items-center text-[10px] md:text-xs font-semibold text-teal/80 mb-1.5 px-1 font-body">
-          <span>{formatCurrency(minVal)}</span>
-          <span>{formatCurrency(maxVal)}{maxVal === max ? '+' : ''}</span>
+          <span>{formatCurrency(minVal, currency)}</span>
+          <span>{formatCurrency(maxVal, currency)}{maxVal === max ? '+' : ''}</span>
         </div>
         <div className="relative w-full h-[4px] bg-void/10 rounded-full" ref={sliderRef}>
           <div 
@@ -208,6 +211,8 @@ interface PremiumFilterProps {
   categories: string[];
   durations: { label: string; value: string }[];
   maxPrice?: number;
+  priceStep?: number;
+  currency?: FilterCurrency;
 }
 
 export function PremiumFilter({ 
@@ -215,7 +220,9 @@ export function PremiumFilter({
   setFilters,
   categories,
   durations,
-  maxPrice = 200000 
+  maxPrice = 200000,
+  priceStep = 5000,
+  currency = "INR",
 }: PremiumFilterProps) {
   
   const handleRemoveFilter = (filterType: keyof PremiumFilterState) => {
@@ -239,7 +246,7 @@ export function PremiumFilter({
     },
     (filters.priceRange[0] !== 0 || filters.priceRange[1] !== maxPrice) && {
       label: "Price",
-      value: `${formatCurrency(filters.priceRange[0])} - ${formatCurrency(filters.priceRange[1])}`,
+      value: `${formatCurrency(filters.priceRange[0], currency)} - ${formatCurrency(filters.priceRange[1], currency)}`,
       key: "priceRange" as keyof PremiumFilterState,
     },
   ].filter(Boolean) as { label: string; value: string; key: keyof PremiumFilterState; }[];
@@ -285,7 +292,8 @@ export function PremiumFilter({
           <PriceRangeSlider 
             min={0}
             max={maxPrice}
-            step={5000}
+            step={priceStep}
+            currency={currency}
             defaultValue={filters.priceRange}
             onValueChange={(value) => setFilters({ ...filters, priceRange: value })}
           />
@@ -314,4 +322,3 @@ export function PremiumFilter({
     </div>
   );
 }
-

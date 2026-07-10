@@ -2,7 +2,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy — BagPackerMe',
+  title: 'Privacy Policy - BagPackerMe',
   description: 'Learn how BagPackerMe collects, uses, and protects your personal information when you use our travel services.',
 };
 
@@ -99,7 +99,7 @@ const sections = [
     content: [
       {
         subtitle: 'Questions or Concerns',
-        text: 'If you have any questions about this Privacy Policy or how we handle your personal information, please reach out to us at bagpackerme.world@gmail.com or via WhatsApp at +91 9920992026. We aim to respond within 2 business days.',
+        text: 'If you have any questions about this Privacy Policy or how we handle your personal information, please reach out to us at bagpackerme.world@gmail.com or through the contact page. We aim to respond within 2 business days.',
       },
     ],
   },
@@ -158,7 +158,7 @@ export default function PrivacyPage() {
             <div className="mt-10 p-5 rounded-2xl bg-ice border border-teal/10">
               <p className="font-display text-[12px] tracking-widest text-teal/70 uppercase mb-3">Questions?</p>
               <p className="text-sm text-void/70 leading-relaxed mb-4">
-                Reach out — we&apos;re always happy to help.
+                Reach out. We&apos;re always happy to help.
               </p>
               <a
                 href="mailto:bagpackerme.world@gmail.com"

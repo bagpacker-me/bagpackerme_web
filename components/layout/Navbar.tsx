@@ -8,18 +8,20 @@ import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 
-const menuItems = [
-  { name: 'Destinations', href: '/packages' },
-  { name: 'Journal', href: '/blog' },
-  { name: 'About Us', href: '/about' },
-];
-
 export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
 
   const isBlogDetail = pathname?.startsWith('/blog/') && pathname !== '/blog';
+  const isIndiaRoute = pathname === '/in' || pathname?.startsWith('/in/');
+  const marketBase = isIndiaRoute ? '/in' : '';
+  const menuItems = [
+    { name: 'Destinations', href: `${marketBase}/packages` },
+    { name: isIndiaRoute ? 'Global' : 'India', href: isIndiaRoute ? '/' : '/in' },
+    { name: 'Journal', href: '/blog' },
+    { name: 'About Us', href: '/about' },
+  ];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -79,7 +81,7 @@ export function Navbar() {
         )}>
           <div className="relative flex items-center justify-between py-4">
             <Link
-              href="/"
+              href={isIndiaRoute ? '/in' : '/'}
               aria-label="home"
               className="flex items-center space-x-2 transition-opacity hover:opacity-85 z-[101]"
             >
@@ -97,7 +99,7 @@ export function Navbar() {
             <div className="absolute inset-x-0 mx-auto hidden lg:block w-fit">
               <ul className="flex items-center gap-8 text-sm font-body">
                 {menuItems.map((item, index) => {
-                  const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
+                  const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(`${item.href}/`));
                   return (
                     <li key={index} className="relative group/link">
                       <Link
@@ -170,7 +172,7 @@ export function Navbar() {
               <div className="flex flex-col max-w-md w-full mx-auto relative z-10 pt-16">
                 <ul className="flex flex-col gap-6 text-2xl font-display font-bold uppercase tracking-[0.15em]">
                   {menuItems.map((item, index) => {
-                    const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
+                    const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(`${item.href}/`));
                     return (
                       <motion.li key={index} variants={menuItemVariants}>
                         <Link

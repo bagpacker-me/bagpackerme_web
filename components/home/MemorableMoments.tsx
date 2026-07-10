@@ -5,13 +5,14 @@ import Image from 'next/image';
 import { motion, useReducedMotion } from 'framer-motion';
 import Link from 'next/link';
 import { ArrowRight, Star } from 'lucide-react';
+import { PackageMarket } from '@/types';
 
-const MOMENTS = [
+const INDIA_MOMENTS = [
   {
     image: 'https://images.unsplash.com/photo-1527631746610-bca00a040d60?q=80&w=600&auto=format&fit=crop',
     name: 'Maria Carolina',
     location: 'Rajasthan, India',
-    text: 'BagPackerMe made everything effortless. The balloon ride was pure magic — one of the best mornings of my life.',
+    text: 'BagPackerMe made everything effortless. The balloon ride was pure magic and one of the best mornings of my life.',
     rating: 5,
   },
   {
@@ -39,14 +40,57 @@ const MOMENTS = [
     image: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=600&auto=format&fit=crop',
     name: 'John Philips',
     location: 'Himachal, India',
-    text: 'The best time of my life! The mountains, the people, the food — I\'ll remember this forever.',
+    text: 'The best time of my life. The mountains, the people, the food, I will remember this forever.',
     rating: 5,
   }
 ];
 
-export default function MemorableMoments() {
+const GLOBAL_MOMENTS = [
+  {
+    image: 'https://images.unsplash.com/photo-1527631746610-bca00a040d60?q=80&w=600&auto=format&fit=crop',
+    name: 'Mira Alvarez',
+    location: 'Pattaya, Thailand',
+    text: 'The short Thailand plan felt easy from airport pickup to island day. We had structure without losing holiday time.',
+    rating: 5,
+  },
+  {
+    image: 'https://images.unsplash.com/photo-1530789253388-582c481c54b0?q=80&w=600&auto=format&fit=crop',
+    name: 'Daniel Moreau',
+    location: 'Da Nang, Vietnam',
+    text: 'Golden Bridge, Hoi An, and Saigon all fit into one clean route. The pacing made Vietnam feel approachable.',
+    rating: 5,
+  },
+  {
+    image: 'https://images.unsplash.com/photo-1501504905252-473c47e087f8?q=80&w=600&auto=format&fit=crop',
+    name: 'Aisha Karim',
+    location: 'Halong Bay, Vietnam',
+    text: 'Phu Quoc beach time and the Halong cruise gave the trip two completely different moods. Both were worth it.',
+    rating: 5,
+  },
+  {
+    image: 'https://images.unsplash.com/photo-1476900543704-4312b78632f8?q=80&w=600&auto=format&fit=crop',
+    name: 'Tino Okafor',
+    location: 'Masai Mara, Kenya',
+    text: 'The Kenya safari had enough days in the Mara to slow down and actually watch the landscape change.',
+    rating: 5,
+  },
+  {
+    image: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=600&auto=format&fit=crop',
+    name: 'Leah Bennett',
+    location: 'Amboseli, Kenya',
+    text: 'Amboseli, Naivasha, and Mara felt like one continuous story instead of a rushed checklist.',
+    rating: 5,
+  },
+];
+
+export default function MemorableMoments({ market = 'global' }: { market?: PackageMarket }) {
   const shouldReduceMotion = useReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
+  const moments = market === 'india' ? INDIA_MOMENTS : GLOBAL_MOMENTS;
+  const heading =
+    market === 'india'
+      ? 'Moments that made every journey unforgettable'
+      : 'Travel moments across borders';
 
   return (
     <section 
@@ -65,7 +109,7 @@ export default function MemorableMoments() {
           >
             <div className="accent-line" />
             <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white tracking-tight leading-[1.05]">
-              Moments that made every journey unforgettable
+              {heading}
             </h2>
           </motion.div>
           
@@ -89,7 +133,7 @@ export default function MemorableMoments() {
       {/* Grid container aligned with the header */}
       <div className="container mx-auto px-6 lg:px-8 max-w-6xl">
         <div className="flex flex-wrap justify-center gap-6 lg:gap-8">
-          {MOMENTS.map((moment, idx) => (
+          {moments.map((moment, idx) => (
             <motion.div
               key={idx}
               initial={shouldReduceMotion ? undefined : { opacity: 0, y: 40 }}

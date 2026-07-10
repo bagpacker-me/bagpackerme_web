@@ -1,17 +1,20 @@
 'use client';
 
-import { formatPackagePriceInr, hasPackagePrice } from '@/lib/packagePricing';
-import { Package } from '@/types';
+import { getPackageMarket, getPackagePrimaryPrice, hasPackageMarketPrice } from '@/lib/packagePricing';
+import { Package, PackageMarket } from '@/types';
 import { BadgeCheck, ShieldCheck, HeartHandshake } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { FadeInSection } from '@/components/ui/FadeInSection';
+import { useSiteSettings } from '@/hooks/useSiteSettings';
 
 const EASE = [0.25, 0.46, 0.45, 0.94] as const;
 
-export default function OverviewSection({ pkg }: { pkg: Package }) {
+export default function OverviewSection({ pkg, market }: { pkg: Package; market?: PackageMarket }) {
   const shouldReduceMotion = useReducedMotion();
-  const hasPrice = hasPackagePrice(pkg.priceInr);
-  const displayPrice = formatPackagePriceInr(pkg.priceInr);
+  const { whatsappNumber } = useSiteSettings();
+  const resolvedMarket = market ?? getPackageMarket(pkg);
+  const hasPrice = hasPackageMarketPrice(pkg, resolvedMarket);
+  const displayPrice = getPackagePrimaryPrice(pkg, resolvedMarket).label;
 
   const scrollToForm = () => {
     const el = document.getElementById('book');
@@ -20,7 +23,7 @@ export default function OverviewSection({ pkg }: { pkg: Package }) {
     }
   };
 
-  const whatsappUrl = `https://wa.me/919920992026?text=${encodeURIComponent(`Hi, I'm interested in the ${pkg.title} trip.`)}`;
+  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`Hi, I'm interested in the ${pkg.title} trip.`)}`;
 
   return (
     <section id="overview" className="w-full bg-white py-[64px] md:py-[96px] px-6 md:px-12">

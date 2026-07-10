@@ -8,18 +8,19 @@ import ImageGallery from '@/components/ui/image-gallery';
 
 
 export const metadata = {
-  title: 'Experiential Journeys through India | BagPackerMe',
-  description: "We don't just plan trips. We create memories that last a lifetime — connecting adventurous souls with the heart of India.",
+  title: 'Curated Global Journeys | BagPackerMe',
+  description:
+    "We plan experience-led journeys across Thailand, Vietnam, Kenya, India, and beyond with local detail and human care.",
 };
 
 export default function HomePage() {
   return (
     <main className="flex flex-col min-h-screen bg-surface-lowest">
-      <HeroInteractive />
-      <DiscoverTheWorld />
-      <EffortlessPlanning />
-      <MemorableMoments />
-      <ImageGallery />
+      <HeroInteractive market="global" />
+      <DiscoverTheWorld market="global" />
+      <EffortlessPlanning market="global" />
+      <MemorableMoments market="global" />
+      <ImageGallery market="global" />
       <FAQSection />
 
     </main>

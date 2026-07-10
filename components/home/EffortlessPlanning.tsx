@@ -11,8 +11,9 @@ import {
   useSpring,
   useTransform,
 } from 'framer-motion';
+import { PackageMarket } from '@/types';
 
-const STATS = [
+const INDIA_STATS = [
   {
     target: 1200,
     suffix: '+',
@@ -31,6 +32,27 @@ const STATS = [
     label: 'Member deals',
     desc: 'Exclusive savings when you book your next journey'
   }
+];
+
+const GLOBAL_STATS = [
+  {
+    target: 4,
+    suffix: '',
+    label: 'Live global journeys',
+    desc: 'Reference-built packages across Thailand, Vietnam, and Kenya',
+  },
+  {
+    target: 3,
+    suffix: '',
+    label: 'Destination regions',
+    desc: 'Beach breaks, cultural circuits, and safari routes ready to tailor',
+  },
+  {
+    target: 10,
+    suffix: '%',
+    label: 'Member deals',
+    desc: 'Exclusive savings when you book your next journey',
+  },
 ];
 
 function AnimatedCounter({
@@ -81,8 +103,18 @@ function AnimatedCounter({
   );
 }
 
-export default function EffortlessPlanning() {
+export default function EffortlessPlanning({ market = 'global' }: { market?: PackageMarket }) {
   const shouldReduceMotion = useReducedMotion();
+  const stats = market === 'india' ? INDIA_STATS : GLOBAL_STATS;
+  const packagesHref = market === 'india' ? '/in/packages' : '/packages';
+  const heading =
+    market === 'india'
+      ? 'We make planning effortless so you can focus on the journey'
+      : 'Global trip planning, handled with local care';
+  const intro =
+    market === 'india'
+      ? 'Founded by travelers, for travelers. Every journey deserves a personal touch.'
+      : 'We connect destination expertise, stays, transfers, and experiences into one clear plan.';
 
   return (
     <section className="bg-white pt-28 pb-28 relative overflow-hidden">
@@ -99,10 +131,10 @@ export default function EffortlessPlanning() {
           className="max-w-2xl mb-16"
         >
           <h2 className="font-display text-4xl md:text-6xl font-bold text-void tracking-tight leading-[1.05] mb-5">
-            We make planning effortless so you can focus on the journey
+            {heading}
           </h2>
           <p className="text-void/55 font-body text-base md:text-lg leading-relaxed max-w-lg">
-            Founded by travelers, for travelers. Every journey deserves a personal touch.
+            {intro}
           </p>
         </motion.div>
 
@@ -118,13 +150,13 @@ export default function EffortlessPlanning() {
             <div className="card-bezel-inner p-10 md:p-14 min-h-[240px] flex flex-col justify-between">
               <div>
                 <h3 className="font-display text-6xl lg:text-8xl font-bold text-teal mb-3 tracking-tight">
-                  <AnimatedCounter target={STATS[0].target} suffix={STATS[0].suffix} />
+                  <AnimatedCounter target={stats[0].target} suffix={stats[0].suffix} />
                 </h3>
                 <span className="font-display text-xs font-bold uppercase tracking-[0.2em] text-teal/60 block mb-3">
-                  {STATS[0].label}
+                  {stats[0].label}
                 </span>
                 <p className="font-body text-void/65 text-base max-w-md leading-relaxed">
-                  {STATS[0].desc}
+                  {stats[0].desc}
                 </p>
               </div>
             </div>
@@ -141,13 +173,13 @@ export default function EffortlessPlanning() {
             <div className="card-bezel-inner p-10 md:p-12 min-h-[240px] flex flex-col justify-between">
               <div>
                 <h3 className="font-display text-6xl lg:text-7xl font-bold text-void mb-3 tracking-tight">
-                  <AnimatedCounter target={STATS[1].target} suffix={STATS[1].suffix} />
+                  <AnimatedCounter target={stats[1].target} suffix={stats[1].suffix} />
                 </h3>
                 <span className="font-display text-xs font-bold uppercase tracking-[0.2em] text-void/40 block mb-3">
-                  {STATS[1].label}
+                  {stats[1].label}
                 </span>
                 <p className="font-body text-void/60 text-sm leading-relaxed">
-                  {STATS[1].desc}
+                  {stats[1].desc}
                 </p>
               </div>
             </div>
@@ -173,18 +205,18 @@ export default function EffortlessPlanning() {
               />
               <div className="flex-1 relative z-10">
                 <h3 className="font-display text-5xl lg:text-6xl font-bold text-white mb-2 tracking-tight">
-                  <AnimatedCounter target={STATS[2].target} suffix={STATS[2].suffix} />
+                  <AnimatedCounter target={stats[2].target} suffix={stats[2].suffix} />
                 </h3>
                 <span className="font-display text-xs font-bold uppercase tracking-[0.2em] text-white/50 block mb-2">
-                  {STATS[2].label}
+                  {stats[2].label}
                 </span>
                 <p className="font-body text-white/75 text-base max-w-xl leading-relaxed">
-                  {STATS[2].desc}
+                  {stats[2].desc}
                 </p>
               </div>
               <div className="flex-shrink-0 relative z-10">
                 <Link 
-                  href="/packages"
+                  href={packagesHref}
                   className="inline-flex items-center justify-center gap-2 rounded-full bg-lime text-void px-7 py-4 font-display text-[12px] font-bold uppercase tracking-widest transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(193,234,0,0.3)] active:scale-[0.98]"
                 >
                   Find your trip

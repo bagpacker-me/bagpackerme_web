@@ -4,8 +4,9 @@ import React, { useState } from "react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
+import { PackageMarket } from "@/types";
 
-const GALLERY_IMAGES = [
+const INDIA_GALLERY_IMAGES = [
   {
     src: "/web_photos/gallery_1.webp",
     alt: "A traditional houseboat gliding through Kerala backwaters beneath coconut palms",
@@ -44,9 +45,54 @@ const GALLERY_IMAGES = [
   },
 ];
 
-export default function ImageGallery() {
+const GLOBAL_GALLERY_IMAGES = [
+  {
+    src: "https://images.unsplash.com/photo-1508009603885-50cf7c579365?auto=format&fit=crop&q=80&w=1200",
+    alt: "Pattaya coastline with boats on blue water",
+    title: "Pattaya",
+    tagline: "Ease into Thailand with island water and coastal evenings.",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&q=80&w=1200",
+    alt: "Vietnam river landscape with boats and mountains",
+    title: "Vietnam",
+    tagline: "Move from lantern towns to old quarters and limestone bays.",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1557750255-c76072a7aad1?auto=format&fit=crop&q=80&w=1200",
+    alt: "Halong Bay limestone islands in misty water",
+    title: "Halong Bay",
+    tagline: "Sleep on the water among limestone towers and morning light.",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&q=80&w=1200",
+    alt: "Safari vehicle watching wildlife in Kenya",
+    title: "Masai Mara",
+    tagline: "Spend real time with the plains instead of rushing through them.",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&q=80&w=1200",
+    alt: "Elephants walking across an African savannah",
+    title: "Amboseli",
+    tagline: "Watch elephant herds move beneath Kilimanjaro skies.",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&q=80&w=1200",
+    alt: "Tropical garden path in Thailand",
+    title: "Nong Nooch",
+    tagline: "Fold a botanical garden day into a compact Thailand escape.",
+  },
+];
+
+export default function ImageGallery({ market = "global" }: { market?: PackageMarket }) {
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
   const shouldReduceMotion = useReducedMotion();
+  const images = market === "india" ? INDIA_GALLERY_IMAGES : GLOBAL_GALLERY_IMAGES;
+  const title = market === "india" ? "Glimpses of Incredible India" : "Glimpses of the world";
+  const description =
+    market === "india"
+      ? "From sacred ghats and marble icons to high-altitude lakes and palm-fringed channels, discover the diverse rhythms of the subcontinent."
+      : "From Thailand's coast to Vietnam's old towns and Kenya's open plains, build a journey with texture and pace.";
 
   return (
     <section className="w-full py-28 bg-white overflow-hidden">
@@ -55,10 +101,10 @@ export default function ImageGallery() {
         <div className="max-w-xl">
           <div className="accent-line-cyan" />
           <h2 className="text-4xl md:text-5xl font-bold font-display text-void tracking-tight">
-            Glimpses of Incredible India
+            {title}
           </h2>
           <p className="text-base text-void/65 mt-4 font-body leading-relaxed">
-            From sacred ghats and marble icons to high-altitude lakes and palm-fringed channels, discover the diverse rhythms of the subcontinent.
+            {description}
           </p>
         </div>
       </div>
@@ -69,7 +115,7 @@ export default function ImageGallery() {
           className="flex flex-col md:flex-row items-stretch gap-4 h-auto md:h-[480px] w-full"
           onMouseLeave={() => setHoveredIdx(null)}
         >
-          {GALLERY_IMAGES.map((img, idx) => {
+          {images.map((img, idx) => {
             const isExpanded = hoveredIdx === idx;
             const isAnyHovered = hoveredIdx !== null;
             

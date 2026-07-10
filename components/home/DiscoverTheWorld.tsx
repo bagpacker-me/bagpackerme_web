@@ -5,8 +5,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
-import { getPublishedPackages } from '@/lib/firestore';
-import { Package, PACKAGE_CATEGORIES } from '@/types';
+import { getPublishedPackagesForMarket } from '@/lib/firestore';
+import { Package, PackageMarket, PACKAGE_CATEGORIES } from '@/types';
 
 const FALLBACK_IMAGE = '/web_photos/hero_1.webp';
 
@@ -84,20 +84,23 @@ function LoadingCard({ index }: { index: number }) {
   );
 }
 
-export default function DiscoverTheWorld() {
+export default function DiscoverTheWorld({ market = 'global' }: { market?: PackageMarket }) {
   const [packages, setPackages] = useState<Package[]>([]);
   const [activeTab, setActiveTab] = useState('All');
   const [loading, setLoading] = useState(true);
   const shouldReduceMotion = useReducedMotion();
+  const packagesHref = market === 'india' ? '/in/packages' : '/packages';
+  const heading =
+    market === 'india' ? 'Discover India\'s hidden gems' : 'Discover global journeys';
+  const description =
+    market === 'india'
+      ? 'Live journeys curated for the experiences travelers seek right now.'
+      : 'Thailand, Vietnam, Kenya, and custom routes ready for your next chapter.';
 
   useEffect(() => {
     async function loadPackages() {
       try {
-        const snap = await getPublishedPackages();
-        const nextPackages = snap.docs
-          .map((doc) => ({ id: doc.id, ...doc.data() } as Package))
-          .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-
+        const nextPackages = await getPublishedPackagesForMarket(market);
         setPackages(nextPackages);
       } catch (error) {
         console.error('Failed to load homepage journey cards:', error);
@@ -107,7 +110,7 @@ export default function DiscoverTheWorld() {
     }
 
     loadPackages();
-  }, []);
+  }, [market]);
 
   const availableCategories = ['All', ...sortCategories(Array.from(new Set(packages.map((pkg) => pkg.category).filter(Boolean))))];
   const filteredPackages = packages.filter((pkg) => activeTab === 'All' || pkg.category === activeTab);
@@ -135,10 +138,10 @@ export default function DiscoverTheWorld() {
             <div className="accent-line-cyan" />
 
             <h2 className="font-display text-4xl md:text-5xl font-bold text-void mb-4 tracking-tight">
-              Discover India&apos;s hidden gems
+              {heading}
             </h2>
             <p className="text-void/60 text-base md:text-lg font-body leading-relaxed">
-              Live journeys curated for the experiences travelers seek right now.
+              {description}
             </p>
           </motion.div>
 
@@ -232,7 +235,7 @@ export default function DiscoverTheWorld() {
                       ))}
 
                       <Link
-                        href={`/packages/${pkg.slug}`}
+                        href={`${packagesHref}/${pkg.slug}`}
                         className="ml-auto w-10 h-10 rounded-full backdrop-blur-md bg-white/8 border border-white/15 flex items-center justify-center text-white group-hover:bg-lime group-hover:text-void group-hover:border-lime transition-all duration-300 active:scale-90"
                         aria-label={`Explore ${pkg.title}`}
                       >
@@ -253,7 +256,7 @@ export default function DiscoverTheWorld() {
               <p className="font-body text-void/60 text-base md:text-lg leading-relaxed mb-8">
                 This section reads directly from the live backend. No published packages at the moment.
               </p>
-              <Link href="/packages" className="btn-teal btn-shimmer inline-flex">
+              <Link href={packagesHref} className="btn-teal btn-shimmer inline-flex">
                 Browse all journeys
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Link>
@@ -270,7 +273,7 @@ export default function DiscoverTheWorld() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="text-center mt-6"
         >
-          <Link href="/packages" className="btn-teal btn-shimmer inline-flex">
+          <Link href={packagesHref} className="btn-teal btn-shimmer inline-flex">
             View all journeys
             <ArrowRight className="w-4 h-4 ml-2" />
           </Link>

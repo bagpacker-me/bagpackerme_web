@@ -31,6 +31,7 @@ const DEFAULT_INCLUSIONS: Inclusions = {
 const DEFAULT_FORM: FormState = {
   title: '',
   slug: '',
+  market: 'india',
   category: 'Adventure',
   subTheme: '',
   tagline: '',
@@ -209,6 +210,18 @@ function TabBasicInfo({
           onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))}
           placeholder="auto-generated from title"
         />
+      </Field>
+
+      <Field>
+        <Label required>Market</Label>
+        <select
+          className={inputCls()}
+          value={form.market ?? 'india'}
+          onChange={(e) => setForm((f) => ({ ...f, market: e.target.value as Package['market'] }))}
+        >
+          <option value="india">India</option>
+          <option value="global">Global</option>
+        </select>
       </Field>
 
       <Field>

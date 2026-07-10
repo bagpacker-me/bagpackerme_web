@@ -9,6 +9,7 @@ import Image from 'next/image';
 import { CheckCircle2, Loader2, Phone, Mail, MapPin } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { getStoredAffiliateCode, getStoredAffiliateSessionId } from '@/hooks/useAffiliateTracking';
+import { useSiteSettings } from '@/hooks/useSiteSettings';
 
 const bookingSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -24,6 +25,12 @@ type BookingFormValues = z.infer<typeof bookingSchema>;
 export default function BookingForm({ pkg }: { pkg: Package }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const settings = useSiteSettings();
+  const contactPhone = settings.contactPhone;
+  const contactEmail = settings.contactEmail;
+  const whatsappNumber = settings.whatsappNumber;
+  const instagramUrl = settings.instagramUrl;
+  const address = settings.address;
 
   const { register, handleSubmit, formState: { errors } } = useForm<BookingFormValues>({
     resolver: zodResolver(bookingSchema),
@@ -56,10 +63,10 @@ export default function BookingForm({ pkg }: { pkg: Package }) {
 
       // 2. Open WhatsApp
       const waText = encodeURIComponent(`Hi! I'm ${data.name} and I'm interested in booking the "${pkg.title}" trip for ${data.groupSize} people around ${data.travelDate}.${data.message ? `\n\nExtra Info: ${data.message}` : ''}`);
-      window.open(`https://wa.me/919920992026?text=${waText}`, '_blank');
+      window.open(`https://wa.me/${whatsappNumber}?text=${waText}`, '_blank');
       
       setIsSuccess(true);
-      toast.success('Your enquiry has been sent!');
+      toast.success('Your enquiry has been sent.');
     } catch (error) {
       console.error('Error submitting enquiry:', error);
       toast.error(
@@ -97,7 +104,7 @@ export default function BookingForm({ pkg }: { pkg: Package }) {
           {isSuccess ? (
             <div className="flex flex-col items-center justify-center text-center p-[48px] bg-[#F4F4F4] rounded-none">
                <CheckCircle2 size={64} className="text-[#22c55e] mb-[24px]" />
-               <h3 className="text-[#221E2A] font-display font-bold text-[24px] uppercase mb-[12px]">We&apos;ll Reach Out Shortly!</h3>
+               <h3 className="text-[#221E2A] font-display font-bold text-[24px] uppercase mb-[12px]">We&apos;ll Reach Out Shortly</h3>
                <p className="font-body text-[rgba(34,30,42,0.7)] max-w-sm text-[15px]">
                  Thank you, your enquiry has been saved! You will also be redirected to WhatsApp to continue the conversation immediately.
                </p>
@@ -107,7 +114,7 @@ export default function BookingForm({ pkg }: { pkg: Package }) {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-[24px]">
                 <div>
                   <label className={labelClasses}>Name *</label>
-                  <input {...register('name')} className={inputClasses} placeholder="John Doe" />
+                  <input {...register('name')} className={inputClasses} placeholder="Your full name" />
                   {errors.name && <span className="text-[#ef4444] text-[12px] font-body mt-[4px] block">{errors.name.message}</span>}
                 </div>
                 <div>
@@ -120,7 +127,7 @@ export default function BookingForm({ pkg }: { pkg: Package }) {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-[24px]">
                 <div>
                   <label className={labelClasses}>Phone / WhatsApp *</label>
-                  <input {...register('phone')} className={inputClasses} placeholder="+91 99209 92026" />
+                  <input {...register('phone')} className={inputClasses} placeholder="Include country code, e.g. +1 555 123 4567" />
                   {errors.phone && <span className="text-[#ef4444] text-[12px] font-body mt-[4px] block">{errors.phone.message}</span>}
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-[16px]">
@@ -159,21 +166,21 @@ export default function BookingForm({ pkg }: { pkg: Package }) {
           <h3 className="text-[clamp(2rem,3vw,2.5rem)] font-display font-bold uppercase mb-[40px] leading-[1.1]">Or Reach Out<br />Directly</h3>
           
           <div className="space-y-[32px] font-body text-[rgba(255,255,255,0.8)] w-full max-w-sm mx-auto lg:mx-0">
-            <a href="tel:+919920992026" className="flex items-center gap-[24px] p-[16px] rounded-none hover:bg-[rgba(255,255,255,0.05)] transition-colors border border-transparent hover:border-[rgba(255,255,255,0.1)] group">
+            <a href={`tel:${contactPhone}`} className="flex items-center gap-[24px] p-[16px] rounded-none hover:bg-[rgba(255,255,255,0.05)] transition-colors border border-transparent hover:border-[rgba(255,255,255,0.1)] group">
               <div className="w-[48px] h-[48px] bg-[#D4E839]/10 group-hover:bg-[#D4E839] text-[#D4E839] group-hover:text-[#221E2A] flex items-center justify-center transition-colors duration-300">
                 <Phone size={24} />
               </div>
-              <span className="font-display text-[16px] group-hover:text-white transition-colors duration-300">+91 99209 92026</span>
+              <span className="font-display text-[16px] group-hover:text-white transition-colors duration-300">{contactPhone}</span>
             </a>
             
-            <a href="mailto:bagpackerme.world@gmail.com" className="flex items-center gap-[24px] p-[16px] rounded-none hover:bg-[rgba(255,255,255,0.05)] transition-colors border border-transparent hover:border-[rgba(255,255,255,0.1)] group">
+            <a href={`mailto:${contactEmail}`} className="flex items-center gap-[24px] p-[16px] rounded-none hover:bg-[rgba(255,255,255,0.05)] transition-colors border border-transparent hover:border-[rgba(255,255,255,0.1)] group">
               <div className="w-[48px] h-[48px] bg-[#D4E839]/10 group-hover:bg-[#D4E839] text-[#D4E839] group-hover:text-[#221E2A] flex items-center justify-center transition-colors duration-300">
                 <Mail size={24} />
               </div>
-              <span className="font-display text-[16px] group-hover:text-white transition-colors duration-300">bagpackerme.world@gmail.com</span>
+              <span className="font-display text-[16px] group-hover:text-white transition-colors duration-300">{contactEmail}</span>
             </a>
             
-            <a href="https://instagram.com/bagpackerme" target="_blank" rel="noopener noreferrer" className="flex items-center gap-[24px] p-[16px] rounded-none hover:bg-[rgba(255,255,255,0.05)] transition-colors border border-transparent hover:border-[rgba(255,255,255,0.1)] group">
+            <a href={instagramUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-[24px] p-[16px] rounded-none hover:bg-[rgba(255,255,255,0.05)] transition-colors border border-transparent hover:border-[rgba(255,255,255,0.1)] group">
               <div className="w-[48px] h-[48px] bg-[#D4E839]/10 group-hover:bg-[#D4E839] text-[#D4E839] group-hover:text-[#221E2A] flex items-center justify-center transition-colors duration-300 font-display font-bold text-xl">
                 Ig
               </div>
@@ -184,7 +191,7 @@ export default function BookingForm({ pkg }: { pkg: Package }) {
               <div className="w-[48px] h-[48px] bg-[rgba(255,255,255,0.05)] text-[rgba(255,255,255,0.5)] flex items-center justify-center">
                 <MapPin size={24} />
               </div>
-              <span className="font-display text-[16px] text-[rgba(255,255,255,0.5)]">Mumbai, India</span>
+              <span className="font-display text-[16px] text-[rgba(255,255,255,0.5)]">{address}</span>
             </div>
           </div>
         </div>

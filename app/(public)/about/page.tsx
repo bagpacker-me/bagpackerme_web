@@ -13,6 +13,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { FadeInSection } from '@/components/ui/FadeInSection';
 import VideoPlayer from '@/components/ui/video-player';
+import { useSiteSettings } from '@/hooks/useSiteSettings';
 
 // ─── Animated Counter ────────────────────────────────────────────────────────
 function AnimatedCounter({
@@ -66,6 +67,8 @@ function AnimatedCounter({
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export default function AboutPage() {
   const shouldReduceMotion = useReducedMotion();
+  const { whatsappNumber } = useSiteSettings();
+  const whatsappUrl = `https://wa.me/${whatsappNumber}`;
 
   return (
     <main className="min-h-screen bg-white">
@@ -90,7 +93,7 @@ export default function AboutPage() {
               We Are Bagpackerme
             </h1>
             <p className="font-body text-white/80 text-[16px] md:text-[20px] leading-relaxed max-w-[600px] mx-auto">
-              A travel community built on real journeys, authentic connections, and a deep love for India.
+              A travel community built on real journeys, authentic connections, and careful planning across borders.
             </p>
           </motion.div>
         </div>
@@ -124,7 +127,7 @@ export default function AboutPage() {
               <div className="col-span-2 overflow-hidden relative h-[240px] md:h-[340px] rounded-2xl">
                 <Image
                   src="/web_photos/about_1.webp"
-                  alt="India travel"
+                  alt="Travelers exploring a curated route"
                   fill
                   className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-[1.03]"
                 />
@@ -132,7 +135,7 @@ export default function AboutPage() {
               <div className="overflow-hidden relative h-[160px] md:h-[220px] rounded-2xl">
                 <Image
                   src="/web_photos/about_2.webp"
-                  alt="India journey"
+                  alt="A guided journey moment"
                   fill
                   className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-[1.03]"
                 />
@@ -140,7 +143,7 @@ export default function AboutPage() {
               <div className="overflow-hidden relative h-[160px] md:h-[220px] rounded-2xl">
                 <Image
                   src="/web_photos/about_3.webp"
-                  alt="India group"
+                  alt="Travel group on a planned experience"
                   fill
                   className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-[1.03]"
                 />
@@ -161,13 +164,12 @@ export default function AboutPage() {
             <div className="flex flex-col gap-[20px] font-body text-void/70 text-[16px] md:text-[18px] leading-relaxed">
               <p>
                 BagpackerMe was founded in 2020 as a small community of curious travellers who believed
-                India deserved to be explored deeply — not just ticked off a bucket list. What started
-                as a WhatsApp group grew into a movement.
+                a trip should be understood deeply, not just ticked off a bucket list. What started
+                as a WhatsApp group grew into a planning-led travel company.
               </p>
               <p>
-                Today we have guided <strong className="text-teal font-bold bg-teal/5 px-2 py-0.5 rounded-lg">1,200+ travellers</strong> across{' '}
-                <strong className="text-teal font-bold bg-teal/5 px-2 py-0.5 rounded-lg">25+ destinations</strong> — from the ghats of
-                Varanasi to the valleys of Spiti, from the backwaters of Kerala to the deserts of Rajasthan.
+                Today we help travellers choose routes across India and the world, from short Thailand escapes
+                and Vietnam circuits to Kenya safaris and custom India journeys.
               </p>
             </div>
             
@@ -240,7 +242,7 @@ export default function AboutPage() {
             <div className="lg:w-2/5 relative h-[400px] lg:h-auto">
               <Image
                 src="/web_photos/about_kevin.webp"
-                alt="Kevin — Founder of BagpackerMe"
+                alt="Kevin, founder of BagpackerMe"
                 fill
                 className="object-cover object-center"
               />
@@ -268,14 +270,14 @@ export default function AboutPage() {
               </h2>
               
               <p className="font-body text-void/70 leading-relaxed text-[16px] md:text-[18px] mb-[32px] font-light">
-                Kevin built BagpackerMe from the ground up — designing every itinerary, walking every
-                trail, and ensuring every traveller returns with stories worth telling. With over a decade
-                of travelling across India, he brings not just routes but real insight, cultural context,
-                and genuine care for each guest&apos;s experience.
+                Kevin built BagpackerMe from the ground up, designing itineraries, checking partners,
+                and making sure every traveller returns with stories worth telling. With over a decade
+                of travel experience, he brings route clarity, cultural context,
+                and genuine care for each guest&apos;s trip.
               </p>
               
               <blockquote className="border-l-4 border-lime pl-[24px] py-[8px] text-teal font-display text-[20px] md:text-[24px] leading-snug mb-[48px] italic">
-                &ldquo;You speak directly with the founder — not a call centre. Real expertise, real accountability.&rdquo;
+                &ldquo;You speak directly with the founder, not a call centre. Real expertise, real accountability.&rdquo;
               </blockquote>
 
               {/* Socials */}
@@ -299,7 +301,7 @@ export default function AboutPage() {
                   </svg>
                 </a>
                 <a
-                  href="https://wa.me/919920992026"
+                  href={whatsappUrl}
                   target="_blank" rel="noopener noreferrer"
                   className="w-[48px] h-[48px] rounded-full border border-void/10 bg-[#fafafa] flex items-center justify-center text-[20px] text-teal hover:border-[#25D366] hover:bg-[#25D366] hover:text-white hover:-translate-y-1 hover:shadow-md transition-all duration-300"
                 >
@@ -362,7 +364,7 @@ export default function AboutPage() {
               Explore Trips
             </Link>
             <a
-              href="https://wa.me/919920992026"
+              href={whatsappUrl}
               target="_blank" rel="noopener noreferrer"
               className="px-[24px] py-[10px] bg-white border border-void/10 text-void font-display text-[14px] font-medium rounded-full hover:border-[#25D366] hover:text-[#25D366] transition-colors flex items-center gap-[8px]"
             >

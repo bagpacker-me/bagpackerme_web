@@ -199,10 +199,10 @@ export const CORPORATE_ACTIVITY_OPTIONS: InquiryOption[] = [
 ];
 
 export const CORPORATE_BUDGET_OPTIONS: InquiryOption[] = [
-  { label: 'Under INR 5L', value: 'Under INR 5L' },
-  { label: 'INR 5L to 10L', value: 'INR 5L to 10L' },
-  { label: 'INR 10L to 20L', value: 'INR 10L to 20L' },
-  { label: 'INR 20L+', value: 'INR 20L+' },
+  { label: 'Under USD 10k', value: 'Under USD 10k' },
+  { label: 'USD 10k to 25k', value: 'USD 10k to 25k' },
+  { label: 'USD 25k to 50k', value: 'USD 25k to 50k' },
+  { label: 'USD 50k+', value: 'USD 50k+' },
   { label: 'Need guidance', value: 'Need guidance' },
 ];
 

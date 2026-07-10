@@ -2,7 +2,10 @@ export const PACKAGE_CATEGORIES = [
   'Culinary',
   'Spiritual',
   'Adventure',
+  'Beach',
+  'Culture',
   'Wildlife',
+  'Safari',
   'Heritage',
   'Hippy Trail',
   'Corporate Retreat',
@@ -11,11 +14,13 @@ export const PACKAGE_CATEGORIES = [
 ] as const;
 
 export type PackageCategory = (typeof PACKAGE_CATEGORIES)[number];
+export type PackageMarket = 'global' | 'india';
 
 export interface Package {
   id: string;
   title: string;
   slug: string;
+  market?: PackageMarket;
   category: PackageCategory;
   subTheme?: string;
   tagline: string;

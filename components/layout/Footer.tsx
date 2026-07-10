@@ -8,6 +8,8 @@ import { toast } from 'react-hot-toast';
 import { Logo } from '../ui/Logo';
 
 const companyLinks = [
+  { name: 'Global Trips', href: '/packages' },
+  { name: 'India Trips', href: '/in/packages' },
   { name: 'About', href: '/about' },
   { name: 'Blog', href: '/blog' },
   { name: 'Corporate Retreats', href: '/contact?intent=corporate' },
@@ -56,7 +58,7 @@ export function Footer() {
             <div className="space-y-4">
               <Logo variant="text" className="origin-left scale-[1.05]" />
               <p className="text-white/60 text-sm font-body max-w-sm leading-relaxed">
-                We craft intentional, experiential journeys connecting adventurous travelers with the soul of India.
+                We craft intentional journeys across the world, connecting travelers with local insight and human planning.
               </p>
             </div>
             
@@ -87,7 +89,7 @@ export function Footer() {
             </div>
             
             <p className="text-white/40 text-xs font-body">
-              Based in {address}
+              Reach us from {address}
             </p>
           </div>
 

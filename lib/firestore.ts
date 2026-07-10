@@ -1,7 +1,8 @@
 import { collection, doc, getDocs, addDoc, updateDoc, deleteDoc, query, where, orderBy, getDoc, limit, setDoc, increment, runTransaction, writeBatch, onSnapshot } from 'firebase/firestore';
 import { db } from './firebase';
-import { Package, BlogPost, Enquiry, Customer, Booking, GalleryImage, Affiliate, AffiliateClick, AffiliateEvent, AffiliatePublic, AffiliateRegistrationIndex } from '@/types';
+import { Package, BlogPost, Enquiry, Customer, Booking, GalleryImage, Affiliate, AffiliateClick, AffiliateEvent, AffiliatePublic, AffiliateRegistrationIndex, PackageMarket } from '@/types';
 import { buildAffiliatePublicData, normalizeAffiliateCode, normalizeAffiliateSessionId } from './affiliate';
+import { STATIC_GLOBAL_PACKAGES } from './static-global-packages';
 
 // Packages
 const packagesCol = collection(db, 'packages');
@@ -9,12 +10,150 @@ export const getPackages = async () => getDocs(packagesCol);
 export const getPublishedPackages = async () => getDocs(query(packagesCol, where('status', '==', 'published')));
 export const getFeaturedPackages = async (count: number) => getDocs(query(packagesCol, where('status', '==', 'published'), limit(count)));
 export const getPackage = async (id: string) => getDoc(doc(db, 'packages', id));
+export const normalizePackageMarket = (pkg: Pick<Package, 'market'>): PackageMarket =>
+  pkg.market === 'global' ? 'global' : 'india';
+
+type FirestoreRestValue = {
+  stringValue?: string;
+  integerValue?: string;
+  doubleValue?: number;
+  booleanValue?: boolean;
+  timestampValue?: string;
+  nullValue?: null;
+  arrayValue?: { values?: FirestoreRestValue[] };
+  mapValue?: { fields?: Record<string, FirestoreRestValue> };
+};
+
+type FirestoreRestDocument = {
+  name: string;
+  fields?: Record<string, FirestoreRestValue>;
+};
+
+type FirestoreRunQueryResult = {
+  document?: FirestoreRestDocument;
+};
+
+const firestoreValueToJs = (value: FirestoreRestValue): unknown => {
+  if ('stringValue' in value) return value.stringValue;
+  if ('integerValue' in value) return Number(value.integerValue);
+  if ('doubleValue' in value) return value.doubleValue;
+  if ('booleanValue' in value) return value.booleanValue;
+  if ('timestampValue' in value) return value.timestampValue;
+  if ('nullValue' in value) return null;
+  if (value.arrayValue) return (value.arrayValue.values ?? []).map(firestoreValueToJs);
+  if (value.mapValue) {
+    return Object.fromEntries(
+      Object.entries(value.mapValue.fields ?? {}).map(([key, nestedValue]) => [key, firestoreValueToJs(nestedValue)])
+    );
+  }
+  return undefined;
+};
+
+const packageFromRestDocument = (document: FirestoreRestDocument) => {
+  const data = Object.fromEntries(
+    Object.entries(document.fields ?? {}).map(([key, value]) => [key, firestoreValueToJs(value)])
+  ) as Omit<Package, 'id'>;
+
+  return {
+    id: document.name.split('/').pop() ?? data.slug,
+    ...data,
+    market: data.market === 'global' ? 'global' : 'india',
+  } as Package;
+};
+
+const getPublishedPackagesFromRest = async () => {
+  if (typeof window !== 'undefined') return null;
+
+  const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
+  const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
+
+  if (!projectId || !apiKey) return null;
+
+  try {
+    const response = await fetch(
+      `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents:runQuery?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({
+          structuredQuery: {
+            from: [{ collectionId: 'packages' }],
+            where: {
+              fieldFilter: {
+                field: { fieldPath: 'status' },
+                op: 'EQUAL',
+                value: { stringValue: 'published' },
+              },
+            },
+          },
+        }),
+      }
+    );
+
+    if (!response.ok) return null;
+
+    const results = (await response.json()) as FirestoreRunQueryResult[];
+    return results
+      .map((result) => result.document)
+      .filter((document): document is FirestoreRestDocument => Boolean(document))
+      .map(packageFromRestDocument);
+  } catch {
+    return null;
+  }
+};
+
+const sortPackagesByCreatedAt = (packages: Package[]) =>
+  [...packages].sort((a, b) => {
+    const aDate = a.createdAt || '';
+    const bDate = b.createdAt || '';
+    return bDate.localeCompare(aDate);
+  });
+
+const packageFromDoc = (document: { id: string; data: () => unknown }) => {
+  const data = document.data() as Omit<Package, 'id'>;
+  return { id: document.id, ...data, market: data.market === 'global' ? 'global' : 'india' } as Package;
+};
+
+const mergeWithStaticGlobalPackages = (firestorePackages: Package[]) => {
+  const bySlug = new Map<string, Package>();
+  STATIC_GLOBAL_PACKAGES.forEach((pkg) => bySlug.set(pkg.slug, pkg));
+  firestorePackages.forEach((pkg) => bySlug.set(pkg.slug, pkg));
+  return sortPackagesByCreatedAt(Array.from(bySlug.values()));
+};
+
+export const getPublishedPackagesForMarket = async (market: PackageMarket) => {
+  const restPackages = await getPublishedPackagesFromRest();
+  const publishedPackages = restPackages ?? (await getPublishedPackages()).docs.map(packageFromDoc);
+  const firestorePackages = publishedPackages.filter((pkg) => normalizePackageMarket(pkg) === market);
+
+  return market === 'global'
+    ? mergeWithStaticGlobalPackages(firestorePackages)
+    : sortPackagesByCreatedAt(firestorePackages);
+};
+
+export const getFeaturedPackagesForMarket = async (market: PackageMarket, count: number) =>
+  (await getPublishedPackagesForMarket(market)).slice(0, count);
+
+export const getPackageBySlugForMarket = async (slug: string, market: PackageMarket) => {
+  const packages = await getPublishedPackagesForMarket(market);
+  return packages.find((pkg) => pkg.slug === slug) ?? null;
+};
+
+export const getPackageBySlugAnyMarket = async (slug: string) => {
+  const globalPackage = await getPackageBySlugForMarket(slug, 'global');
+  if (globalPackage) return globalPackage;
+
+  return getPackageBySlugForMarket(slug, 'india');
+};
+
 export const getPackageBySlug = async (slug: string) => {
   const q = query(packagesCol, where('slug', '==', slug), where('status', '==', 'published'));
   const snapshot = await getDocs(q);
   if (snapshot.empty) return null;
   // Sort in JS to get the newest one if there are duplicates with the same slug
-  const docs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Package));
+  const docs = snapshot.docs.map(packageFromDoc);
   docs.sort((a, b) => {
     const aDate = a.createdAt || '';
     const bDate = b.createdAt || '';
@@ -26,10 +165,21 @@ export const getRelatedPackages = async (category: string, excludeSlug: string, 
   const q = query(packagesCol, where('category', '==', category), where('status', '==', 'published'), limit(count + 1));
   const snapshot = await getDocs(q);
   const related = snapshot.docs
-    .map(doc => ({ id: doc.id, ...doc.data() } as Package))
+    .map(packageFromDoc)
     .filter(pkg => pkg.slug !== excludeSlug)
     .slice(0, count);
   return related;
+};
+export const getRelatedPackagesForMarket = async (
+  market: PackageMarket,
+  category: string,
+  excludeSlug: string,
+  count: number = 3
+) => {
+  const packages = await getPublishedPackagesForMarket(market);
+  return packages
+    .filter((pkg) => pkg.category === category && pkg.slug !== excludeSlug)
+    .slice(0, count);
 };
 export const createPackage = async (data: Omit<Package, 'id'>) => addDoc(packagesCol, data);
 export const updatePackage = async (id: string, data: Partial<Package>) => updateDoc(doc(db, 'packages', id), data);

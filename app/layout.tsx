@@ -36,10 +36,10 @@ const cormorantGaramond = Cormorant_Garamond({
 export const metadata: Metadata = {
   metadataBase: new URL('https://bagpackerme.com'),
   title: {
-    default: 'BagPackerMe — Experiential Journeys Through India',
+    default: 'BagPackerMe - Curated Global Journeys',
     template: '%s | BagPackerMe',
   },
-  description: 'Curated experiential journeys through India — small groups, deep immersion, real India. Culinary, Spiritual, Adventure, Heritage and more.',
+  description: 'Curated experiential journeys across Thailand, Vietnam, Kenya, India, and beyond with local expertise and human planning.',
   icons: {
     icon: '/logo_b.webp',
   },
@@ -48,13 +48,13 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: 'https://bagpackerme.com',
     siteName: 'BagPackerMe',
-    title: 'BagPackerMe — Experiential Journeys Through India',
-    description: 'Curated experiential journeys through India — small groups, deep immersion, real India.',
+    title: 'BagPackerMe - Curated Global Journeys',
+    description: 'Curated experiential journeys across Thailand, Vietnam, Kenya, India, and beyond.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'BagPackerMe — Experiential Journeys Through India',
-    description: 'Curated experiential journeys through India — small groups, deep immersion, real India.',
+    title: 'BagPackerMe - Curated Global Journeys',
+    description: 'Curated experiential journeys across Thailand, Vietnam, Kenya, India, and beyond.',
   },
   robots: {
     index: true,

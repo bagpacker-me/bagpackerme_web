@@ -1,14 +1,15 @@
 'use client';
 
 import Image from 'next/image';
-import { Package } from '@/types';
+import { Package, PackageMarket } from '@/types';
 import { Clock, Users, MapPin } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
 
 const EASE = [0.25, 0.46, 0.45, 0.94] as const;
 
-export default function HeroSection({ pkg }: { pkg: Package }) {
+export default function HeroSection({ pkg, market = 'global' }: { pkg: Package; market?: PackageMarket }) {
   const shouldReduceMotion = useReducedMotion();
+  const breadcrumbRoot = market === 'india' ? 'India' : 'Global';
 
   const containerVariants = {
     hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 40 },
@@ -73,7 +74,7 @@ export default function HeroSection({ pkg }: { pkg: Package }) {
                {pkg.category}
             </span>
             <span className="font-body text-[13px] text-white/55 uppercase tracking-widest whitespace-nowrap overflow-hidden text-ellipsis">
-              Home / Trips / {pkg.title}
+              {breadcrumbRoot} / Trips / {pkg.title}
             </span>
           </div>
 

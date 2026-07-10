@@ -1,15 +1,18 @@
 import React from 'react';
 import Link from 'next/link';
-import { formatPackagePriceInr, hasPackagePrice } from '@/lib/packagePricing';
-import { Package } from '@/types';
+import { getPackageMarket, getPackagePrimaryPrice, hasPackageMarketPrice } from '@/lib/packagePricing';
+import { Package, PackageMarket } from '@/types';
 import { ArrowRight, Clock, Users } from 'lucide-react';
 
-export default function PackageCard({ pkg }: { pkg: Package }) {
-  const hasPrice = hasPackagePrice(pkg.priceInr);
+export default function PackageCard({ pkg, market }: { pkg: Package; market?: PackageMarket }) {
+  const resolvedMarket = market ?? getPackageMarket(pkg);
+  const hasPrice = hasPackageMarketPrice(pkg, resolvedMarket);
+  const price = getPackagePrimaryPrice(pkg, resolvedMarket);
+  const href = `${resolvedMarket === 'india' ? '/in' : ''}/packages/${pkg.slug}`;
 
   return (
     <Link 
-      href={`/packages/${pkg.slug}`} 
+      href={href}
       className="flex flex-col bg-white border border-medium/10 rounded-[24px] overflow-hidden group hover:shadow-[0_20px_48px_rgba(40,80,86,0.12)] hover:-translate-y-1.5 transition-all duration-500 h-full"
     >
       {/* Image Area with 3/2 Mobile and 4/5 Desktop Aspect Ratio and Hover Overlay */}
@@ -84,7 +87,7 @@ export default function PackageCard({ pkg }: { pkg: Package }) {
               {hasPrice ? 'Starts From' : 'Pricing'}
             </span>
             <span className="font-display font-bold text-[18px] text-teal leading-none">
-              {formatPackagePriceInr(pkg.priceInr)}
+              {price.label}
               {hasPrice && <span className="text-xs font-normal text-void/50 ml-1 font-body">/psn</span>}
             </span>
           </div>

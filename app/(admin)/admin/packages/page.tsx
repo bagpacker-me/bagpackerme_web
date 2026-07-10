@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getPackages, deletePackage, updatePackage } from '@/lib/firestore';
-import { formatPackagePriceInr } from '@/lib/packagePricing';
+import { getPackageMarket, getPackagePrimaryPrice } from '@/lib/packagePricing';
 import { Package } from '@/types';
 import { format } from 'date-fns';
 import toast from 'react-hot-toast';
@@ -23,6 +23,10 @@ function SkeletonRow() {
       {/* Category */}
       <td className="px-4 py-3 hidden md:table-cell">
         <div className="h-4 bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.1)] rounded animate-pulse w-24" />
+      </td>
+      {/* Market */}
+      <td className="px-4 py-3 hidden lg:table-cell">
+        <div className="h-4 bg-[#F3F4F6] dark:bg-[rgba(255,255,255,0.1)] rounded animate-pulse w-20" />
       </td>
       {/* Status */}
       <td className="px-4 py-3">
@@ -168,11 +172,14 @@ export default function AdminPackagesPage() {
               <th className="px-[16px] py-[12px] text-left font-display text-[11px] font-bold text-[#718096] dark:text-[rgba(255,255,255,0.6)] tracking-widest uppercase hidden md:table-cell">
                 Category
               </th>
+              <th className="px-[16px] py-[12px] text-left font-display text-[11px] font-bold text-[#718096] dark:text-[rgba(255,255,255,0.6)] tracking-widest uppercase hidden lg:table-cell">
+                Market
+              </th>
               <th className="px-[16px] py-[12px] text-left font-display text-[11px] font-bold text-[#718096] dark:text-[rgba(255,255,255,0.6)] tracking-widest uppercase">
                 Status
               </th>
               <th className="px-[16px] py-[12px] text-left font-display text-[11px] font-bold text-[#718096] dark:text-[rgba(255,255,255,0.6)] tracking-widest uppercase hidden sm:table-cell">
-                Price (INR)
+                Price
               </th>
               <th className="px-[16px] py-[12px] text-left font-display text-[11px] font-bold text-[#718096] dark:text-[rgba(255,255,255,0.6)] tracking-widest uppercase hidden lg:table-cell">
                 Created
@@ -191,7 +198,7 @@ export default function AdminPackagesPage() {
                 </>
               ) : packages.length === 0 ? (
                 <tr>
-                  <td colSpan={7}>
+                  <td colSpan={8}>
                     <div className="flex flex-col items-center justify-center py-20 text-gray-400">
                       <svg className="w-12 h-12 mb-4 text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0H4m8-7v4m0 0l-2-2m2 2l2-2" />
@@ -241,6 +248,11 @@ export default function AdminPackagesPage() {
                       <span>{pkg.category}</span>
                     </td>
 
+                    {/* Market */}
+                    <td className="px-[16px] hidden lg:table-cell font-body text-[13px] text-[#221E2A] dark:text-[rgba(255,255,255,0.9)]">
+                      <span className="capitalize">{getPackageMarket(pkg)}</span>
+                    </td>
+
                     {/* Status */}
                     <td className="px-[16px]">
                       <StatusBadge status={pkg.status} onToggle={() => handleToggleStatus(pkg)} />
@@ -249,7 +261,7 @@ export default function AdminPackagesPage() {
                     {/* Price */}
                     <td className="px-[16px] hidden sm:table-cell font-body text-[14px] text-[#221E2A] dark:text-[rgba(255,255,255,0.9)]">
                       <span>
-                        {formatPackagePriceInr(pkg.priceInr)}
+                        {getPackagePrimaryPrice(pkg, getPackageMarket(pkg)).label}
                       </span>
                     </td>
 

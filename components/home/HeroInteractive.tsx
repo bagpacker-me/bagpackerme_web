@@ -5,8 +5,9 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import Image from 'next/image';
+import { PackageMarket } from '@/types';
 
-const destinations = [
+const indiaDestinations = [
   {
     id: 'delhi',
     title: 'DELHI',
@@ -49,7 +50,42 @@ const destinations = [
   }
 ];
 
-export default function HeroInteractive() {
+const globalDestinations = [
+  {
+    id: 'thailand',
+    title: 'THAILAND',
+    stateName: 'PATTAYA',
+    location: 'Pattaya, Thailand',
+    description: 'Island waters, tropical gardens, private transfers, and a short coastal reset.',
+    image: 'https://images.unsplash.com/photo-1508009603885-50cf7c579365?auto=format&fit=crop&q=80&w=1600',
+  },
+  {
+    id: 'vietnam',
+    title: 'VIETNAM',
+    stateName: 'DA NANG',
+    location: 'Da Nang and Hoi An',
+    description: 'Golden Bridge views, lantern-lit streets, coastal days, and layered city history.',
+    image: 'https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&q=80&w=1600',
+  },
+  {
+    id: 'halong',
+    title: 'HALONG',
+    stateName: 'HANOI',
+    location: 'Hanoi and Halong Bay',
+    description: 'Old Quarter walks, limestone cruises, island time, and northern Vietnam scenery.',
+    image: 'https://images.unsplash.com/photo-1557750255-c76072a7aad1?auto=format&fit=crop&q=80&w=1600',
+  },
+  {
+    id: 'kenya',
+    title: 'KENYA',
+    stateName: 'MASAI MARA',
+    location: 'Amboseli and Masai Mara',
+    description: 'Elephant country, Rift Valley lakes, big-cat plains, and slow safari days.',
+    image: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&q=80&w=1600',
+  },
+];
+
+export default function HeroInteractive({ market = 'global' }: { market?: PackageMarket }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(1);
   const [isClient, setIsClient] = useState(false);
@@ -57,6 +93,8 @@ export default function HeroInteractive() {
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const INTERVAL_MS = 6000;
+  const destinations = market === 'india' ? indiaDestinations : globalDestinations;
+  const packagesHref = market === 'india' ? '/in/packages' : '/packages';
 
   useEffect(() => {
     setIsClient(true);
@@ -170,7 +208,7 @@ export default function HeroInteractive() {
                 <ArrowRight strokeWidth={2} className="h-4 w-4" />
               </Link>
               <Link
-                href="/packages"
+                href={packagesHref}
                 className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/5 backdrop-blur-sm px-7 py-4 font-display text-[12px] font-bold uppercase tracking-widest text-white transition-all duration-300 hover:border-white/30 hover:bg-white/10 active:scale-[0.98]"
               >
                 Explore trips

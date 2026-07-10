@@ -1,9 +1,18 @@
-import { getRelatedPackages } from '@/lib/firestore';
+import { getRelatedPackagesForMarket } from '@/lib/firestore';
 import PackageCard from '@/components/home/PackageCard';
 import { FadeInSection } from '@/components/ui/FadeInSection';
+import type { PackageMarket } from '@/types';
 
-export default async function RelatedPackages({ category, currentSlug }: { category: string, currentSlug: string }) {
-  const related = await getRelatedPackages(category, currentSlug, 3);
+export default async function RelatedPackages({
+  category,
+  currentSlug,
+  market = 'global',
+}: {
+  category: string;
+  currentSlug: string;
+  market?: PackageMarket;
+}) {
+  const related = await getRelatedPackagesForMarket(market, category, currentSlug, 3);
   
   if (!related || related.length === 0) return null;
 
@@ -25,7 +34,7 @@ export default async function RelatedPackages({ category, currentSlug }: { categ
         <FadeInSection delay={0.2}>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[24px]">
             {related.map(pkg => (
-              <PackageCard key={pkg.id} pkg={pkg} />
+              <PackageCard key={pkg.id} pkg={pkg} market={market} />
             ))}
           </div>
         </FadeInSection>

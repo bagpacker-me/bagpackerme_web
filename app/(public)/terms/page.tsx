@@ -2,7 +2,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Terms of Service — BagPackerMe',
+  title: 'Terms of Service - BagPackerMe',
   description: 'Read the terms and conditions that govern your use of BagPackerMe\'s travel services and website.',
 };
 
@@ -27,11 +27,11 @@ const sections = [
     content: [
       {
         subtitle: 'Booking Confirmation',
-        text: 'A booking is confirmed only upon receipt of the required deposit and written confirmation from BagpackerMe. We reserve the right to decline any booking at our discretion. All prices are quoted in Indian Rupees (INR) unless stated otherwise.',
+        text: 'A booking is confirmed only upon receipt of the required deposit and written confirmation from BagpackerMe. We reserve the right to decline any booking at our discretion. Prices are quoted in the package currency shown on the website or final written quote.',
       },
       {
         subtitle: 'Deposit & Full Payment',
-        text: 'A non-refundable deposit (typically 25–30% of the package price) is required to confirm your booking. The remaining balance is due no later than 30 days before your departure date. Bookings made within 30 days of departure must be paid in full at the time of booking.',
+        text: 'A non-refundable deposit, typically 25-30% of the package price, is required to confirm your booking. The remaining balance is due no later than 30 days before your departure date. Bookings made within 30 days of departure must be paid in full at the time of booking.',
       },
       {
         subtitle: 'Pricing',
@@ -45,7 +45,7 @@ const sections = [
     content: [
       {
         subtitle: 'Cancellation by You',
-        text: 'Cancellations must be made in writing to bagpackerme.world@gmail.com. The following charges apply: More than 45 days before departure — loss of deposit only. 30–44 days before departure — 50% of the total package cost. 15–29 days before departure — 75% of the total package cost. Less than 15 days before departure — 100% of the total package cost (no refund).',
+        text: 'Cancellations must be made in writing to bagpackerme.world@gmail.com. The following charges apply: more than 45 days before departure, loss of deposit only. 30-44 days before departure, 50% of the total package cost. 15-29 days before departure, 75% of the total package cost. Less than 15 days before departure, 100% of the total package cost with no refund.',
       },
       {
         subtitle: 'Cancellation by BagpackerMe',
@@ -99,7 +99,7 @@ const sections = [
     content: [
       {
         subtitle: 'Our Content',
-        text: 'All content on this website — including text, images, videos, logos, and itineraries — is the property of BagpackerMe and is protected by applicable intellectual property laws. You may not reproduce, distribute, or use our content without prior written permission.',
+        text: 'All content on this website, including text, images, videos, logos, and itineraries, is the property of BagpackerMe and is protected by applicable intellectual property laws. You may not reproduce, distribute, or use our content without prior written permission.',
       },
       {
         subtitle: 'User-Generated Content',
@@ -127,7 +127,7 @@ const sections = [
     content: [
       {
         subtitle: 'Get in Touch',
-        text: 'If you have any questions about these Terms of Service, please contact us at bagpackerme.world@gmail.com or via WhatsApp at +91 9920992026. We are here to help and aim to respond to all enquiries within 2 business days.',
+        text: 'If you have any questions about these Terms of Service, please contact us at bagpackerme.world@gmail.com or through the contact page. We are here to help and aim to respond to all enquiries within 2 business days.',
       },
     ],
   },

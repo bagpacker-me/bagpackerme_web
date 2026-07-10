@@ -13,7 +13,7 @@ import { useSiteSettings } from '@/hooks/useSiteSettings';
 
 export function WhatsAppButton() {
   const pathname = usePathname();
-  const isPackagePage = pathname?.startsWith('/packages/');
+  const isPackagePage = pathname?.startsWith('/packages/') || pathname?.startsWith('/in/packages/');
   const message = encodeURIComponent("Hi, I'm interested in a Bagpackerme trip!");
   const { whatsappNumber } = useSiteSettings();
 

@@ -5,8 +5,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ArrowRight, Clock } from 'lucide-react';
-import { formatPackagePriceInr, hasPackagePrice } from '@/lib/packagePricing';
-import { Package } from '@/types';
+import { getPackageMarket, getPackagePrimaryPrice, hasPackageMarketPrice } from '@/lib/packagePricing';
+import { Package, PackageMarket } from '@/types';
 
 // ─── Shimmer Skeleton ────────────────────────────────────────────────────────
 
@@ -86,6 +86,7 @@ export function PackageCardSkeleton() {
 
 interface PackageCardProps {
   package: Package;
+  market?: PackageMarket;
   showDestinations?: boolean;
   showSkeleton?: boolean;
   priority?: boolean;
@@ -95,13 +96,17 @@ interface PackageCardProps {
 
 export default function PackageCard({
   package: pkg,
+  market,
   showDestinations = false,
   showSkeleton = false,
   priority = false,
 }: PackageCardProps) {
   const prefersReducedMotion = useReducedMotion();
   const [isHovered, setIsHovered] = useState(false);
-  const hasPrice = hasPackagePrice(pkg.priceInr);
+  const resolvedMarket = market ?? getPackageMarket(pkg);
+  const hasPrice = hasPackageMarketPrice(pkg, resolvedMarket);
+  const price = getPackagePrimaryPrice(pkg, resolvedMarket);
+  const href = `${resolvedMarket === 'india' ? '/in' : ''}/packages/${pkg.slug}`;
 
   if (showSkeleton) return <PackageCardSkeleton />;
 
@@ -144,7 +149,7 @@ export default function PackageCard({
         aria-label={pkg.title}
       >
         <Link
-          href={`/packages/${pkg.slug}`}
+          href={href}
           style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}
           tabIndex={0}
           aria-label={`Explore ${pkg.title}`}
@@ -156,7 +161,7 @@ export default function PackageCard({
             {/* Next.js Image */}
             <Image
               src={pkg.heroImageUrl}
-              alt={`${pkg.title} — ${pkg.category} journey`}
+              alt={`${pkg.title} - ${pkg.category} journey`}
               fill
               sizes="(max-width: 768px) 100vw, 33vw"
               priority={priority}
@@ -345,7 +350,7 @@ export default function PackageCard({
                 </span>
               </div>
 
-              {/* Price: Indian Rupee formatting, font-variant-numeric oldstyle-nums */}
+              {/* Price formatting follows the active package market. */}
               <span
                 style={{
                   fontFamily: 'var(--font-body)',
@@ -356,7 +361,7 @@ export default function PackageCard({
                   fontVariantNumeric: 'oldstyle-nums',
                 }}
               >
-                {hasPrice ? `From ${formatPackagePriceInr(pkg.priceInr)}/person` : 'ON REQUEST'}
+                {hasPrice ? `From ${price.label}/person` : 'ON REQUEST'}
               </span>
             </div>
 

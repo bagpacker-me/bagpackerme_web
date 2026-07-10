@@ -66,7 +66,7 @@ import {
 const intentCopy = {
   trip: {
     badge: 'Trip Inquiry',
-    title: 'Plan your next India journey in one conversation.',
+    title: 'Plan your next journey in one conversation.',
     description:
       "Choose the trip path, share the essentials once, and we'll continue the conversation on WhatsApp with your brief already structured.",
     formTitle: 'Tell us what kind of trip you want',
@@ -849,7 +849,7 @@ function B2CForm({
           type="tel"
           value={form.phone}
           onChange={(value) => onChange('phone', value)}
-          placeholder="+91 99209 92026"
+          placeholder="Include country code, e.g. +1 555 123 4567"
           error={errors.phone}
           hint="Include your country code if you can."
           required
@@ -1099,7 +1099,7 @@ function CorporateForm({
             label="Departure city or cities"
             value={form.originCities}
             onChange={(value) => onChange('originCities', value)}
-            placeholder="Example: Mumbai and Bengaluru"
+            placeholder="Example: Dubai and London"
             error={getError('originCities')}
             required
           />
@@ -1236,7 +1236,7 @@ function CorporateForm({
             type="tel"
             value={form.contactPhone}
             onChange={(value) => onChange('contactPhone', value)}
-            placeholder="+91 99209 92026"
+            placeholder="Include country code, e.g. +1 555 123 4567"
             error={getError('contactPhone')}
             required
           />
