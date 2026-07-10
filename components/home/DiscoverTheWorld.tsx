@@ -5,7 +5,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
-import { getPublishedPackagesForMarket } from '@/lib/firestore';
+import { scheduleIdleTask } from '@/lib/browser-idle';
+import { STATIC_GLOBAL_PACKAGE_SUMMARIES } from '@/lib/static-global-package-summaries';
 import { Package, PackageMarket, PACKAGE_CATEGORIES } from '@/types';
 
 const FALLBACK_IMAGE = '/web_photos/hero_1.webp';
@@ -85,9 +86,11 @@ function LoadingCard({ index }: { index: number }) {
 }
 
 export default function DiscoverTheWorld({ market = 'global' }: { market?: PackageMarket }) {
-  const [packages, setPackages] = useState<Package[]>([]);
+  const [packages, setPackages] = useState<Package[]>(
+    market === 'global' ? STATIC_GLOBAL_PACKAGE_SUMMARIES : []
+  );
   const [activeTab, setActiveTab] = useState('All');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(market !== 'global');
   const shouldReduceMotion = useReducedMotion();
   const packagesHref = market === 'india' ? '/in/packages' : '/packages';
   const heading =
@@ -98,18 +101,27 @@ export default function DiscoverTheWorld({ market = 'global' }: { market?: Packa
       : 'Thailand, Vietnam, Kenya, and custom routes ready for your next chapter.';
 
   useEffect(() => {
-    async function loadPackages() {
+    let mounted = true;
+
+    setPackages(market === 'global' ? STATIC_GLOBAL_PACKAGE_SUMMARIES : []);
+    setLoading(market !== 'global');
+
+    const cancel = scheduleIdleTask(async () => {
       try {
+        const { getPublishedPackagesForMarket } = await import('@/lib/firestore');
         const nextPackages = await getPublishedPackagesForMarket(market);
-        setPackages(nextPackages);
+        if (mounted) setPackages(nextPackages);
       } catch (error) {
         console.error('Failed to load homepage journey cards:', error);
       } finally {
-        setLoading(false);
+        if (mounted) setLoading(false);
       }
-    }
+    }, market === 'global' ? 2500 : 800);
 
-    loadPackages();
+    return () => {
+      mounted = false;
+      cancel();
+    };
   }, [market]);
 
   const availableCategories = ['All', ...sortCategories(Array.from(new Set(packages.map((pkg) => pkg.category).filter(Boolean))))];
@@ -201,7 +213,6 @@ export default function DiscoverTheWorld({ market = 'global' }: { market?: Packa
                     fill
                     sizes="(max-width: 768px) 85vw, 380px"
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    priority={packages.indexOf(pkg) < 2}
                   />
 
                   <div className="absolute inset-0 bg-gradient-to-t from-void/85 via-void/25 to-transparent" />

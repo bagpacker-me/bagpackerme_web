@@ -4,7 +4,6 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
 import { ArrowRight } from 'lucide-react';
-import { toast } from 'react-hot-toast';
 import { Logo } from '../ui/Logo';
 
 const companyLinks = [
@@ -35,12 +34,14 @@ export function Footer() {
     if (!email) return;
 
     try {
+      const { toast } = await import('react-hot-toast');
       setIsSubscribing(true);
       const { subscribeToNewsletter } = await import('@/lib/firestore');
       await subscribeToNewsletter(email);
       toast.success("Thanks for subscribing! We'll be in touch.");
       setEmail('');
     } catch (error) {
+      const { toast } = await import('react-hot-toast');
       console.error(error);
       toast.error("Something went wrong. Please try again later.");
     } finally {

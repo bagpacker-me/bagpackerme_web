@@ -143,7 +143,6 @@ export default function ImageGallery({ market = "global" }: { market?: PackageMa
                   alt={img.alt}
                   fill
                   sizes="(max-width: 768px) 100vw, 33vw"
-                  priority={idx < 2}
                 />
                 
                 {/* Overlay gradient */}

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import { motion, useInView, useReducedMotion } from 'framer-motion';
-import { getFeaturedPackages } from '@/lib/firestore';
+import { scheduleIdleTask } from '@/lib/browser-idle';
 import { Package } from '@/types';
 import PackageCard, { PackageCardSkeleton } from './PackageCard';
 import Link from 'next/link';
@@ -18,18 +18,25 @@ export default function FeaturedTrips() {
   const gridInView = useInView(gridRef, { once: true, amount: 0.1 });
 
   useEffect(() => {
-    async function loadPackages() {
+    let mounted = true;
+
+    const cancel = scheduleIdleTask(async () => {
       try {
+        const { getFeaturedPackages } = await import('@/lib/firestore');
         const snap = await getFeaturedPackages(6);
         const pkgs = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Package));
-        setPackages(pkgs);
+        if (mounted) setPackages(pkgs);
       } catch (error) {
         console.error('Failed to load featured packages:', error);
       } finally {
-        setLoading(false);
+        if (mounted) setLoading(false);
       }
-    }
-    loadPackages();
+    }, 1800);
+
+    return () => {
+      mounted = false;
+      cancel();
+    };
   }, []);
 
   return (

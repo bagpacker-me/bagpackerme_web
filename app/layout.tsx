@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { Outfit, DM_Sans, Cormorant_Garamond } from 'next/font/google';
-import { Analytics } from '@vercel/analytics/next';
-import { SpeedInsights } from '@vercel/speed-insights/next';
+import { DeferredAnalytics } from '@/components/providers/DeferredAnalytics';
 import '@/styles/globals.css';
 
 // ── DESIGN-SYSTEM FONT STACK ──────────────────────────────────────────────────
@@ -13,22 +12,22 @@ import '@/styles/globals.css';
 
 const outfit = Outfit({
   subsets: ['latin'],
-  weight: ['300', '400', '600', '700'],
+  weight: ['400', '600', '700'],
   variable: '--font-display',
   display: 'swap',
 });
 
 const dmSans = DM_Sans({
   subsets: ['latin'],
-  weight: ['300', '400', '500', '600'],
+  weight: ['400', '500', '600'],
   variable: '--font-body',
   display: 'swap',
 });
 
 const cormorantGaramond = Cormorant_Garamond({
   subsets: ['latin'],
-  weight: ['300', '400', '600'],
-  style: ['normal', 'italic'],
+  weight: ['400', '600'],
+  style: ['italic'],
   variable: '--font-accent',
   display: 'swap',
 });
@@ -70,8 +69,7 @@ export default function AppRootLayout({ children }: { children: React.ReactNode 
     >
       <body>
         {children}
-        <Analytics />
-        <SpeedInsights />
+        <DeferredAnalytics />
       </body>
     </html>
   );

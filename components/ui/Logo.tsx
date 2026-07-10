@@ -4,9 +4,10 @@ import Image from 'next/image';
 interface LogoProps {
   variant?: 'light' | 'dark' | 'text';
   className?: string;
+  priority?: boolean;
 }
 
-export function Logo({ variant = 'light', className = '' }: LogoProps) {
+export function Logo({ variant = 'light', className = '', priority = false }: LogoProps) {
   const src = variant === 'text' ? '/text_w.webp' : (variant === 'dark' ? '/logo_b.webp' : '/logo_w.webp');
 
   return (
@@ -17,7 +18,8 @@ export function Logo({ variant = 'light', className = '' }: LogoProps) {
         width={160}
         height={48}
         className="w-auto h-8 md:h-10 object-contain"
-        priority
+        priority={priority}
+        sizes="160px"
       />
     </div>
   );

@@ -3,8 +3,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { getPublishedPackagesForMarket } from '@/lib/firestore';
+import { scheduleIdleTask } from '@/lib/browser-idle';
 import { getPackagePrimaryPrice, hasPackagePrice } from '@/lib/packagePricing';
+import { STATIC_GLOBAL_PACKAGE_SUMMARIES } from '@/lib/static-global-package-summaries';
 import { Package, PackageMarket, PACKAGE_CATEGORIES } from '@/types';
 import PackageCard, { PackageCardSkeleton } from '@/components/home/PackageCard';
 import { CARD_GRID_VARIANTS, CARD_ITEM_VARIANTS } from '@/components/ui/FadeInSection';
@@ -59,8 +60,10 @@ export default function PackagesListingPage({
   heroAlt,
 }: PackagesListingPageProps) {
   const priceConfig = MARKET_PRICE_CONFIG[market];
-  const [packages, setPackages] = useState<Package[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [packages, setPackages] = useState<Package[]>(
+    market === 'global' ? STATIC_GLOBAL_PACKAGE_SUMMARIES : []
+  );
+  const [loading, setLoading] = useState(market !== 'global');
   const [filters, setFilters] = useState<PremiumFilterState>({
     category: 'All',
     duration: 'Any',
@@ -75,8 +78,12 @@ export default function PackagesListingPage({
   useEffect(() => {
     let mounted = true;
 
-    async function fetchPackages() {
+    setPackages(market === 'global' ? STATIC_GLOBAL_PACKAGE_SUMMARIES : []);
+    setLoading(market !== 'global');
+
+    const cancel = scheduleIdleTask(async () => {
       try {
+        const { getPublishedPackagesForMarket } = await import('@/lib/firestore');
         const pkgs = await getPublishedPackagesForMarket(market);
         if (mounted) setPackages(pkgs);
       } catch (error) {
@@ -84,13 +91,11 @@ export default function PackagesListingPage({
       } finally {
         if (mounted) setLoading(false);
       }
-    }
-
-    setLoading(true);
-    fetchPackages();
+    }, market === 'global' ? 2000 : 500);
 
     return () => {
       mounted = false;
+      cancel();
     };
   }, [market]);
 

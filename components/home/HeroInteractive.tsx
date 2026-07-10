@@ -88,17 +88,12 @@ const globalDestinations = [
 export default function HeroInteractive({ market = 'global' }: { market?: PackageMarket }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(1);
-  const [isClient, setIsClient] = useState(false);
   const [progressKey, setProgressKey] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const INTERVAL_MS = 6000;
   const destinations = market === 'india' ? indiaDestinations : globalDestinations;
   const packagesHref = market === 'india' ? '/in/packages' : '/packages';
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
 
   const totalSlides = destinations.length;
 
@@ -113,20 +108,15 @@ export default function HeroInteractive({ market = 'global' }: { market?: Packag
   }, [totalSlides]);
 
   useEffect(() => {
-    if (!isClient) return;
     resetTimer();
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
-  }, [isClient, resetTimer]);
+  }, [resetTimer]);
 
   const handleNext = useCallback(() => {
     setDirection(1);
     setCurrentIndex((prev) => (prev + 1) % totalSlides);
     resetTimer();
   }, [totalSlides, resetTimer]);
-
-  if (!isClient) {
-    return <div className="min-h-[100dvh] w-screen bg-void" />;
-  }
 
   const activeDest = destinations[currentIndex];
   const stringIndex = String(currentIndex + 1).padStart(2, '0');

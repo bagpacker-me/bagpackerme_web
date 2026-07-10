@@ -15,6 +15,8 @@ interface Props {
   params: { slug: string };
 }
 
+export const revalidate = 3600;
+
 export async function generateStaticParams() {
   const packages = await getPublishedPackagesForMarket('india');
   return packages.map((pkg) => ({

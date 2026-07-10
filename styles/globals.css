@@ -214,6 +214,80 @@ body {
   overflow-x: hidden;
 }
 
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes mobile-menu-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -16px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes mobile-menu-item-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(-16px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes wa-pulse {
+  0% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.5);
+  }
+}
+
+.page-transition-shell {
+  animation: page-enter 240ms var(--ease-default) both;
+}
+
+.mobile-menu-panel {
+  animation: mobile-menu-enter 260ms var(--ease-default) both;
+}
+
+.mobile-menu-item {
+  animation: mobile-menu-item-enter 360ms var(--ease-default) both;
+  opacity: 0;
+}
+
+.wa-pulse-ring {
+  animation: wa-pulse 2s ease-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-transition-shell,
+  .mobile-menu-panel,
+  .mobile-menu-item,
+  .wa-pulse-ring {
+    animation: none;
+  }
+
+  .mobile-menu-item {
+    opacity: 1;
+  }
+}
+
 /* ─────────────────────────────────────────────────────────────────────────────
    RULE 1 — HEADING TREATMENT  (MASTER.md Typography Polish §1)
    • text-wrap: balance on H1/H2 — prevents orphan single-word lines
@@ -1119,4 +1193,3 @@ blockquote,
   background: var(--color-highlight);
   margin-bottom: 24px;
 }
-

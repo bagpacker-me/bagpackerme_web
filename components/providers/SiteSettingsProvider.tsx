@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useEffect, useState, type ReactNode } from 'react';
-import { getSiteSettings } from '@/lib/firestore';
+import { scheduleIdleTask } from '@/lib/browser-idle';
 import {
   DEFAULT_SITE_SETTINGS,
   resolveSiteSettings,
@@ -16,8 +16,9 @@ export function SiteSettingsProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let isMounted = true;
 
-    async function fetchSettings() {
+    const cancel = scheduleIdleTask(async () => {
       try {
+        const { getSiteSettings } = await import('@/lib/firestore');
         const data = await getSiteSettings();
         if (isMounted) {
           setSettings(resolveSiteSettings(data));
@@ -25,12 +26,11 @@ export function SiteSettingsProvider({ children }: { children: ReactNode }) {
       } catch (error) {
         console.error('Error fetching site settings', error);
       }
-    }
-
-    void fetchSettings();
+    }, 3000);
 
     return () => {
       isMounted = false;
+      cancel();
     };
   }, []);
 

@@ -6,7 +6,6 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
-import { motion, AnimatePresence, Variants } from 'framer-motion';
 
 export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -24,9 +23,18 @@ export function Navbar() {
   ];
 
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      if (ticking) return;
+
+      ticking = true;
+      window.requestAnimationFrame(() => {
+        setIsScrolled(window.scrollY > 50);
+        ticking = false;
+      });
     };
+
+    handleScroll();
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -39,36 +47,6 @@ export function Navbar() {
   if (isBlogDetail) {
     return null;
   }
-
-  const menuContainerVariants: Variants = {
-    hidden: { opacity: 0, y: -20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        staggerChildren: 0.08,
-        delayChildren: 0.1,
-        duration: 0.4,
-        ease: [0.16, 1, 0.3, 1] as const,
-      },
-    },
-    exit: {
-      opacity: 0,
-      y: -15,
-      transition: {
-        staggerChildren: 0.05,
-        staggerDirection: -1,
-        duration: 0.3,
-        ease: 'easeInOut' as const,
-      },
-    },
-  };
-
-  const menuItemVariants: Variants = {
-    hidden: { opacity: 0, x: -16 },
-    visible: { opacity: 1, x: 0, transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] as const } },
-    exit: { opacity: 0, x: -10, transition: { duration: 0.25 } },
-  };
 
   return (
     <header>
@@ -150,15 +128,8 @@ export function Navbar() {
         </div>
 
         {/* Mobile Drawer Overlay */}
-        <AnimatePresence>
-          {menuOpen && (
-            <motion.div
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              variants={menuContainerVariants}
-              className="fixed inset-0 top-0 bg-void/95 backdrop-blur-2xl transition-all duration-300 lg:hidden pointer-events-auto z-[99] flex flex-col justify-center px-8 md:px-16"
-            >
+        {menuOpen && (
+            <div className="mobile-menu-panel fixed inset-0 top-0 bg-void/95 backdrop-blur-2xl transition-all duration-300 lg:hidden pointer-events-auto z-[99] flex flex-col justify-center px-8 md:px-16">
               {/* Grain pattern background */}
               <div 
                 className="absolute inset-0 pointer-events-none opacity-[0.035]"
@@ -174,7 +145,11 @@ export function Navbar() {
                   {menuItems.map((item, index) => {
                     const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(`${item.href}/`));
                     return (
-                      <motion.li key={index} variants={menuItemVariants}>
+                      <li
+                        key={index}
+                        className="mobile-menu-item"
+                        style={{ animationDelay: `${100 + index * 70}ms` }}
+                      >
                         <Link
                           href={item.href}
                           className={cn(
@@ -184,11 +159,11 @@ export function Navbar() {
                         >
                           {item.name}
                         </Link>
-                      </motion.li>
+                      </li>
                     );
                   })}
                 </ul>
-                <motion.div className="mt-12 w-full" variants={menuItemVariants}>
+                <div className="mobile-menu-item mt-12 w-full" style={{ animationDelay: '380ms' }}>
                   <Button
                     asChild
                     size="lg"
@@ -196,11 +171,10 @@ export function Navbar() {
                   >
                     <Link href="/contact?intent=trip">Book Now</Link>
                   </Button>
-                </motion.div>
+                </div>
               </div>
-            </motion.div>
+            </div>
           )}
-        </AnimatePresence>
       </nav>
     </header>
   );

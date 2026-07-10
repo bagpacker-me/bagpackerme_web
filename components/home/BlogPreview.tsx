@@ -3,7 +3,7 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import { motion, useInView, useReducedMotion } from 'framer-motion';
-import { getRecentPublishedBlogs } from '@/lib/firestore';
+import { scheduleIdleTask } from '@/lib/browser-idle';
 import { BlogPost } from '@/types';
 import Link from 'next/link';
 import { FadeInSection, CARD_GRID_VARIANTS, CARD_ITEM_VARIANTS } from '@/components/ui/FadeInSection';
@@ -17,18 +17,25 @@ export default function BlogPreview() {
   const gridInView = useInView(gridRef, { once: true, amount: 0.1 });
 
   useEffect(() => {
-    async function fetchBlogs() {
+    let mounted = true;
+
+    const cancel = scheduleIdleTask(async () => {
       try {
+        const { getRecentPublishedBlogs } = await import('@/lib/firestore');
         const snap = await getRecentPublishedBlogs(3);
         const fetchedBlogs = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() } as BlogPost));
-        setBlogs(fetchedBlogs);
+        if (mounted) setBlogs(fetchedBlogs);
       } catch (error) {
         console.error('Error fetching blogs:', error);
       } finally {
-        setLoading(false);
+        if (mounted) setLoading(false);
       }
-    }
-    fetchBlogs();
+    }, 1800);
+
+    return () => {
+      mounted = false;
+      cancel();
+    };
   }, []);
 
   const formatDate = (dateString?: string) => {

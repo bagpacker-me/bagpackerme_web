@@ -15,7 +15,7 @@ interface Props {
   params: { slug: string };
 }
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 3600;
 
 // 1. Generate Static Params for SSG (only published packages, matching Firestore security rules)
 export async function generateStaticParams() {
