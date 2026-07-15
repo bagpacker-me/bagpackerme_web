@@ -91,6 +91,7 @@ export default function DiscoverTheWorld({ market = 'global' }: { market?: Packa
   );
   const [activeTab, setActiveTab] = useState('All');
   const [loading, setLoading] = useState(market !== 'global');
+  const [hasError, setHasError] = useState(false);
   const shouldReduceMotion = useReducedMotion();
   const packagesHref = market === 'india' ? '/in/packages' : '/packages';
   const heading =
@@ -105,6 +106,7 @@ export default function DiscoverTheWorld({ market = 'global' }: { market?: Packa
 
     setPackages(market === 'global' ? STATIC_GLOBAL_PACKAGE_SUMMARIES : []);
     setLoading(market !== 'global');
+    setHasError(false);
 
     const cancel = scheduleIdleTask(async () => {
       try {
@@ -113,6 +115,9 @@ export default function DiscoverTheWorld({ market = 'global' }: { market?: Packa
         if (mounted) setPackages(nextPackages);
       } catch (error) {
         console.error('Failed to load homepage journey cards:', error);
+        // Global always has the static seed, so a fetch failure there is
+        // invisible. On India the list would otherwise look deceptively empty.
+        if (mounted) setHasError(true);
       } finally {
         if (mounted) setLoading(false);
       }
@@ -262,13 +267,15 @@ export default function DiscoverTheWorld({ market = 'global' }: { market?: Packa
           <div className="relative overflow-hidden rounded-3xl border border-subtle bg-white px-8 py-16 text-center" style={{ boxShadow: '0 8px 40px rgba(40,80,86,0.08)' }}>
             <div className="mx-auto max-w-xl">
               <h3 className="font-display text-3xl md:text-4xl font-bold text-void mb-4">
-                No published journeys yet
+                {hasError ? 'We couldn’t load journeys just now' : 'New journeys are on the way'}
               </h3>
               <p className="font-body text-void/60 text-base md:text-lg leading-relaxed mb-8">
-                This section reads directly from the live backend. No published packages at the moment.
+                {hasError
+                  ? 'Something went wrong on our end. Please refresh, or tell us where you’d like to go and we’ll plan it with you.'
+                  : 'Our next set of curated journeys is being prepared. In the meantime, tell us where you’d like to go and we’ll design a private trip around you.'}
               </p>
-              <Link href={packagesHref} className="btn-teal btn-shimmer inline-flex">
-                Browse all journeys
+              <Link href={hasError ? packagesHref : '/contact?intent=trip'} className="btn-teal btn-shimmer inline-flex">
+                {hasError ? 'Browse all journeys' : 'Start planning'}
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Link>
             </div>

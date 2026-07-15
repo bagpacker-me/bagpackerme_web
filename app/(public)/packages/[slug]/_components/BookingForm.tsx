@@ -115,7 +115,7 @@ export default function BookingForm({ pkg }: { pkg: Package }) {
           
           <div className="mb-[40px] text-center md:text-left">
             <h2 className="text-[#221E2A] font-display font-bold text-[clamp(2rem,3vw,2.5rem)] uppercase mb-[16px] tracking-tight leading-[1.1]">Ready to Go?</h2>
-            <p className="font-body text-[rgba(34,30,42,0.6)] text-[16px]">Leave your details and our trip experts will be in touch within 24 hours to help you plan.</p>
+            <p className="font-body text-[rgba(34,30,42,0.6)] text-[16px]">Leave your details and a trip expert will personally tailor this journey to you. It&apos;s a no-obligation enquiry — no payment now, no pressure to book.</p>
           </div>
 
           {isSuccess ? (

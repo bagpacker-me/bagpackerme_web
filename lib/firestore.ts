@@ -1,6 +1,6 @@
 import { collection, doc, getDocs, addDoc, updateDoc, deleteDoc, query, where, orderBy, getDoc, limit, setDoc, increment, runTransaction, writeBatch, onSnapshot } from 'firebase/firestore';
 import { db } from './firebase';
-import { Package, BlogPost, Enquiry, Customer, Booking, GalleryImage, Affiliate, AffiliateClick, AffiliateEvent, AffiliatePublic, AffiliateRegistrationIndex, PackageMarket } from '@/types';
+import { Package, BlogPost, Enquiry, Customer, Booking, GalleryImage, Testimonial, Affiliate, AffiliateClick, AffiliateEvent, AffiliatePublic, AffiliateRegistrationIndex, PackageMarket } from '@/types';
 import { buildAffiliatePublicData, normalizeAffiliateCode, normalizeAffiliateSessionId } from './affiliate';
 import { STATIC_GLOBAL_PACKAGES } from './static-global-packages';
 
@@ -346,6 +346,31 @@ const galleryCol = collection(db, 'gallery');
 export const getGalleryImages = async () => getDocs(query(galleryCol, orderBy('createdAt', 'desc')));
 export const addGalleryImage = async (data: Omit<GalleryImage, 'id'>) => addDoc(galleryCol, data);
 export const deleteGalleryImage = async (id: string) => deleteDoc(doc(db, 'gallery', id));
+
+// Testimonials
+const testimonialsCol = collection(db, 'testimonials');
+const testimonialFromDoc = (document: { id: string; data: () => unknown }) =>
+  ({ id: document.id, ...(document.data() as Omit<Testimonial, 'id'>) } as Testimonial);
+const sortTestimonialsByCreatedAt = (items: Testimonial[]) =>
+  [...items].sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
+export const getTestimonials = async () =>
+  getDocs(query(testimonialsCol, orderBy('createdAt', 'desc')));
+export const getPublishedTestimonials = async () => {
+  // Sort in JS — avoids a composite index on (status, createdAt), matching the
+  // getPublishedBlogs approach above.
+  const snap = await getDocs(query(testimonialsCol, where('status', '==', 'published')));
+  return sortTestimonialsByCreatedAt(snap.docs.map(testimonialFromDoc));
+};
+export const getPublishedTestimonialsForMarket = async (market: PackageMarket) => {
+  const published = await getPublishedTestimonials();
+  // A testimonial with no market is shown on both homepages.
+  return published.filter((t) => !t.market || t.market === market);
+};
+export const createTestimonial = async (data: Omit<Testimonial, 'id'>) =>
+  addDoc(testimonialsCol, data);
+export const updateTestimonial = async (id: string, data: Partial<Testimonial>) =>
+  updateDoc(doc(db, 'testimonials', id), data);
+export const deleteTestimonial = async (id: string) => deleteDoc(doc(db, 'testimonials', id));
 
 // Settings
 export const getSiteSettings = async () => {

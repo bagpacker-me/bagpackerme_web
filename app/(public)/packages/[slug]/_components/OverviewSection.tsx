@@ -2,7 +2,7 @@
 
 import { getPackageMarket, getPackagePrimaryPrice, hasPackageMarketPrice } from '@/lib/packagePricing';
 import { Package, PackageMarket } from '@/types';
-import { BadgeCheck, ShieldCheck, HeartHandshake } from 'lucide-react';
+import { BadgeCheck, HeartHandshake } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { FadeInSection } from '@/components/ui/FadeInSection';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
@@ -99,19 +99,19 @@ export default function OverviewSection({ pkg, market }: { pkg: Package; market?
               </a>
             </div>
 
-            {/* Trust Badges */}
+            {/* Trust signals — only claims we can actually keep. "Instant
+                Confirmation" was removed: it contradicted the enquiry-first,
+                partial-payment model stated in the FAQ. */}
             <div className="mt-[20px] pt-[16px] border-t border-[rgba(34,30,42,0.05)] space-y-[10px]">
                <div className="flex items-center gap-[10px] p-2 -m-2 hover:bg-ice transition-colors duration-200">
                   <BadgeCheck className="w-[16px] h-[16px] text-[#22c55e]" />
-                  <span className="font-body text-[12px] text-[#718096]">Free Cancellation</span>
-               </div>
-               <div className="flex items-center gap-[10px] p-2 -m-2 hover:bg-ice transition-colors duration-200">
-                  <ShieldCheck className="w-[16px] h-[16px] text-[#22c55e]" />
-                  <span className="font-body text-[12px] text-[#718096]">Instant Confirmation</span>
+                  <span className="font-body text-[12px] text-[#718096]">
+                    {pkg.cancellationPolicy?.trim() || 'Flexible cancellation'}
+                  </span>
                </div>
                <div className="flex items-center gap-[10px] p-2 -m-2 hover:bg-ice transition-colors duration-200">
                   <HeartHandshake className="w-[16px] h-[16px] text-[#22c55e]" />
-                  <span className="font-body text-[12px] text-[#718096]">24/7 Support</span>
+                  <span className="font-body text-[12px] text-[#718096]">24/7 support while you travel</span>
                </div>
             </div>
           </motion.div>
@@ -131,7 +131,7 @@ export default function OverviewSection({ pkg, market }: { pkg: Package; market?
           onClick={scrollToForm}
           className="bg-lime text-void font-display font-bold uppercase tracking-widest text-[11px] px-6 h-12 flex items-center justify-center hover:bg-[#221E2A] hover:text-white transition-colors duration-300"
         >
-          {hasPrice ? 'Book Now' : 'Enquire Now'}
+          Enquire Now
         </button>
       </div>
     </section>

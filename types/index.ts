@@ -37,6 +37,7 @@ export interface Package {
   exclusions: string[];
   vibe?: string;
   locationIdea?: string;
+  cancellationPolicy?: string;   // e.g. "Free cancellation up to 30 days before departure"
   status: 'draft' | 'published';
   metaTitle?: string;
   metaDescription?: string;
@@ -132,6 +133,18 @@ export interface GalleryImage {
   title: string;
   altText: string;
   category: string;
+  createdAt: string;
+}
+
+export interface Testimonial {
+  id: string;
+  authorName: string;
+  location: string;          // e.g. "Kerala, India" — free text
+  quote: string;
+  rating: number;            // 1–5
+  avatarUrl?: string;        // optional; omit rather than use stock photography
+  market?: PackageMarket;    // which homepage it appears on; undefined = both
+  status: 'draft' | 'published';
   createdAt: string;
 }
 

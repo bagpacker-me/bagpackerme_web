@@ -73,6 +73,13 @@ service cloud.firestore {
       allow read, write: if isAdmin();
     }
 
+    // Testimonials: public can read published, only admin can write.
+    // Mirrors packages/blogs — the homepage lists where status == 'published'.
+    match /testimonials/{docId} {
+      allow read: if resource.data.status == 'published' || isAdmin();
+      allow write: if isAdmin();
+    }
+
     // Affiliates: private records (email, commissionRate, notes). Registration
     // goes through the Admin SDK in lib/affiliate-admin.ts, so no public create.
     match /affiliates/{docId} {

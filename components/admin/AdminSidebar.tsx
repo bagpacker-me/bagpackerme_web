@@ -14,6 +14,7 @@ import {
   FileText,
   Image as ImageIcon,
   MessageSquare,
+  MessageSquareQuote,
   Calendar,
   Users,
   Mail,
@@ -42,6 +43,7 @@ const SECTIONS = [
       { icon: MapPinned, label: 'Packages', href: '/admin/packages' },
       { icon: FileText, label: 'Blog Posts', href: '/admin/blog' },
       { icon: ImageIcon, label: 'Gallery', href: '/admin/gallery' },
+      { icon: MessageSquareQuote, label: 'Testimonials', href: '/admin/testimonials' },
     ],
   },
   {

@@ -64,6 +64,7 @@ export default function PackagesListingPage({
     market === 'global' ? STATIC_GLOBAL_PACKAGE_SUMMARIES : []
   );
   const [loading, setLoading] = useState(market !== 'global');
+  const [hasError, setHasError] = useState(false);
   const [filters, setFilters] = useState<PremiumFilterState>({
     category: 'All',
     duration: 'Any',
@@ -80,6 +81,7 @@ export default function PackagesListingPage({
 
     setPackages(market === 'global' ? STATIC_GLOBAL_PACKAGE_SUMMARIES : []);
     setLoading(market !== 'global');
+    setHasError(false);
 
     const cancel = scheduleIdleTask(async () => {
       try {
@@ -88,6 +90,7 @@ export default function PackagesListingPage({
         if (mounted) setPackages(pkgs);
       } catch (error) {
         console.error('Failed to load packages:', error);
+        if (mounted) setHasError(true);
       } finally {
         if (mounted) setLoading(false);
       }
@@ -144,7 +147,7 @@ export default function PackagesListingPage({
     });
 
     return result;
-  }, [packages, filters, market, priceConfig.max]);
+  }, [packages, filters, market, priceConfig.max, priceConfig.currency]);
 
   return (
     <main className="flex min-h-screen flex-col bg-ice/30">
@@ -248,18 +251,37 @@ export default function PackagesListingPage({
                   <div className="absolute right-0 top-0 h-[300px] w-[300px] rounded-full bg-teal/5 blur-[80px]" />
                   <div className="absolute bottom-0 left-0 h-[200px] w-[200px] rounded-full bg-lime/5 blur-[60px]" />
 
-                  <h3 className="relative z-10 mb-3 text-center font-display text-2xl font-bold text-void">
-                    No journeys found
-                  </h3>
-                  <p className="relative z-10 mb-8 max-w-[380px] text-center font-body text-sm leading-relaxed text-void/60">
-                    We could not find journeys matching your current filters. Try another category, duration, or price range.
-                  </p>
-                  <button
-                    onClick={() => setFilters({ category: 'All', duration: 'Any', priceRange: [0, priceConfig.max] })}
-                    className="relative z-10 rounded-full bg-teal px-8 py-3.5 font-display text-[11px] font-bold uppercase tracking-widest text-white shadow-[0_8px_24px_rgba(40,80,86,0.2)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-teal/90 active:scale-[0.98]"
-                  >
-                    Reset Filters
-                  </button>
+                  {hasError && packages.length === 0 ? (
+                    <>
+                      <h3 className="relative z-10 mb-3 text-center font-display text-2xl font-bold text-void">
+                        We couldn’t load journeys
+                      </h3>
+                      <p className="relative z-10 mb-8 max-w-[380px] text-center font-body text-sm leading-relaxed text-void/60">
+                        Something went wrong on our end — this isn’t an empty catalogue. Please refresh, or tell us where you’d like to go and we’ll plan it with you.
+                      </p>
+                      <a
+                        href="/contact?intent=trip"
+                        className="relative z-10 rounded-full bg-teal px-8 py-3.5 font-display text-[11px] font-bold uppercase tracking-widest text-white shadow-[0_8px_24px_rgba(40,80,86,0.2)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-teal/90 active:scale-[0.98]"
+                      >
+                        Start planning
+                      </a>
+                    </>
+                  ) : (
+                    <>
+                      <h3 className="relative z-10 mb-3 text-center font-display text-2xl font-bold text-void">
+                        No journeys found
+                      </h3>
+                      <p className="relative z-10 mb-8 max-w-[380px] text-center font-body text-sm leading-relaxed text-void/60">
+                        We could not find journeys matching your current filters. Try another category, duration, or price range.
+                      </p>
+                      <button
+                        onClick={() => setFilters({ category: 'All', duration: 'Any', priceRange: [0, priceConfig.max] })}
+                        className="relative z-10 rounded-full bg-teal px-8 py-3.5 font-display text-[11px] font-bold uppercase tracking-widest text-white shadow-[0_8px_24px_rgba(40,80,86,0.2)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-teal/90 active:scale-[0.98]"
+                      >
+                        Reset Filters
+                      </button>
+                    </>
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>

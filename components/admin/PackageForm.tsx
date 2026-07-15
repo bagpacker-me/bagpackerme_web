@@ -48,6 +48,7 @@ const DEFAULT_FORM: FormState = {
   exclusions: [],
   vibe: '',
   locationIdea: '',
+  cancellationPolicy: '',
   status: 'draft',
   metaTitle: '',
   metaDescription: '',
@@ -278,6 +279,16 @@ function TabBasicInfo({
           value={form.groupSize}
           onChange={(e) => setForm((f) => ({ ...f, groupSize: e.target.value }))}
           placeholder="e.g. 8–14 travelers"
+        />
+      </Field>
+
+      <Field>
+        <Label>Cancellation Policy <span className="text-gray-400 font-normal text-xs">optional — shown as a trust badge</span></Label>
+        <input
+          className={inputCls()}
+          value={form.cancellationPolicy ?? ''}
+          onChange={(e) => setForm((f) => ({ ...f, cancellationPolicy: e.target.value }))}
+          placeholder="e.g. Free cancellation up to 30 days before departure"
         />
       </Field>
 
