@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -10,6 +10,8 @@ import { CheckCircle2, Loader2, Phone, Mail, MapPin } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { getStoredAffiliateCode, getStoredAffiliateSessionId } from '@/hooks/useAffiliateTracking';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
+import { HoneypotField } from '@/components/ui/HoneypotField';
+import { HONEYPOT_FIELD } from '@/lib/honeypot';
 
 const bookingSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -25,6 +27,8 @@ type BookingFormValues = z.infer<typeof bookingSchema>;
 export default function BookingForm({ pkg }: { pkg: Package }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [whatsappUrl, setWhatsappUrl] = useState('');
+  const honeypotRef = useRef<HTMLInputElement>(null);
   const settings = useSiteSettings();
   const contactPhone = settings.contactPhone;
   const contactEmail = settings.contactEmail;
@@ -39,6 +43,12 @@ export default function BookingForm({ pkg }: { pkg: Package }) {
 
   const onSubmit = async (data: BookingFormValues) => {
     setIsSubmitting(true);
+
+    // Claim the tab now, while the click still confers transient user activation.
+    // Calling window.open() after the await is treated as unsolicited and gets
+    // swallowed by popup blockers — which is what used to happen on this form.
+    const popup = window.open('', '_blank');
+
     try {
       const affiliateCode = getStoredAffiliateCode();
       const affiliateSessionId = getStoredAffiliateSessionId();
@@ -51,6 +61,7 @@ export default function BookingForm({ pkg }: { pkg: Package }) {
           ...data,
           packageSlug: pkg.slug,
           packageTitle: pkg.title,
+          [HONEYPOT_FIELD]: honeypotRef.current?.value ?? '',
           ...(affiliateCode ? { affiliateCode } : {}),
           ...(affiliateSessionId ? { affiliateSessionId } : {}),
         }),
@@ -61,14 +72,20 @@ export default function BookingForm({ pkg }: { pkg: Package }) {
         throw new Error(result?.error || 'Something went wrong. Please try again or contact us directly on WhatsApp.');
       }
 
-      // 2. Open WhatsApp
-      const waText = encodeURIComponent(`Hi! I'm ${data.name} and I'm interested in booking the "${pkg.title}" trip for ${data.groupSize} people around ${data.travelDate}.${data.message ? `\n\nExtra Info: ${data.message}` : ''}`);
-      window.open(`https://wa.me/${whatsappNumber}?text=${waText}`, '_blank');
-      
+      const waText = encodeURIComponent(`Hi! I'm ${data.name} and I'm interested in the "${pkg.title}" trip for ${data.groupSize} people around ${data.travelDate}.${data.message ? `\n\nExtra Info: ${data.message}` : ''}`);
+      const url = `https://wa.me/${whatsappNumber}?text=${waText}`;
+      setWhatsappUrl(url);
+
+      if (popup && !popup.closed) {
+        popup.location.href = url;
+      }
+
       setIsSuccess(true);
       toast.success('Your enquiry has been sent.');
     } catch (error) {
       console.error('Error submitting enquiry:', error);
+      // Don't strand a blank tab if the submission failed.
+      popup?.close();
       toast.error(
         error instanceof Error
           ? error.message
@@ -105,12 +122,21 @@ export default function BookingForm({ pkg }: { pkg: Package }) {
             <div className="flex flex-col items-center justify-center text-center p-[48px] bg-[#F4F4F4] rounded-none">
                <CheckCircle2 size={64} className="text-[#22c55e] mb-[24px]" />
                <h3 className="text-[#221E2A] font-display font-bold text-[24px] uppercase mb-[12px]">We&apos;ll Reach Out Shortly</h3>
-               <p className="font-body text-[rgba(34,30,42,0.7)] max-w-sm text-[15px]">
-                 Thank you, your enquiry has been saved! You will also be redirected to WhatsApp to continue the conversation immediately.
+               <p className="font-body text-[rgba(34,30,42,0.7)] max-w-sm text-[15px] mb-[24px]">
+                 Thank you — your enquiry is saved and a trip expert will be in touch. We&apos;ve opened WhatsApp in a new tab so you can start the conversation now.
                </p>
+               <a
+                 href={whatsappUrl}
+                 target="_blank"
+                 rel="noopener noreferrer"
+                 className="inline-flex items-center justify-center gap-[8px] bg-[#221E2A] text-white font-display font-bold uppercase tracking-widest text-[11px] px-[24px] h-[48px] hover:bg-lime hover:text-void transition-colors duration-300"
+               >
+                 Didn&apos;t open? Open WhatsApp
+               </a>
             </div>
           ) : (
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-[24px]">
+              <HoneypotField inputRef={honeypotRef} />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-[24px]">
                 <div>
                   <label className={labelClasses}>Name *</label>
@@ -139,6 +165,7 @@ export default function BookingForm({ pkg }: { pkg: Package }) {
                     <div>
                       <label className={labelClasses}>Size *</label>
                       <input {...register('groupSize')} type="number" min="1" className={`${inputClasses} min-h-[56px]`} />
+                      {errors.groupSize && <span className="text-[#ef4444] text-[12px] font-body mt-[4px] block">{errors.groupSize.message}</span>}
                     </div>
                 </div>
               </div>

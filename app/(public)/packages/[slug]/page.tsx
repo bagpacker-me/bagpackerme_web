@@ -66,8 +66,8 @@ export default async function PackageDetailPage({ params }: Props) {
   }
 
   return (
-    <main className="w-full relative bg-void font-body selection:bg-lime selection:text-void">
-      
+    <main className="w-full relative bg-void font-body selection:bg-lime selection:text-void pb-[76px] lg:pb-0">
+
       {/* Part 1: Hero */}
       <HeroSection pkg={pkg} market="global" />
 

@@ -126,13 +126,21 @@ export default function PackagesListingPage({
       filters.priceRange[0] === 0 && filters.priceRange[1] === priceConfig.max;
 
     result = result.filter((p) => {
-      const price = getPackagePrimaryPrice(p, market).amount;
+      const primary = getPackagePrimaryPrice(p, market);
+      const amount = primary.amount;
 
-      if (!hasPackagePrice(price)) {
+      // The slider is denominated in priceConfig.currency (USD for global, INR
+      // for india). A package priced in the *other* currency — e.g. a global
+      // package with only an INR price — has no comparable amount here, and we
+      // have no FX table to convert it. Comparing an INR figure against a USD
+      // range would silently hide it at every slider position, so treat it like
+      // an on-request price: visible at the default range, filtered out only
+      // once the visitor actively narrows the range.
+      if (!hasPackagePrice(amount) || primary.currency !== priceConfig.currency) {
         return usingDefaultPriceRange;
       }
 
-      return price >= filters.priceRange[0] && price <= filters.priceRange[1];
+      return amount >= filters.priceRange[0] && amount <= filters.priceRange[1];
     });
 
     return result;

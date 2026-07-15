@@ -4,11 +4,10 @@ import { useEffect, useState } from 'react';
 
 const SECTIONS = [
   { id: 'overview', label: 'Overview' },
-  { id: 'highlights', label: 'Highlights' }, // Added according to spec
   { id: 'itinerary', label: 'Itinerary' },
   { id: 'gallery', label: 'Gallery' },
-  { id: 'inclusions', label: 'Inclusions' }, // Renamed to spec
-  { id: 'book', label: 'Book Now' }
+  { id: 'inclusions', label: 'Inclusions' },
+  { id: 'book', label: 'Enquire' },
 ];
 
 export default function StickyNav() {

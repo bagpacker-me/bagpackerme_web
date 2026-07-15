@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import type { EnquiryFormData } from '@/types';
 import { persistEnquiryWithAffiliateAttribution } from '@/lib/enquiry-submission';
+import { clientIpFrom, isHoneypotTripped, isRateLimited } from '@/lib/spam-guard';
 
 const enquiryFormDataValue = z.union([z.string(), z.array(z.string())]);
 
@@ -25,6 +26,20 @@ const enquirySchema = z.object({
 export async function POST(request: Request) {
   try {
     const body = await request.json();
+
+    // Bots autofill the hidden field. Return success so they get no signal that
+    // they were caught, and drop the payload on the floor.
+    if (isHoneypotTripped(body)) {
+      return NextResponse.json({ success: true });
+    }
+
+    if (isRateLimited(`enquiries:${clientIpFrom(request)}`)) {
+      return NextResponse.json(
+        { error: 'Too many submissions. Please wait a minute and try again.' },
+        { status: 429 }
+      );
+    }
+
     const parsed = enquirySchema.safeParse(body);
 
     if (!parsed.success) {

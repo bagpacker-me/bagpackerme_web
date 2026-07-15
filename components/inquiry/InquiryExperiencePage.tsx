@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState, type RefObject } from 'react';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
 import { useForm } from 'react-hook-form';
@@ -19,6 +19,8 @@ import {
 } from 'lucide-react';
 import { getStoredAffiliateCode, getStoredAffiliateSessionId } from '@/hooks/useAffiliateTracking';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
+import { HoneypotField } from '@/components/ui/HoneypotField';
+import { HONEYPOT_FIELD } from '@/lib/honeypot';
 import {
   buildContactWhatsAppMessage,
   contactFormSchema,
@@ -507,9 +509,11 @@ function IntentChooser({
 function GeneralContactForm({
   whatsappNumber,
   onSuccess,
+  honeypotRef,
 }: {
   whatsappNumber: string;
   onSuccess: (submittedUrl: string) => void;
+  honeypotRef: RefObject<HTMLInputElement>;
 }) {
   const [serverError, setServerError] = useState<string | null>(null);
   const {
@@ -534,6 +538,7 @@ function GeneralContactForm({
         },
         body: JSON.stringify({
           ...data,
+          [HONEYPOT_FIELD]: honeypotRef.current?.value ?? '',
           ...(affiliateCode ? { affiliateCode } : {}),
           ...(affiliateSessionId ? { affiliateSessionId } : {}),
         }),
@@ -1280,6 +1285,7 @@ export function InquiryExperiencePage({
   initialIntent?: ContactIntent | null;
 }) {
   const settings = useSiteSettings();
+  const honeypotRef = useRef<HTMLInputElement>(null);
   const [selectedIntent, setSelectedIntent] = useState<ContactIntent | null>(initialIntent);
   const pageCopy = selectedIntent ? intentCopy[selectedIntent] : defaultCopy;
   const [submittedUrl, setSubmittedUrl] = useState<string | null>(null);
@@ -1374,6 +1380,7 @@ export function InquiryExperiencePage({
         },
         body: JSON.stringify({
           ...buildB2CEnquiryPayload(b2cForm, affiliateCode),
+          [HONEYPOT_FIELD]: honeypotRef.current?.value ?? '',
           ...(affiliateSessionId ? { affiliateSessionId } : {}),
         }),
       });
@@ -1444,6 +1451,7 @@ export function InquiryExperiencePage({
         },
         body: JSON.stringify({
           ...buildCorporateEnquiryPayload(corporateForm, affiliateCode),
+          [HONEYPOT_FIELD]: honeypotRef.current?.value ?? '',
           ...(affiliateSessionId ? { affiliateSessionId } : {}),
         }),
       });
@@ -1544,6 +1552,7 @@ export function InquiryExperiencePage({
           key={generalFormVersion}
           whatsappNumber={settings.whatsappNumber}
           onSuccess={setSubmittedUrl}
+          honeypotRef={honeypotRef}
         />
       );
     }
@@ -1618,6 +1627,7 @@ export function InquiryExperiencePage({
                 </div>
               )}
 
+              <HoneypotField inputRef={honeypotRef} />
               {renderActiveForm()}
             </div>
 

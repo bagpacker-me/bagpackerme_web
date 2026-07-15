@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Outfit, DM_Sans, Cormorant_Garamond } from 'next/font/google';
 import { DeferredAnalytics } from '@/components/providers/DeferredAnalytics';
+import { ToastViewport } from '@/components/ui/ToastViewport';
 import '@/styles/globals.css';
 
 // ── DESIGN-SYSTEM FONT STACK ──────────────────────────────────────────────────
@@ -69,6 +70,7 @@ export default function AppRootLayout({ children }: { children: React.ReactNode 
     >
       <body>
         {children}
+        <ToastViewport />
         <DeferredAnalytics />
       </body>
     </html>

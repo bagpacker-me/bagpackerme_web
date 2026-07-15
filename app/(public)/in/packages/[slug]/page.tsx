@@ -54,7 +54,7 @@ export default async function IndiaPackageDetailPage({ params }: Props) {
   }
 
   return (
-    <main className="w-full relative bg-void font-body selection:bg-lime selection:text-void">
+    <main className="w-full relative bg-void font-body selection:bg-lime selection:text-void pb-[76px] lg:pb-0">
       <HeroSection pkg={pkg} market="india" />
       <StickyNav />
       <OverviewSection pkg={pkg} market="india" />
