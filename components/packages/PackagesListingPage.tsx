@@ -204,11 +204,17 @@ export default function PackagesListingPage({
 
       <section className="min-h-[500px] py-20 lg:py-28">
         <div className="container mx-auto max-w-6xl px-6">
-          <div className="mb-10 flex items-center justify-center gap-3 md:justify-start">
-            <span className="block h-[1.5px] w-6 bg-teal/30" aria-hidden="true" />
-            <span className="font-display text-xs font-bold uppercase tracking-[0.15em] text-teal">
-              {filteredPackages.length} {filteredPackages.length === 1 ? 'Journey' : 'Journeys'} found
-            </span>
+          <div className="mb-10">
+            <div className="flex items-center justify-center gap-3 md:justify-start">
+              <span className="block h-[1.5px] w-6 bg-teal/30" aria-hidden="true" />
+              <span className="font-display text-xs font-bold uppercase tracking-[0.15em] text-teal">
+                {filteredPackages.length} sample {filteredPackages.length === 1 ? 'itinerary' : 'itineraries'}
+              </span>
+            </div>
+            <p className="mt-3 max-w-2xl text-center font-body text-sm leading-relaxed text-void/55 md:text-left">
+              Every trip below is a starting point, not a fixed package. Tell us what you have in mind
+              and we&apos;ll tailor the route, pace, stays, and dates around you.
+            </p>
           </div>
 
           {loading ? (

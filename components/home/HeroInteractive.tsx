@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { ArrowRight, ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react';
 import Image from 'next/image';
 import { PackageMarket } from '@/types';
 
@@ -86,26 +86,36 @@ const globalDestinations = [
 ];
 
 export default function HeroInteractive({ market = 'global' }: { market?: PackageMarket }) {
+  const shouldReduceMotion = useReducedMotion();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(1);
   const [progressKey, setProgressKey] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const INTERVAL_MS = 6000;
   const destinations = market === 'india' ? indiaDestinations : globalDestinations;
   const packagesHref = market === 'india' ? '/in/packages' : '/packages';
+  // A stable, meaningful headline — the previous <h1> was the destination name,
+  // which changed every 6s (bad for SEO and for a first-time visitor) and sat
+  // above a "Book now" CTA promising a checkout that doesn't exist.
+  const headline =
+    market === 'india' ? 'Experiential India, designed around you' : 'Private journeys, designed around you';
 
   const totalSlides = destinations.length;
+  // Honour prefers-reduced-motion and the pause control: no auto-advance.
+  const autoPlay = !shouldReduceMotion && !isPaused;
 
   const resetTimer = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current);
     setProgressKey(k => k + 1);
+    if (!autoPlay) return;
     timerRef.current = setInterval(() => {
       setDirection(1);
       setCurrentIndex(prev => (prev + 1) % totalSlides);
       setProgressKey(k => k + 1);
     }, INTERVAL_MS);
-  }, [totalSlides]);
+  }, [totalSlides, autoPlay]);
 
   useEffect(() => {
     resetTimer();
@@ -115,6 +125,12 @@ export default function HeroInteractive({ market = 'global' }: { market?: Packag
   const handleNext = useCallback(() => {
     setDirection(1);
     setCurrentIndex((prev) => (prev + 1) % totalSlides);
+    resetTimer();
+  }, [totalSlides, resetTimer]);
+
+  const handlePrev = useCallback(() => {
+    setDirection(-1);
+    setCurrentIndex((prev) => (prev - 1 + totalSlides) % totalSlides);
     resetTimer();
   }, [totalSlides, resetTimer]);
 
@@ -134,14 +150,14 @@ export default function HeroInteractive({ market = 'global' }: { market?: Packag
         <motion.div
           key={activeDest.id}
           custom={direction}
-          initial={{ opacity: 0, scale: 1.08 }}
-          animate={{ opacity: 1, scale: 1 }}
+          initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 1.08 }}
+          animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 1.4, ease: [0.25, 0.1, 0.25, 1] }}
+          transition={{ duration: shouldReduceMotion ? 0.3 : 1.4, ease: [0.25, 0.1, 0.25, 1] }}
           className="absolute inset-0"
         >
-          <Image 
-            src={activeDest.image} 
+          <Image
+            src={activeDest.image}
             alt={activeDest.title}
             fill
             className="object-cover"
@@ -165,47 +181,50 @@ export default function HeroInteractive({ market = 'global' }: { market?: Packag
 
       {/* Main Content Area */}
       <div className="absolute inset-y-0 left-0 z-40 flex flex-col justify-center w-full md:w-[55%] px-6 md:px-12 lg:px-16 pointer-events-none">
-        <AnimatePresence mode="popLayout" custom={direction}>
-          <motion.div
-            key={activeDest.id}
-            custom={direction}
-            initial={{ opacity: 0, y: direction > 0 ? 40 : -40 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: direction > 0 ? -40 : 40 }}
-            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
-            className="pointer-events-auto"
-          >
-            {/* Location tag */}
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-8 h-[1px] bg-lime" />
-              <span className="font-display text-[11px] font-bold uppercase tracking-[0.22em] text-lime">
-                {activeDest.location}
-              </span>
-            </div>
+        <div className="pointer-events-auto">
+          {/* Stable value-proposition headline — does not change with the carousel */}
+          <h1 className="font-display text-[clamp(38px,6.5vw,84px)] font-extrabold tracking-[-0.02em] leading-[0.95] mb-6 max-w-[14ch]">
+            {headline}
+          </h1>
 
-            <h1 className="font-display text-[clamp(56px,10vw,120px)] font-extrabold uppercase tracking-[-0.03em] leading-[0.88] mb-5">
-              {activeDest.title}
-            </h1>
-            <p className="text-base md:text-lg mb-8 max-w-md text-white/75 leading-relaxed font-body">
-              {activeDest.description}
-            </p>
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <Link
-                href="/contact?intent=trip"
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-lime px-7 py-4 font-display text-[12px] font-bold uppercase tracking-widest text-void transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(193,234,0,0.3)] active:scale-[0.98] active:translate-y-0"
-              >
-                Book now
-                <ArrowRight strokeWidth={2} className="h-4 w-4" />
-              </Link>
-              <Link
-                href={packagesHref}
-                className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/5 backdrop-blur-sm px-7 py-4 font-display text-[12px] font-bold uppercase tracking-widest text-white transition-all duration-300 hover:border-white/30 hover:bg-white/10 active:scale-[0.98]"
-              >
-                Explore trips
-              </Link>
-            </div>
-          </motion.div>
-        </AnimatePresence>
+          {/* Rotating destination caption — the demoted destination name */}
+          <AnimatePresence mode="popLayout" custom={direction}>
+            <motion.div
+              key={activeDest.id}
+              custom={direction}
+              initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: direction > 0 ? 24 : -24 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: direction > 0 ? -24 : 24 }}
+              transition={{ duration: shouldReduceMotion ? 0.2 : 0.6, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-8 h-[1px] bg-lime" />
+                <span className="font-display text-[11px] font-bold uppercase tracking-[0.22em] text-lime">
+                  Now featuring · {activeDest.location}
+                </span>
+              </div>
+              <p className="text-base md:text-lg mb-8 max-w-md text-white/75 leading-relaxed font-body">
+                {activeDest.description}
+              </p>
+            </motion.div>
+          </AnimatePresence>
+
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <Link
+              href="/contact?intent=trip"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-lime px-7 py-4 font-display text-[12px] font-bold uppercase tracking-widest text-void transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(193,234,0,0.3)] active:scale-[0.98] active:translate-y-0"
+            >
+              Start planning
+              <ArrowRight strokeWidth={2} className="h-4 w-4" />
+            </Link>
+            <Link
+              href={packagesHref}
+              className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/5 backdrop-blur-sm px-7 py-4 font-display text-[12px] font-bold uppercase tracking-widest text-white transition-all duration-300 hover:border-white/30 hover:bg-white/10 active:scale-[0.98]"
+            >
+              Explore trips
+            </Link>
+          </div>
+        </div>
       </div>
 
       {/* Card Carousel (Right Side — Desktop Only) */}
@@ -219,33 +238,38 @@ export default function HeroInteractive({ market = 'global' }: { market?: Packag
               const zIndex = 30 - i;
 
               return (
-                <motion.div
+                <motion.button
+                  type="button"
                   key={`${slide.id}-${currentIndex}`}
-                  initial={{ x: xOffset + 80, opacity: 0 }}
-                  animate={{ x: xOffset, scale, opacity }}
-                  exit={{ x: -80, opacity: 0, scale: 1.05 }}
-                  transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-                  className="absolute w-[220px] h-[330px] rounded-[20px] overflow-hidden cursor-pointer glass-card-dark"
+                  initial={shouldReduceMotion ? { opacity: 0 } : { x: xOffset + 80, opacity: 0 }}
+                  animate={shouldReduceMotion ? { opacity } : { x: xOffset, scale, opacity }}
+                  exit={shouldReduceMotion ? { opacity: 0 } : { x: -80, opacity: 0, scale: 1.05 }}
+                  transition={{ duration: shouldReduceMotion ? 0.2 : 0.7, ease: [0.16, 1, 0.3, 1] }}
+                  className="absolute w-[220px] h-[330px] rounded-[20px] overflow-hidden cursor-pointer glass-card-dark text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime focus-visible:ring-offset-2 focus-visible:ring-offset-void"
                   style={{ zIndex, transformOrigin: 'left center' }}
                   onClick={handleNext}
+                  aria-label={`Next destination: ${slide.location}`}
+                  // Only the front card is a real tab stop; the stacked one behind it is decorative.
+                  tabIndex={i === 0 ? 0 : -1}
+                  aria-hidden={i === 0 ? undefined : true}
                 >
-                  <Image 
-                    src={slide.image} 
-                    alt={slide.location}
+                  <Image
+                    src={slide.image}
+                    alt=""
                     fill
                     className="object-cover"
                     sizes="220px"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-void/80 via-void/20 to-transparent" />
-                  
+
                   {/* Card label */}
                   <div className="absolute bottom-5 left-5 right-5">
                     <span className="font-display text-[10px] font-bold uppercase tracking-[0.2em] text-white/60 block mb-1">
                       Next
                     </span>
-                    <h3 className="font-display font-bold text-lg leading-tight text-white">{slide.location}</h3>
+                    <span className="font-display font-bold text-lg leading-tight text-white block">{slide.location}</span>
                   </div>
-                </motion.div>
+                </motion.button>
               );
             })}
           </AnimatePresence>
@@ -254,14 +278,14 @@ export default function HeroInteractive({ market = 'global' }: { market?: Packag
 
       {/* Bottom Controls */}
       <div className="absolute bottom-0 left-0 right-0 z-50 flex items-end justify-between px-6 md:px-12 lg:px-16 pb-8">
-        {/* Watermark */}
-        <div className="hidden md:block">
+        {/* Watermark — purely decorative, hidden from assistive tech */}
+        <div className="hidden md:block" aria-hidden="true">
           <AnimatePresence mode="wait">
             <motion.span
               key={activeDest.id}
-              initial={{ opacity: 0, y: 16 }}
+              initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -16 }}
+              exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: -16 }}
               transition={{ duration: 0.4 }}
               className="text-[clamp(48px,7vw,96px)] font-display font-extrabold uppercase text-white/[0.04] whitespace-nowrap pointer-events-none tracking-tighter leading-none"
             >
@@ -270,20 +294,55 @@ export default function HeroInteractive({ market = 'global' }: { market?: Packag
           </AnimatePresence>
         </div>
 
-        {/* Pagination + Auto-Progress */}
-        <div className="flex items-center gap-3 text-sm font-medium tracking-widest font-display">
-          <span className="text-white">{stringIndex}</span>
-          <div className="relative w-16 h-[2px] bg-white/15 overflow-hidden rounded-full">
-            <div
-              className="absolute top-0 left-0 h-full bg-white/20 transition-all duration-500"
-              style={{ width: `${((currentIndex + 1) / totalSlides) * 100}%` }}
-            />
-            <div
-              key={progressKey}
-              className="absolute top-0 left-0 h-full bg-lime hero-progress-bar"
-            />
+        {/* Carousel controls + pagination */}
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-1.5" role="group" aria-label="Featured destinations carousel controls">
+            <button
+              type="button"
+              onClick={handlePrev}
+              aria-label="Previous destination"
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/80 backdrop-blur-sm transition-colors hover:border-white/30 hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            {!shouldReduceMotion && (
+              <button
+                type="button"
+                onClick={() => setIsPaused((p) => !p)}
+                aria-label={isPaused ? 'Play carousel' : 'Pause carousel'}
+                aria-pressed={isPaused}
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/80 backdrop-blur-sm transition-colors hover:border-white/30 hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime"
+              >
+                {isPaused ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={handleNext}
+              aria-label="Next destination"
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/80 backdrop-blur-sm transition-colors hover:border-white/30 hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
           </div>
-          <span className="text-white/40">{stringTotal}</span>
+
+          {/* Pagination + Auto-Progress */}
+          <div className="flex items-center gap-3 text-sm font-medium tracking-widest font-display">
+            <span className="text-white">{stringIndex}</span>
+            <div className="relative w-16 h-[2px] bg-white/15 overflow-hidden rounded-full">
+              <div
+                className="absolute top-0 left-0 h-full bg-white/20 transition-all duration-500"
+                style={{ width: `${((currentIndex + 1) / totalSlides) * 100}%` }}
+              />
+              {autoPlay && (
+                <div
+                  key={progressKey}
+                  className="absolute top-0 left-0 h-full bg-lime hero-progress-bar"
+                />
+              )}
+            </div>
+            <span className="text-white/40">{stringTotal}</span>
+          </div>
         </div>
       </div>
     </section>

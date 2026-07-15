@@ -20,6 +20,7 @@ export function Navbar() {
     { name: isIndiaRoute ? 'Global' : 'India', href: isIndiaRoute ? '/' : '/in' },
     { name: 'Journal', href: '/blog' },
     { name: 'About Us', href: '/about' },
+    { name: 'Contact', href: '/contact' },
   ];
 
   useEffect(() => {
@@ -109,7 +110,7 @@ export function Navbar() {
                 size="sm"
                 className="hidden lg:inline-flex bg-lime text-void hover:bg-lime/90 rounded-full px-6 font-bold font-display tracking-widest text-[11px] uppercase transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(193,234,0,0.25)] active:scale-[0.98] active:translate-y-0 border-none"
               >
-                <Link href="/contact?intent=trip">Book Now</Link>
+                <Link href="/contact?intent=trip">Start Planning</Link>
               </Button>
 
               <button
@@ -169,7 +170,7 @@ export function Navbar() {
                     size="lg"
                     className="w-full bg-lime text-void hover:bg-lime/90 rounded-full font-bold font-display tracking-widest text-[12px] uppercase transition-all duration-300 hover:shadow-[0_8px_32px_rgba(193,234,0,0.3)] active:scale-[0.98]"
                   >
-                    <Link href="/contact?intent=trip">Book Now</Link>
+                    <Link href="/contact?intent=trip">Start Planning</Link>
                   </Button>
                 </div>
               </div>
