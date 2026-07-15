@@ -40,9 +40,10 @@ export default function NewsletterCard() {
         </div>
         
         <form onSubmit={handleSubscribe} className="w-full md:w-auto shrink-0 flex flex-col sm:flex-row gap-[12px]">
-          <input 
-            type="email" 
-            placeholder="Your email address" 
+          <input
+            type="email"
+            placeholder="Your email address"
+            aria-label="Email address for newsletter"
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}

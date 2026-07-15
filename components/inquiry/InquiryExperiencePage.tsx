@@ -22,6 +22,17 @@ import { useSiteSettings } from '@/hooks/useSiteSettings';
 import { HoneypotField } from '@/components/ui/HoneypotField';
 import { HONEYPOT_FIELD } from '@/lib/honeypot';
 import {
+  Field,
+  FieldLabel,
+  FieldGroupLabel,
+  FieldGroup,
+  FieldInput,
+  FieldSelect,
+  FieldTextarea,
+  FieldHint,
+  FieldError,
+} from '@/components/ui/form';
+import {
   buildContactWhatsAppMessage,
   contactFormSchema,
   CONTACT_INQUIRY_TYPE_OPTIONS,
@@ -210,31 +221,6 @@ function chipCls(active: boolean, hasError: boolean) {
   );
 }
 
-function ErrorText({ error }: { error?: string }) {
-  if (!error) {
-    return null;
-  }
-
-  return <p className="mt-2 text-xs font-body text-red-500">{error}</p>;
-}
-
-function FieldHint({ hint }: { hint?: string }) {
-  if (!hint) {
-    return null;
-  }
-
-  return <p className="mt-2 text-xs font-body text-void/50">{hint}</p>;
-}
-
-function FieldLabel({ label, required }: { label: string; required?: boolean }) {
-  return (
-    <label className={labelCls}>
-      {label}
-      {required ? ' *' : ''}
-    </label>
-  );
-}
-
 interface TextFieldProps {
   label: string;
   value: string;
@@ -257,18 +243,21 @@ function TextField({
   type = 'text',
 }: TextFieldProps) {
   return (
-    <div>
-      <FieldLabel label={label} required={required} />
-      <input
+    <Field error={error} hint={hint} required={required}>
+      <FieldLabel className={labelCls}>
+        {label}
+        {required ? ' *' : ''}
+      </FieldLabel>
+      <FieldInput
         type={type}
         value={value}
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
         className={fieldCls(Boolean(error))}
       />
-      <FieldHint hint={hint} />
-      <ErrorText error={error} />
-    </div>
+      <FieldHint className="mt-2 text-xs font-body text-void/50" />
+      <FieldError className="mt-2 text-xs font-body text-red-500" />
+    </Field>
   );
 }
 
@@ -294,18 +283,21 @@ function TextAreaField({
   rows = 4,
 }: TextAreaFieldProps) {
   return (
-    <div>
-      <FieldLabel label={label} required={required} />
-      <textarea
+    <Field error={error} hint={hint} required={required}>
+      <FieldLabel className={labelCls}>
+        {label}
+        {required ? ' *' : ''}
+      </FieldLabel>
+      <FieldTextarea
         rows={rows}
         value={value}
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
         className={cn(fieldCls(Boolean(error)), 'resize-none')}
       />
-      <FieldHint hint={hint} />
-      <ErrorText error={error} />
-    </div>
+      <FieldHint className="mt-2 text-xs font-body text-void/50" />
+      <FieldError className="mt-2 text-xs font-body text-red-500" />
+    </Field>
   );
 }
 
@@ -331,9 +323,12 @@ function SelectField({
   required,
 }: SelectFieldProps) {
   return (
-    <div>
-      <FieldLabel label={label} required={required} />
-      <select
+    <Field error={error} hint={hint} required={required}>
+      <FieldLabel className={labelCls}>
+        {label}
+        {required ? ' *' : ''}
+      </FieldLabel>
+      <FieldSelect
         value={value}
         onChange={(event) => onChange(event.target.value)}
         className={cn(fieldCls(Boolean(error)), 'cursor-pointer appearance-none')}
@@ -346,10 +341,10 @@ function SelectField({
             {option.label}
           </option>
         ))}
-      </select>
-      <FieldHint hint={hint} />
-      <ErrorText error={error} />
-    </div>
+      </FieldSelect>
+      <FieldHint className="mt-2 text-xs font-body text-void/50" />
+      <FieldError className="mt-2 text-xs font-body text-red-500" />
+    </Field>
   );
 }
 
@@ -375,9 +370,14 @@ function ChipGroup({
   required,
 }: ChipGroupProps) {
   return (
-    <div>
-      <FieldLabel label={label} required={required} />
-      <div className="flex flex-wrap gap-3">
+    <Field error={error} hint={hint} required={required}>
+      {/* A group label (span), not a <label>: the "field" is a row of buttons
+          with no single associated control. */}
+      <FieldGroupLabel className={labelCls}>
+        {label}
+        {required ? ' *' : ''}
+      </FieldGroupLabel>
+      <FieldGroup className="flex flex-wrap gap-3">
         {options.map((option) => {
           const active = Array.isArray(value) ? value.includes(option.value) : value === option.value;
 
@@ -385,6 +385,9 @@ function ChipGroup({
             <button
               key={option.value}
               type="button"
+              // Selection was conveyed by colour alone (WCAG 1.4.1). aria-pressed
+              // exposes it to assistive tech.
+              aria-pressed={active}
               onClick={() => {
                 if (multiple && Array.isArray(value)) {
                   onChange(
@@ -401,10 +404,10 @@ function ChipGroup({
             </button>
           );
         })}
-      </div>
-      <FieldHint hint={hint} />
-      <ErrorText error={error} />
-    </div>
+      </FieldGroup>
+      <FieldHint className="mt-2 text-xs font-body text-void/50" />
+      <FieldError className="mt-2 text-xs font-body text-red-500" />
+    </Field>
   );
 }
 
@@ -570,54 +573,58 @@ function GeneralContactForm({
   return (
     <form className="space-y-6" noValidate onSubmit={handleSubmit(onSubmit)}>
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-        <div>
-          <FieldLabel label="First Name" required />
-          <input
+        <Field required error={errors.firstName?.message}>
+          <FieldLabel className={labelCls}>First Name *</FieldLabel>
+          <FieldInput
             type="text"
             placeholder="First name"
             {...register('firstName')}
             className={fieldCls(Boolean(errors.firstName))}
           />
-          <ErrorText error={errors.firstName?.message} />
-        </div>
-        <div>
-          <FieldLabel label="Last Name" required />
-          <input
+          <FieldError className="mt-2 text-xs font-body text-red-500" />
+        </Field>
+        <Field required error={errors.lastName?.message}>
+          <FieldLabel className={labelCls}>Last Name *</FieldLabel>
+          <FieldInput
             type="text"
             placeholder="Last name"
             {...register('lastName')}
             className={fieldCls(Boolean(errors.lastName))}
           />
-          <ErrorText error={errors.lastName?.message} />
-        </div>
+          <FieldError className="mt-2 text-xs font-body text-red-500" />
+        </Field>
       </div>
 
-      <div>
-        <FieldLabel label="E-mail" required />
-        <input
+      <Field required error={errors.email?.message}>
+        <FieldLabel className={labelCls}>E-mail *</FieldLabel>
+        <FieldInput
           type="email"
           placeholder="you@example.com"
           {...register('email')}
           className={fieldCls(Boolean(errors.email))}
         />
-        <ErrorText error={errors.email?.message} />
-      </div>
+        <FieldError className="mt-2 text-xs font-body text-red-500" />
+      </Field>
 
-      <div>
-        <FieldLabel label="Phone Number" required />
-        <input
+      <Field
+        required
+        error={errors.phone?.message}
+        hint="You can enter your number in any format. Adding your country code helps us reach you faster."
+      >
+        <FieldLabel className={labelCls}>Phone Number *</FieldLabel>
+        <FieldInput
           type="tel"
           placeholder="Include country code if needed, e.g. +1 555 123 4567"
           {...register('phone')}
           className={fieldCls(Boolean(errors.phone))}
         />
-        <FieldHint hint="You can enter your number in any format. Adding your country code helps us reach you faster." />
-        <ErrorText error={errors.phone?.message} />
-      </div>
+        <FieldHint className="mt-2 text-xs font-body text-void/50" />
+        <FieldError className="mt-2 text-xs font-body text-red-500" />
+      </Field>
 
-      <div>
-        <FieldLabel label="Subject" required />
-        <select
+      <Field required error={errors.inquiryType?.message}>
+        <FieldLabel className={labelCls}>Subject *</FieldLabel>
+        <FieldSelect
           defaultValue=""
           {...register('inquiryType')}
           className={cn(fieldCls(Boolean(errors.inquiryType)), 'cursor-pointer appearance-none')}
@@ -630,23 +637,26 @@ function GeneralContactForm({
               {option}
             </option>
           ))}
-        </select>
-        <ErrorText error={errors.inquiryType?.message} />
-      </div>
+        </FieldSelect>
+        <FieldError className="mt-2 text-xs font-body text-red-500" />
+      </Field>
 
-      <div>
-        <FieldLabel label="Message" required />
-        <textarea
+      <Field required error={errors.message?.message}>
+        <FieldLabel className={labelCls}>Message *</FieldLabel>
+        <FieldTextarea
           rows={5}
           placeholder="Leave us a message..."
           {...register('message')}
           className={cn(fieldCls(Boolean(errors.message)), 'resize-none')}
         />
-        <ErrorText error={errors.message?.message} />
-      </div>
+        <FieldError className="mt-2 text-xs font-body text-red-500" />
+      </Field>
 
       {serverError && (
-        <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-body text-red-600">
+        <div
+          role="alert"
+          className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-body text-red-600"
+        >
           {serverError}
         </div>
       )}

@@ -1,8 +1,11 @@
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { getPackageMarket, getPackagePrimaryPrice, hasPackageMarketPrice } from '@/lib/packagePricing';
 import { Package, PackageMarket } from '@/types';
 import { ArrowRight, Clock, Users } from 'lucide-react';
+
+const FALLBACK_IMAGE = '/web_photos/hero_1.webp';
 
 export default function PackageCard({ pkg, market }: { pkg: Package; market?: PackageMarket }) {
   const resolvedMarket = market ?? getPackageMarket(pkg);
@@ -17,11 +20,12 @@ export default function PackageCard({ pkg, market }: { pkg: Package; market?: Pa
     >
       {/* Image Area with 3/2 Mobile and 4/5 Desktop Aspect Ratio and Hover Overlay */}
       <div className="relative w-full aspect-[3/2] md:aspect-[4/5] overflow-hidden">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img 
-          src={pkg.heroImageUrl} 
-          alt={pkg.title} 
-          className="object-cover w-full h-full transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-[1.05]"
+        <Image
+          src={pkg.heroImageUrl || FALLBACK_IMAGE}
+          alt={pkg.title}
+          fill
+          sizes="(max-width: 768px) 85vw, (max-width: 1024px) 45vw, 30vw"
+          className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-[1.05]"
         />
         {/* Hover Overlay */}
         <div className="absolute inset-0 bg-void/70 opacity-0 transition-opacity duration-300 group-hover:opacity-100 flex flex-col items-center justify-center pointer-events-none z-10">

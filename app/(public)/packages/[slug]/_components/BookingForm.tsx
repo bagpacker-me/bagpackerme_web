@@ -12,6 +12,7 @@ import { getStoredAffiliateCode, getStoredAffiliateSessionId } from '@/hooks/use
 import { useSiteSettings } from '@/hooks/useSiteSettings';
 import { HoneypotField } from '@/components/ui/HoneypotField';
 import { HONEYPOT_FIELD } from '@/lib/honeypot';
+import { Field, FieldLabel, FieldInput, FieldTextarea, FieldError } from '@/components/ui/form';
 
 const bookingSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -138,42 +139,42 @@ export default function BookingForm({ pkg }: { pkg: Package }) {
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-[24px]">
               <HoneypotField inputRef={honeypotRef} />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-[24px]">
-                <div>
-                  <label className={labelClasses}>Name *</label>
-                  <input {...register('name')} className={inputClasses} placeholder="Your full name" />
-                  {errors.name && <span className="text-[#ef4444] text-[12px] font-body mt-[4px] block">{errors.name.message}</span>}
-                </div>
-                <div>
-                  <label className={labelClasses}>Email *</label>
-                  <input {...register('email')} type="email" className={inputClasses} placeholder="john@example.com" />
-                  {errors.email && <span className="text-[#ef4444] text-[12px] font-body mt-[4px] block">{errors.email.message}</span>}
-                </div>
+                <Field required error={errors.name?.message}>
+                  <FieldLabel className={labelClasses}>Name *</FieldLabel>
+                  <FieldInput {...register('name')} className={inputClasses} placeholder="Your full name" />
+                  <FieldError className="text-[#ef4444] text-[12px] font-body mt-[4px] block" />
+                </Field>
+                <Field required error={errors.email?.message}>
+                  <FieldLabel className={labelClasses}>Email *</FieldLabel>
+                  <FieldInput {...register('email')} type="email" className={inputClasses} placeholder="john@example.com" />
+                  <FieldError className="text-[#ef4444] text-[12px] font-body mt-[4px] block" />
+                </Field>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-[24px]">
-                <div>
-                  <label className={labelClasses}>Phone / WhatsApp *</label>
-                  <input {...register('phone')} className={inputClasses} placeholder="Include country code, e.g. +1 555 123 4567" />
-                  {errors.phone && <span className="text-[#ef4444] text-[12px] font-body mt-[4px] block">{errors.phone.message}</span>}
-                </div>
+                <Field required error={errors.phone?.message}>
+                  <FieldLabel className={labelClasses}>Phone / WhatsApp *</FieldLabel>
+                  <FieldInput {...register('phone')} className={inputClasses} placeholder="Include country code, e.g. +1 555 123 4567" />
+                  <FieldError className="text-[#ef4444] text-[12px] font-body mt-[4px] block" />
+                </Field>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-[16px]">
-                    <div>
-                      <label className={labelClasses}>Date *</label>
-                      <input {...register('travelDate')} type="month" className={`${inputClasses} min-h-[56px]`} />
-                      {errors.travelDate && <span className="text-[#ef4444] text-[12px] font-body mt-[4px] block">{errors.travelDate.message}</span>}
-                    </div>
-                    <div>
-                      <label className={labelClasses}>Size *</label>
-                      <input {...register('groupSize')} type="number" min="1" className={`${inputClasses} min-h-[56px]`} />
-                      {errors.groupSize && <span className="text-[#ef4444] text-[12px] font-body mt-[4px] block">{errors.groupSize.message}</span>}
-                    </div>
+                    <Field required error={errors.travelDate?.message}>
+                      <FieldLabel className={labelClasses}>Date *</FieldLabel>
+                      <FieldInput {...register('travelDate')} type="month" className={`${inputClasses} min-h-[56px]`} />
+                      <FieldError className="text-[#ef4444] text-[12px] font-body mt-[4px] block" />
+                    </Field>
+                    <Field required error={errors.groupSize?.message}>
+                      <FieldLabel className={labelClasses}>Size *</FieldLabel>
+                      <FieldInput {...register('groupSize')} type="number" min="1" className={`${inputClasses} min-h-[56px]`} />
+                      <FieldError className="text-[#ef4444] text-[12px] font-body mt-[4px] block" />
+                    </Field>
                 </div>
               </div>
 
-              <div>
-                <label className={labelClasses}>Message (Optional)</label>
-                <textarea {...register('message')} rows={4} className={`${inputClasses} resize-none`} placeholder="Any special requirements, dietary preferences, or questions?" />
-              </div>
+              <Field error={errors.message?.message}>
+                <FieldLabel className={labelClasses}>Message (Optional)</FieldLabel>
+                <FieldTextarea {...register('message')} rows={4} className={`${inputClasses} resize-none`} placeholder="Any special requirements, dietary preferences, or questions?" />
+              </Field>
 
               <button 
                 type="submit" 

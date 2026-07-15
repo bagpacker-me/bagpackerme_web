@@ -138,9 +138,9 @@ export function Footer() {
               
               <form onSubmit={handleNewsletterSubmit} className="flex gap-2">
                 <div className="flex-1 relative rounded-full bg-white/5 border border-white/10 focus-within:border-lime/40 focus-within:ring-1 focus-within:ring-lime/40 transition-all p-1 flex items-center">
-                  <input 
-                    type="email" 
-                    placeholder="Email address" 
+                  <input
+                    type="email"
+                    placeholder="Email address"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}

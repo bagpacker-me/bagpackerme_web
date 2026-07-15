@@ -19,43 +19,56 @@ export default function FAQSection() {
 
   const renderFaqItem = (faq: FaqItem, idx: number) => {
     const isOpen = openIndex === idx;
+    const panelId = `faq-panel-${idx}`;
+    const triggerId = `faq-trigger-${idx}`;
     return (
-      <motion.div 
+      <motion.div
         key={idx}
         initial={shouldReduceMotion ? undefined : { opacity: 0, y: 10 }}
         whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={shouldReduceMotion ? undefined : { duration: 0.4 }}
         className={`rounded-2xl border transition-all duration-300 overflow-hidden ${
-          isOpen 
-            ? 'bg-white shadow-card-teal border-teal/20' 
-            : 'bg-transparent border-medium hover:border-teal/30 cursor-pointer'
+          isOpen
+            ? 'bg-white shadow-card-teal border-teal/20'
+            : 'bg-transparent border-medium hover:border-teal/30'
         }`}
-        onClick={() => setOpenIndex(isOpen ? -1 : idx)}
       >
-        <div className="flex justify-between items-center gap-4 p-6 md:p-7">
-          <h3 className={`font-display font-semibold text-base md:text-lg transition-colors ${
-            isOpen ? 'text-teal' : 'text-void/80'
-          }`}>
-            {faq.question}
-          </h3>
+        <h3 className="m-0">
+          <button
+            type="button"
+            id={triggerId}
+            aria-expanded={isOpen}
+            aria-controls={panelId}
+            onClick={() => setOpenIndex(isOpen ? -1 : idx)}
+            className="flex w-full cursor-pointer justify-between items-center gap-4 p-6 md:p-7 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-inset rounded-2xl"
+          >
+            <span className={`font-display font-semibold text-base md:text-lg transition-colors ${
+              isOpen ? 'text-teal' : 'text-void/80'
+            }`}>
+              {faq.question}
+            </span>
 
-          <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${
-            isOpen 
-              ? 'bg-teal text-white rotate-0' 
-              : 'bg-void/5 text-void/50'
-          }`}>
-            {isOpen 
-              ? <Minus strokeWidth={2} className="w-3.5 h-3.5" /> 
-              : <Plus strokeWidth={2} className="w-3.5 h-3.5" />
-            }
-          </div>
-        </div>
+            <span className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${
+              isOpen
+                ? 'bg-teal text-white rotate-0'
+                : 'bg-void/5 text-void/50'
+            }`}>
+              {isOpen
+                ? <Minus strokeWidth={2} className="w-3.5 h-3.5" />
+                : <Plus strokeWidth={2} className="w-3.5 h-3.5" />
+              }
+            </span>
+          </button>
+        </h3>
 
         <AnimatePresence initial={false}>
           {isOpen && (
             <motion.div
               key="answer"
+              id={panelId}
+              role="region"
+              aria-labelledby={triggerId}
               initial={shouldReduceMotion ? undefined : { height: 0, opacity: 0 }}
               animate={shouldReduceMotion ? undefined : { height: 'auto', opacity: 1 }}
               exit={shouldReduceMotion ? undefined : { height: 0, opacity: 0 }}
