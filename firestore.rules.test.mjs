@@ -168,6 +168,22 @@ await check(
 await check('writes gallery', assertSucceeds(setDoc(doc(admin, 'gallery/g1'), { url: 'u' })));
 await check('reads enquiries', assertSucceeds(getDoc(doc(admin, 'enquiries/e1'))));
 
+// Testimonials: public reads published, admin writes (mirrors packages/blogs).
+await check(
+  'admin writes a testimonial',
+  assertSucceeds(setDoc(doc(admin, 'testimonials/t1'), { authorName: 'A', quote: 'Q', rating: 5, status: 'published' }))
+);
+await testEnv.withSecurityRulesDisabled(async (ctx) => {
+  await setDoc(doc(ctx.firestore(), 'testimonials/pub'), { authorName: 'A', quote: 'Q', rating: 5, status: 'published' });
+  await setDoc(doc(ctx.firestore(), 'testimonials/dft'), { authorName: 'A', quote: 'Q', rating: 5, status: 'draft' });
+});
+await check('public reads a published testimonial', assertSucceeds(getDoc(doc(anon, 'testimonials/pub'))));
+await check('public cannot read a draft testimonial', assertFails(getDoc(doc(anon, 'testimonials/dft'))));
+await check(
+  'public cannot write a testimonial',
+  assertFails(setDoc(doc(anon, 'testimonials/hack'), { authorName: 'X', quote: 'Q', rating: 5, status: 'published' }))
+);
+
 console.log(`\n===== ${pass} passed, ${fail} failed =====`);
 await testEnv.cleanup();
 process.exit(fail > 0 ? 1 : 0);

@@ -6,6 +6,8 @@ export const metadata: Metadata = {
   title: 'Contact, Trip Planning & Corporate Retreats',
   description:
     'Start every BagPackerMe enquiry from one contact hub for custom trips, corporate retreats, and general questions.',
+  // Static canonical collapses ?intent=trip / ?intent=corporate into one URL.
+  alternates: { canonical: '/contact' },
 };
 
 export default function ContactPage({

@@ -4,8 +4,9 @@ import { BlogPost } from '@/types';
 import BlogListingClient from './_components/BlogListingClient';
 
 export const metadata: Metadata = {
-  title: 'Travel Stories & The Journal | BagPackerMe',
+  title: 'Travel Stories & The Journal',
   description: 'Destination guides, cultural deep-dives, and honest travel stories from the road to inspire your next adventure.',
+  alternates: { canonical: '/blog' },
 };
 
 export const revalidate = 60;

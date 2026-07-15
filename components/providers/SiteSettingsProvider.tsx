@@ -10,8 +10,18 @@ import {
 
 export const SiteSettingsContext = createContext<ResolvedSiteSettings>(DEFAULT_SITE_SETTINGS);
 
-export function SiteSettingsProvider({ children }: { children: ReactNode }) {
-  const [settings, setSettings] = useState<ResolvedSiteSettings>(DEFAULT_SITE_SETTINGS);
+export function SiteSettingsProvider({
+  children,
+  initialSettings,
+}: {
+  children: ReactNode;
+  // Seeded server-side from getSiteSettingsServer so contact details render
+  // correctly on first paint instead of showing defaults then swapping.
+  initialSettings?: ResolvedSiteSettings;
+}) {
+  const [settings, setSettings] = useState<ResolvedSiteSettings>(
+    initialSettings ?? DEFAULT_SITE_SETTINGS
+  );
 
   useEffect(() => {
     let isMounted = true;

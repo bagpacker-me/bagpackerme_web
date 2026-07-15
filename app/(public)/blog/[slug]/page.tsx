@@ -6,6 +6,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import ShareButtons from '../_components/ShareButtons';
 import NewsletterCard from '../_components/NewsletterCard';
+import { JsonLd } from '@/components/seo/JsonLd';
+import { buildBlogPostingSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 
 export const revalidate = 3600;
 
@@ -14,9 +16,18 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   if (!blog) return { title: 'Post Not Found' };
 
   return {
-    title: blog.metaTitle || `${blog.title} | BagPackerMe Journal`,
+    title: blog.metaTitle || blog.title,
     description: blog.metaDescription || blog.excerpt,
-    openGraph: { images: [blog.featuredImageUrl] },
+    alternates: { canonical: `/blog/${blog.slug}` },
+    // No openGraph.images here — the colocated opengraph-image.tsx supplies the
+    // card and would be ignored if this segment set openGraph.images.
+    openGraph: {
+      type: 'article',
+      url: `/blog/${blog.slug}`,
+      siteName: 'BagPackerMe',
+      title: blog.metaTitle || blog.title,
+      description: blog.metaDescription || blog.excerpt,
+    },
   };
 }
 
@@ -57,6 +68,14 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
 
   return (
     <main className="min-h-screen bg-white">
+      <JsonLd data={buildBlogPostingSchema(blog)} />
+      <JsonLd
+        data={buildBreadcrumbSchema([
+          { name: 'Home', path: '/' },
+          { name: 'Journal', path: '/blog' },
+          { name: blog.title, path: `/blog/${blog.slug}` },
+        ])}
+      />
 
       {/* ── HERO ──────────────────────────────────────────────────────────── */}
       <section className="w-full px-5 md:px-8 lg:px-12 pt-4 pb-0">

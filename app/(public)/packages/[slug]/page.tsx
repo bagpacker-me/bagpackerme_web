@@ -10,6 +10,8 @@ import WhatsIncluded from './_components/WhatsIncluded';
 import PackageGallery from './_components/PackageGallery';
 import BookingForm from './_components/BookingForm';
 import RelatedPackages from './_components/RelatedPackages';
+import { JsonLd } from '@/components/seo/JsonLd';
+import { buildTouristTripSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 
 interface Props {
   params: { slug: string };
@@ -30,7 +32,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const pkg = await getPackageBySlugAnyMarket(params.slug);
   
   if (!pkg) {
-    return { title: 'Package Not Found - BagPackerMe' };
+    return { title: 'Package Not Found' };
   }
 
   if (pkg.market !== 'global') {
@@ -38,16 +40,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   return {
-    title: `${pkg.metaTitle || pkg.title} | BagPackerMe`,
+    title: pkg.metaTitle || pkg.title,
     description: pkg.metaDescription || pkg.tagline,
     alternates: {
       canonical: `/packages/${pkg.slug}`,
     },
+    // No `images` here — the colocated opengraph-image.tsx supplies the card and
+    // would be ignored if this segment set openGraph.images. url/siteName are
+    // re-stated because Next replaces (not merges) the root layout's openGraph.
     openGraph: {
+      type: 'website',
+      url: `/packages/${pkg.slug}`,
+      siteName: 'BagPackerMe',
       title: pkg.metaTitle || pkg.title,
       description: pkg.metaDescription || pkg.tagline,
-      images: [{ url: pkg.heroImageUrl }],
-      type: 'website'
     },
   };
 }
@@ -67,6 +73,14 @@ export default async function PackageDetailPage({ params }: Props) {
 
   return (
     <main className="w-full relative bg-void font-body selection:bg-lime selection:text-void pb-[76px] lg:pb-0">
+      <JsonLd data={buildTouristTripSchema(pkg, 'global')} />
+      <JsonLd
+        data={buildBreadcrumbSchema([
+          { name: 'Home', path: '/' },
+          { name: 'Packages', path: '/packages' },
+          { name: pkg.title, path: `/packages/${pkg.slug}` },
+        ])}
+      />
 
       {/* Part 1: Hero */}
       <HeroSection pkg={pkg} market="global" />

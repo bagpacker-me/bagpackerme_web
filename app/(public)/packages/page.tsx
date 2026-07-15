@@ -2,11 +2,12 @@ import type { Metadata } from 'next';
 import PackagesListingPage from '@/components/packages/PackagesListingPage';
 
 export const metadata: Metadata = {
-  title: 'Global Travel Packages | BagPackerMe',
+  title: 'Global Travel Packages',
   description:
     'Explore curated international journeys across Thailand, Vietnam, Kenya, and more with BagPackerMe.',
   alternates: {
     canonical: '/packages',
+    languages: { en: '/packages', 'en-IN': '/in/packages', 'x-default': '/packages' },
   },
 };
 

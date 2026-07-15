@@ -51,14 +51,11 @@ function vercelFederatedCredential(): Credential {
 
   const providerPath = `projects/${projectNumber}/locations/global/workloadIdentityPools/${poolId}/providers/${providerId}`;
 
-  // These two differ by scheme and both matter:
-  //   stsAudience   — identifies the provider to Google's STS endpoint.
-  //   tokenAudience — the `aud` claim Vercel stamps into the OIDC token. The
-  //                   provider is configured with GCP's "default audience",
-  //                   which is the https:// form, so the claim must match it
-  //                   exactly or the exchange is rejected.
+  // The `audience` here is the STS provider identifier, not the OIDC token's
+  // `aud` claim. The GCP provider is configured to accept Vercel's native
+  // audience (https://vercel.com/bagpackerme), so getVercelOidcToken() is
+  // called with no override and the default token is used as-is.
   const stsAudience = `//iam.googleapis.com/${providerPath}`;
-  const tokenAudience = `https://iam.googleapis.com/${providerPath}`;
 
   const authClient = ExternalAccountClient.fromJSON({
     type: 'external_account',
@@ -67,7 +64,7 @@ function vercelFederatedCredential(): Credential {
     token_url: 'https://sts.googleapis.com/v1/token',
     service_account_impersonation_url: `https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/${serviceAccountEmail}:generateAccessToken`,
     subject_token_supplier: {
-      getSubjectToken: () => getVercelOidcToken({ audience: tokenAudience }),
+      getSubjectToken: () => getVercelOidcToken(),
     },
   });
 

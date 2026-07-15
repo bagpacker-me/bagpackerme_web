@@ -3,6 +3,12 @@ import { db } from './firebase';
 import { Package, BlogPost, Enquiry, Customer, Booking, GalleryImage, Testimonial, Affiliate, AffiliateClick, AffiliateEvent, AffiliatePublic, AffiliateRegistrationIndex, PackageMarket } from '@/types';
 import { buildAffiliatePublicData, normalizeAffiliateCode, normalizeAffiliateSessionId } from './affiliate';
 import { STATIC_GLOBAL_PACKAGES } from './static-global-packages';
+import {
+  restDocumentToObject,
+  firestoreRestConfig,
+  type FirestoreRestDocument,
+  type FirestoreRunQueryResult,
+} from './firestore-rest';
 
 // Packages
 const packagesCol = collection(db, 'packages');
@@ -13,46 +19,8 @@ export const getPackage = async (id: string) => getDoc(doc(db, 'packages', id));
 export const normalizePackageMarket = (pkg: Pick<Package, 'market'>): PackageMarket =>
   pkg.market === 'global' ? 'global' : 'india';
 
-type FirestoreRestValue = {
-  stringValue?: string;
-  integerValue?: string;
-  doubleValue?: number;
-  booleanValue?: boolean;
-  timestampValue?: string;
-  nullValue?: null;
-  arrayValue?: { values?: FirestoreRestValue[] };
-  mapValue?: { fields?: Record<string, FirestoreRestValue> };
-};
-
-type FirestoreRestDocument = {
-  name: string;
-  fields?: Record<string, FirestoreRestValue>;
-};
-
-type FirestoreRunQueryResult = {
-  document?: FirestoreRestDocument;
-};
-
-const firestoreValueToJs = (value: FirestoreRestValue): unknown => {
-  if ('stringValue' in value) return value.stringValue;
-  if ('integerValue' in value) return Number(value.integerValue);
-  if ('doubleValue' in value) return value.doubleValue;
-  if ('booleanValue' in value) return value.booleanValue;
-  if ('timestampValue' in value) return value.timestampValue;
-  if ('nullValue' in value) return null;
-  if (value.arrayValue) return (value.arrayValue.values ?? []).map(firestoreValueToJs);
-  if (value.mapValue) {
-    return Object.fromEntries(
-      Object.entries(value.mapValue.fields ?? {}).map(([key, nestedValue]) => [key, firestoreValueToJs(nestedValue)])
-    );
-  }
-  return undefined;
-};
-
 const packageFromRestDocument = (document: FirestoreRestDocument) => {
-  const data = Object.fromEntries(
-    Object.entries(document.fields ?? {}).map(([key, value]) => [key, firestoreValueToJs(value)])
-  ) as Omit<Package, 'id'>;
+  const data = restDocumentToObject(document) as Omit<Package, 'id'>;
 
   return {
     id: document.name.split('/').pop() ?? data.slug,
@@ -64,10 +32,9 @@ const packageFromRestDocument = (document: FirestoreRestDocument) => {
 const getPublishedPackagesFromRest = async () => {
   if (typeof window !== 'undefined') return null;
 
-  const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
-  const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
-
-  if (!projectId || !apiKey) return null;
+  const config = firestoreRestConfig();
+  if (!config) return null;
+  const { projectId, apiKey } = config;
 
   try {
     const response = await fetch(

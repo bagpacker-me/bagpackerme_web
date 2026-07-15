@@ -2,7 +2,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Terms of Service - BagPackerMe',
+  title: 'Terms of Service',
   description: 'Read the terms and conditions that govern your use of BagPackerMe\'s travel services and website.',
 };
 

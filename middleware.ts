@@ -111,7 +111,9 @@ async function handlePackageDetail(request: NextRequest, slug: string) {
   if (market === 'india') {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = `/in${request.nextUrl.pathname}`;
-    return NextResponse.redirect(redirectUrl, 307);
+    // 308 (permanent): an india package's canonical home is always /in/packages,
+    // so search engines should collapse the /packages URL rather than keep both.
+    return NextResponse.redirect(redirectUrl, 308);
   }
 
   return NextResponse.next();

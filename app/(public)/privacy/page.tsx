@@ -2,7 +2,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy - BagPackerMe',
+  title: 'Privacy Policy',
   description: 'Learn how BagPackerMe collects, uses, and protects your personal information when you use our travel services.',
 };
 

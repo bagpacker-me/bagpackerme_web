@@ -40,9 +40,7 @@ export const metadata: Metadata = {
     template: '%s | BagPackerMe',
   },
   description: 'Curated experiential journeys across Thailand, Vietnam, Kenya, India, and beyond with local expertise and human planning.',
-  icons: {
-    icon: '/logo_b.webp',
-  },
+  // Icons come from the app/ file convention (favicon.ico, icon.png, apple-icon.png).
   openGraph: {
     type: 'website',
     locale: 'en_US',
@@ -51,10 +49,10 @@ export const metadata: Metadata = {
     title: 'BagPackerMe - Curated Global Journeys',
     description: 'Curated experiential journeys across Thailand, Vietnam, Kenya, India, and beyond.',
   },
+  // Only `card` here: hardcoding twitter.title/description stops Next from
+  // auto-filling them from each page's og:title, leaving them stale sitewide.
   twitter: {
     card: 'summary_large_image',
-    title: 'BagPackerMe - Curated Global Journeys',
-    description: 'Curated experiential journeys across Thailand, Vietnam, Kenya, India, and beyond.',
   },
   robots: {
     index: true,
