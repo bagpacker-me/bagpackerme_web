@@ -1,21 +1,31 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { trackAffiliatePublicClick } from '@/lib/firestore';
+import { z } from 'zod';
+import { trackAffiliateClickAdmin } from '@/lib/affiliate-admin';
+
+export const runtime = 'nodejs';
+
+const trackSchema = z.object({
+  affiliateCode: z.string().trim().min(1, 'affiliateCode is required.').max(64),
+  sessionId: z.string().trim().min(1, 'sessionId is required.').max(128),
+  pageUrl: z.string().trim().max(2048).optional().default(''),
+  packageSlug: z.string().trim().max(200).optional().default(''),
+});
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { affiliateCode, pageUrl, packageSlug, sessionId } = body;
+    const parsed = trackSchema.safeParse(body);
 
-    if (!affiliateCode || !sessionId) {
-      return NextResponse.json({ error: 'affiliateCode and sessionId are required.' }, { status: 400 });
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: parsed.error.issues[0]?.message ?? 'Invalid request.' },
+        { status: 400 }
+      );
     }
 
-    const result = await trackAffiliatePublicClick({
-      affiliateCode,
-      pageUrl: pageUrl || '',
-      packageSlug: packageSlug || '',
-      referrer: req.headers.get('referer') || '',
-      sessionId,
+    const result = await trackAffiliateClickAdmin({
+      ...parsed.data,
+      referrer: req.headers.get('referer')?.slice(0, 2048) || '',
     });
 
     return NextResponse.json(result);

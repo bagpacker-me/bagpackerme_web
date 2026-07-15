@@ -1,14 +1,16 @@
 import { createHash } from 'node:crypto';
 import { NextRequest, NextResponse } from 'next/server';
-import { createAffiliateWithPublicRecords, getAffiliatePublic, getAffiliateRegistrationIndex } from '@/lib/firestore';
-import { normalizeAffiliateCode } from '@/lib/affiliate';
+import { z } from 'zod';
+import { registerAffiliateAdmin } from '@/lib/affiliate-admin';
 
-/** Generates a unique affiliate code like BP-JOHN42 */
-function generateCode(name: string): string {
-  const prefix = name.trim().split(' ')[0].toUpperCase().slice(0, 6).replace(/[^A-Z]/g, '');
-  const suffix = Math.floor(10 + Math.random() * 90).toString();
-  return `BP-${prefix}${suffix}`;
-}
+export const runtime = 'nodejs';
+
+const registerSchema = z.object({
+  name: z.string().trim().min(1, 'Name is required.').max(100),
+  email: z.string().trim().toLowerCase().email('Invalid email address.').max(254),
+  phone: z.string().trim().max(30).optional().default(''),
+  socialHandle: z.string().trim().max(100).optional().default(''),
+});
 
 function hashAffiliateEmail(email: string) {
   return createHash('sha256').update(email.trim().toLowerCase()).digest('hex');
@@ -17,67 +19,42 @@ function hashAffiliateEmail(email: string) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { name, email, phone, socialHandle } = body;
+    const parsed = registerSchema.safeParse(body);
 
-    // Basic validation
-    if (!name || !email) {
-      return NextResponse.json({ error: 'Name and email are required.' }, { status: 400 });
-    }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return NextResponse.json({ error: 'Invalid email address.' }, { status: 400 });
-    }
-
-    const normalizedEmail = email.toLowerCase().trim();
-    const emailHash = hashAffiliateEmail(normalizedEmail);
-    const registrationIndexSnap = await getAffiliateRegistrationIndex(emailHash);
-    if (registrationIndexSnap.exists()) {
+    if (!parsed.success) {
       return NextResponse.json(
-        { error: 'An affiliate account with this email already exists.' },
-        { status: 409 }
+        { error: parsed.error.issues[0]?.message ?? 'Invalid request.' },
+        { status: 400 }
       );
     }
 
-    // Generate a unique code (retry up to 5 times)
-    let code = normalizeAffiliateCode(generateCode(name));
-    for (let i = 0; i < 5; i++) {
-      const codeExists = await getAffiliatePublic(code);
-      if (!codeExists.exists()) break;
-      code = normalizeAffiliateCode(generateCode(name));
-    }
+    const { name, email, phone, socialHandle } = parsed.data;
 
-    const finalCodeCheck = await getAffiliatePublic(code);
-    if (finalCodeCheck.exists()) {
+    const result = await registerAffiliateAdmin({
+      name,
+      email,
+      emailHash: hashAffiliateEmail(email),
+      phone,
+      socialHandle,
+    });
+
+    if (!result.ok) {
+      if (result.reason === 'duplicate_email') {
+        return NextResponse.json(
+          { error: 'An affiliate account with this email already exists.' },
+          { status: 409 }
+        );
+      }
       return NextResponse.json(
         { error: 'Could not generate a unique affiliate code. Please try again.' },
-        { status: 500 }
+        { status: 503 }
       );
     }
-
-    const now = new Date().toISOString();
-    const affiliateData = {
-      name: name.trim(),
-      email: normalizedEmail,
-      emailHash,
-      phone: phone?.trim() || '',
-      socialHandle: socialHandle?.trim() || '',
-      code,
-      status: 'pending' as const,
-      commissionRate: 10,
-      totalClicks: 0,
-      totalLeads: 0,
-      totalBookings: 0,
-      notes: '',
-      createdAt: now,
-      updatedAt: now,
-    };
-
-    const ref = await createAffiliateWithPublicRecords(affiliateData);
 
     return NextResponse.json({
       success: true,
-      affiliateId: ref.id,
-      code,
+      affiliateId: result.affiliateId,
+      code: result.code,
       message: 'Your affiliate application has been received! We will review it within 24 hours.',
     });
   } catch (err) {

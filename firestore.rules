@@ -2,66 +2,25 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    
-    // Helper function: check if user is authenticated admin
+
+    // Helper function: check if user is authenticated admin.
+    // Mirrored in storage.rules — change both together.
     function isAdmin() {
       return request.auth != null
         && request.auth.token.email != null
         && request.auth.token.email == 'bagpackerme.world@gmail.com';
     }
 
-    function isAffiliateStatus(status) {
-      return status == 'pending'
-        || status == 'active'
-        || status == 'paused'
-        || status == 'rejected';
-    }
-
-    function isAffiliatePublicDoc(data, code) {
-      return data.keys().hasOnly([
-          'code',
-          'name',
-          'status',
-          'totalClicks',
-          'totalLeads',
-          'totalBookings',
-          'createdAt',
-          'updatedAt',
-        ])
-        && data.code == code
-        && data.name is string
-        && isAffiliateStatus(data.status)
-        && data.totalClicks is int
-        && data.totalClicks >= 0
-        && data.totalLeads is int
-        && data.totalLeads >= 0
-        && data.totalBookings is int
-        && data.totalBookings >= 0
+    // Shape guard for the public newsletter signup. subscribeToNewsletter()
+    // writes exactly these two fields from the browser.
+    function isSubscriberDoc(data) {
+      return data.keys().hasOnly(['email', 'createdAt'])
+        && data.email is string
+        && data.email.size() > 3
+        && data.email.size() <= 254
+        && data.email.matches('^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$')
         && data.createdAt is string
-        && data.updatedAt is string;
-    }
-
-    function isAffiliateEventDoc(data, code, sessionId) {
-      return data.keys().hasOnly([
-          'affiliateCode',
-          'pageUrl',
-          'packageSlug',
-          'referrer',
-          'sessionId',
-          'convertedToEnquiry',
-          'convertedToBooking',
-          'createdAt',
-          'updatedAt',
-        ])
-        && data.affiliateCode == code
-        && data.sessionId == sessionId
-        && data.pageUrl is string
-        && (!data.keys().hasAny(['packageSlug']) || data.packageSlug is string)
-        && (!data.keys().hasAny(['referrer']) || data.referrer is string)
-        && data.convertedToEnquiry is bool
-        && data.convertedToBooking is bool
-        && data.createdAt is string
-        && data.updatedAt is string;
+        && data.createdAt.size() <= 40;
     }
 
     // Packages: public can read published, only admin can write
@@ -76,15 +35,20 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
-    // Enquiries: anyone can create (contact form), only admin can read/update/delete
+    // Enquiries: created server-side only, via the Admin SDK in
+    // lib/enquiry-submission.ts (contact, package-booking, enquiries routes).
+    // The Admin SDK bypasses these rules, so browsers get no write access at
+    // all and the zod validation in those routes cannot be sidestepped.
     match /enquiries/{docId} {
-      allow create: if true;
+      allow create: if false;
       allow read, update, delete: if isAdmin();
     }
 
-    // Subscribers: anyone can subscribe, only admin can read/delete
+    // Subscribers: the newsletter forms (Footer, NewsletterSection,
+    // NewsletterCard) write these directly from the browser, so create stays
+    // public — but shape-validated.
     match /subscribers/{docId} {
-      allow create: if true;
+      allow create: if isSubscriberDoc(request.resource.data);
       allow read, delete: if isAdmin();
     }
 
@@ -109,56 +73,36 @@ service cloud.firestore {
       allow read, write: if isAdmin();
     }
 
-    // Affiliates: anyone can register (create), admin can manage
+    // Affiliates: private records (email, commissionRate, notes). Registration
+    // goes through the Admin SDK in lib/affiliate-admin.ts, so no public create.
     match /affiliates/{docId} {
-      allow create: if true;
+      allow create: if false;
       allow read, update, delete: if isAdmin();
     }
 
-    // Public-safe affiliate mirror used by public tracking and dashboards
+    // Public-safe affiliate mirror. Read by the public affiliate dashboard.
+    // Writes come from either the Admin SDK (registration, click tracking,
+    // conversions — bypasses rules) or the admin panel, which syncs this doc
+    // from the browser when an affiliate's status changes.
     match /affiliate_public/{affiliateCode} {
       allow read: if true;
-      allow create: if isAffiliatePublicDoc(request.resource.data, affiliateCode);
-      allow update: if isAffiliatePublicDoc(request.resource.data, affiliateCode)
-        && request.resource.data.diff(resource.data).changedKeys().hasOnly([
-          'name',
-          'status',
-          'totalClicks',
-          'totalLeads',
-          'totalBookings',
-          'updatedAt',
-        ]);
-      allow delete: if isAdmin();
+      allow write: if isAdmin();
 
       match /events/{sessionId} {
         allow read: if true;
-        allow create: if isAffiliateEventDoc(request.resource.data, affiliateCode, sessionId);
-        allow update: if isAffiliateEventDoc(request.resource.data, affiliateCode, sessionId)
-          && request.resource.data.diff(resource.data).changedKeys().hasOnly([
-            'convertedToEnquiry',
-            'convertedToBooking',
-            'updatedAt',
-          ])
-          && (resource.data.convertedToEnquiry == false || request.resource.data.convertedToEnquiry == true)
-          && (resource.data.convertedToBooking == false || request.resource.data.convertedToBooking == true);
-        allow delete: if isAdmin();
+        allow write: if isAdmin();
       }
     }
 
-    // Public duplicate-check index for affiliate registration
+    // Duplicate-check index for affiliate registration. Created only by the
+    // Admin SDK; public create previously allowed anyone to pre-register a
+    // victim's email hash and permanently block their signup.
+    // Delete stays open to the admin: deleteAffiliate() batch-deletes this doc
+    // from the admin panel, and a batch fails atomically if any write is denied.
     match /affiliate_registration_index/{emailHash} {
       allow get: if true;
       allow list: if false;
-      allow create: if request.resource.data.keys().hasOnly([
-          'emailHash',
-          'affiliateId',
-          'affiliateCode',
-          'createdAt',
-        ])
-        && request.resource.data.emailHash == emailHash
-        && request.resource.data.affiliateId is string
-        && request.resource.data.affiliateCode is string
-        && request.resource.data.createdAt is string;
+      allow create, update: if false;
       allow delete: if isAdmin();
     }
 
