@@ -40,7 +40,7 @@ service cloud.firestore {
     // The Admin SDK bypasses these rules, so browsers get no write access at
     // all and the zod validation in those routes cannot be sidestepped.
     match /enquiries/{docId} {
-      allow create: if false;
+      allow create: if isAdmin();
       allow read, update, delete: if isAdmin();
     }
 
@@ -76,7 +76,7 @@ service cloud.firestore {
     // Affiliates: private records (email, commissionRate, notes). Registration
     // goes through the Admin SDK in lib/affiliate-admin.ts, so no public create.
     match /affiliates/{docId} {
-      allow create: if false;
+      allow create: if isAdmin();
       allow read, update, delete: if isAdmin();
     }
 
@@ -102,8 +102,7 @@ service cloud.firestore {
     match /affiliate_registration_index/{emailHash} {
       allow get: if true;
       allow list: if false;
-      allow create, update: if false;
-      allow delete: if isAdmin();
+      allow write: if isAdmin();
     }
 
     // Legacy affiliate clicks: admin-only access
