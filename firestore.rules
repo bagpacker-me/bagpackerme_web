@@ -52,6 +52,26 @@ service cloud.firestore {
       allow read, delete: if isAdmin();
     }
 
+    // Job openings: public can read published, only admin can write.
+    // Mirrors packages/blogs — /careers lists where status == 'published'.
+    match /job_openings/{docId} {
+      allow read: if resource.data.status == 'published' || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // Job applications: created server-side only, via the Admin SDK in
+    // app/api/careers/apply/route.ts. The Admin SDK bypasses these rules, so
+    // browsers get no write access at all and neither the zod validation nor
+    // the CV magic-byte checks in that route can be sidestepped.
+    //
+    // Candidate PII (name, email, phone, CV) is never publicly readable. The CV
+    // itself lives in Storage under applications/, denied to everyone by
+    // storage.rules and served only by the admin download route.
+    match /job_applications/{docId} {
+      allow create: if isAdmin();
+      allow read, update, delete: if isAdmin();
+    }
+
     // Settings: public can read, only admin can write
     match /settings/{docId} {
       allow read: if true;

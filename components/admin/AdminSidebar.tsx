@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { Logo } from '@/components/ui/Logo';
 import { useAuth } from '@/hooks/useAuth';
 import { logoutAdmin } from '@/lib/auth';
-import { listenNewEnquiriesCount } from '@/lib/firestore';
+import { listenNewEnquiriesCount, listenNewApplicationsCount } from '@/lib/firestore';
 import {
   LayoutDashboard,
   BarChart3,
@@ -19,6 +19,8 @@ import {
   Users,
   Mail,
   Link as LinkIcon,
+  Briefcase,
+  UserRoundSearch,
   Settings,
   LogOut,
   X
@@ -44,6 +46,7 @@ const SECTIONS = [
       { icon: FileText, label: 'Blog Posts', href: '/admin/blog' },
       { icon: ImageIcon, label: 'Gallery', href: '/admin/gallery' },
       { icon: MessageSquareQuote, label: 'Testimonials', href: '/admin/testimonials' },
+      { icon: Briefcase, label: 'Job Openings', href: '/admin/careers' },
     ],
   },
   {
@@ -52,6 +55,7 @@ const SECTIONS = [
       { icon: MessageSquare, label: 'Enquiries', href: '/admin/enquiries', badge: 0 },
       { icon: Calendar, label: 'Bookings', href: '/admin/bookings' },
       { icon: Users, label: 'Customers', href: '/admin/customers' },
+      { icon: UserRoundSearch, label: 'Applications', href: '/admin/careers/applications', badge: 0 },
       { icon: LinkIcon, label: 'Affiliates', href: '/admin/affiliates' },
       { icon: Mail, label: 'Newsletter', href: '/admin/newsletter' },
     ],
@@ -64,17 +68,37 @@ const SECTIONS = [
   },
 ];
 
+// '/admin/careers' is a prefix of '/admin/careers/applications', so a plain
+// startsWith test lights up both rows at once. The longest matching href is the
+// page you're actually on.
+const ALL_HREFS = SECTIONS.flatMap((section) => section.items.map((item) => item.href));
+
+function activeHrefFor(pathname: string): string | null {
+  return ALL_HREFS.filter(
+    (href) => pathname === href || pathname.startsWith(`${href}/`)
+  ).sort((a, b) => b.length - a.length)[0] ?? null;
+}
+
 export default function AdminSidebar({ isOpen = false, onClose }: AdminSidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const { user } = useAuth();
   const [newEnquiriesCount, setNewEnquiriesCount] = useState(0);
+  const [newApplicationsCount, setNewApplicationsCount] = useState(0);
 
   useEffect(() => {
     if (!user) return;
     const unsub = listenNewEnquiriesCount(setNewEnquiriesCount);
     return () => unsub();
   }, [user]);
+
+  useEffect(() => {
+    if (!user) return;
+    const unsub = listenNewApplicationsCount(setNewApplicationsCount);
+    return () => unsub();
+  }, [user]);
+
+  const activeHref = activeHrefFor(pathname);
 
   const handleLogout = async () => {
     await logoutAdmin();
@@ -121,8 +145,13 @@ export default function AdminSidebar({ isOpen = false, onClose }: AdminSidebarPr
             </div>
             <ul>
               {section.items.map((item) => {
-                const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
-                const badgeCount = item.label === 'Enquiries' ? newEnquiriesCount : item.badge;
+                const isActive = activeHref === item.href;
+                const badgeCount =
+                  item.label === 'Enquiries'
+                    ? newEnquiriesCount
+                    : item.label === 'Applications'
+                      ? newApplicationsCount
+                      : item.badge;
                 return (
                   <li key={item.href}>
                     <Link

@@ -10,7 +10,7 @@ import {
 } from 'firebase-admin/app';
 import { getFirestore, type Firestore } from 'firebase-admin/firestore';
 import { getAuth, type Auth } from 'firebase-admin/auth';
-import { ExternalAccountClient } from 'google-auth-library';
+import { ExternalAccountClient, GoogleAuth, type BaseExternalAccountClient } from 'google-auth-library';
 import { getVercelOidcToken } from '@vercel/oidc';
 
 // Node runtime only. This module must never be imported from middleware.ts or
@@ -39,11 +39,20 @@ function requireEnv(name: string) {
   return value;
 }
 
+let externalAccountClientCache: BaseExternalAccountClient | null = null;
+
 /**
- * Federated credential for Vercel. Exchanges the request's Vercel OIDC token
- * for a Google access token that impersonates the service account.
+ * The Workload Identity Federation client for Vercel. Exchanges the request's
+ * Vercel OIDC token for a Google access token that impersonates the service
+ * account.
+ *
+ * Shared by firebase-admin (wrapped as a Credential below) and the Storage REST
+ * calls (via adminAccessToken), so the STS exchange and its token cache are not
+ * duplicated per caller. Cached because it is otherwise rebuilt per request.
  */
-function vercelFederatedCredential(): Credential {
+function vercelExternalAccountClient(): BaseExternalAccountClient {
+  if (externalAccountClientCache) return externalAccountClientCache;
+
   const projectNumber = requireEnv('GCP_PROJECT_NUMBER');
   const poolId = requireEnv('GCP_WORKLOAD_IDENTITY_POOL_ID');
   const providerId = requireEnv('GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID');
@@ -71,6 +80,16 @@ function vercelFederatedCredential(): Credential {
   if (!authClient) {
     throw new Error('Could not build the GCP external account client — check the GCP_* env vars.');
   }
+
+  externalAccountClientCache = authClient;
+  return authClient;
+}
+
+/**
+ * Federated credential for Vercel, in the shape firebase-admin wants.
+ */
+function vercelFederatedCredential(): Credential {
+  const authClient = vercelExternalAccountClient();
 
   // firebase-admin wants a Credential, not a google-auth-library client.
   return {
@@ -110,4 +129,57 @@ export function adminDb(): Firestore {
 
 export function adminAuth(): Auth {
   return getAuth(getAdminApp());
+}
+
+let localAuthCache: GoogleAuth | null = null;
+
+/**
+ * A Google Cloud access token for calling GCS directly over HTTPS
+ * (see lib/storage-admin.ts). Scoped to cloud-platform, which covers Storage.
+ *
+ * Storage is reached by REST rather than through a client library, for two
+ * reasons:
+ *
+ *   1. firebase-admin's getStorage() accepts only a ServiceAccountCredential or
+ *      application default credentials, and throws 'invalid-credential' on
+ *      anything else — including the federated Credential built above. Because
+ *      local dev uses applicationDefault(), it would work on a developer's
+ *      machine and throw only on Vercel.
+ *   2. @google-cloud/storage pins google-auth-library v9 while firebase-admin
+ *      pulls v10, so the two resolve to separate copies with incompatible class
+ *      hierarchies. Handing our v10 client to its `authClient` option fails to
+ *      typecheck, and would be fragile even cast — the library `instanceof`-checks
+ *      credentials, and those checks do not hold across duplicate copies.
+ *
+ * The REST surface we need is two calls, so this drops a heavy dependency and a
+ * version conflict in exchange for a little plumbing. Only the token source
+ * branches per environment — mirroring getAdminApp() above.
+ */
+export async function adminAccessToken(): Promise<string> {
+  if (process.env.VERCEL) {
+    const { token } = await vercelExternalAccountClient().getAccessToken();
+    if (!token) {
+      throw new Error('Workload Identity Federation returned no access token.');
+    }
+    return token;
+  }
+
+  // Local: ADC, from `gcloud auth application-default login`.
+  localAuthCache ??= new GoogleAuth({
+    scopes: ['https://www.googleapis.com/auth/cloud-platform'],
+  });
+
+  const token = await localAuthCache.getAccessToken();
+  if (!token) {
+    throw new Error(
+      'Could not get an access token from application default credentials. ' +
+        'Run `gcloud auth application-default login`.'
+    );
+  }
+  return token;
+}
+
+/** The Cloud Storage bucket these credentials operate on. */
+export function adminStorageBucketName(): string {
+  return requireEnv('NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET');
 }

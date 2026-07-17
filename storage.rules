@@ -36,7 +36,21 @@ service firebase.storage {
       allow delete: if isAdmin();
     }
 
-    // Anything outside the three known prefixes is not writable at all.
+    // Candidate CVs. Denied to everyone here, on purpose: the only writer is the
+    // Admin SDK in app/api/careers/apply/route.ts and the only reader is
+    // app/api/admin/applications/[id]/cv/route.ts, which streams the bytes after
+    // verifying the admin session cookie. Both bypass these rules entirely.
+    //
+    // This block is what keeps CVs private. The catch-all below grants
+    // `read: if true`, and Storage rules do not cascade the way Firestore's do —
+    // the most specific match wins outright — so without this match a resume
+    // would be downloadable by anyone who learned its path. Do not remove it
+    // without moving CVs to a different bucket.
+    match /applications/{allPaths=**} {
+      allow read, write: if false;
+    }
+
+    // Anything outside the known prefixes is not writable at all.
     match /{allPaths=**} {
       allow read: if true;
       allow write: if false;

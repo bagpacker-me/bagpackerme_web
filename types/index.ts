@@ -103,6 +103,62 @@ export interface Enquiry {
   createdAt: string;
 }
 
+export type JobOpeningStatus = 'draft' | 'published' | 'closed';
+export type JobType = 'full-time' | 'part-time' | 'contract' | 'internship';
+export type JobLocationType = 'onsite' | 'hybrid' | 'remote';
+export type SalaryPeriod = 'YEAR' | 'MONTH';
+
+export interface JobOpening {
+  id: string;
+  title: string;
+  slug: string;
+  department: string;
+  location: string;           // e.g. "Kochi, India"
+  locationType: JobLocationType;
+  type: JobType;
+  descriptionHtml: string;
+  responsibilities: string[];
+  requirements: string[];
+  // Nullable rather than optional: the Firestore client SDK rejects `undefined`,
+  // and a blank salary must round-trip through the admin form as an explicit null.
+  salaryMin: number | null;
+  salaryMax: number | null;
+  salaryCurrency: string;     // ISO 4217, e.g. "INR"
+  salaryPeriod: SalaryPeriod;
+  status: JobOpeningStatus;
+  order: number;              // manual sort on the public listing, ascending
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type ApplicationStatus = 'new' | 'shortlisted' | 'interviewing' | 'hired' | 'rejected';
+
+// Written only by app/api/careers/apply/route.ts via the Admin SDK — firestore.rules
+// give browsers no create access. Candidate PII: deliberately no IP or user-agent.
+export interface JobApplication {
+  id: string;
+  jobId: string;
+  jobSlug: string;
+  jobTitle: string;           // denormalized so it survives the opening being deleted
+  fullName: string;
+  email: string;
+  phone: string;
+  linkedinUrl: string | null;
+  portfolioUrl: string | null;
+  coverNote: string;
+  noticePeriod: string;
+  yearsExperience: string;    // a band, not a number — avoids fake precision
+  cvPath: string | null;      // Storage path, never a download URL
+  cvFilename: string | null;
+  cvSize: number | null;
+  cvContentType: string | null;
+  status: ApplicationStatus;
+  notes: string;              // internal admin notes
+  source: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Customer {
   id: string;
   name: string;

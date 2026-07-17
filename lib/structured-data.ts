@@ -2,7 +2,7 @@ import { SITE_URL, absoluteUrl } from '@/lib/site-url';
 import { getPackagePrimaryPrice, hasPackagePrice } from '@/lib/packagePricing';
 import type { ResolvedSiteSettings } from '@/lib/site-settings';
 import type { FaqItem } from '@/lib/faq';
-import type { BlogPost, Package, PackageMarket } from '@/types';
+import type { BlogPost, JobOpening, JobType, Package, PackageMarket } from '@/types';
 
 // A loose alias at the boundary so JSON.stringify is happy; each builder returns
 // a precise object literal internally. No `any`.
@@ -113,6 +113,73 @@ export function buildTouristTripSchema(pkg: Package, market: PackageMarket): Jso
     provider: { '@id': ORG_ID },
     ...(offers ? { offers } : {}),
     ...(itinerary ? { itinerary } : {}),
+  };
+}
+
+const EMPLOYMENT_TYPE_MAP: Record<JobType, string> = {
+  'full-time': 'FULL_TIME',
+  'part-time': 'PART_TIME',
+  contract: 'CONTRACTOR',
+  internship: 'INTERN',
+};
+
+// Google drops postings that never expire, so a posting with no explicit end
+// date is advertised as good for this long after it went up.
+const JOB_VALID_DAYS = 90;
+
+export function buildJobPostingSchema(job: JobOpening): JsonLdDocument {
+  const url = absoluteUrl(`/careers/${job.slug}`);
+
+  const validThrough = new Date(
+    new Date(job.createdAt).getTime() + JOB_VALID_DAYS * 24 * 60 * 60 * 1000
+  ).toISOString();
+
+  // Omit baseSalary entirely unless both ends are real numbers — a half-range
+  // or a null value is worse than no salary field at all.
+  const baseSalary =
+    typeof job.salaryMin === 'number' && typeof job.salaryMax === 'number'
+      ? {
+          '@type': 'MonetaryAmount',
+          currency: job.salaryCurrency || 'INR',
+          value: {
+            '@type': 'QuantitativeValue',
+            minValue: job.salaryMin,
+            maxValue: job.salaryMax,
+            unitText: job.salaryPeriod,
+          },
+        }
+      : undefined;
+
+  // Remote roles use jobLocationType + applicantLocationRequirements; anything
+  // a candidate physically attends (including hybrid) needs a jobLocation.
+  const location =
+    job.locationType === 'remote'
+      ? {
+          jobLocationType: 'TELECOMMUTE',
+          applicantLocationRequirements: { '@type': 'Country', name: 'India' },
+        }
+      : {
+          jobLocation: {
+            '@type': 'Place',
+            address: { '@type': 'PostalAddress', addressLocality: job.location },
+          },
+        };
+
+  return {
+    '@context': CONTEXT,
+    '@type': 'JobPosting',
+    '@id': `${url}#job`,
+    title: job.title,
+    // HTML is permitted here and Google prefers the formatted description.
+    description: job.descriptionHtml,
+    datePosted: job.createdAt,
+    validThrough,
+    employmentType: EMPLOYMENT_TYPE_MAP[job.type],
+    hiringOrganization: { '@id': ORG_ID },
+    ...(job.department ? { industry: job.department } : {}),
+    ...location,
+    ...(baseSalary ? { baseSalary } : {}),
+    directApply: true,
   };
 }
 

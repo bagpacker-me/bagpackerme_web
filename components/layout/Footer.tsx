@@ -10,6 +10,7 @@ const companyLinks = [
   { name: 'Global Trips', href: '/packages' },
   { name: 'India Trips', href: '/in/packages' },
   { name: 'About', href: '/about' },
+  { name: 'Careers', href: '/careers' },
   { name: 'Blog', href: '/blog' },
   { name: 'Corporate Retreats', href: '/contact?intent=corporate' },
   { name: 'Affiliate Program', href: '/affiliate' },

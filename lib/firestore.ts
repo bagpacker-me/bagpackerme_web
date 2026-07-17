@@ -1,6 +1,6 @@
 import { collection, doc, getDocs, addDoc, updateDoc, deleteDoc, query, where, orderBy, getDoc, limit, setDoc, increment, runTransaction, writeBatch, onSnapshot } from 'firebase/firestore';
 import { db } from './firebase';
-import { Package, BlogPost, Enquiry, Customer, Booking, GalleryImage, Testimonial, Affiliate, AffiliateClick, AffiliateEvent, AffiliatePublic, AffiliateRegistrationIndex, PackageMarket } from '@/types';
+import { Package, BlogPost, Enquiry, Customer, Booking, GalleryImage, Testimonial, Affiliate, AffiliateClick, AffiliateEvent, AffiliatePublic, AffiliateRegistrationIndex, PackageMarket, JobOpening, JobApplication } from '@/types';
 import { buildAffiliatePublicData, normalizeAffiliateCode, normalizeAffiliateSessionId } from './affiliate';
 import { STATIC_GLOBAL_PACKAGES } from './static-global-packages';
 import {
@@ -221,6 +221,37 @@ export const listenNewEnquiriesCount = (callback: (count: number) => void) => {
   });
 };
 
+
+// Job openings
+const jobOpeningsCol = collection(db, 'job_openings');
+export const getJobOpenings = async () => getDocs(query(jobOpeningsCol, orderBy('createdAt', 'desc')));
+export const getJobOpening = async (id: string) => getDoc(doc(db, 'job_openings', id));
+export const createJobOpening = async (data: Omit<JobOpening, 'id'>) => addDoc(jobOpeningsCol, data);
+export const updateJobOpening = async (id: string, data: Partial<JobOpening>) =>
+  updateDoc(doc(db, 'job_openings', id), data);
+export const deleteJobOpening = async (id: string) => deleteDoc(doc(db, 'job_openings', id));
+
+// Job applications
+// No create or delete wrapper here, on purpose:
+//   create — firestore.rules deny browser creates; app/api/careers/apply owns it
+//            via the Admin SDK, so its zod and CV magic-byte checks cannot be
+//            sidestepped.
+//   delete — deleting the doc from the browser would orphan the candidate's CV
+//            in Storage, where no admin can see it and nobody knows it exists.
+//            DELETE /api/admin/applications/[id] removes both.
+const jobApplicationsCol = collection(db, 'job_applications');
+export const getJobApplications = async () =>
+  getDocs(query(jobApplicationsCol, orderBy('createdAt', 'desc')));
+export const updateJobApplication = async (id: string, data: Partial<JobApplication>) =>
+  updateDoc(doc(db, 'job_applications', id), data);
+export const listenNewApplicationsCount = (callback: (count: number) => void) => {
+  const q = query(jobApplicationsCol, where('status', '==', 'new'));
+  return onSnapshot(q, (snapshot) => {
+    callback(snapshot.size);
+  }, (error) => {
+    console.error('Error listening to new applications count:', error);
+  });
+};
 
 // Subscribers
 const subscribersCol = collection(db, 'subscribers');

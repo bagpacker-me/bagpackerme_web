@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next';
 import { getPublishedPackagesForMarket, getPublishedBlogs } from '@/lib/firestore';
+import { getPublishedJobOpenings } from '@/lib/careers-server';
 import { Package, BlogPost } from '@/types';
 
 const BASE_URL = 'https://bagpackerme.com';
@@ -14,6 +15,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/in/packages`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.85 },
     { url: `${BASE_URL}/blog`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
     { url: `${BASE_URL}/about`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${BASE_URL}/careers`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.6 },
   ];
 
   // Dynamic package pages
@@ -56,5 +58,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Sitemap generation continues even if Firestore fails
   }
 
-  return [...staticPages, ...packagePages, ...blogPages];
+  // Dynamic job pages
+  let jobPages: MetadataRoute.Sitemap = [];
+  try {
+    const jobs = await getPublishedJobOpenings();
+    jobPages = jobs.map((job) => ({
+      url: `${BASE_URL}/careers/${job.slug}`,
+      lastModified: job.updatedAt ? new Date(job.updatedAt) : new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.6,
+    }));
+  } catch {
+    // Sitemap generation continues even if Firestore fails
+  }
+
+  return [...staticPages, ...packagePages, ...blogPages, ...jobPages];
 }

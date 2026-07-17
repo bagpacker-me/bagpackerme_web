@@ -184,6 +184,62 @@ await check(
   assertFails(setDoc(doc(anon, 'testimonials/hack'), { authorName: 'X', quote: 'Q', rating: 5, status: 'published' }))
 );
 
+// Job openings: public reads published, admin writes (mirrors packages/blogs).
+console.log('\n--- Careers ---');
+await check(
+  'admin writes a job opening',
+  assertSucceeds(setDoc(doc(admin, 'job_openings/j1'), { title: 'Trip Designer', slug: 'trip-designer', status: 'published' }))
+);
+await testEnv.withSecurityRulesDisabled(async (ctx) => {
+  await setDoc(doc(ctx.firestore(), 'job_openings/pub'), { title: 'T', slug: 't', status: 'published' });
+  await setDoc(doc(ctx.firestore(), 'job_openings/dft'), { title: 'T', slug: 't2', status: 'draft' });
+  await setDoc(doc(ctx.firestore(), 'job_openings/cls'), { title: 'T', slug: 't3', status: 'closed' });
+  await setDoc(doc(ctx.firestore(), 'job_applications/a1'), {
+    jobId: 'pub',
+    fullName: 'Candidate',
+    email: 'candidate@example.com',
+    phone: '+910000000000',
+    cvPath: 'applications/pub/uuid/resume.pdf',
+    status: 'new',
+  });
+});
+await check('public reads a published opening', assertSucceeds(getDoc(doc(anon, 'job_openings/pub'))));
+await check('public cannot read a draft opening', assertFails(getDoc(doc(anon, 'job_openings/dft'))));
+await check('public cannot read a closed opening', assertFails(getDoc(doc(anon, 'job_openings/cls'))));
+await check(
+  'public cannot write an opening',
+  assertFails(setDoc(doc(anon, 'job_openings/hack'), { title: 'X', slug: 'x', status: 'published' }))
+);
+
+// Applications hold candidate PII and a pointer to a private CV. Nothing outside
+// the Admin SDK may touch them — the apply route owns creation so its zod and
+// magic-byte checks cannot be sidestepped.
+await check(
+  'public cannot read an application (candidate PII)',
+  assertFails(getDoc(doc(anon, 'job_applications/a1')))
+);
+await check(
+  'a signed-in non-admin cannot read an application',
+  assertFails(getDoc(doc(rando, 'job_applications/a1')))
+);
+await check(
+  'public cannot create an application, bypassing route validation',
+  assertFails(setDoc(doc(anon, 'job_applications/evil'), { fullName: 'Bot', status: 'new' }))
+);
+await check(
+  'public cannot self-shortlist by updating an application',
+  assertFails(updateDoc(doc(anon, 'job_applications/a1'), { status: 'shortlisted' }))
+);
+await check('admin reads an application', assertSucceeds(getDoc(doc(admin, 'job_applications/a1'))));
+await check(
+  'admin moves an application through the pipeline',
+  assertSucceeds(updateDoc(doc(admin, 'job_applications/a1'), { status: 'shortlisted' }))
+);
+await check(
+  'admin deletes an application',
+  assertSucceeds(deleteDoc(doc(admin, 'job_applications/a1')))
+);
+
 console.log(`\n===== ${pass} passed, ${fail} failed =====`);
 await testEnv.cleanup();
 process.exit(fail > 0 ? 1 : 0);
