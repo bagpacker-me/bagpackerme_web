@@ -1,0 +1,290 @@
+'use client';
+
+import React, { useCallback, useMemo, useRef, useState } from 'react';
+import Link from 'next/link';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { ArrowRight } from 'lucide-react';
+import {
+  MONTHS,
+  MONTH_LABELS,
+  getCurrentMonth,
+  getDestinationsForMonth,
+  type Month,
+} from '@/lib/destination-seasons';
+import {
+  MAP_HEIGHT,
+  MAP_WIDTH,
+  WORLD_LAND_PATH,
+  projectLatLng,
+} from '@/lib/world-map-geometry';
+
+const EASE_HOUSE = [0.25, 0.46, 0.45, 0.94] as [number, number, number, number];
+
+export default function SeasonExplorer() {
+  // Opening on the visitor's current month makes the first pin relevant
+  // without needing any personalisation.
+  const [month, setMonth] = useState<Month>(() => getCurrentMonth());
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const shouldReduceMotion = useReducedMotion();
+  const monthButtonRefs = useRef<Array<HTMLButtonElement | null>>([]);
+
+  const destinations = useMemo(() => getDestinationsForMonth(month), [month]);
+
+  // The dataset guarantees every month qualifies at least three destinations,
+  // but clamp anyway so a future data edit can't render an empty panel.
+  const activeIndex = Math.min(selectedIndex, destinations.length - 1);
+  const active = destinations[activeIndex];
+
+  const selectMonth = useCallback((next: Month) => {
+    setMonth(next);
+    setSelectedIndex(0);
+  }, []);
+
+  const handleMonthKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLButtonElement>, index: number) => {
+      const delta = event.key === 'ArrowRight' ? 1 : event.key === 'ArrowLeft' ? -1 : 0;
+      if (!delta) return;
+
+      event.preventDefault();
+      const nextIndex = (index + delta + MONTHS.length) % MONTHS.length;
+      selectMonth(MONTHS[nextIndex]);
+      monthButtonRefs.current[nextIndex]?.focus();
+    },
+    [selectMonth]
+  );
+
+  if (!active) return null;
+
+  const total = destinations.length;
+  const counter = `${String(activeIndex + 1).padStart(2, '0')} / ${String(total).padStart(2, '0')}`;
+  const ctaHref = active.packageSlug
+    ? `/packages/${active.packageSlug}`
+    : '/contact?intent=trip';
+  const ctaLabel = active.packageSlug ? 'View this journey' : `Plan a trip to ${active.name}`;
+
+  return (
+    <section className="section-teal overflow-hidden py-24 md:py-32">
+      <div className="container mx-auto px-6 lg:px-8">
+        {/* Header */}
+        <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+          <motion.div
+            initial={shouldReduceMotion ? undefined : { opacity: 0, y: 20 }}
+            whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-100px' }}
+            transition={{ duration: 0.6 }}
+            className="max-w-xl"
+          >
+            <div className="accent-line-cyan" />
+            <h2 className="font-display text-4xl font-bold tracking-tight text-white md:text-5xl">
+              Where should you go
+              <br />
+              <span className="font-accent italic font-normal">this month?</span>
+            </h2>
+          </motion.div>
+
+          <motion.p
+            initial={shouldReduceMotion ? undefined : { opacity: 0, y: 20 }}
+            whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-100px' }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="max-w-md font-body text-base leading-relaxed text-white/60"
+          >
+            Pick when you want to travel and we&apos;ll show you the places entering their
+            finest season — not simply the ones everyone is posting about.
+          </motion.p>
+        </div>
+
+        {/* Month selector */}
+        <div
+          role="tablist"
+          aria-label="Choose a travel month"
+          className="hide-scrollbar mt-12 flex overflow-x-auto border border-white/15 md:grid md:grid-cols-12 md:overflow-visible"
+        >
+          {MONTHS.map((candidate, index) => {
+            const isActive = candidate === month;
+            return (
+              <button
+                key={candidate}
+                ref={(node) => {
+                  monthButtonRefs.current[index] = node;
+                }}
+                type="button"
+                role="tab"
+                aria-selected={isActive}
+                tabIndex={isActive ? 0 : -1}
+                onClick={() => selectMonth(candidate)}
+                onKeyDown={(event) => handleMonthKeyDown(event, index)}
+                className={`min-w-[68px] flex-shrink-0 border-r border-white/10 px-3 py-4 font-body text-sm font-semibold transition-colors duration-300 last:border-r-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-lime ${
+                  isActive
+                    ? 'bg-lime text-teal'
+                    : 'text-white/60 hover:bg-white/10 hover:text-white'
+                }`}
+              >
+                <span className="sr-only">{MONTH_LABELS[candidate]}</span>
+                <span aria-hidden="true">{candidate}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Explorer */}
+        <div className="grid border border-white/15 border-t-0 lg:grid-cols-[1.45fr_0.55fr]">
+          {/* Map */}
+          {/* Below lg the column matches the map's own ratio so nothing is
+              cropped and every pin stays on screen. From lg it stretches to the
+              detail panel's height and the wrapper below covers the extra. */}
+          <div className="relative aspect-[1000/460] overflow-hidden bg-[#1d4247] lg:aspect-auto lg:min-h-[460px]">
+            {/* This wrapper is locked to the viewBox ratio, so the land drawing
+                and the percentage-positioned pins share one coordinate space and
+                can never drift apart. It fits inside the column rather than
+                covering it — cropping would hide edge pins like New Zealand. */}
+            <div className="absolute left-1/2 top-1/2 aspect-[1000/460] max-h-full w-full -translate-x-1/2 -translate-y-1/2">
+              <svg
+                viewBox={`0 0 ${MAP_WIDTH} ${MAP_HEIGHT}`}
+                preserveAspectRatio="none"
+                className="block h-full w-full"
+                role="img"
+                aria-label={`World map showing ${total} destinations at their best in ${MONTH_LABELS[month]}: ${destinations
+                  .map((destination) => destination.name)
+                  .join(', ')}`}
+              >
+                <defs>
+                  <pattern id="season-graticule" width="41.7" height="32.9" patternUnits="userSpaceOnUse">
+                    <path
+                      d="M41.7 0V32.9M0 32.9H41.7"
+                      fill="none"
+                      stroke="rgba(255,255,255,0.07)"
+                      strokeWidth="1"
+                    />
+                  </pattern>
+                </defs>
+                <rect width={MAP_WIDTH} height={MAP_HEIGHT} fill="url(#season-graticule)" />
+                <path
+                  d={WORLD_LAND_PATH}
+                  fill="rgba(255,255,255,0.14)"
+                  stroke="rgba(255,255,255,0.3)"
+                  strokeWidth="0.6"
+                  strokeLinejoin="round"
+                />
+              </svg>
+
+              {/* Pins sit in HTML above the SVG so focus rings, hover and text
+                  labels behave like ordinary interactive elements. */}
+              {destinations.map((destination, index) => {
+                const { x, y } = projectLatLng(destination.lat, destination.lng);
+                const isActive = index === activeIndex;
+                // Flip the label to the left near the right edge so it can't
+                // run off the map.
+                const flip = x / MAP_WIDTH > 0.82;
+
+                return (
+                  <button
+                    key={destination.id}
+                    type="button"
+                    onClick={() => setSelectedIndex(index)}
+                    aria-pressed={isActive}
+                    style={{
+                      left: `${(x / MAP_WIDTH) * 100}%`,
+                      top: `${(y / MAP_HEIGHT) * 100}%`,
+                    }}
+                    className={`group absolute flex -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime ${
+                      isActive ? 'z-20 text-lime' : 'z-10 text-white/75 hover:text-white'
+                    }`}
+                  >
+                    {/* Comfortable tap target around the dot. Only this area is
+                        clickable — labels of neighbouring pins would otherwise
+                        sit over each other's dots in dense regions. */}
+                    <span className="flex h-7 w-7 items-center justify-center">
+                      <span
+                        aria-hidden="true"
+                        className={`block h-2.5 w-2.5 rounded-full ring-2 transition-all duration-300 ${
+                          isActive
+                            ? 'bg-lime ring-lime/30 shadow-glow-lime scale-125'
+                            : 'bg-white/80 ring-white/20 group-hover:bg-white group-hover:scale-110'
+                        }`}
+                      />
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      className={`pointer-events-none absolute top-1/2 hidden -translate-y-1/2 whitespace-nowrap font-body text-xs font-semibold drop-shadow-[0_1px_3px_rgba(0,0,0,0.7)] sm:block ${
+                        flip ? 'right-full mr-1' : 'left-full ml-1'
+                      }`}
+                    >
+                      {destination.name}
+                    </span>
+                    <span className="sr-only">{destination.name}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Detail panel */}
+          <div className="flex flex-col justify-center bg-ice px-8 py-10 text-void md:px-10">
+            {/* Close-together pins (Maldives and Sri Lanka in March, say) overlap
+                on a world map at this scale, so stepping through the list is the
+                reliable way to reach every destination. */}
+            <div className="mb-6 flex items-center justify-between gap-4">
+              <p className="font-display text-[11px] font-bold uppercase tracking-widest text-void/45">
+                {counter} · Best in {MONTH_LABELS[month]}
+              </p>
+              <div className="flex flex-shrink-0 gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => setSelectedIndex((activeIndex - 1 + total) % total)}
+                  aria-label="Previous destination"
+                  className="flex h-8 w-8 items-center justify-center rounded-full border border-void/15 text-void/60 transition-colors duration-300 hover:border-teal hover:bg-teal hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal"
+                >
+                  <ArrowRight className="h-3.5 w-3.5 rotate-180" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSelectedIndex((activeIndex + 1) % total)}
+                  aria-label="Next destination"
+                  className="flex h-8 w-8 items-center justify-center rounded-full border border-void/15 text-void/60 transition-colors duration-300 hover:border-teal hover:bg-teal hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal"
+                >
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            </div>
+
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={`${month}-${active.id}`}
+                initial={shouldReduceMotion ? undefined : { opacity: 0, y: 8 }}
+                animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+                exit={shouldReduceMotion ? undefined : { opacity: 0, y: -8 }}
+                transition={{ duration: 0.35, ease: EASE_HOUSE }}
+              >
+                <p className="font-display text-[11px] font-bold uppercase tracking-widest text-teal">
+                  {active.region}
+                </p>
+                <h3 className="mt-2 font-accent text-4xl italic leading-tight md:text-5xl">
+                  {active.name}
+                </h3>
+                <p className="mt-4 font-body text-sm leading-relaxed text-void/60">
+                  {active.blurb}. Every journey is shaped around your pace, your stays and
+                  the people you travel with.
+                </p>
+
+                <div className="mt-7 border-t border-void/10 pt-5">
+                  <p className="font-display text-[10px] font-bold uppercase tracking-widest text-void/40">
+                    Ideal for
+                  </p>
+                  <p className="mt-1.5 font-body text-xs font-semibold text-void/80">
+                    Private journeys · Couples · Curious travellers
+                  </p>
+                </div>
+
+                <Link href={ctaHref} className="btn-teal btn-shimmer mt-8 inline-flex">
+                  {ctaLabel}
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}

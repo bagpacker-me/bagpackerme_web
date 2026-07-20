@@ -1,6 +1,7 @@
 import React from 'react';
 import HeroInteractive from '@/components/home/HeroInteractive';
 import DiscoverTheWorld from '@/components/home/DiscoverTheWorld';
+import SeasonExplorer from '@/components/home/SeasonExplorer';
 import EffortlessPlanning from '@/components/home/EffortlessPlanning';
 import MemorableMoments from '@/components/home/MemorableMoments';
 import FAQSection from '@/components/home/FAQSection';
@@ -29,6 +30,7 @@ export default function HomePage() {
       <JsonLd data={buildFaqPageSchema(HOME_FAQS)} />
       <HeroInteractive market="global" />
       <DiscoverTheWorld market="global" />
+      <SeasonExplorer />
       <EffortlessPlanning market="global" />
       <MemorableMoments market="global" />
       <ImageGallery market="global" />
