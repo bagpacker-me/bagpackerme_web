@@ -20,7 +20,10 @@ const DURATIONS = [
 
 const MARKET_PRICE_CONFIG = {
   global: {
-    max: 6000,
+    // Must stay above the priciest global package — the range filter is
+    // inclusive on both ends, so anything above `max` is hidden at every
+    // slider position, including the default one.
+    max: 8000,
     step: 100,
     currency: 'USD' as const,
   },

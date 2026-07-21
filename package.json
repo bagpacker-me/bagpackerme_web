@@ -9,7 +9,8 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "test:rules": "firebase emulators:exec --only firestore 'node firestore.rules.test.mjs'",
-    "test:cv": "tsx --conditions=react-server careers-cv.test.mjs"
+    "test:cv": "tsx --conditions=react-server careers-cv.test.mjs",
+    "test:packages": "tsx static-global-packages.test.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
