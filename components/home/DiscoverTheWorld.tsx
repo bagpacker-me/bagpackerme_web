@@ -109,18 +109,26 @@ export default function DiscoverTheWorld({ market = 'global' }: { market?: Packa
     setHasError(false);
 
     const cancel = scheduleIdleTask(async () => {
-      try {
-        const { getPublishedPackagesForMarket } = await import('@/lib/firestore');
-        const nextPackages = await getPublishedPackagesForMarket(market);
-        if (mounted) setPackages(nextPackages);
-      } catch (error) {
-        console.error('Failed to load homepage journey cards:', error);
-        // Global always has the static seed, so a fetch failure there is
+      // REST rather than the Firebase SDK: this refresh is not worth ~200 KB of
+      // SDK plus an auth iframe on a marketing page. See lib/public-reads-rest.
+      const { fetchPublishedPackageCards, mergePackagesBySlug } = await import(
+        '@/lib/public-reads-rest'
+      );
+      const livePackages = await fetchPublishedPackageCards(market);
+      if (!mounted) return;
+
+      if (livePackages) {
+        setPackages(
+          market === 'global'
+            ? mergePackagesBySlug(STATIC_GLOBAL_PACKAGE_SUMMARIES, livePackages)
+            : livePackages
+        );
+      } else {
+        // Global always has the static seed, so a failed read there is
         // invisible. On India the list would otherwise look deceptively empty.
-        if (mounted) setHasError(true);
-      } finally {
-        if (mounted) setLoading(false);
+        setHasError(market !== 'global');
       }
+      setLoading(false);
     }, market === 'global' ? 2500 : 800);
 
     return () => {
@@ -217,6 +225,7 @@ export default function DiscoverTheWorld({ market = 'global' }: { market?: Packa
                     alt={pkg.title}
                     fill
                     sizes="(max-width: 768px) 85vw, 380px"
+                    quality={60}
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
                   />
 

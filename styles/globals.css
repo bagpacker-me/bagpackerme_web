@@ -271,8 +271,12 @@ body {
   opacity: 0;
 }
 
+/* Finite on purpose. An endlessly pulsing ring pinned to the viewport keeps
+   the page from ever reaching a visually stable frame, which Speed Index scores
+   against — and it costs a composite every frame for the life of the session.
+   Three pulses still draw the eye on arrival. */
 .wa-pulse-ring {
-  animation: wa-pulse 2s ease-out infinite;
+  animation: wa-pulse 2s ease-out 3 forwards;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -789,29 +793,6 @@ blockquote,
   outline-offset: 2px;
 }
 
-/* ─────────────────────────────────────────────────────────────────────────────
-   HERO SECTION — scroll indicator animated line
-   ───────────────────────────────────────────────────────────────────────────── */
-@keyframes heroScrollLineGrow {
-  0%   { height: 0px;  opacity: 0.3; }
-  50%  { height: 40px; opacity: 1;   }
-  100% { height: 0px;  opacity: 0.3; }
-}
-
-.hero-scroll-line {
-  display: block;
-  width: 1px;
-  background: rgba(255, 255, 255, 0.7);
-  animation: heroScrollLineGrow 1.8s ease-in-out infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hero-scroll-line {
-    animation: none;
-    height: 40px;
-    opacity: 0.7;
-  }
-}
 
 /* ─────────────────────────────────────────────────────────────────────────────
    HERO SECTION — thumbnail card hover lift

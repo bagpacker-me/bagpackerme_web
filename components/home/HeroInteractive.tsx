@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { ArrowRight, ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react';
 import Image from 'next/image';
+import { scheduleIdleTask } from '@/lib/browser-idle';
 import { PackageMarket } from '@/types';
 
 const indiaDestinations = [
@@ -91,9 +92,25 @@ export default function HeroInteractive({ market = 'global' }: { market?: Packag
   const [direction, setDirection] = useState(1);
   const [progressKey, setProgressKey] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  // Auto-advance is withheld until the page has actually finished loading, and
+  // suspended whenever the hero is scrolled away or the tab is in the
+  // background. A full-viewport crossfade every 6s otherwise means the page
+  // never reaches a visually stable state: it costs nothing a visitor can see
+  // and it was dominating Speed Index (18.4s on mobile), because the filmstrip
+  // keeps changing for as long as the trace runs.
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [isOnScreen, setIsOnScreen] = useState(true);
+  const [isTabVisible, setIsTabVisible] = useState(true);
+  const sectionRef = useRef<HTMLElement>(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const INTERVAL_MS = 6000;
+  // The opening slide holds twice as long as the rest. Someone who has just
+  // arrived is still reading the headline, and the crossfade repaints the whole
+  // viewport — doing that while the page is still settling is what makes the
+  // filmstrip churn. Every later slide keeps the original 6s rhythm.
+  const FIRST_INTERVAL_MS = 12000;
+  const [dwellMs, setDwellMs] = useState(FIRST_INTERVAL_MS);
   const destinations = market === 'india' ? indiaDestinations : globalDestinations;
   const packagesHref = market === 'india' ? '/in/packages' : '/packages';
   // A stable, meaningful headline — the previous <h1> was the destination name,
@@ -104,33 +121,76 @@ export default function HeroInteractive({ market = 'global' }: { market?: Packag
 
   const totalSlides = destinations.length;
   // Honour prefers-reduced-motion and the pause control: no auto-advance.
-  const autoPlay = !shouldReduceMotion && !isPaused;
+  const autoPlay = !shouldReduceMotion && !isPaused && isLoaded && isOnScreen && isTabVisible;
 
   const resetTimer = useCallback(() => {
-    if (timerRef.current) clearInterval(timerRef.current);
+    if (timerRef.current) clearTimeout(timerRef.current);
     setProgressKey(k => k + 1);
     if (!autoPlay) return;
-    timerRef.current = setInterval(() => {
+    timerRef.current = setTimeout(() => {
       setDirection(1);
       setCurrentIndex(prev => (prev + 1) % totalSlides);
       setProgressKey(k => k + 1);
-    }, INTERVAL_MS);
-  }, [totalSlides, autoPlay]);
+      // Past the opening slide the carousel settles into its normal cadence.
+      setDwellMs(INTERVAL_MS);
+    }, dwellMs);
+  }, [totalSlides, autoPlay, dwellMs]);
 
   useEffect(() => {
     resetTimer();
-    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+    return () => { if (timerRef.current) clearTimeout(timerRef.current); };
   }, [resetTimer]);
+
+  // Arm auto-advance only once the load event has fired and the browser has a
+  // spare idle slot, so the carousel never competes with the first paint.
+  useEffect(() => {
+    if (document.readyState === 'complete') {
+      const cancel = scheduleIdleTask(() => setIsLoaded(true), 1000);
+      return cancel;
+    }
+
+    let cancelIdle: (() => void) | undefined;
+    const onLoad = () => { cancelIdle = scheduleIdleTask(() => setIsLoaded(true), 1000); };
+    window.addEventListener('load', onLoad);
+    return () => {
+      window.removeEventListener('load', onLoad);
+      cancelIdle?.();
+    };
+  }, []);
+
+  // Stop the timer when the hero is off-screen or the tab is hidden — a
+  // crossfade nobody is looking at is pure battery and main-thread cost.
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section || typeof IntersectionObserver === 'undefined') return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsOnScreen(entry.isIntersecting),
+      { threshold: 0.2 }
+    );
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const onVisibilityChange = () => setIsTabVisible(!document.hidden);
+    onVisibilityChange();
+    document.addEventListener('visibilitychange', onVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', onVisibilityChange);
+  }, []);
 
   const handleNext = useCallback(() => {
     setDirection(1);
     setCurrentIndex((prev) => (prev + 1) % totalSlides);
+    // Driving the carousel by hand ends the opening slide's longer hold.
+    setDwellMs(INTERVAL_MS);
     resetTimer();
   }, [totalSlides, resetTimer]);
 
   const handlePrev = useCallback(() => {
     setDirection(-1);
     setCurrentIndex((prev) => (prev - 1 + totalSlides) % totalSlides);
+    setDwellMs(INTERVAL_MS);
     resetTimer();
   }, [totalSlides, resetTimer]);
 
@@ -144,7 +204,10 @@ export default function HeroInteractive({ market = 'global' }: { market?: Packag
   ];
 
   return (
-    <section className="relative min-h-[100dvh] w-full overflow-hidden bg-void font-sans text-white">
+    <section
+      ref={sectionRef}
+      className="relative min-h-[100dvh] w-full overflow-hidden bg-void font-sans text-white"
+    >
       {/* Background Images Crossfade */}
       <AnimatePresence initial={false} custom={direction}>
         <motion.div
@@ -161,7 +224,15 @@ export default function HeroInteractive({ market = 'global' }: { market?: Packag
             alt={activeDest.title}
             fill
             className="object-cover"
-            priority
+            sizes="100vw"
+            // The LCP image, so the first slide preloads. Later slides load
+            // eagerly but without a preload hint — they are not the LCP and
+            // must not compete with it for early bandwidth.
+            priority={currentIndex === 0}
+            loading={currentIndex === 0 ? undefined : 'eager'}
+            // It sits under two gradient scrims and a grain layer, so the
+            // default quality of 75 is spending bytes nobody can see.
+            quality={60}
           />
           {/* Layered gradient scrims for depth */}
           <div className="absolute inset-0 bg-gradient-to-r from-void/80 via-void/40 to-transparent" />
@@ -188,7 +259,11 @@ export default function HeroInteractive({ market = 'global' }: { market?: Packag
           </h1>
 
           {/* Rotating destination caption — the demoted destination name */}
-          <AnimatePresence mode="popLayout" custom={direction}>
+          {/* initial={false}, like the background crossfade above it: without
+              it the server-rendered caption and description ship at opacity 0
+              and stay invisible until Framer Motion hydrates, which on a
+              mid-range phone is seconds of blank space beside the headline. */}
+          <AnimatePresence initial={false} mode="popLayout" custom={direction}>
             <motion.div
               key={activeDest.id}
               custom={direction}
@@ -259,6 +334,7 @@ export default function HeroInteractive({ market = 'global' }: { market?: Packag
                     fill
                     className="object-cover"
                     sizes="220px"
+                    quality={60}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-void/80 via-void/20 to-transparent" />
 
@@ -338,6 +414,9 @@ export default function HeroInteractive({ market = 'global' }: { market?: Packag
                 <div
                   key={progressKey}
                   className="absolute top-0 left-0 h-full bg-lime hero-progress-bar"
+                  // Track the real dwell so the fill lands exactly when the
+                  // slide turns, including the longer opening hold.
+                  style={{ animationDuration: `${dwellMs}ms` }}
                 />
               )}
             </div>

@@ -69,7 +69,10 @@ export function Navbar() {
                 alt="BagPackerMe Logo"
                 width={150}
                 height={30}
-                priority
+                // Eager, but deliberately not `priority`: a preload hint here
+                // put a 30px-tall logo in front of the hero image in the
+                // browser's early fetch queue, delaying the LCP for nothing.
+                loading="eager"
                 className="h-6 sm:h-7 w-auto object-contain"
               />
             </Link>

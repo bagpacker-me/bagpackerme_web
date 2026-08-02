@@ -27,15 +27,13 @@ export function SiteSettingsProvider({
     let isMounted = true;
 
     const cancel = scheduleIdleTask(async () => {
-      try {
-        const { getSiteSettings } = await import('@/lib/firestore');
-        const data = await getSiteSettings();
-        if (isMounted) {
-          setSettings(resolveSiteSettings(data));
-        }
-      } catch (error) {
-        console.error('Error fetching site settings', error);
-      }
+      // REST rather than the Firebase SDK. This provider wraps every public
+      // route, so importing lib/firestore here loaded the whole SDK (and its
+      // auth iframe) sitewide just to re-read one settings document that the
+      // server already rendered into `initialSettings`.
+      const { fetchSiteSettingsRest } = await import('@/lib/public-reads-rest');
+      const data = await fetchSiteSettingsRest();
+      if (isMounted && data) setSettings(resolveSiteSettings(data));
     }, 3000);
 
     return () => {

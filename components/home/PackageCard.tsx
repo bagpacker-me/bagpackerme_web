@@ -25,6 +25,7 @@ export default function PackageCard({ pkg, market }: { pkg: Package; market?: Pa
           alt={pkg.title}
           fill
           sizes="(max-width: 768px) 85vw, (max-width: 1024px) 45vw, 30vw"
+          quality={60}
           className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-[1.05]"
         />
         {/* Hover Overlay */}

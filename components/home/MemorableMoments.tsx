@@ -24,15 +24,14 @@ export default function MemorableMoments({ market = 'global' }: { market?: Packa
     setLoaded(false);
 
     const cancel = scheduleIdleTask(async () => {
-      try {
-        const { getPublishedTestimonialsForMarket } = await import('@/lib/firestore');
-        const next = await getPublishedTestimonialsForMarket(market);
-        if (mounted) setTestimonials(next);
-      } catch (error) {
-        console.error('Failed to load testimonials:', error);
-      } finally {
-        if (mounted) setLoaded(true);
-      }
+      // REST rather than the Firebase SDK — the section renders a handful of
+      // quotes and is hidden when there are none, so it has no business
+      // pulling the SDK (and its auth iframe) onto the homepage.
+      const { fetchPublishedTestimonials } = await import('@/lib/public-reads-rest');
+      const next = await fetchPublishedTestimonials(market);
+      if (!mounted) return;
+      if (next) setTestimonials(next);
+      setLoaded(true);
     }, 1200);
 
     return () => {

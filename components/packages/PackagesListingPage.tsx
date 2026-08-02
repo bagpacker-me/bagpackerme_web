@@ -87,16 +87,24 @@ export default function PackagesListingPage({
     setHasError(false);
 
     const cancel = scheduleIdleTask(async () => {
-      try {
-        const { getPublishedPackagesForMarket } = await import('@/lib/firestore');
-        const pkgs = await getPublishedPackagesForMarket(market);
-        if (mounted) setPackages(pkgs);
-      } catch (error) {
-        console.error('Failed to load packages:', error);
-        if (mounted) setHasError(true);
-      } finally {
-        if (mounted) setLoading(false);
+      // REST rather than the Firebase SDK — the listing renders card fields
+      // only, so it has no use for the SDK or for whole package documents.
+      const { fetchPublishedPackageCards, mergePackagesBySlug } = await import(
+        '@/lib/public-reads-rest'
+      );
+      const livePackages = await fetchPublishedPackageCards(market);
+      if (!mounted) return;
+
+      if (livePackages) {
+        setPackages(
+          market === 'global'
+            ? mergePackagesBySlug(STATIC_GLOBAL_PACKAGE_SUMMARIES, livePackages)
+            : livePackages
+        );
+      } else {
+        setHasError(market !== 'global');
       }
+      setLoading(false);
     }, market === 'global' ? 2000 : 500);
 
     return () => {

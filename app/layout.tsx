@@ -31,6 +31,11 @@ const cormorantGaramond = Cormorant_Garamond({
   style: ['italic'],
   variable: '--font-accent',
   display: 'swap',
+  // Not preloaded: the accent face is for occasional pull quotes and taglines,
+  // never for anything above the fold. Preloading it put a third ~38 KB woff2
+  // into the highest-priority fetch queue on every route, alongside the LCP
+  // image. `display: swap` covers the brief fallback render.
+  preload: false,
 });
 
 export const metadata: Metadata = {
