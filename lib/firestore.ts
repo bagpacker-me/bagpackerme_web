@@ -202,7 +202,11 @@ export const getRelatedBlogs = async (category: string, excludeSlug: string, cou
     .slice(0, count);
 };
 export const createBlog = async (data: Omit<BlogPost, 'id'>) => addDoc(blogsCol, data);
-export const updateBlog = async (id: string, data: Partial<BlogPost>) => updateDoc(doc(db, 'blogs', id), data);
+// updatedAt feeds BlogPosting.dateModified. Content recency is one of the
+// strongest AI-citation signals, so every edit has to move this stamp — hence
+// setting it here rather than trusting each caller to remember.
+export const updateBlog = async (id: string, data: Partial<BlogPost>) =>
+  updateDoc(doc(db, 'blogs', id), { ...data, updatedAt: new Date().toISOString() });
 export const deleteBlog = async (id: string) => deleteDoc(doc(db, 'blogs', id));
 
 // Enquiries

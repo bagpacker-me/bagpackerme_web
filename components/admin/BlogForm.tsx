@@ -4,6 +4,7 @@ import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { createBlog, updateBlog } from '@/lib/firestore';
 import { BlogPost } from '@/types';
+import { SITE_URL } from '@/lib/site-url';
 import { storage } from '@/lib/firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { format } from 'date-fns';
@@ -391,7 +392,9 @@ export default function BlogForm({ initialData, blogId }: BlogFormProps) {
             <p className="text-[#1a0dab] text-base font-medium leading-snug truncate">
               {form.metaTitle || form.title || 'Post Title'}
             </p>
-            <p className="text-[#006621] text-xs mt-0.5">bagpackerme.com/blog/{form.slug || 'post-slug'}</p>
+            <p className="text-[#006621] text-xs mt-0.5">
+              {SITE_URL.replace(/^https?:\/\//, '')}/blog/{form.slug || 'post-slug'}
+            </p>
             <p className="text-[#545454] text-sm mt-1 leading-relaxed line-clamp-2">
               {form.metaDescription || form.excerpt || 'Post description will appear here...'}
             </p>

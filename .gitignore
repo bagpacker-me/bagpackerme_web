@@ -41,6 +41,8 @@ next-env.d.ts
 # agent and playwright
 .agents
 .claude/skills
+.claude/agents
+.claude/settings.local.json
 .playwright
 design-system/
 

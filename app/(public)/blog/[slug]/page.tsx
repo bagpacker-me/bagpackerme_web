@@ -8,6 +8,8 @@ import ShareButtons from '../_components/ShareButtons';
 import NewsletterCard from '../_components/NewsletterCard';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { buildBlogPostingSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
+import { absoluteUrl } from '@/lib/site-url';
+import { findAuthor } from '@/lib/authors';
 
 export const revalidate = 3600;
 
@@ -46,13 +48,14 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
 
   const relatedBlogs = await getRelatedBlogs(blog.category, blog.slug, 3);
   const { firstHalf, secondHalf } = splitHtml(blog.contentHtml);
+  const author = findAuthor(blog.author);
 
   const formatDate = (dateString?: string) => {
     if (!dateString) return '';
     return new Date(dateString).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
   };
 
-  const currentUrl = `https://bagpackerme.com/blog/${blog.slug}`;
+  const currentUrl = absoluteUrl(`/blog/${blog.slug}`);
 
   const articleStyles = `
     max-w-none font-sans text-[16px] md:text-[18px] leading-[1.85] text-[#2D2D2D]
@@ -128,6 +131,17 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                   <Calendar size={13} className="text-lime" />
                   {formatDate(blog.publishDate)}
                 </span>
+                {/* Only shown when an edit actually moved the date. Mirrors
+                    BlogPosting.dateModified so the visible page and the schema
+                    agree — a mismatch is a trust signal Google checks. */}
+                {blog.updatedAt && blog.updatedAt.slice(0, 10) !== blog.publishDate?.slice(0, 10) && (
+                  <>
+                    <span className="text-white/30">•</span>
+                    <span className="flex items-center gap-1.5">
+                      Updated {formatDate(blog.updatedAt)}
+                    </span>
+                  </>
+                )}
                 {blog.readTimeMinutes && (
                   <>
                     <span className="text-white/30">•</span>
@@ -201,24 +215,39 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
             <ShareButtons title={blog.title} url={currentUrl} />
           </div>
 
-          {/* Author card */}
+          {/* Author card. Bio and links come from the authors registry — the
+              card previously rendered one hardcoded bio for every byline plus
+              three href="#" links, which reads as a fabricated author identity
+              to both readers and quality raters. No registry entry means name
+              only; nothing is invented to fill the space. */}
           <div className="bg-[#F7F9FA] rounded-[20px] p-7 md:p-10 flex flex-col sm:flex-row gap-6 items-start mb-16">
             <div className="w-16 h-16 rounded-full bg-teal/10 border-2 border-teal/20 flex items-center justify-center flex-shrink-0">
               <User size={28} className="text-teal" />
             </div>
             <div className="flex-grow">
               <p className="font-display text-[11px] font-bold tracking-widest uppercase text-gray-400 mb-1">Written by</p>
-              <h3 className="font-display font-bold text-[20px] text-void mb-2">{blog.author}</h3>
-              <p className="font-body text-[14px] text-gray-500 leading-[1.7] mb-4">
-                Traveler, storyteller, and culture enthusiast exploring the hidden gems and spiritual depth of our world. Follow the journey with BagPackerMe.
-              </p>
-              <div className="flex gap-5">
-                {['Twitter', 'Instagram', 'Website'].map(s => (
-                  <a key={s} href="#" className="font-body text-[11px] font-bold uppercase tracking-widest text-gray-400 hover:text-teal transition-colors">
-                    {s}
-                  </a>
-                ))}
-              </div>
+              <h3 className="font-display font-bold text-[20px] text-void mb-2">{author?.name || blog.author}</h3>
+              {author?.jobTitle && (
+                <p className="font-body text-[13px] text-teal font-medium mb-2">{author.jobTitle}</p>
+              )}
+              {author?.bio && (
+                <p className="font-body text-[14px] text-gray-500 leading-[1.7] mb-4">{author.bio}</p>
+              )}
+              {author && author.sameAs.length > 0 && (
+                <div className="flex flex-wrap gap-5">
+                  {author.sameAs.map((href) => (
+                    <a
+                      key={href}
+                      href={href}
+                      rel="me noopener noreferrer"
+                      target="_blank"
+                      className="font-body text-[11px] font-bold uppercase tracking-widest text-gray-400 hover:text-teal transition-colors"
+                    >
+                      {new URL(href).hostname.replace(/^www\./, '')}
+                    </a>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>

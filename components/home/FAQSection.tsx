@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { Plus, Minus, ChevronDown, ChevronUp, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { HOME_FAQS, type FaqItem } from '@/lib/faq';
@@ -62,25 +62,31 @@ export default function FAQSection() {
           </button>
         </h3>
 
-        <AnimatePresence initial={false}>
-          {isOpen && (
-            <motion.div
-              key="answer"
-              id={panelId}
-              role="region"
-              aria-labelledby={triggerId}
-              initial={shouldReduceMotion ? undefined : { height: 0, opacity: 0 }}
-              animate={shouldReduceMotion ? undefined : { height: 'auto', opacity: 1 }}
-              exit={shouldReduceMotion ? undefined : { height: 0, opacity: 0 }}
-              transition={shouldReduceMotion ? undefined : { duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
-              className="overflow-hidden"
-            >
-              <p className="px-6 md:px-7 pb-6 md:pb-7 font-body text-void/70 text-sm md:text-base leading-relaxed pr-8">
-                {faq.answer}
-              </p>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {/* The answer stays mounted and is collapsed by height, rather than
+            being conditionally rendered. Google's structured-data policy
+            requires content marked up in FAQPage JSON-LD to be present on the
+            page, and an answer that only enters the DOM on click is not present
+            for any crawler or AI answer engine — they do not click. Content
+            collapsed behind an accordion is explicitly fine to index; content
+            that does not exist until an event fires is not. */}
+        <motion.div
+          id={panelId}
+          role="region"
+          aria-labelledby={triggerId}
+          initial={false}
+          animate={
+            shouldReduceMotion
+              ? undefined
+              : { height: isOpen ? 'auto' : 0, opacity: isOpen ? 1 : 0 }
+          }
+          style={shouldReduceMotion ? { height: isOpen ? 'auto' : 0 } : undefined}
+          transition={shouldReduceMotion ? undefined : { duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+          className="overflow-hidden"
+        >
+          <p className="px-6 md:px-7 pb-6 md:pb-7 font-body text-void/70 text-sm md:text-base leading-relaxed pr-8">
+            {faq.answer}
+          </p>
+        </motion.div>
       </motion.div>
     );
   };
@@ -119,19 +125,30 @@ export default function FAQSection() {
           <div className="space-y-3">
             {visibleFaqs.map((faq, idx) => renderFaqItem(faq, idx))}
 
-            <AnimatePresence initial={false}>
-              {showAll && (
-                <motion.div
-                  initial={shouldReduceMotion ? undefined : { height: 0, opacity: 0 }}
-                  animate={shouldReduceMotion ? undefined : { height: 'auto', opacity: 1 }}
-                  exit={shouldReduceMotion ? undefined : { height: 0, opacity: 0 }}
-                  transition={shouldReduceMotion ? undefined : { duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
-                  className="overflow-hidden space-y-3 pt-3"
-                >
-                  {hiddenFaqs.map((faq, idx) => renderFaqItem(faq, idx + defaultFaqsCount))}
-                </motion.div>
-              )}
-            </AnimatePresence>
+            {/* Same reasoning as the answer panels: the overflow questions stay
+                mounted and are revealed by height so all 16 Q&As are in the
+                served HTML, matching what the FAQPage JSON-LD claims. Hiding
+                them behind a conditional mount put 10 of 16 answers beyond
+                reach of every crawler. aria-hidden + inert keeps the collapsed
+                block out of the a11y tree and tab order while it is closed. */}
+            <motion.div
+              initial={false}
+              animate={
+                shouldReduceMotion
+                  ? undefined
+                  : { height: showAll ? 'auto' : 0, opacity: showAll ? 1 : 0 }
+              }
+              style={shouldReduceMotion ? { height: showAll ? 'auto' : 0 } : undefined}
+              transition={shouldReduceMotion ? undefined : { duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+              className="overflow-hidden"
+              aria-hidden={!showAll}
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              {...({ inert: showAll ? undefined : '' } as any)}
+            >
+              <div className="space-y-3 pt-3">
+                {hiddenFaqs.map((faq, idx) => renderFaqItem(faq, idx + defaultFaqsCount))}
+              </div>
+            </motion.div>
 
             <div className="pt-6">
               <button

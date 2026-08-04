@@ -77,6 +77,10 @@ export interface BlogPost {
   metaTitle?: string;
   metaDescription?: string;
   createdAt: string;
+  // Stamped by updateBlog on every edit. Optional because posts written before
+  // this field existed do not have it — BlogPosting.dateModified falls back to
+  // publishDate in that case, which is the honest value for an unedited post.
+  updatedAt?: string;
 }
 
 export type StoredEnquiryVariant = 'contact' | 'package-booking' | 'b2c' | 'corporate';

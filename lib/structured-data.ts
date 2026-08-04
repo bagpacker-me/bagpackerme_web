@@ -1,6 +1,7 @@
 import { SITE_URL, absoluteUrl } from '@/lib/site-url';
 import { getPackagePrimaryPrice, hasPackagePrice } from '@/lib/packagePricing';
 import type { ResolvedSiteSettings } from '@/lib/site-settings';
+import { findAuthor } from '@/lib/authors';
 import type { FaqItem } from '@/lib/faq';
 import type { BlogPost, JobOpening, JobType, Package, PackageMarket } from '@/types';
 
@@ -10,6 +11,12 @@ export type JsonLdDocument = { '@context': 'https://schema.org' } & Record<strin
 export interface BreadcrumbItem { name: string; path: string }
 
 const CONTEXT = 'https://schema.org' as const;
+
+// Firestore stores an empty string for an unset image rather than omitting the
+// field, and `image: ""` is an invalid value Google reports as an error — worse
+// than having no image property at all. Omit rather than emit the empty.
+const optionalImage = (url: string | undefined) =>
+  url && url.trim() ? { image: url } : {};
 // Stable @ids so blocks in separate <script> tags cross-reference. Google merges
 // all JSON-LD on a page before resolving @id.
 const ORG_ID = `${SITE_URL}/#organization`;
@@ -107,7 +114,7 @@ export function buildTouristTripSchema(pkg: Package, market: PackageMarket): Jso
     '@id': `${url}#trip`,
     name: pkg.title,
     description: pkg.metaDescription || pkg.tagline,
-    image: pkg.heroImageUrl,
+    ...optionalImage(pkg.heroImageUrl),
     url,
     touristType: pkg.category,
     provider: { '@id': ORG_ID },
@@ -197,16 +204,36 @@ export function buildFaqPageSchema(faqs: readonly FaqItem[]): JsonLdDocument {
 
 export function buildBlogPostingSchema(post: BlogPost): JsonLdDocument {
   const url = absoluteUrl(`/blog/${post.slug}`);
+  const author = findAuthor(post.author);
+
   return {
     '@context': CONTEXT,
     '@type': 'BlogPosting',
     '@id': `${url}#article`,
     headline: post.title.slice(0, 110),
     description: post.excerpt,
-    image: post.featuredImageUrl,
+    ...optionalImage(post.featuredImageUrl),
     // publishDate is already 'yyyy-MM-dd' (valid ISO 8601) — emit as-is.
     datePublished: post.publishDate,
-    author: { '@type': 'Person', name: post.author },
+    // Posts predating the updatedAt field fall back to publishDate: an unedited
+    // post genuinely was last modified when it was published, so this is
+    // accurate rather than merely convenient.
+    dateModified: post.updatedAt || post.publishDate,
+    // A bare `{ name }` Person is an unresolvable blank node. When the byline
+    // matches a known author, emit the full entity so the credential text is
+    // machine-readable and the same @id is reused across every post they wrote.
+    author: author
+      ? {
+          '@type': 'Person',
+          '@id': `${SITE_URL}/#author-${author.slug}`,
+          name: author.name,
+          jobTitle: author.jobTitle,
+          description: author.bio,
+          knowsAbout: author.knowsAbout,
+          worksFor: { '@id': ORG_ID },
+          ...(author.sameAs.length > 0 ? { sameAs: author.sameAs } : {}),
+        }
+      : { '@type': 'Person', name: post.author },
     publisher: { '@id': ORG_ID },
     mainEntityOfPage: url,
     ...(post.category ? { articleSection: post.category } : {}),

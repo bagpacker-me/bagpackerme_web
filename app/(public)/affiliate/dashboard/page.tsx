@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { motion, Variants } from 'framer-motion';
 import Link from 'next/link';
+import { SITE_URL } from '@/lib/site-url';
 
 interface AffiliateStats {
   name: string;
@@ -73,7 +74,7 @@ function AffiliateDashboard() {
     setTimeout(() => setCopied(null), 2000);
   };
 
-  const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://bagpackerme.com';
+  const baseUrl = typeof window !== 'undefined' ? window.location.origin : SITE_URL;
   const affiliateBaseUrl = affiliate ? `${baseUrl}/packages?ref=${affiliate.code}` : '';
 
   const stats = [

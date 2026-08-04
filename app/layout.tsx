@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Outfit, DM_Sans, Cormorant_Garamond } from 'next/font/google';
+import { SITE_URL } from '@/lib/site-url';
 import { DeferredAnalytics } from '@/components/providers/DeferredAnalytics';
 import { ToastViewport } from '@/components/ui/ToastViewport';
 import '@/styles/globals.css';
@@ -39,20 +40,22 @@ const cormorantGaramond = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://bagpackerme.com'),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: 'BagPackerMe - Curated Global Journeys',
     template: '%s | BagPackerMe',
   },
-  description: 'Curated experiential journeys across Thailand, Vietnam, Kenya, India, and beyond with local expertise and human planning.',
+  // Destinations here mirror the actual catalogue (majority Europe and Japan,
+  // plus Vietnam, Thailand, Kenya, and India), not an aspirational subset.
+  description: 'Private, tailor-made journeys across Europe, Japan, Vietnam, Thailand, Kenya, and India — planned end to end by people who have run the routes.',
   // Icons come from the app/ file convention (favicon.ico, icon.png, apple-icon.png).
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://bagpackerme.com',
+    url: SITE_URL,
     siteName: 'BagPackerMe',
     title: 'BagPackerMe - Curated Global Journeys',
-    description: 'Curated experiential journeys across Thailand, Vietnam, Kenya, India, and beyond.',
+    description: 'Private, tailor-made journeys across Europe, Japan, Vietnam, Thailand, Kenya, and India.',
   },
   // Only `card` here: hardcoding twitter.title/description stops Next from
   // auto-filling them from each page's og:title, leaving them stale sitewide.
@@ -65,6 +68,35 @@ export const metadata: Metadata = {
   },
 };
 
+// Document-level prefetch via the Speculation Rules API. Next already prefetches
+// the RSC payload for links in the viewport; this adds the full document fetch
+// on top, which is what removes the remaining navigation latency in Chromium.
+//
+// Deliberately `prefetch` and not `prerender`: prerender executes the target
+// page's JavaScript before the user commits to the navigation, which fires
+// analytics for visits that never happen and runs Firestore reads we would pay
+// for regardless. `eagerness: moderate` triggers on hover/pointer-down rather
+// than on sight, so it does not fan out across a 30-card listing grid.
+//
+// The exclusions matter: /api/ must never be speculatively fetched (side
+// effects), and /admin/ plus /affiliate/dashboard are authenticated routes
+// where a background fetch is wasted work at best.
+const SPECULATION_RULES = JSON.stringify({
+  prefetch: [
+    {
+      where: {
+        and: [
+          { href_matches: '/*' },
+          { not: { href_matches: '/api/*' } },
+          { not: { href_matches: '/admin/*' } },
+          { not: { href_matches: '/affiliate/dashboard*' } },
+        ],
+      },
+      eagerness: 'moderate',
+    },
+  ],
+});
+
 export default function AppRootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
@@ -75,6 +107,10 @@ export default function AppRootLayout({ children }: { children: React.ReactNode 
         {children}
         <ToastViewport />
         <DeferredAnalytics />
+        <script
+          type="speculationrules"
+          dangerouslySetInnerHTML={{ __html: SPECULATION_RULES }}
+        />
       </body>
     </html>
   );
