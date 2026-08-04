@@ -320,7 +320,9 @@ export default function BlogListingClient({ initialBlogs }: { initialBlogs: Blog
                   <button
                     key={cat}
                     onClick={() => handleCategoryChange(cat)}
-                    className={`px-[18px] py-[8px] rounded-full font-body text-[13px] font-medium transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 focus-visible:ring-offset-[#F5F5F5] ${
+                    // min-h rather than more padding: the chips keep their
+                    // proportions on desktop and reach a 44px row on touch.
+                    className={`px-[18px] py-[8px] min-h-[44px] rounded-full font-body text-[13px] font-medium transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 focus-visible:ring-offset-[#F5F5F5] ${
                       activeCategory === cat
                         ? 'bg-teal text-white shadow-glow-teal cursor-default'
                         : 'bg-white text-void/70 border border-void/10 hover:border-teal/30 hover:bg-ice hover:text-teal hover:shadow-sm'
@@ -337,7 +339,7 @@ export default function BlogListingClient({ initialBlogs }: { initialBlogs: Blog
                 <select
                   value={sortBy}
                   onChange={(e) => { setSortBy(e.target.value); setCurrentPage(1); }}
-                  className="bg-transparent border-none py-[6px] pl-1 pr-6 font-display font-bold text-[14px] text-teal outline-none cursor-pointer appearance-none hover:text-teal/80 transition-colors"
+                  className="bg-transparent border-none py-[6px] min-h-[40px] pl-1 pr-6 font-display font-bold text-[14px] text-teal outline-none cursor-pointer appearance-none hover:text-teal/80 transition-colors"
                 >
                   {SORT_OPTIONS.map(o => <option key={o}>{o}</option>)}
                 </select>

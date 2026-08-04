@@ -194,6 +194,37 @@ export default function HeroInteractive({ market = 'global' }: { market?: Packag
     resetTimer();
   }, [totalSlides, resetTimer]);
 
+  // The prev/next buttons are the only way through the carousel on a phone —
+  // the stacked preview cards that drive it on desktop are hidden below lg.
+  // A horizontal swipe is what a visitor actually reaches for on a full-bleed
+  // image, so wire it to the same handlers.
+  const touchStart = useRef<{ x: number; y: number } | null>(null);
+
+  const handleTouchStart = useCallback((event: React.TouchEvent) => {
+    const touch = event.changedTouches[0];
+    touchStart.current = { x: touch.clientX, y: touch.clientY };
+  }, []);
+
+  const handleTouchEnd = useCallback(
+    (event: React.TouchEvent) => {
+      const start = touchStart.current;
+      touchStart.current = null;
+      if (!start) return;
+
+      const touch = event.changedTouches[0];
+      const deltaX = touch.clientX - start.x;
+      const deltaY = touch.clientY - start.y;
+
+      // Require a deliberate, mostly-horizontal drag: anything shorter is a tap
+      // on the CTA underneath, and anything steeper is the visitor scrolling.
+      if (Math.abs(deltaX) < 56 || Math.abs(deltaX) <= Math.abs(deltaY)) return;
+
+      if (deltaX < 0) handleNext();
+      else handlePrev();
+    },
+    [handleNext, handlePrev]
+  );
+
   const activeDest = destinations[currentIndex];
   const stringIndex = String(currentIndex + 1).padStart(2, '0');
   const stringTotal = String(totalSlides).padStart(2, '0');
@@ -206,6 +237,8 @@ export default function HeroInteractive({ market = 'global' }: { market?: Packag
   return (
     <section
       ref={sectionRef}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
       className="relative min-h-[100dvh] w-full overflow-hidden bg-void font-sans text-white"
     >
       {/* Background Images Crossfade */}
@@ -251,7 +284,10 @@ export default function HeroInteractive({ market = 'global' }: { market?: Packag
       />
 
       {/* Main Content Area */}
-      <div className="absolute inset-y-0 left-0 z-40 flex flex-col justify-center w-full md:w-[55%] px-6 md:px-12 lg:px-16 pointer-events-none">
+      {/* The bottom padding keeps the vertically-centred block clear of the
+          controls row below it. Without it, on a 360×640 phone the second CTA
+          and the pagination overlapped. */}
+      <div className="absolute inset-y-0 left-0 z-40 flex flex-col justify-center w-full md:w-[55%] px-6 md:px-12 lg:px-16 pb-28 md:pb-0 pointer-events-none">
         <div className="pointer-events-auto">
           {/* Stable value-proposition headline — does not change with the carousel */}
           <h1 className="font-display text-[clamp(38px,6.5vw,84px)] font-extrabold tracking-[-0.02em] leading-[0.95] mb-6 max-w-[14ch]">
@@ -353,7 +389,10 @@ export default function HeroInteractive({ market = 'global' }: { market?: Packag
       </div>
 
       {/* Bottom Controls */}
-      <div className="absolute bottom-0 left-0 right-0 z-50 flex items-end justify-between px-6 md:px-12 lg:px-16 pb-8">
+      {/* The extra right padding below md keeps the slide counter clear of the
+          fixed WhatsApp button, which sits in this exact corner and was
+          covering the total ("04") on every phone. */}
+      <div className="absolute bottom-0 left-0 right-0 z-50 flex items-end justify-between px-6 pr-20 md:px-12 lg:px-16 pb-[max(2rem,calc(env(safe-area-inset-bottom)+1rem))]">
         {/* Watermark — purely decorative, hidden from assistive tech */}
         <div className="hidden md:block" aria-hidden="true">
           <AnimatePresence mode="wait">
@@ -371,13 +410,16 @@ export default function HeroInteractive({ market = 'global' }: { market?: Packag
         </div>
 
         {/* Carousel controls + pagination */}
-        <div className="flex items-center gap-4">
+        {/* Tighter gaps below md: at 360px the 44px touch targets plus the
+            counter no longer fit the width left over beside the WhatsApp
+            button, and the slide total was the piece that got clipped. */}
+        <div className="flex items-center gap-2 md:gap-4">
           <div className="flex items-center gap-1.5" role="group" aria-label="Featured destinations carousel controls">
             <button
               type="button"
               onClick={handlePrev}
               aria-label="Previous destination"
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/80 backdrop-blur-sm transition-colors hover:border-white/30 hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime"
+              className="flex h-11 w-11 md:h-9 md:w-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/80 backdrop-blur-sm transition-colors hover:border-white/30 hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime"
             >
               <ChevronLeft className="h-4 w-4" />
             </button>
@@ -387,7 +429,7 @@ export default function HeroInteractive({ market = 'global' }: { market?: Packag
                 onClick={() => setIsPaused((p) => !p)}
                 aria-label={isPaused ? 'Play carousel' : 'Pause carousel'}
                 aria-pressed={isPaused}
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/80 backdrop-blur-sm transition-colors hover:border-white/30 hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime"
+                className="flex h-11 w-11 md:h-9 md:w-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/80 backdrop-blur-sm transition-colors hover:border-white/30 hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime"
               >
                 {isPaused ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}
               </button>
@@ -396,16 +438,16 @@ export default function HeroInteractive({ market = 'global' }: { market?: Packag
               type="button"
               onClick={handleNext}
               aria-label="Next destination"
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/80 backdrop-blur-sm transition-colors hover:border-white/30 hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime"
+              className="flex h-11 w-11 md:h-9 md:w-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/80 backdrop-blur-sm transition-colors hover:border-white/30 hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime"
             >
               <ChevronRight className="h-4 w-4" />
             </button>
           </div>
 
           {/* Pagination + Auto-Progress */}
-          <div className="flex items-center gap-3 text-sm font-medium tracking-widest font-display">
+          <div className="flex items-center gap-2 md:gap-3 text-sm font-medium tracking-widest font-display">
             <span className="text-white">{stringIndex}</span>
-            <div className="relative w-16 h-[2px] bg-white/15 overflow-hidden rounded-full">
+            <div className="relative w-10 md:w-16 h-[2px] bg-white/15 overflow-hidden rounded-full">
               <div
                 className="absolute top-0 left-0 h-full bg-white/20 transition-all duration-500"
                 style={{ width: `${((currentIndex + 1) / totalSlides) * 100}%` }}

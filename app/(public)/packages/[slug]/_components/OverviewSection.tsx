@@ -120,7 +120,10 @@ export default function OverviewSection({ pkg, market }: { pkg: Package; market?
       </div>
 
       {/* Mobile Sticky Bottom Bar */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-[rgba(34,30,42,0.08)] p-4 flex items-center justify-between z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+      {/* The inset is added to the padding rather than max()'d with it: this bar
+          is a solid surface, so it should extend *under* the home indicator with
+          its content lifted clear, not float above a strip of page. */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-[rgba(34,30,42,0.08)] p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] flex items-center justify-between gap-4 z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
         <div className="flex flex-col">
           <span className="font-display font-bold text-[20px] text-[#221E2A] leading-none">
             {displayPrice}

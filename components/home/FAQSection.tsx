@@ -111,9 +111,11 @@ export default function FAQSection() {
               <p className="font-body text-sm text-void/60 mb-6 leading-relaxed">
                 Can&apos;t find what you are looking for? Send us a quick inquiry and we&apos;ll get right back to you.
               </p>
-              <Link 
+              <Link
                 href="/contact"
-                className="inline-flex items-center gap-2 text-teal font-display text-xs font-bold uppercase tracking-widest hover:text-teal/85 group"
+                // A 16px-tall text link is the smallest kind of target there is.
+                // The negative margin keeps its optical position in the card.
+                className="inline-flex min-h-[44px] -my-3 items-center gap-2 text-teal font-display text-xs font-bold uppercase tracking-widest hover:text-teal/85 group"
               >
                 Let&apos;s chat
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />

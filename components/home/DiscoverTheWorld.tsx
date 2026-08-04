@@ -261,7 +261,7 @@ export default function DiscoverTheWorld({ market = 'global' }: { market?: Packa
 
                       <Link
                         href={`${packagesHref}/${pkg.slug}`}
-                        className="ml-auto w-10 h-10 rounded-full backdrop-blur-md bg-white/8 border border-white/15 flex items-center justify-center text-white group-hover:bg-lime group-hover:text-void group-hover:border-lime transition-all duration-300 active:scale-90"
+                        className="ml-auto w-11 h-11 rounded-full backdrop-blur-md bg-white/8 border border-white/15 flex items-center justify-center text-white group-hover:bg-lime group-hover:text-void group-hover:border-lime transition-all duration-300 active:scale-90"
                         aria-label={`Explore ${pkg.title}`}
                       >
                         <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />

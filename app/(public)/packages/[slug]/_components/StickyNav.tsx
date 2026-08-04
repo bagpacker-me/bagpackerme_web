@@ -15,13 +15,23 @@ export default function StickyNav() {
   const [isSticky, setIsSticky] = useState(false);
 
   useEffect(() => {
-    // Check if sticky
+    // Non-passive and unthrottled, this fired a layout read plus a setState on
+    // every scroll tick — the main-thread cost lands squarely on mid-range
+    // phones. Matches the rAF-throttled passive pattern the site navbar uses.
+    let ticking = false;
+
     const handleScroll = () => {
-      // The hero section is 100svh. We become sticky roughly after passing it.
-      setIsSticky(window.scrollY > window.innerHeight - 100);
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(() => {
+        // The hero section is 100svh. We become sticky roughly after passing it.
+        setIsSticky(window.scrollY > window.innerHeight - 100);
+        ticking = false;
+      });
     };
 
-    window.addEventListener('scroll', handleScroll);
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -63,7 +73,9 @@ export default function StickyNav() {
 
   return (
     <div 
-      className={`w-full z-40 transition-all duration-300 ${isSticky ? 'fixed top-[88px] left-0 bg-white border-b border-[rgba(34,30,42,0.08)]' : 'absolute bottom-0 translate-y-full bg-white border-b border-[rgba(34,30,42,0.08)]'}`}
+      // The floating navbar above this now reserves the notch, so the offset has
+      // to follow it or the two overlap on a notched phone in portrait.
+      className={`w-full z-40 transition-all duration-300 ${isSticky ? 'fixed top-[calc(88px+env(safe-area-inset-top))] left-0 bg-white border-b border-[rgba(34,30,42,0.08)]' : 'absolute bottom-0 translate-y-full bg-white border-b border-[rgba(34,30,42,0.08)]'}`}
       style={{ opacity: isSticky ? 1 : 0, pointerEvents: isSticky ? 'auto' : 'none' }}
     >
       <div className="w-full h-[52px] overflow-x-auto hide-scrollbar flex items-center bg-white px-6 md:px-12 max-w-7xl mx-auto">

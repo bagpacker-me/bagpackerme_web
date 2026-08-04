@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Outfit, DM_Sans, Cormorant_Garamond } from 'next/font/google';
 import { SITE_URL } from '@/lib/site-url';
 import { DeferredAnalytics } from '@/components/providers/DeferredAnalytics';
@@ -38,6 +38,25 @@ const cormorantGaramond = Cormorant_Garamond({
   // image. `display: swap` covers the brief fallback render.
   preload: false,
 });
+
+// Next's default viewport tag omits `viewport-fit`, which leaves every
+// `env(safe-area-inset-*)` in the stylesheet resolving to 0 on notched phones —
+// the fixed WhatsApp button, the package page's sticky enquiry bar and the hero
+// controls all sat under the home indicator because of it. `cover` is what makes
+// those insets report real values.
+//
+// No `maximumScale` / `userScalable: false`: pinch-zoom is an accessibility
+// affordance and suppressing it is a WCAG 1.4.4 failure.
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+  themeColor: [
+    // The chrome sits above a dark hero on every public route.
+    { media: '(prefers-color-scheme: light)', color: '#221E2A' },
+    { media: '(prefers-color-scheme: dark)', color: '#221E2A' },
+  ],
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

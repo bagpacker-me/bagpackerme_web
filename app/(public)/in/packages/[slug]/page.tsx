@@ -60,7 +60,7 @@ export default async function IndiaPackageDetailPage({ params }: Props) {
   }
 
   return (
-    <main className="w-full relative bg-void font-body selection:bg-lime selection:text-void pb-[76px] lg:pb-0">
+    <main className="w-full relative bg-void font-body selection:bg-lime selection:text-void pb-[calc(80px+env(safe-area-inset-bottom))] lg:pb-0">
       <JsonLd data={buildTouristTripSchema(pkg, 'india')} />
       <JsonLd
         data={buildBreadcrumbSchema([

@@ -19,11 +19,14 @@ export default async function PublicLayout({ children }: { children: ReactNode }
       <AffiliateTrackingProvider />
       <div className="flex flex-col min-h-screen">
         <Navbar />
-        <main className="flex-grow">
+        {/* A plain div, not <main>: every public page already renders its own
+            <main>, and two of them per document is invalid HTML — screen
+            readers offer a "main landmark" jump that lands in the wrong place. */}
+        <div className="flex-grow">
           <PageTransition>
             {children}
           </PageTransition>
-        </main>
+        </div>
         <Footer />
         <WhatsAppButton />
       </div>

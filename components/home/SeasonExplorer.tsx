@@ -95,10 +95,17 @@ export default function SeasonExplorer() {
         </div>
 
         {/* Month selector */}
+        {/* A 12-across row cannot fit a phone, and the horizontal scroller it
+            used to fall back to was the single worst thing on the mobile site:
+            twelve 68px tabs forced 816px of content, which widened the layout
+            viewport and pushed the fixed navbar — hamburger included — off the
+            right edge of every screen on this page. It also hid nine months
+            behind a scrollbar-less swipe nobody could see. A 3×4 grid shows the
+            whole year at once and costs one extra row of height. */}
         <div
           role="tablist"
           aria-label="Choose a travel month"
-          className="hide-scrollbar mt-12 flex overflow-x-auto border border-white/15 md:grid md:grid-cols-12 md:overflow-visible"
+          className="mt-12 grid grid-cols-3 border border-b-0 border-white/15 sm:grid-cols-6 md:grid-cols-12"
         >
           {MONTHS.map((candidate, index) => {
             const isActive = candidate === month;
@@ -114,7 +121,7 @@ export default function SeasonExplorer() {
                 tabIndex={isActive ? 0 : -1}
                 onClick={() => selectMonth(candidate)}
                 onKeyDown={(event) => handleMonthKeyDown(event, index)}
-                className={`min-w-[68px] flex-shrink-0 border-r border-white/10 px-3 py-4 font-body text-sm font-semibold transition-colors duration-300 last:border-r-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-lime ${
+                className={`min-h-[52px] border-b border-r border-white/10 px-3 py-4 font-body text-sm font-semibold transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-lime [&:nth-child(3n)]:border-r-0 sm:[&:nth-child(3n)]:border-r sm:[&:nth-child(6n)]:border-r-0 md:[&:nth-child(6n)]:border-r md:last:border-r-0 ${
                   isActive
                     ? 'bg-lime text-teal'
                     : 'text-white/60 hover:bg-white/10 hover:text-white'
@@ -193,8 +200,11 @@ export default function SeasonExplorer() {
                   >
                     {/* Comfortable tap target around the dot. Only this area is
                         clickable — labels of neighbouring pins would otherwise
-                        sit over each other's dots in dense regions. */}
-                    <span className="flex h-7 w-7 items-center justify-center">
+                        sit over each other's dots in dense regions. It grows on
+                        coarse pointers, where 28px was well under the 44px a
+                        fingertip needs; the stepper below stays the reliable way
+                        through dense regions where enlarged targets overlap. */}
+                    <span className="flex h-11 w-11 items-center justify-center md:h-7 md:w-7">
                       <span
                         aria-hidden="true"
                         className={`block h-2.5 w-2.5 rounded-full ring-2 transition-all duration-300 ${
@@ -220,7 +230,7 @@ export default function SeasonExplorer() {
           </div>
 
           {/* Detail panel */}
-          <div className="flex flex-col justify-center bg-ice px-8 py-10 text-void md:px-10">
+          <div className="flex flex-col justify-center bg-ice px-6 py-9 text-void sm:px-8 sm:py-10 md:px-10">
             {/* Close-together pins (Maldives and Sri Lanka in March, say) overlap
                 on a world map at this scale, so stepping through the list is the
                 reliable way to reach every destination. */}
@@ -233,7 +243,7 @@ export default function SeasonExplorer() {
                   type="button"
                   onClick={() => setSelectedIndex((activeIndex - 1 + total) % total)}
                   aria-label="Previous destination"
-                  className="flex h-8 w-8 items-center justify-center rounded-full border border-void/15 text-void/60 transition-colors duration-300 hover:border-teal hover:bg-teal hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal"
+                  className="flex h-11 w-11 items-center justify-center rounded-full border border-void/15 text-void/60 transition-colors duration-300 hover:border-teal hover:bg-teal hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal md:h-9 md:w-9"
                 >
                   <ArrowRight className="h-3.5 w-3.5 rotate-180" />
                 </button>
@@ -241,7 +251,7 @@ export default function SeasonExplorer() {
                   type="button"
                   onClick={() => setSelectedIndex((activeIndex + 1) % total)}
                   aria-label="Next destination"
-                  className="flex h-8 w-8 items-center justify-center rounded-full border border-void/15 text-void/60 transition-colors duration-300 hover:border-teal hover:bg-teal hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal"
+                  className="flex h-11 w-11 items-center justify-center rounded-full border border-void/15 text-void/60 transition-colors duration-300 hover:border-teal hover:bg-teal hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal md:h-9 md:w-9"
                 >
                   <ArrowRight className="h-3.5 w-3.5" />
                 </button>

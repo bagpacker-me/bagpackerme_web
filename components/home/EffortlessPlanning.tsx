@@ -69,7 +69,7 @@ export default function EffortlessPlanning({ market = 'global' }: { market?: Pac
             viewport={{ once: true }}
             className="md:col-span-7 card-bezel"
           >
-            <div className="card-bezel-inner p-10 md:p-14 min-h-[240px] flex flex-col justify-between">
+            <div className="card-bezel-inner p-7 sm:p-10 md:p-14 min-h-[240px] flex flex-col justify-between">
               <div>
                 <span className="font-display text-6xl lg:text-8xl font-bold text-teal mb-3 tracking-tight block">
                   {STEPS[0].step}
@@ -92,7 +92,7 @@ export default function EffortlessPlanning({ market = 'global' }: { market?: Pac
             transition={{ delay: 0.1 }}
             className="md:col-span-5 card-bezel"
           >
-            <div className="card-bezel-inner p-10 md:p-12 min-h-[240px] flex flex-col justify-between">
+            <div className="card-bezel-inner p-7 sm:p-10 md:p-12 min-h-[240px] flex flex-col justify-between">
               <div>
                 <span className="font-display text-6xl lg:text-7xl font-bold text-void mb-3 tracking-tight block">
                   {STEPS[1].step}
@@ -115,7 +115,7 @@ export default function EffortlessPlanning({ market = 'global' }: { market?: Pac
             transition={{ delay: 0.2 }}
             className="md:col-span-12"
           >
-            <div className="bg-gradient-to-r from-teal to-teal/90 rounded-[24px] p-10 md:p-12 flex flex-col md:flex-row md:items-center md:justify-between gap-6 relative overflow-hidden">
+            <div className="bg-gradient-to-r from-teal to-teal/90 rounded-[24px] p-7 sm:p-10 md:p-12 flex flex-col md:flex-row md:items-center md:justify-between gap-6 relative overflow-hidden">
               {/* Subtle grain on dark card */}
               <div
                 className="absolute inset-0 pointer-events-none opacity-[0.04]"

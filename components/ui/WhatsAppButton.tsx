@@ -12,15 +12,31 @@ export function WhatsAppButton() {
   const waLink = `https://wa.me/${whatsappNumber}?text=${message}`;
 
   return (
-    <div className={`fixed right-6 z-[999] transition-all duration-300 ${isPackagePage ? 'bottom-[96px] lg:bottom-6' : 'bottom-6'}`}>
+    // Anchored with safe-area insets rather than flat rems: on a gesture-nav
+    // phone `bottom-6` alone puts the button in the home-indicator strip, where
+    // the first tap is swallowed by the system. On package routes it also has to
+    // clear the mobile enquiry bar, whose own height already includes the inset.
+    <div
+      className={`fixed right-[max(1.5rem,calc(env(safe-area-inset-right)+0.5rem))] z-[999] transition-all duration-300 ${
+        isPackagePage
+          ? 'bottom-[calc(96px+env(safe-area-inset-bottom))] lg:bottom-6'
+          : 'bottom-[max(1.5rem,calc(env(safe-area-inset-bottom)+0.5rem))]'
+      }`}
+    >
       <div className="relative group flex items-center">
-        <div className="absolute right-full mr-4 px-4 py-2 bg-void text-white text-sm font-medium shadow-lg opacity-0 translate-x-2 pointer-events-none group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 whitespace-nowrap">
+        {/* Hover-only, so it is dead weight on touch — and worse, a tapped
+            :hover state on mobile Safari sticks until the next tap elsewhere,
+            leaving a tooltip stranded over the page. */}
+        <div className="absolute right-full mr-4 px-4 py-2 bg-void text-white text-sm font-medium shadow-lg opacity-0 translate-x-2 pointer-events-none group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 whitespace-nowrap hidden [@media(hover:hover)]:block">
           Chat with us on WhatsApp
           <div className="absolute top-1/2 -mt-1.5 -right-1.5 w-3 h-3 bg-void transform rotate-45" />
         </div>
 
+        {/* pointer-events-none matters: this ring is decorative but it scales to
+            1.5×, so it was swallowing taps across an ~84px square — well beyond
+            the 56px button — and blocking whatever page content sat under it. */}
         <span
-          className="wa-pulse-ring absolute inset-0 rounded-full bg-[#25D366]"
+          className="wa-pulse-ring absolute inset-0 rounded-full bg-[#25D366] pointer-events-none"
           aria-hidden="true"
         />
 

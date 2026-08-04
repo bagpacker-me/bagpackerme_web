@@ -203,6 +203,10 @@
 html {
   scroll-behavior: smooth;
   font-size: 16px;
+  /* iOS Safari inflates font sizes when a phone is rotated to landscape unless
+     this is pinned, which silently breaks every carefully-set clamp() below. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
@@ -211,8 +215,78 @@ body {
   background: var(--white);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* `hidden` is the fallback; `clip` is the one that actually fixes mobile.
+     `overflow-x: hidden` on body *propagates* to the viewport, so the document
+     keeps its full overflowing width — and mobile browsers then widen the
+     initial containing block to match. Every `position: fixed; width: 100%`
+     element is sized against that ICB, which is how a single over-wide section
+     pushed the whole navbar (hamburger included) off the right of the screen.
+     `overflow: clip` does not propagate, so body clips its own overflow and the
+     ICB stays at the device width. */
   overflow-x: hidden;
+  overflow-x: clip;
 }
+
+/* Honour the OS "reduce motion" setting for anchor jumps and scrollIntoView,
+   not just for the keyframe animations further down. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   TOUCH INPUT BASELINE
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* Kills the grey flash Safari/Chrome paint over tapped elements — the site has
+   its own :active states and the double treatment reads as a rendering glitch. */
+:where(a, button, [role='button'], summary, label, select) {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* `manipulation` removes double-tap-to-zoom on controls (and with it the ~300ms
+   click delay some Android browsers still apply) while leaving pinch-zoom on the
+   page itself intact. */
+:where(a, button, [role='button'], input, select, textarea, summary) {
+  touch-action: manipulation;
+}
+
+/* iOS Safari zooms the whole page in whenever a focused form control renders
+   below 16px, and never zooms back out. Every input on this site was 12–14px,
+   so tapping the newsletter field or any enquiry field yanked the layout.
+   Scoped to coarse pointers so the denser desktop type scale is untouched. */
+@media (pointer: coarse) {
+  input:not([type='checkbox']):not([type='radio']),
+  select,
+  textarea {
+    font-size: max(16px, 1em);
+  }
+}
+
+/* Long unbroken strings — booking references, email addresses in the footer,
+   URLs pasted into blog copy — are the usual cause of a stray horizontal
+   scrollbar on a 360px screen. */
+:where(p, li, h1, h2, h3, h4, dd, dt, blockquote) {
+  overflow-wrap: break-word;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SAFE AREA HELPERS
+   Every fixed element anchored to a screen edge should use one of these rather
+   than a bare rem value, or it lands under the notch / home indicator.
+   ───────────────────────────────────────────────────────────────────────────── */
+.pb-safe   { padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
+.pt-safe   { padding-top:    max(1rem, env(safe-area-inset-top)); }
+.px-safe   {
+  padding-left:  max(1rem, env(safe-area-inset-left));
+  padding-right: max(1rem, env(safe-area-inset-right));
+}
+/* Additive variants: keep the design's own spacing and add the inset on top,
+   for bars whose padding is part of the composition. */
+.pb-safe-add { padding-bottom: calc(1rem + env(safe-area-inset-bottom)); }
+.mb-safe     { margin-bottom:  max(1.5rem, calc(env(safe-area-inset-bottom) + 0.5rem)); }
+.mr-safe     { margin-right:   max(1.5rem, calc(env(safe-area-inset-right)  + 0.5rem)); }
 
 @keyframes page-enter {
   from {
@@ -908,6 +982,11 @@ blockquote,
 .hide-scrollbar {
   scrollbar-width: none;           /* Firefox */
   -ms-overflow-style: none;        /* IE/Edge */
+  /* Same reason as .scroll-strip: a hidden scrollbar makes these strips feel
+     like content rather than a scroller, so the edge-swipe collision is more
+     likely, not less. */
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
 }
 .hide-scrollbar::-webkit-scrollbar {
   display: none;                   /* Chrome/Safari */
@@ -1133,6 +1212,10 @@ blockquote,
   scrollbar-width: none;
   -ms-overflow-style: none;
   padding-bottom: 8px;
+  /* Without this, flicking to the end of a card strip on iOS hands the gesture
+     to the page and triggers the back-navigation swipe. */
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
 }
 .scroll-strip::-webkit-scrollbar {
   display: none;

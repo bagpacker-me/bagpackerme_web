@@ -95,15 +95,25 @@ export default function PackageGallery({ pkg }: { pkg: Package }) {
               <button
                 key={idx}
                 type="button"
-                className="relative block w-full break-inside-avoid overflow-hidden cursor-crosshair group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2"
+                className="relative block w-full break-inside-avoid overflow-hidden cursor-crosshair group bg-void/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2"
                 onClick={(e) => openLightbox(idx, e)}
                 aria-label={`Open image ${idx + 1} of ${images.length} for ${pkg.title}`}
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                {/* Was a bare <img> with no dimensions: it shipped the full
+                    Firebase original to a 170px-wide phone column, and until it
+                    loaded the cell measured 0px tall, so the whole masonry
+                    collapsed and then shoved the page down image by image.
+                    next/image gives it an AVIF/WebP srcset and a reserved box.
+                    The 4:3 hint is only that — `h-auto` hands the final ratio
+                    back to the real file, so the masonry keeps its varied
+                    heights. */}
+                <Image
                   src={src}
                   alt=""
-                  loading="lazy"
+                  width={800}
+                  height={600}
+                  sizes="(max-width: 768px) 50vw, 33vw"
+                  quality={65}
                   className="w-full h-auto transition-transform duration-700 ease-[var(--ease-default)] group-hover:scale-[1.05]"
                 />
                 <div className="absolute inset-0 bg-transparent group-hover:bg-[#221E2A]/25 transition-colors duration-300 flex items-center justify-center pointer-events-none">

@@ -37,8 +37,10 @@ function FilterBadge({ className, variant, label, value, onRemove, ...props }: F
         <button
           type="button"
           onClick={onRemove}
-          className="ml-1.5 flex size-4 items-center justify-center rounded-full bg-void/5 text-void/40 hover:bg-void/10 hover:text-void transition-colors"
-          aria-label="Remove"
+          // The dot stays 16px; the `after` pseudo-element carries a 40px
+          // target so the badge can still be dismissed with a thumb.
+          className="relative ml-1.5 flex size-4 items-center justify-center rounded-full bg-void/5 text-void/40 hover:bg-void/10 hover:text-void transition-colors after:absolute after:-inset-3 after:content-['']"
+          aria-label={`Remove ${label ?? ''} filter`.trim()}
         >
           <X className="size-2.5 shrink-0" aria-hidden={true} />
         </button>
@@ -98,9 +100,23 @@ const PriceRangeSlider = forwardRef<HTMLDivElement, PriceRangeSliderProps>(
       setLocalValues(defaultValue);
     }, [defaultValue]);
 
+    const isDragging = isMinThumbDragging || isMaxThumbDragging;
+
     useEffect(() => {
-      const handleMouseMove = (event: MouseEvent | TouchEvent) => {
+      // Bind only while a thumb is actually held. The previous version kept four
+      // document-level listeners attached for the life of the page and re-bound
+      // all of them on every value change.
+      if (!isDragging) return;
+
+      const handleMove = (event: MouseEvent | TouchEvent) => {
         if (!sliderRef.current) return;
+
+        // A touchmove that reaches the document while a thumb is held is the
+        // drag, not a scroll. Without preventDefault the browser scrolled the
+        // page underneath the finger and the thumb was effectively immovable on
+        // a phone — which is why this listener must be registered non-passive.
+        if ("touches" in event && event.cancelable) event.preventDefault();
+
         const clientX = "touches" in event ? event.touches[0].clientX : event.clientX;
         const rect = sliderRef.current.getBoundingClientRect();
         const percent = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
@@ -114,23 +130,54 @@ const PriceRangeSlider = forwardRef<HTMLDivElement, PriceRangeSliderProps>(
         }
       };
 
-      const handleMouseUp = () => {
+      const handleEnd = () => {
         setIsMinThumbDragging(false);
         setIsMaxThumbDragging(false);
       };
 
-      document.addEventListener("mousemove", handleMouseMove);
-      document.addEventListener("touchmove", handleMouseMove);
-      document.addEventListener("mouseup", handleMouseUp);
-      document.addEventListener("touchend", handleMouseUp);
+      document.addEventListener("mousemove", handleMove);
+      document.addEventListener("touchmove", handleMove, { passive: false });
+      document.addEventListener("mouseup", handleEnd);
+      document.addEventListener("touchend", handleEnd);
+      document.addEventListener("touchcancel", handleEnd);
 
       return () => {
-        document.removeEventListener("mousemove", handleMouseMove);
-        document.removeEventListener("touchmove", handleMouseMove);
-        document.removeEventListener("mouseup", handleMouseUp);
-        document.removeEventListener("touchend", handleMouseUp);
+        document.removeEventListener("mousemove", handleMove);
+        document.removeEventListener("touchmove", handleMove);
+        document.removeEventListener("mouseup", handleEnd);
+        document.removeEventListener("touchend", handleEnd);
+        document.removeEventListener("touchcancel", handleEnd);
       };
-    }, [isMinThumbDragging, isMaxThumbDragging, min, max, step, minVal, maxVal, handleValueChange]);
+    }, [isDragging, isMinThumbDragging, isMaxThumbDragging, min, max, step, minVal, maxVal, handleValueChange]);
+
+    // Pressing anywhere on the track jumps the nearer thumb there and starts
+    // dragging it. Grabbing a 16px dot was the only way to change the price on
+    // a phone, and the fixed WhatsApp button overlaps the right of the viewport,
+    // so at some scroll offsets the max thumb could not be touched at all.
+    const handleTrackPointerDown = useCallback(
+      (event: React.MouseEvent | React.TouchEvent) => {
+        if (!sliderRef.current) return;
+
+        const clientX =
+          "touches" in event ? event.touches[0].clientX : (event as React.MouseEvent).clientX;
+        const rect = sliderRef.current.getBoundingClientRect();
+        const percent = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
+        const newValue = Math.round((min + (percent / 100) * (max - min)) / step) * step;
+
+        // Nearer thumb wins; a tie hands it to the max thumb, which is the one
+        // people reach for when narrowing a budget.
+        const grabMin = Math.abs(newValue - minVal) < Math.abs(newValue - maxVal);
+
+        if (grabMin) {
+          setIsMinThumbDragging(true);
+          handleValueChange([Math.min(newValue, maxVal - step), maxVal]);
+        } else {
+          setIsMaxThumbDragging(true);
+          handleValueChange([minVal, Math.max(newValue, minVal + step)]);
+        }
+      },
+      [min, max, step, minVal, maxVal, handleValueChange]
+    );
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>, thumb: "min" | "max") => {
       let newMinValue = minVal;
@@ -159,11 +206,23 @@ const PriceRangeSlider = forwardRef<HTMLDivElement, PriceRangeSliderProps>(
 
     return (
       <div className={cn("w-full relative flex flex-col justify-center", className)} {...props} ref={ref}>
-        <div className="flex justify-between items-center text-[10px] md:text-xs font-semibold text-teal/80 mb-1.5 px-1 font-body">
+        {/* Stacked on mobile, where the two figures otherwise read as a pair of
+            unexplained numbers floating under the duration select. */}
+        <span className="mb-1 block px-1 font-display text-[10px] font-bold uppercase tracking-[0.16em] text-void/40 md:hidden">
+          Budget
+        </span>
+        <div className="flex justify-between items-center text-[11px] md:text-xs font-semibold text-teal/80 mb-1.5 px-1 font-body">
           <span>{formatCurrency(minVal, currency)}</span>
           <span>{formatCurrency(maxVal, currency)}{maxVal === max ? '+' : ''}</span>
         </div>
-        <div className="relative w-full h-[4px] bg-void/10 rounded-full" ref={sliderRef}>
+        {/* `before:` gives the 4px track a 32px-tall grab zone without changing
+            how it looks — a hairline is not something a finger can aim at. */}
+        <div
+          ref={sliderRef}
+          onMouseDown={handleTrackPointerDown}
+          onTouchStart={handleTrackPointerDown}
+          className="relative w-full h-[4px] bg-void/10 rounded-full cursor-pointer touch-none before:absolute before:-inset-y-[14px] before:inset-x-0 before:content-['']"
+        >
           <div 
             className="absolute top-0 bottom-0 bg-teal rounded-full" 
             style={{ left: `${minPercent}%`, right: `${100 - maxPercent}%` }} 
@@ -174,10 +233,14 @@ const PriceRangeSlider = forwardRef<HTMLDivElement, PriceRangeSliderProps>(
             aria-valuemax={maxVal - step}
             aria-valuenow={minVal}
             aria-label="Minimum price"
-            onMouseDown={() => setIsMinThumbDragging(true)}
-            onTouchStart={() => setIsMinThumbDragging(true)}
+            onMouseDown={(e) => { e.stopPropagation(); setIsMinThumbDragging(true); }}
+            onTouchStart={(e) => { e.stopPropagation(); setIsMinThumbDragging(true); }}
             onKeyDown={(e) => handleKeyDown(e, "min")}
-            className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-4 h-4 bg-white rounded-full shadow-md border-[1.5px] border-teal outline-none hover:scale-110 transition-transform cursor-grab active:cursor-grabbing focus-visible:ring-2 focus-visible:ring-cyan z-10"
+            // `after:` expands the hit area to 44×44 without growing the dot —
+            // a 16px target is roughly a third of what a fingertip needs.
+            // `touch-action: none` stops the browser claiming the drag as a
+            // page scroll the moment the finger moves.
+            className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-4 h-4 bg-white rounded-full shadow-md border-[1.5px] border-teal outline-none hover:scale-110 transition-transform cursor-grab active:cursor-grabbing focus-visible:ring-2 focus-visible:ring-cyan z-10 touch-none after:absolute after:-inset-[14px] after:content-['']"
             style={{ left: `${minPercent}%` }}
           />
           <button
@@ -186,10 +249,10 @@ const PriceRangeSlider = forwardRef<HTMLDivElement, PriceRangeSliderProps>(
             aria-valuemax={max}
             aria-valuenow={maxVal}
             aria-label="Maximum price"
-            onMouseDown={() => setIsMaxThumbDragging(true)}
-            onTouchStart={() => setIsMaxThumbDragging(true)}
+            onMouseDown={(e) => { e.stopPropagation(); setIsMaxThumbDragging(true); }}
+            onTouchStart={(e) => { e.stopPropagation(); setIsMaxThumbDragging(true); }}
             onKeyDown={(e) => handleKeyDown(e, "max")}
-            className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-4 h-4 bg-white rounded-full shadow-md border-[1.5px] border-teal outline-none hover:scale-110 transition-transform cursor-grab active:cursor-grabbing focus-visible:ring-2 focus-visible:ring-cyan z-10"
+            className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-4 h-4 bg-white rounded-full shadow-md border-[1.5px] border-teal outline-none hover:scale-110 transition-transform cursor-grab active:cursor-grabbing focus-visible:ring-2 focus-visible:ring-cyan z-10 touch-none after:absolute after:-inset-[14px] after:content-['']"
             style={{ left: `${maxPercent}%` }}
           />
         </div>
@@ -288,7 +351,9 @@ export function PremiumFilter({
         <div className="hidden md:block w-px h-8 bg-gradient-to-b from-transparent via-void/10 to-transparent" />
 
         {/* Price Range Slider */}
-        <div className="relative flex-[1.2] w-full px-4 md:px-6 h-12 md:h-14 flex items-center justify-center group bg-void/[0.01] md:bg-transparent rounded-2xl md:rounded-none">
+        {/* Auto height on mobile: the stacked "Budget" label pushed the content
+            past a fixed 48px box and clipped the track. */}
+        <div className="relative flex-[1.2] w-full px-4 md:px-6 py-3 md:py-0 md:h-14 flex items-center justify-center group bg-void/[0.01] md:bg-transparent rounded-2xl md:rounded-none">
           <PriceRangeSlider 
             min={0}
             max={maxPrice}
