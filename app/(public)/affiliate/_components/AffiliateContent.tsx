@@ -299,7 +299,10 @@ export default function AffiliateContent() {
               </button>
 
               <p className="font-body text-void/40 text-[13px] text-center">
-                By applying, you agree to our <Link href="/terms" className="underline hover:text-teal">Terms of Service</Link>.
+                {/* inline-block + vertical padding: as bare inline text inside a
+                    sentence this was a 37px-tall target on a phone. The negative
+                    margin keeps the sentence's line rhythm unchanged. */}
+                By applying, you agree to our <Link href="/terms" className="underline hover:text-teal inline-block py-3 -my-3">Terms of Service</Link>.
               </p>
             </motion.form>
           )}

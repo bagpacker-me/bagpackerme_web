@@ -162,8 +162,11 @@
   --ease-in:      cubic-bezier(0.4, 0, 1, 1);
   --ease-out:     cubic-bezier(0, 0, 0.2, 1);
   --ease-inout:   cubic-bezier(0.4, 0, 0.2, 1);
-  --ease-spring:  cubic-bezier(0.34, 1.56, 0.64, 1);
-  --ease-back:    cubic-bezier(0.68, -0.55, 0.27, 1.55);
+  /* --ease-spring and --ease-back were overshoot curves (bounce / anticipate).
+     Nothing in the codebase referenced either one, and this site's motion is
+     built on smooth deceleration, so they are gone rather than retuned. Reach
+     for --ease-expo below when a move needs to feel decisive. */
+  --ease-expo:    cubic-bezier(0.16, 1, 0.3, 1);
 
   --duration-instant: 100ms;
   --duration-fast:    200ms;
@@ -431,8 +434,15 @@ h3, h4 {
    RULE 3 — PULL QUOTES / BLOCKQUOTES  (MASTER.md Typography Polish §3)
    Font: Cormorant Garamond italic 400, clamp(20px, 2vw, 28px)
    Color: #0ED2E9 on dark, #285056 (teal) on light
-   Left border: 3px solid #C1EA00 (lime), padding-left: 24px
-   No quotation marks — the border IS the quote mark
+   Accent: a short lime rule above the quote — the same .accent-line motif the
+   home sections already use as a section marker.
+   No quotation marks — the rule IS the quote mark.
+
+   This replaced a 3px lime border-left. A thick coloured side border is the
+   most over-used callout treatment there is, and it fought the page: it hung
+   the quote off a vertical bar while every other accent on this site is a short
+   horizontal rule. Setting the mark above lets the quote sit flush in the text
+   column, which is what makes it read as a change of voice rather than a box.
    ───────────────────────────────────────────────────────────────────────────── */
 blockquote,
 .pull-quote {
@@ -440,11 +450,19 @@ blockquote,
   font-style: italic;
   font-weight: 400;
   font-size: clamp(20px, 2vw, 28px);
-  border-left: 3px solid var(--color-accent);   /* #C1EA00 lime border = the quote mark */
-  padding-left: 24px;
   quotes: none;            /* No typographic quote marks */
   margin: 0;
   line-height: 1.5;
+}
+
+blockquote::before,
+.pull-quote::before {
+  content: '';
+  display: block;
+  width: 48px;
+  height: 2px;
+  margin-bottom: 20px;
+  background: var(--color-accent);   /* #C1EA00 lime */
 }
 
 /* On dark backgrounds (parent .section-dark / bg-void) → cyan text */

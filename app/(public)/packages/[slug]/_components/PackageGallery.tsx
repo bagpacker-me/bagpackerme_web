@@ -6,6 +6,19 @@ import { Package } from '@/types';
 import { X, ChevronLeft, ChevronRight, Maximize2 } from 'lucide-react';
 import { FadeInSection } from '@/components/ui/FadeInSection';
 
+// `galleryUrls` is a bare string[] — no width or height is stored with an
+// upload, so the real aspect ratio of a photo is not knowable until the file
+// itself arrives. Reserving an approximate box and letting the image correct it
+// on load is exactly what produces layout shift, so the cells carry the ratio
+// instead and the photo fits itself to the cell.
+//
+// Cycling three landscape-to-square ratios keeps the columns ragged, which is
+// the point of the masonry — a single ratio would flatten this into a plain
+// grid. The cycle is index-based and therefore identical on server and client.
+// Nothing here crops more than a third of a frame, and the lightbox always
+// opens the full uncropped image.
+const CELL_RATIOS = ['aspect-[3/2]', 'aspect-[4/3]', 'aspect-[1/1]'] as const;
+
 export default function PackageGallery({ pkg }: { pkg: Package }) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -95,26 +108,23 @@ export default function PackageGallery({ pkg }: { pkg: Package }) {
               <button
                 key={idx}
                 type="button"
-                className="relative block w-full break-inside-avoid overflow-hidden cursor-crosshair group bg-void/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2"
+                className={`relative block w-full break-inside-avoid overflow-hidden cursor-crosshair group bg-void/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 ${
+                  CELL_RATIOS[idx % CELL_RATIOS.length]
+                }`}
                 onClick={(e) => openLightbox(idx, e)}
                 aria-label={`Open image ${idx + 1} of ${images.length} for ${pkg.title}`}
               >
-                {/* Was a bare <img> with no dimensions: it shipped the full
-                    Firebase original to a 170px-wide phone column, and until it
-                    loaded the cell measured 0px tall, so the whole masonry
-                    collapsed and then shoved the page down image by image.
-                    next/image gives it an AVIF/WebP srcset and a reserved box.
-                    The 4:3 hint is only that — `h-auto` hands the final ratio
-                    back to the real file, so the masonry keeps its varied
-                    heights. */}
+                {/* Was a raw image tag carrying no dimensions at all: it shipped
+                    the full Firebase original to a 170px-wide phone column, and
+                    until it loaded the cell measured 0px tall, so the masonry
+                    collapsed and then shoved the page down image by image. */}
                 <Image
                   src={src}
                   alt=""
-                  width={800}
-                  height={600}
+                  fill
                   sizes="(max-width: 768px) 50vw, 33vw"
                   quality={65}
-                  className="w-full h-auto transition-transform duration-700 ease-[var(--ease-default)] group-hover:scale-[1.05]"
+                  className="object-cover transition-transform duration-700 ease-[var(--ease-default)] group-hover:scale-[1.05]"
                 />
                 <div className="absolute inset-0 bg-transparent group-hover:bg-[#221E2A]/25 transition-colors duration-300 flex items-center justify-center pointer-events-none">
                    <Maximize2 size={28} className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 drop-shadow-lg" />

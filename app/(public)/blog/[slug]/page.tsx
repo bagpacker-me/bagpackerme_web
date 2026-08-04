@@ -61,7 +61,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
     max-w-none font-sans text-[16px] md:text-[18px] leading-[1.85] text-[#2D2D2D]
     [&>h2]:font-display [&>h2]:font-bold [&>h2]:text-[clamp(1.5rem,2.5vw,2rem)] [&>h2]:text-[#285056] [&>h2]:mt-[56px] [&>h2]:mb-[20px] [&>h2]:leading-tight
     [&>h3]:font-display [&>h3]:font-bold [&>h3]:text-[1.25rem] [&>h3]:text-[#221E2A] [&>h3]:mt-[40px] [&>h3]:mb-[14px]
-    [&>blockquote]:border-l-[3px] [&>blockquote]:border-lime [&>blockquote]:font-accent [&>blockquote]:italic [&>blockquote]:text-[1.25rem] [&>blockquote]:pl-[24px] [&>blockquote]:text-[#555] [&>blockquote]:my-[40px] [&>blockquote]:bg-[#F5F5F5] [&>blockquote]:py-[14px] [&>blockquote]:pr-[20px] [&>blockquote]:rounded-r-lg
+    [&>blockquote]:font-accent [&>blockquote]:italic [&>blockquote]:text-[1.35rem] [&>blockquote]:text-[#444] [&>blockquote]:my-[44px]
     [&>img]:w-full [&>img]:my-[40px] [&>img]:object-cover [&>img]:rounded-xl [&>img]:shadow-md
     [&_a]:text-teal [&_a]:underline [&_a]:decoration-teal/30 hover:[&_a]:decoration-teal [&_a]:transition-all [&_a]:font-medium
     [&>p]:mb-[22px]
@@ -86,7 +86,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
           {/* Back link */}
           <Link
             href="/blog"
-            className="inline-flex items-center gap-2 text-[13px] font-body font-medium text-gray-500 hover:text-teal transition-colors mb-6 group"
+            className="inline-flex min-h-[44px] -mt-2 items-center gap-2 text-[13px] font-body font-medium text-gray-500 hover:text-teal transition-colors mb-4 group"
           >
             <ArrowLeft size={14} className="transition-transform group-hover:-translate-x-1" />
             Back to Journal

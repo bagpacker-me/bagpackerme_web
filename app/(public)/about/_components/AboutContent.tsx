@@ -276,7 +276,10 @@ export default function AboutContent() {
                 and genuine care for each guest&apos;s trip.
               </p>
               
-              <blockquote className="border-l-4 border-lime pl-[24px] py-[8px] text-teal font-display text-[20px] md:text-[24px] leading-snug mb-[48px] italic">
+              {/* Sizing and colour stay local; the lime rule above comes from
+                  the shared blockquote treatment in globals.css, replacing the
+                  4px side border this used to hang off. */}
+              <blockquote className="text-teal font-display text-[20px] md:text-[24px] leading-snug mb-[48px] italic">
                 &ldquo;You speak directly with the founder, not a call centre. Real expertise, real accountability.&rdquo;
               </blockquote>
 
