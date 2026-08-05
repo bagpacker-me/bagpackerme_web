@@ -52,8 +52,34 @@ export async function POST(req: NextRequest) {
     return response;
   } catch (err) {
     console.error('[auth/session]', err);
-    return NextResponse.json({ error: 'Could not create session.' }, { status: 401 });
+
+    // A rejected token is the caller's problem (401); anything else — missing
+    // credentials, a failed Workload Identity exchange, Identity Toolkit being
+    // unreachable — is ours (500).
+    //
+    // These used to share a 401, which actively misled: a server that could not
+    // authenticate to Google at all reported the same "Could not create session"
+    // as a wrong password, so a deploy-config outage looked like a bad login.
+    if (isRejectedCredential(err)) {
+      return NextResponse.json({ error: 'Could not create session.' }, { status: 401 });
+    }
+
+    return NextResponse.json(
+      { error: 'Authentication is temporarily unavailable. Please try again.' },
+      { status: 500 }
+    );
   }
+}
+
+/**
+ * True when firebase-admin rejected the caller's token, rather than failing to
+ * do its own job. `auth/internal-error` is excluded deliberately: it is what
+ * surfaces when an Admin SDK call fails for infrastructure reasons, so it is a
+ * server fault wearing an `auth/` prefix.
+ */
+function isRejectedCredential(err: unknown): boolean {
+  const code = (err as { code?: unknown })?.code;
+  return typeof code === 'string' && code.startsWith('auth/') && code !== 'auth/internal-error';
 }
 
 export async function DELETE() {

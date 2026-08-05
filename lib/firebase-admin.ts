@@ -39,6 +39,35 @@ function requireEnv(name: string) {
   return value;
 }
 
+/**
+ * Workload Identity Federation identifiers, with the live bagpackerme-webb
+ * values as defaults.
+ *
+ * These are identifiers, not secrets. None of them grants anything on its own —
+ * the trust lives entirely in the IAM binding on the service account, which is
+ * keyed to Vercel's OIDC subject (owner:bagpackerme:project:bagpackerme:
+ * environment:production). Knowing the pool name gets an attacker no further
+ * than knowing the project ID does.
+ *
+ * They are defaulted rather than required because four env vars that never
+ * change are four chances for a deploy to fail closed. When they were required,
+ * a missing one surfaced as a 401 on the admin login with no indication that
+ * the cause was configuration rather than a bad password.
+ *
+ * Setting the env var still wins, so a different project, pool, or service
+ * account is a dashboard change and not a code change.
+ */
+const WIF_DEFAULTS = {
+  GCP_PROJECT_NUMBER: '260414714668',
+  GCP_SERVICE_ACCOUNT_EMAIL: 'vercel-app@bagpackerme-webb.iam.gserviceaccount.com',
+  GCP_WORKLOAD_IDENTITY_POOL_ID: 'vercel',
+  GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID: 'vercel',
+} as const;
+
+function wifConfig(name: keyof typeof WIF_DEFAULTS): string {
+  return process.env[name] || WIF_DEFAULTS[name];
+}
+
 let externalAccountClientCache: BaseExternalAccountClient | null = null;
 
 /**
@@ -53,10 +82,10 @@ let externalAccountClientCache: BaseExternalAccountClient | null = null;
 function vercelExternalAccountClient(): BaseExternalAccountClient {
   if (externalAccountClientCache) return externalAccountClientCache;
 
-  const projectNumber = requireEnv('GCP_PROJECT_NUMBER');
-  const poolId = requireEnv('GCP_WORKLOAD_IDENTITY_POOL_ID');
-  const providerId = requireEnv('GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID');
-  const serviceAccountEmail = requireEnv('GCP_SERVICE_ACCOUNT_EMAIL');
+  const projectNumber = wifConfig('GCP_PROJECT_NUMBER');
+  const poolId = wifConfig('GCP_WORKLOAD_IDENTITY_POOL_ID');
+  const providerId = wifConfig('GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID');
+  const serviceAccountEmail = wifConfig('GCP_SERVICE_ACCOUNT_EMAIL');
 
   const providerPath = `projects/${projectNumber}/locations/global/workloadIdentityPools/${poolId}/providers/${providerId}`;
 
