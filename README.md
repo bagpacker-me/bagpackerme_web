@@ -52,6 +52,21 @@ npm run dev
 
 App runs at [http://localhost:3000](http://localhost:3000)
 
+### Node.js version
+
+`engines.node` in `package.json` pins Node 24, and Vercel treats that field as
+authoritative — it overrides whatever is picked in Project Settings. Do not
+lower it below 22.
+
+`firebase-admin` v14 declares `engines: node >= 22` and means it: its
+`jwks-rsa` dependency is CommonJS and does a plain `require('jose')`, while
+`jose` v6 is ESM-only. That only resolves on Node versions with `require(ESM)`
+support (20.19+ / 22.12+). On anything older, *every* route that imports
+`lib/firebase-admin.ts` throws `ERR_REQUIRE_ESM` while being imported — before
+any handler runs — so admin login, enquiries, bookings, and careers all return
+a bare 500 with no application log. Static pages and middleware keep working,
+which makes it look like a Firebase problem rather than a runtime one.
+
 ---
 
 ## 4. Seeding the Database

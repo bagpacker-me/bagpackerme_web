@@ -107,16 +107,22 @@ service cloud.firestore {
       allow read, update, delete: if isAdmin();
     }
 
-    // Public-safe affiliate mirror. Read by the public affiliate dashboard.
+    // Public-safe affiliate mirror. No anonymous read: /affiliate/dashboard
+    // reaches this through /api/affiliate/[code], which uses the Admin SDK
+    // (getAffiliateDashboardAdmin) and so bypasses these rules. Granting
+    // `read: if true` here would also permit a *list*, letting anyone
+    // enumerate every affiliate by name — the dashboard never needed that,
+    // since it looks up one code at a time through the route.
+    //
     // Writes come from either the Admin SDK (registration, click tracking,
     // conversions — bypasses rules) or the admin panel, which syncs this doc
     // from the browser when an affiliate's status changes.
     match /affiliate_public/{affiliateCode} {
-      allow read: if true;
+      allow read: if isAdmin();
       allow write: if isAdmin();
 
       match /events/{sessionId} {
-        allow read: if true;
+        allow read: if isAdmin();
         allow write: if isAdmin();
       }
     }

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAffiliatePublic, getAffiliatePublicEvents } from '@/lib/firestore';
-import type { AffiliateEvent, AffiliatePublic } from '@/types';
+import { getAffiliateDashboardAdmin } from '@/lib/affiliate-admin';
+
+export const runtime = 'nodejs';
 
 /** Public GET /api/affiliate/[code] — affiliate self-service stats */
 export async function GET(
@@ -8,43 +9,14 @@ export async function GET(
   { params }: { params: { code: string } }
 ) {
   try {
-    const code = params.code?.toUpperCase();
-    if (!code) {
-      return NextResponse.json({ error: 'Code is required.' }, { status: 400 });
-    }
-
-    const affiliateSnap = await getAffiliatePublic(code);
-    if (!affiliateSnap.exists()) {
+    // Returns only the mirror's public fields — never notes, commissionRate,
+    // or the private affiliate id. See getAffiliateDashboardAdmin.
+    const dashboard = await getAffiliateDashboardAdmin(params.code, 20);
+    if (!dashboard) {
       return NextResponse.json({ error: 'Affiliate not found.' }, { status: 404 });
     }
 
-    const affiliate = affiliateSnap.data() as AffiliatePublic;
-
-    // Only return safe public fields — never expose notes, commissionRate, or internal ID to public
-    const publicData = {
-      name: affiliate.name,
-      code: affiliate.code,
-      status: affiliate.status,
-      totalClicks: affiliate.totalClicks,
-      totalLeads: affiliate.totalLeads,
-      totalBookings: affiliate.totalBookings,
-      createdAt: affiliate.createdAt,
-    };
-
-    // Fetch recent 20 clicks for the affiliate's dashboard
-    const clicksSnap = await getAffiliatePublicEvents(code, 20);
-    const recentClicks = clicksSnap.docs.slice(0, 20).map((d) => {
-      const data = d.data() as AffiliateEvent;
-      return {
-        pageUrl: data.pageUrl,
-        packageSlug: data.packageSlug,
-        convertedToEnquiry: data.convertedToEnquiry,
-        convertedToBooking: data.convertedToBooking,
-        createdAt: data.createdAt,
-      };
-    });
-
-    return NextResponse.json({ affiliate: publicData, recentClicks });
+    return NextResponse.json(dashboard);
   } catch (err) {
     console.error('[affiliate/[code]]', err);
     return NextResponse.json({ error: 'Internal server error.' }, { status: 500 });

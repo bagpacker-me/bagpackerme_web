@@ -105,6 +105,17 @@ await check(
 );
 await check('cannot read customers', assertFails(getDoc(doc(anon, 'customers/c1'))));
 await check('cannot read bookings', assertFails(getDoc(doc(anon, 'bookings/b1'))));
+// The affiliate dashboard reads this through /api/affiliate/[code] (Admin SDK),
+// so browsers get nothing — a read grant here would also permit a list, and
+// with it enumeration of every affiliate by name.
+await check(
+  'cannot read affiliate_public',
+  assertFails(getDoc(doc(anon, 'affiliate_public/BP-ANY')))
+);
+await check(
+  'cannot read affiliate click events',
+  assertFails(getDoc(doc(anon, 'affiliate_public/BP-ANY/events/sess1')))
+);
 
 console.log('\n--- Public site (must keep working) ---');
 await check(
@@ -118,10 +129,6 @@ await check(
 await check(
   'newsletter signup rejects a malformed email',
   assertFails(setDoc(doc(anon, 'subscribers/s3'), { email: 'notanemail', createdAt: NOW }))
-);
-await check(
-  'affiliate dashboard can read affiliate_public',
-  assertSucceeds(getDoc(doc(anon, 'affiliate_public/BP-ANY')))
 );
 await check(
   'registration can check the duplicate-email index',

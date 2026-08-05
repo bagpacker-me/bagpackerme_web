@@ -254,3 +254,71 @@ export async function incrementMetricAdmin(
 export async function createEnquiryAdmin(enquiry: Omit<Enquiry, 'id'>) {
   return adminDb().collection('enquiries').add(enquiry);
 }
+
+/** The affiliate's own stats, trimmed to what /affiliate/dashboard renders. */
+export type AffiliateDashboard = {
+  affiliate: Pick<
+    AffiliatePublic,
+    'name' | 'code' | 'status' | 'totalClicks' | 'totalLeads' | 'totalBookings' | 'createdAt'
+  >;
+  recentClicks: Pick<
+    AffiliateEvent,
+    'pageUrl' | 'packageSlug' | 'convertedToEnquiry' | 'convertedToBooking' | 'createdAt'
+  >[];
+};
+
+/**
+ * Reads an affiliate's public mirror for /api/affiliate/[code].
+ *
+ * Through the Admin SDK, like every other server-side affiliate access here.
+ * The route previously used the client SDK from lib/firestore.ts, which made a
+ * public, unauthenticated endpoint depend on firestore.rules granting anonymous
+ * reads of affiliate_public — a grant that also makes the collection listable,
+ * so anyone could enumerate every affiliate by name. Reading through the Admin
+ * SDK bypasses rules, so the collection can stay closed to browsers.
+ *
+ * Returns null when the code does not exist, so the route can answer 404.
+ */
+export async function getAffiliateDashboardAdmin(
+  code: string,
+  eventLimit = 20
+): Promise<AffiliateDashboard | null> {
+  const normalizedCode = normalizeAffiliateCode(code);
+  if (!normalizedCode) return null;
+
+  const db = adminDb();
+  const publicSnap = await db.doc(`affiliate_public/${normalizedCode}`).get();
+  if (!publicSnap.exists) return null;
+
+  const affiliate = publicSnap.data() as AffiliatePublic;
+
+  const eventsSnap = await db
+    .collection(`affiliate_public/${normalizedCode}/events`)
+    .orderBy('createdAt', 'desc')
+    .limit(eventLimit)
+    .get();
+
+  return {
+    // Never widen this: commissionRate, email, and notes live on the private
+    // `affiliates` doc, but the mirror is not a safe object to spread wholesale.
+    affiliate: {
+      name: affiliate.name,
+      code: affiliate.code,
+      status: affiliate.status,
+      totalClicks: affiliate.totalClicks,
+      totalLeads: affiliate.totalLeads,
+      totalBookings: affiliate.totalBookings,
+      createdAt: affiliate.createdAt,
+    },
+    recentClicks: eventsSnap.docs.map((doc) => {
+      const event = doc.data() as AffiliateEvent;
+      return {
+        pageUrl: event.pageUrl,
+        packageSlug: event.packageSlug,
+        convertedToEnquiry: event.convertedToEnquiry,
+        convertedToBooking: event.convertedToBooking,
+        createdAt: event.createdAt,
+      };
+    }),
+  };
+}
