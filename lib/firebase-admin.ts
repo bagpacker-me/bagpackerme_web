@@ -8,7 +8,7 @@ import {
   type App,
   type Credential,
 } from 'firebase-admin/app';
-import { getFirestore, type Firestore } from 'firebase-admin/firestore';
+import { Firestore } from '@google-cloud/firestore';
 import { getAuth, type Auth } from 'firebase-admin/auth';
 import { ExternalAccountClient, GoogleAuth, type BaseExternalAccountClient } from 'google-auth-library';
 import { getVercelOidcToken } from '@vercel/oidc';
@@ -150,10 +150,61 @@ function getAdminApp(): App {
   return initializeApp({ credential, projectId }, ADMIN_APP_NAME);
 }
 
-// Lazy so that a misconfiguration surfaces on the request that needs it, rather
-// than crashing the build or unrelated routes.
+/**
+ * The federated client presented as a GoogleAuth, which is the shape google-gax
+ * (and therefore the Firestore client) expects from its `auth` option.
+ *
+ * A hand-rolled `{ getClient }` object is not enough: gax hands the `auth`
+ * object itself to its REST transport and calls `auth.fetch()` on it, while the
+ * gRPC transport calls `getClient()` and `getUniverseDomain()`. Passing a real
+ * GoogleAuth seeded with `authClient` satisfies every one of those without
+ * letting it go looking for credentials of its own — the pre-built client is
+ * cached before any discovery can run.
+ */
+function vercelGoogleAuth(projectId: string): GoogleAuth {
+  return new GoogleAuth({
+    authClient: vercelExternalAccountClient(),
+    projectId,
+  });
+}
+
+let firestoreCache: Firestore | null = null;
+
+/**
+ * Firestore, built directly rather than through firebase-admin's getFirestore().
+ *
+ * getFirestore() accepts only a ServiceAccountCredential or application default
+ * credentials and throws 'invalid-credential' on anything else — including the
+ * federated Credential above. It is the same restriction already documented for
+ * getStorage() in adminAccessToken() below, and it fails the same way: fine on a
+ * developer's machine under ADC, and broken on Vercel, where every Firestore
+ * call throws 'Failed to initialize Google Cloud Firestore client with the
+ * available credentials'. getAuth() is unaffected, which is why admin login
+ * could work while every form submission returned a 500.
+ *
+ * @google-cloud/firestore is what firebase-admin uses underneath, so this is the
+ * same client, just handed an auth source firebase-admin will not pass along.
+ * Locally the constructor discovers ADC by itself, exactly as before.
+ *
+ * preferRest because nothing on the server uses onSnapshot: it keeps gRPC (and
+ * its connection setup) out of a serverless invocation that makes one or two
+ * calls and exits.
+ *
+ * Lazy so that a misconfiguration surfaces on the request that needs it, rather
+ * than crashing the build or unrelated routes.
+ */
 export function adminDb(): Firestore {
-  return getFirestore(getAdminApp());
+  if (firestoreCache) return firestoreCache;
+
+  const projectId = requireEnv('NEXT_PUBLIC_FIREBASE_PROJECT_ID');
+
+  firestoreCache = new Firestore({
+    projectId,
+    preferRest: true,
+    ...(process.env.VERCEL ? { auth: vercelGoogleAuth(projectId) } : {}),
+  });
+
+  return firestoreCache;
 }
 
 export function adminAuth(): Auth {

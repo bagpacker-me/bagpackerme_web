@@ -16,6 +16,7 @@
     "test:packages": "tsx static-global-packages.test.mjs"
   },
   "dependencies": {
+    "@google-cloud/firestore": "^8.6.0",
     "@hookform/resolvers": "^5.2.2",
     "@radix-ui/react-slot": "^1.2.4",
     "@remixicon/react": "^4.9.0",
