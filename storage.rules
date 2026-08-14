@@ -4,11 +4,12 @@ service firebase.storage {
   match /b/{bucket}/o {
 
     // Mirror of isAdmin() in firestore.rules — the admin address is hardcoded
-    // in both files and must be changed in both together.
+    // in both files and must be changed in both together, and must match
+    // NEXT_PUBLIC_ADMIN_EMAIL in Vercel.
     function isAdmin() {
       return request.auth != null
         && request.auth.token.email != null
-        && request.auth.token.email == 'bagpackerme.world@gmail.com';
+        && request.auth.token.email == 'admin@bagpackerme.com';
     }
 
     // Every upload surface in the admin panel is accept="image/*".

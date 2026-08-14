@@ -5,10 +5,16 @@ service cloud.firestore {
 
     // Helper function: check if user is authenticated admin.
     // Mirrored in storage.rules — change both together.
+    //
+    // This address must stay in step with NEXT_PUBLIC_ADMIN_EMAIL in Vercel.
+    // When the two drift, the panel still renders — middleware, useAuth and
+    // /api/auth/session all gate on the env var — while every read here is
+    // denied, which reads as "the admin panel is broken" rather than as a
+    // config mismatch.
     function isAdmin() {
       return request.auth != null
         && request.auth.token.email != null
-        && request.auth.token.email == 'bagpackerme.world@gmail.com';
+        && request.auth.token.email == 'admin@bagpackerme.com';
     }
 
     // Shape guard for the public newsletter signup. subscribeToNewsletter()

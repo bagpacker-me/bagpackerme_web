@@ -15,7 +15,8 @@ import {
 import { readFileSync } from 'node:fs';
 import { doc, setDoc, getDoc, deleteDoc, updateDoc } from 'firebase/firestore';
 
-const ADMIN = 'bagpackerme.world@gmail.com';
+// Must match isAdmin() in firestore.rules and NEXT_PUBLIC_ADMIN_EMAIL in Vercel.
+const ADMIN = 'admin@bagpackerme.com';
 const NOW = new Date().toISOString();
 
 const testEnv = await initializeTestEnvironment({
