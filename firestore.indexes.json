@@ -41,6 +41,14 @@
       ]
     },
     {
+      "collectionGroup": "club_applications",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
+    },
+    {
       "collectionGroup": "bookings",
       "queryScope": "COLLECTION",
       "fields": [

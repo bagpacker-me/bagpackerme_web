@@ -1,6 +1,6 @@
 import { collection, doc, getDocs, addDoc, updateDoc, deleteDoc, query, where, orderBy, getDoc, limit, setDoc, increment, runTransaction, writeBatch, onSnapshot } from 'firebase/firestore';
 import { db } from './firebase';
-import { Package, BlogPost, Enquiry, Customer, Booking, GalleryImage, Testimonial, Affiliate, AffiliateClick, AffiliateEvent, AffiliatePublic, AffiliateRegistrationIndex, PackageMarket, JobOpening, JobApplication } from '@/types';
+import { Package, BlogPost, Enquiry, Customer, Booking, GalleryImage, Testimonial, Affiliate, AffiliateClick, AffiliateEvent, AffiliatePublic, AffiliateRegistrationIndex, PackageMarket, JobOpening, JobApplication, ClubApplication } from '@/types';
 import { buildAffiliatePublicData, normalizeAffiliateCode, normalizeAffiliateSessionId } from './affiliate';
 import { STATIC_GLOBAL_PACKAGES } from './static-global-packages';
 import {
@@ -254,6 +254,28 @@ export const listenNewApplicationsCount = (callback: (count: number) => void) =>
     callback(snapshot.size);
   }, (error) => {
     console.error('Error listening to new applications count:', error);
+  });
+};
+
+// Curious Club applications
+// No create wrapper, on purpose: firestore.rules deny browser creates, and
+// app/api/curious-club/apply owns the write via the Admin SDK so its zod
+// validation — including the max-5 / max-3 selection caps — cannot be
+// sidestepped. Delete *is* safe from the browser, unlike job applications:
+// there is no Storage object to strand.
+const clubApplicationsCol = collection(db, 'club_applications');
+export const getClubApplications = async () =>
+  getDocs(query(clubApplicationsCol, orderBy('createdAt', 'desc')));
+export const updateClubApplication = async (id: string, data: Partial<ClubApplication>) =>
+  updateDoc(doc(db, 'club_applications', id), data);
+export const deleteClubApplication = async (id: string) =>
+  deleteDoc(doc(db, 'club_applications', id));
+export const listenNewClubApplicationsCount = (callback: (count: number) => void) => {
+  const q = query(clubApplicationsCol, where('status', '==', 'new'));
+  return onSnapshot(q, (snapshot) => {
+    callback(snapshot.size);
+  }, (error) => {
+    console.error('Error listening to new club applications count:', error);
   });
 };
 

@@ -72,6 +72,19 @@ service cloud.firestore {
       allow read, update, delete: if isAdmin();
     }
 
+    // Curious Club applications: created server-side only, via the Admin SDK in
+    // app/api/curious-club/apply/route.ts. The Admin SDK bypasses these rules,
+    // so browsers get no write access at all and the zod validation in that
+    // route — including the "pick up to 5" / "choose up to 3" caps and the
+    // required consent flag — cannot be sidestepped.
+    //
+    // Applicant PII (name, city, phone, email, socials and long free-text
+    // answers) is never publicly readable. Mirrors job_applications above.
+    match /club_applications/{docId} {
+      allow create: if isAdmin();
+      allow read, update, delete: if isAdmin();
+    }
+
     // Settings: public can read, only admin can write
     match /settings/{docId} {
       allow read: if true;

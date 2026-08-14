@@ -247,6 +247,50 @@ await check(
   assertSucceeds(deleteDoc(doc(admin, 'job_applications/a1')))
 );
 
+// Curious Club applications: personal answers plus voluntarily shared socials.
+// Same shape as job applications — the apply route owns creation through the
+// Admin SDK so its zod caps and consent check cannot be sidestepped.
+console.log('\n--- Curious Club ---');
+await testEnv.withSecurityRulesDisabled(async (ctx) => {
+  await setDoc(doc(ctx.firestore(), 'club_applications/c1'), {
+    fullName: 'Applicant',
+    email: 'applicant@example.com',
+    phone: '+910000000000',
+    city: 'Mumbai',
+    instagram: '@applicant',
+    consent: true,
+    status: 'new',
+  });
+});
+await check(
+  'public cannot read a club application (applicant PII)',
+  assertFails(getDoc(doc(anon, 'club_applications/c1')))
+);
+await check(
+  'a signed-in non-admin cannot read a club application',
+  assertFails(getDoc(doc(rando, 'club_applications/c1')))
+);
+await check(
+  'public cannot create a club application, bypassing route validation',
+  assertFails(setDoc(doc(anon, 'club_applications/evil'), { fullName: 'Bot', status: 'new' }))
+);
+await check(
+  'public cannot self-invite by updating a club application',
+  assertFails(updateDoc(doc(anon, 'club_applications/c1'), { status: 'invited' }))
+);
+await check(
+  'admin reads a club application',
+  assertSucceeds(getDoc(doc(admin, 'club_applications/c1')))
+);
+await check(
+  'admin moves a club application through the pipeline',
+  assertSucceeds(updateDoc(doc(admin, 'club_applications/c1'), { status: 'shortlisted' }))
+);
+await check(
+  'admin deletes a club application',
+  assertSucceeds(deleteDoc(doc(admin, 'club_applications/c1')))
+);
+
 console.log(`\n===== ${pass} passed, ${fail} failed =====`);
 await testEnv.cleanup();
 process.exit(fail > 0 ? 1 : 0);

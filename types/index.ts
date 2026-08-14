@@ -163,6 +163,46 @@ export interface JobApplication {
   updatedAt: string;
 }
 
+export type ClubApplicationStatus = 'new' | 'shortlisted' | 'invited' | 'declined';
+
+// The Curious Club membership application. Written only by
+// app/api/curious-club/apply/route.ts via the Admin SDK — firestore.rules give
+// browsers no create access, so the zod schema in lib/club-application.ts
+// cannot be sidestepped.
+//
+// Answers are personal (city, work, socials, long free text). Never publicly
+// readable, and deliberately no IP or user-agent stored alongside them.
+export interface ClubApplication {
+  id: string;
+  fullName: string;
+  ageBand: string;
+  city: string;
+  work: string;
+  instagram: string;
+  linkedin: string;
+  curiousAbout: string;
+  travelFor: string[];
+  sixHours: string;
+  travelStyle: string;
+  meetPreferences: string[];
+  experiences: string[];
+  holidayBudget: string;
+  bookTomorrow: string;
+  bringToCommunity: string;
+  whyInvite: string;
+  discoverySource: string;
+  phone: string;
+  email: string;
+  consent: boolean;
+  /** Slug of the trip page that sent them here, '' for a direct application. */
+  trip: string;
+  status: ClubApplicationStatus;
+  notes: string;              // internal admin notes
+  source: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Customer {
   id: string;
   name: string;

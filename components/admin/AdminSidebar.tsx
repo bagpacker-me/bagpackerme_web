@@ -6,7 +6,11 @@ import { usePathname, useRouter } from 'next/navigation';
 import { Logo } from '@/components/ui/Logo';
 import { useAuth } from '@/hooks/useAuth';
 import { logoutAdmin } from '@/lib/auth';
-import { listenNewEnquiriesCount, listenNewApplicationsCount } from '@/lib/firestore';
+import {
+  listenNewEnquiriesCount,
+  listenNewApplicationsCount,
+  listenNewClubApplicationsCount,
+} from '@/lib/firestore';
 import {
   LayoutDashboard,
   BarChart3,
@@ -22,6 +26,7 @@ import {
   Briefcase,
   UserRoundSearch,
   Settings,
+  Sparkles,
   LogOut,
   X
 } from 'lucide-react';
@@ -53,6 +58,7 @@ const SECTIONS = [
     title: 'BOOKINGS & CRM',
     items: [
       { icon: MessageSquare, label: 'Enquiries', href: '/admin/enquiries', badge: 0 },
+      { icon: Sparkles, label: 'Curious Club', href: '/admin/club', badge: 0 },
       { icon: Calendar, label: 'Bookings', href: '/admin/bookings' },
       { icon: Users, label: 'Customers', href: '/admin/customers' },
       { icon: UserRoundSearch, label: 'Applications', href: '/admin/careers/applications', badge: 0 },
@@ -85,6 +91,7 @@ export default function AdminSidebar({ isOpen = false, onClose }: AdminSidebarPr
   const { user } = useAuth();
   const [newEnquiriesCount, setNewEnquiriesCount] = useState(0);
   const [newApplicationsCount, setNewApplicationsCount] = useState(0);
+  const [newClubApplicationsCount, setNewClubApplicationsCount] = useState(0);
 
   useEffect(() => {
     if (!user) return;
@@ -95,6 +102,12 @@ export default function AdminSidebar({ isOpen = false, onClose }: AdminSidebarPr
   useEffect(() => {
     if (!user) return;
     const unsub = listenNewApplicationsCount(setNewApplicationsCount);
+    return () => unsub();
+  }, [user]);
+
+  useEffect(() => {
+    if (!user) return;
+    const unsub = listenNewClubApplicationsCount(setNewClubApplicationsCount);
     return () => unsub();
   }, [user]);
 
@@ -151,7 +164,9 @@ export default function AdminSidebar({ isOpen = false, onClose }: AdminSidebarPr
                     ? newEnquiriesCount
                     : item.label === 'Applications'
                       ? newApplicationsCount
-                      : item.badge;
+                      : item.label === 'Curious Club'
+                        ? newClubApplicationsCount
+                        : item.badge;
                 return (
                   <li key={item.href}>
                     <Link

@@ -10,7 +10,9 @@ export default function robots(): MetadataRoute.Robots {
         // /affiliate/dashboard is a signed-in partner's own click/earnings
         // stats — no search value, and it renders under a shareable ?code=
         // query. The page also emits noindex; this just saves the crawl.
-        disallow: ['/admin/', '/api/', '/affiliate/dashboard'],
+        // /curious-club/apply is a 19-question form behind the club page — no
+        // search value of its own, and it emits noindex too.
+        disallow: ['/admin/', '/api/', '/affiliate/dashboard', '/curious-club/apply'],
       },
     ],
     sitemap: absoluteUrl('/sitemap.xml'),

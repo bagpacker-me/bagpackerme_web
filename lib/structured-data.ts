@@ -19,7 +19,7 @@ const optionalImage = (url: string | undefined) =>
   url && url.trim() ? { image: url } : {};
 // Stable @ids so blocks in separate <script> tags cross-reference. Google merges
 // all JSON-LD on a page before resolving @id.
-const ORG_ID = `${SITE_URL}/#organization`;
+export const ORG_ID = `${SITE_URL}/#organization`;
 const SITE_ID = `${SITE_URL}/#website`;
 
 /** Path for a package within its market. */

@@ -22,6 +22,7 @@ export function Navbar() {
   const menuItems = [
     { name: 'Destinations', href: `${marketBase}/packages` },
     { name: isIndiaRoute ? 'Global' : 'India', href: isIndiaRoute ? '/' : '/in' },
+    { name: 'The Club', href: '/curious-club' },
     { name: 'Journal', href: '/blog' },
     { name: 'About Us', href: '/about' },
     { name: 'Contact', href: '/contact' },

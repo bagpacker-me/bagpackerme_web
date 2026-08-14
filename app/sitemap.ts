@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next';
 import { getPublishedPackagesForMarket, getPublishedBlogs } from '@/lib/firestore';
 import { getPublishedJobOpenings } from '@/lib/careers-server';
+import { CLUB_TRIPS, tripPath } from '@/lib/club-trips';
 import { SITE_URL } from '@/lib/site-url';
 import { Package, BlogPost } from '@/types';
 
@@ -9,13 +10,15 @@ const BASE_URL = SITE_URL;
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Static pages. /corporate and /book are deliberately absent — both are
   // permanentRedirect stubs into /contact, and a sitemap must only list URLs
-  // that return 200. /affiliate/dashboard is absent because it is noindex.
+  // that return 200. /affiliate/dashboard is absent because it is noindex, and
+  // /curious-club/apply for the same reason.
   const staticPages: MetadataRoute.Sitemap = [
     { url: BASE_URL, lastModified: new Date(), changeFrequency: 'weekly', priority: 1 },
     { url: `${BASE_URL}/contact`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
     { url: `${BASE_URL}/packages`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
     { url: `${BASE_URL}/in`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
     { url: `${BASE_URL}/in/packages`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.85 },
+    { url: `${BASE_URL}/curious-club`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
     { url: `${BASE_URL}/blog`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
     { url: `${BASE_URL}/about`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.7 },
     { url: `${BASE_URL}/careers`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.6 },
@@ -23,6 +26,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/privacy`, lastModified: new Date(), changeFrequency: 'yearly', priority: 0.3 },
     { url: `${BASE_URL}/terms`, lastModified: new Date(), changeFrequency: 'yearly', priority: 0.3 },
   ];
+
+  // Curious Club departures. Hard-coded content, so no try/catch needed.
+  const tripPages: MetadataRoute.Sitemap = CLUB_TRIPS.map((trip) => ({
+    url: `${BASE_URL}${tripPath(trip)}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.8,
+  }));
 
   // Dynamic package pages
   let packagePages: MetadataRoute.Sitemap = [];
@@ -78,5 +89,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Sitemap generation continues even if Firestore fails
   }
 
-  return [...staticPages, ...packagePages, ...blogPages, ...jobPages];
+  return [...staticPages, ...tripPages, ...packagePages, ...blogPages, ...jobPages];
 }

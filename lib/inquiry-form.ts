@@ -1,4 +1,12 @@
 import type { Enquiry, EnquiryFormData } from '@/types';
+import {
+  EMAIL_PATTERN,
+  phoneLooksValid,
+  requireField,
+  type FormErrors,
+} from '@/lib/form-validation';
+
+export type { FormErrors };
 
 export type InquiryVariant = 'b2c' | 'corporate';
 export type ContactIntent = 'trip' | 'corporate' | 'general';
@@ -59,8 +67,6 @@ export interface CorporateFormState {
   contactPhone: string;
   extraNotes: string;
 }
-
-export type FormErrors<T> = Partial<Record<keyof T, string>>;
 
 export const B2C_DESTINATION_OPTIONS: InquiryOption[] = [
   { label: 'I have a destination in mind', value: 'I have a destination in mind' },
@@ -259,33 +265,12 @@ export const CORPORATE_STEP_FIELDS: Record<CorporateStepId, (keyof CorporateForm
   'budget-contact': ['budgetRange', 'contactName', 'contactEmail', 'contactPhone', 'extraNotes'],
 };
 
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-function hasValue(value: string | string[]) {
-  return Array.isArray(value) ? value.length > 0 : value.trim().length > 0;
-}
-
-function phoneLooksValid(value: string) {
-  return value.replace(/\D/g, '').length >= 8;
-}
-
 function safeText(value: string, fallback = 'Not specified') {
   return value.trim() || fallback;
 }
 
 function safeList(values: string[], fallback = 'Not specified') {
   return values.length ? values.join(', ') : fallback;
-}
-
-function requireField<T extends object>(
-  errors: FormErrors<T>,
-  field: keyof T,
-  value: string | string[],
-  message: string
-) {
-  if (!hasValue(value)) {
-    errors[field] = message;
-  }
 }
 
 export function validateB2CForm(form: B2CFormState): FormErrors<B2CFormState> {
