@@ -112,10 +112,10 @@ const STEPS = [
 
 // ─── Section 6: the application teaser ───────────────────────────────────────
 const SAMPLE_QUESTIONS = [
-  'You land in Bangkok with six free hours. What do you do?',
-  'What’s something you’re unusually curious about?',
-  'Who would you most like to meet through the club?',
-  'What’s a trip you’d book tomorrow if the right people were going?',
+  'It’s your first morning in a brand-new destination. What’s step one?',
+  'What role do you play in the pre-trip group chat?',
+  'You stumble on a surprise street festival. What’s your move?',
+  'What’s the ultimate souvenir you want to bring home?',
 ];
 
 // ─── Layout system ───────────────────────────────────────────────────────────
@@ -391,7 +391,7 @@ export default function CuriousClubContent() {
                 a phone. */}
             <div className="mt-[48px] flex flex-wrap items-center gap-x-[24px] gap-y-[16px] border-t border-void/20 pt-[32px]">
               <ApplyButton>Apply now</ApplyButton>
-              <p className="font-body text-[13px] text-void/55">It takes about 2 minutes.</p>
+              <p className="font-body text-[13px] text-void/55">It takes under a minute.</p>
             </div>
           </FadeInSection>
         </Shell>
@@ -402,9 +402,9 @@ export default function CuriousClubContent() {
         <Shell>
           <div className={GRID}>
             <FadeInSection className="lg:col-span-7">
-              <h2 className={`${H2_DARK} max-w-[20ch]`}>Your application takes about 2 minutes.</h2>
+              <h2 className={`${H2_DARK} max-w-[20ch]`}>Your application takes under a minute.</h2>
 
-              <p className="mt-[24px] font-body text-[14px] text-white/55">We might ask you things like:</p>
+              <p className="mt-[24px] font-body text-[14px] text-white/55">A few details, then six questions like these:</p>
 
               {/* A hairline index, not four tinted boxes — the questions align on
                   one left edge and read as a single list. */}
@@ -420,7 +420,7 @@ export default function CuriousClubContent() {
               <div className="mt-[32px] flex flex-wrap items-center gap-x-[24px] gap-y-[16px]">
                 <ApplyButton />
                 <p className="font-accent text-[20px] italic leading-none text-lime">
-                  Can’t wait to read your answers!
+                  You’ll get your traveller type at the end.
                 </p>
               </div>
             </FadeInSection>

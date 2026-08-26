@@ -3,37 +3,44 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { ArrowLeft, ArrowRight, Check, CornerDownLeft, Loader2 } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, CornerDownLeft, Loader2, MessageCircle } from 'lucide-react';
 import { HoneypotField } from '@/components/ui/HoneypotField';
 import { HONEYPOT_FIELD } from '@/lib/honeypot';
+import { useSiteSettings } from '@/hooks/useSiteSettings';
 import { cn } from '@/lib/utils';
 import {
   CLUB_QUESTIONS,
-  CONSENT_TEXT,
+  CLUB_TOTAL_QUESTIONS,
+  earliestAllowedDob,
   initialClubAnswers,
+  latestAllowedDob,
   validateClubApplication,
   validateClubQuestion,
   type ClubApplicationAnswers,
   type ClubQuestion,
 } from '@/lib/club-application';
+import {
+  QUIZ_CHOICES,
+  personalityType,
+  pickQuizQuestions,
+  type PersonalityType,
+  type QuizAnswer,
+  type QuizChoice,
+  type QuizQuestion,
+} from '@/lib/personality-quiz';
 
-// One question per screen. Steps run: 0…n-1 questions, then the consent step,
-// then the received screen. Answers stay in React state until the final submit —
-// nothing is written anywhere until someone actually finishes.
+// One question per screen. The profile half (CLUB_QUESTIONS) runs first, then
+// six of the ten vibe-match questions, picked at random per applicant. Answers
+// stay in React state until the final submit — nothing is written anywhere
+// until someone actually finishes.
 
-const CONSENT_STEP = CLUB_QUESTIONS.length;
-const TOTAL_STEPS = CLUB_QUESTIONS.length + 1;
+type Step =
+  | { kind: 'profile'; question: ClubQuestion }
+  | { kind: 'quiz'; question: QuizQuestion };
 
-// A…R, so a keyboard user can pick an option without leaving the home row.
-const OPTION_KEYS = 'ABCDEFGHIJKLMNOPQRSTUVWX'.split('');
-
-function useIsMac() {
-  const [isMac, setIsMac] = useState(false);
-  useEffect(() => {
-    setIsMac(/Mac|iPod|iPhone|iPad/.test(navigator.platform));
-  }, []);
-  return isMac;
-}
+// A…D for the vibe match, A…E for the longest profile choice list, so a
+// keyboard user can pick an option without leaving the home row.
+const OPTION_KEYS = 'ABCDEFGHIJ'.split('');
 
 // ─── Option button ───────────────────────────────────────────────────────────
 
@@ -41,31 +48,22 @@ function OptionButton({
   label,
   hint,
   selected,
-  multi,
-  disabled,
   onClick,
 }: {
   label: string;
   hint: string;
   selected: boolean;
-  multi: boolean;
-  disabled: boolean;
   onClick: () => void;
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      aria-pressed={multi ? selected : undefined}
-      // Not `disabled`: a capped-out option still has to be reachable so it can
-      // be read, and clicking it should explain rather than do nothing at all.
       className={cn(
         'group flex w-full items-center gap-[14px] rounded-[14px] border px-[18px] py-[15px] text-left transition-all duration-200',
         selected
           ? 'border-lime bg-lime/15 text-white'
-          : disabled
-            ? 'border-white/10 bg-white/[0.02] text-white/35'
-            : 'border-white/15 bg-white/[0.04] text-white/85 hover:border-lime/50 hover:bg-white/[0.07]'
+          : 'border-white/15 bg-white/[0.04] text-white/85 hover:border-lime/50 hover:bg-white/[0.07]'
       )}
     >
       <span
@@ -82,44 +80,141 @@ function OptionButton({
   );
 }
 
+// ─── Reveal ──────────────────────────────────────────────────────────────────
+
+function PersonalityReveal({ type, firstName }: { type: PersonalityType; firstName: string }) {
+  const { whatsappNumber } = useSiteSettings();
+
+  const message = encodeURIComponent(
+    `Hi! I just applied to The Curious Club${firstName ? ` — I’m ${firstName}` : ''}. ` +
+      `My traveller type came out as ${type.name}. I’d love to schedule a call.`
+  );
+
+  return (
+    <main className="bg-void">
+      <div className="mx-auto flex min-h-[78svh] max-w-[680px] flex-col justify-center px-[24px] pb-[80px] pt-[124px] md:px-[40px]">
+        <p className="font-display text-[11px] font-bold uppercase tracking-widest text-lime">
+          Application received — your traveller type
+        </p>
+
+        <h1 className="mt-[16px] font-display text-[clamp(34px,7vw,60px)] font-bold uppercase leading-[1.02] tracking-[-0.02em] text-white">
+          {type.name}
+        </h1>
+
+        <p className="mt-[18px] font-accent text-[clamp(20px,3.4vw,26px)] italic leading-snug text-lime">
+          {type.tagline}
+        </p>
+
+        {/* The film only appears once a path is set in lib/personality-quiz.ts.
+            Until then the card carries the reveal on its own rather than
+            leaving a broken player on the page. */}
+        {type.video && (
+          <div className="mt-[32px] overflow-hidden rounded-[20px] border border-white/12 bg-white/[0.03]">
+            <video
+              key={type.video}
+              className="aspect-video w-full"
+              src={type.video}
+              controls
+              autoPlay
+              muted
+              playsInline
+              preload="metadata"
+            />
+          </div>
+        )}
+
+        <p className="mt-[28px] font-body text-[16px] leading-relaxed text-white/70">{type.blurb}</p>
+
+        <div className="mt-[36px] rounded-[20px] border border-white/12 bg-white/[0.035] p-[24px] md:p-[28px]">
+          <p className="font-display text-[11px] font-bold uppercase tracking-widest text-white/45">
+            What happens next
+          </p>
+          <p className="mt-[14px] font-body text-[15px] leading-relaxed text-white/70">
+            We review every application individually. If it feels like a fit, you’ll receive your
+            invitation directly — or skip the queue and talk to us now.
+          </p>
+
+          <a
+            href={`https://wa.me/${whatsappNumber}?text=${message}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group mt-[22px] inline-flex w-fit items-center gap-[10px] rounded-full bg-lime px-[28px] py-[15px] font-display text-[12px] font-bold uppercase tracking-widest text-void transition-transform duration-300 hover:scale-[1.03]"
+          >
+            <MessageCircle className="h-4 w-4" aria-hidden="true" />
+            Schedule a call
+          </a>
+        </div>
+
+        <p className="mt-[36px] font-display text-[11px] font-bold uppercase tracking-widest text-white/45">
+          The Curious Club
+        </p>
+        <p className="mt-[8px] font-body text-[13px] text-white/35">
+          Powered by <span className="text-lime">BagpackerMe</span>
+        </p>
+
+        <Link
+          href="/curious-club"
+          className="mt-[36px] inline-flex w-fit items-center gap-[8px] font-display text-[12px] font-bold uppercase tracking-widest text-white/60 transition-colors hover:text-lime"
+        >
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          Back to the club
+        </Link>
+      </div>
+    </main>
+  );
+}
+
 // ─── Flow ────────────────────────────────────────────────────────────────────
 
 export default function ClubApplicationFlow() {
   const searchParams = useSearchParams();
   const trip = searchParams.get('trip') ?? '';
-  const isMac = useIsMac();
 
   const honeypotRef = useRef<HTMLInputElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
-  const controlRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
+  const controlRef = useRef<HTMLInputElement | HTMLSelectElement>(null);
 
-  const [started, setStarted] = useState(false);
+  const [steps, setSteps] = useState<Step[] | null>(null);
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<ClubApplicationAnswers>(initialClubAnswers);
+  const [quiz, setQuiz] = useState<Record<string, QuizChoice>>({});
   const [error, setError] = useState<string | null>(null);
-  const [capNotice, setCapNotice] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
+  const [result, setResult] = useState<{ personality: PersonalityType | null } | null>(null);
 
-  const question: ClubQuestion | undefined = CLUB_QUESTIONS[step];
-  const onConsentStep = step === CONSENT_STEP;
-  const progress = Math.round(((step + (submitted ? 1 : 0)) / TOTAL_STEPS) * 100);
+  const current = steps?.[step];
+  const isLast = Boolean(steps) && step === (steps?.length ?? 0) - 1;
+  const progress = Math.round(((step + (result ? 1 : 0)) / CLUB_TOTAL_QUESTIONS) * 100);
+
+  // Date bounds are computed once per mount rather than inline, so the input
+  // does not get a fresh `max` string on every keystroke.
+  const dobBounds = useMemo(
+    () => ({ min: earliestAllowedDob(), max: latestAllowedDob() }),
+    []
+  );
+
+  // The random six are drawn here, in a click handler — drawing them during
+  // render would make the server and client HTML disagree and break hydration.
+  const start = useCallback(() => {
+    const quizSteps: Step[] = pickQuizQuestions().map((question) => ({ kind: 'quiz', question }));
+    setSteps([...CLUB_QUESTIONS.map((question) => ({ kind: 'profile' as const, question })), ...quizSteps]);
+    setStep(0);
+  }, []);
 
   // Move focus to the new question so a screen reader announces it, and put the
   // caret in the text control so typing just works.
   useEffect(() => {
-    if (!started || submitted) return;
+    if (!steps || result) return;
     const control = controlRef.current;
     if (control) {
       control.focus();
       return;
     }
     headingRef.current?.focus();
-  }, [step, started, submitted]);
+  }, [step, steps, result]);
 
   useEffect(() => {
     setError(null);
-    setCapNotice(null);
   }, [step]);
 
   const setAnswer = useCallback(
@@ -134,21 +229,39 @@ export default function ClubApplicationFlow() {
     setStep((prev) => Math.max(0, prev - 1));
   }, []);
 
-  const submit = useCallback(
-    async (finalAnswers: ClubApplicationAnswers) => {
-      const errors = validateClubApplication(finalAnswers);
-      const firstBadIndex = CLUB_QUESTIONS.findIndex((q) => errors[q.id]);
+  /** The six answers in the order they were served — scoring reads that order. */
+  const quizAnswersFrom = useCallback(
+    (list: Step[], picked: Record<string, QuizChoice>): QuizAnswer[] =>
+      list
+        .filter((entry): entry is Extract<Step, { kind: 'quiz' }> => entry.kind === 'quiz')
+        .filter((entry) => picked[entry.question.id])
+        .map((entry) => ({ questionId: entry.question.id, choice: picked[entry.question.id] })),
+    []
+  );
 
-      if (firstBadIndex !== -1) {
+  const submit = useCallback(
+    async (finalAnswers: ClubApplicationAnswers, picked: Record<string, QuizChoice>) => {
+      if (!steps) return;
+
+      const quizAnswers = quizAnswersFrom(steps, picked);
+      const errors = validateClubApplication(finalAnswers, quizAnswers);
+
+      const firstBad = steps.findIndex((entry) =>
+        entry.kind === 'profile'
+          ? Boolean(errors[entry.question.id])
+          : !picked[entry.question.id]
+      );
+
+      if (firstBad !== -1) {
         // Shouldn't happen — every step validates on the way through — but if a
         // question somehow slipped past, land on it rather than failing blankly.
-        setStep(firstBadIndex);
-        setError(errors[CLUB_QUESTIONS[firstBadIndex].id] ?? 'Please check this answer.');
-        return;
-      }
-
-      if (errors.consent) {
-        setError(errors.consent);
+        const bad = steps[firstBad];
+        setStep(firstBad);
+        setError(
+          bad.kind === 'profile'
+            ? errors[bad.question.id] ?? 'Please check this answer.'
+            : 'Pick one to continue'
+        );
         return;
       }
 
@@ -161,68 +274,58 @@ export default function ClubApplicationFlow() {
           headers: { 'content-type': 'application/json' },
           body: JSON.stringify({
             ...finalAnswers,
+            quizAnswers,
             trip,
             [HONEYPOT_FIELD]: honeypotRef.current?.value ?? '',
           }),
         });
 
+        const payload = await response.json().catch(() => null);
+
         if (!response.ok) {
-          const result = await response.json().catch(() => null);
-          throw new Error(result?.error || 'Something went wrong. Please try again.');
+          throw new Error(payload?.error || 'Something went wrong. Please try again.');
         }
 
-        setSubmitted(true);
+        // The type is whatever the server scored, not what the browser guessed.
+        setResult({ personality: personalityType(payload?.personality) });
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
       } finally {
         setSubmitting(false);
       }
     },
-    [trip]
+    [quizAnswersFrom, steps, trip]
   );
 
   const goNext = useCallback(() => {
-    if (onConsentStep) {
-      void submit(answers);
+    if (!current) return;
+
+    if (current.kind === 'profile') {
+      const problem = validateClubQuestion(current.question, answers);
+      if (problem) {
+        setError(problem);
+        // Send focus back to the answer, not the button that just refused.
+        (controlRef.current ?? headingRef.current)?.focus();
+        return;
+      }
+    } else if (!quiz[current.question.id]) {
+      setError('Pick one to continue');
+      headingRef.current?.focus();
       return;
     }
 
-    if (!question) return;
-
-    const problem = validateClubQuestion(question, answers);
-    if (problem) {
-      setError(problem);
-      // Send focus back to the answer, not the button that just refused. Without
-      // this a keyboard user is left on "Next" with no obvious way back to the
-      // field they still have to fill in.
-      (controlRef.current ?? headingRef.current)?.focus();
+    if (isLast) {
+      void submit(answers, quiz);
       return;
     }
 
     setStep((prev) => prev + 1);
-  }, [answers, onConsentStep, question, submit]);
+  }, [answers, current, isLast, quiz, submit]);
 
-  const toggleMulti = useCallback(
-    (value: string, max: number | undefined, key: keyof ClubApplicationAnswers) => {
-      setAnswers((prev) => {
-        const current = prev[key] as string[];
-        const isSelected = current.includes(value);
-
-        if (!isSelected && max && current.length >= max) {
-          setCapNotice(`That’s ${max} already — unpick one to swap it out.`);
-          return prev;
-        }
-
-        setCapNotice(null);
-        setError(null);
-        return {
-          ...prev,
-          [key]: isSelected ? current.filter((item) => item !== value) : [...current, value],
-        };
-      });
-    },
-    []
-  );
+  const chooseQuiz = useCallback((questionId: string, choice: QuizChoice) => {
+    setQuiz((prev) => ({ ...prev, [questionId]: choice }));
+    setError(null);
+  }, []);
 
   // Letter shortcuts for choice questions, and Enter to advance everywhere.
   const handleKeyDown = useCallback(
@@ -230,84 +333,76 @@ export default function ClubApplicationFlow() {
       if (submitting) return;
 
       const target = event.target as HTMLElement;
-      const inTextarea = target.tagName === 'TEXTAREA';
 
       if (event.key === 'Enter') {
-        // In a textarea Enter is a newline; Cmd/Ctrl+Enter is "done".
-        if (inTextarea && !(event.metaKey || event.ctrlKey)) return;
         event.preventDefault();
         goNext();
         return;
       }
 
-      if (!question || target.tagName === 'INPUT' || inTextarea) return;
-      if (question.type !== 'single-choice' && question.type !== 'multi-choice') return;
+      if (!current || target.tagName === 'INPUT' || target.tagName === 'SELECT') return;
       if (event.metaKey || event.ctrlKey || event.altKey) return;
 
       const index = OPTION_KEYS.indexOf(event.key.toUpperCase());
-      const chosen = index === -1 ? undefined : question.options[index];
-      if (!chosen) return;
+      if (index === -1) return;
 
-      event.preventDefault();
-
-      if (question.type === 'single-choice') {
-        setAnswer(question.id, chosen.value);
+      if (current.kind === 'quiz') {
+        const choice = QUIZ_CHOICES[index];
+        if (!choice) return;
+        event.preventDefault();
+        chooseQuiz(current.question.id, choice);
         return;
       }
 
-      toggleMulti(chosen.value, question.max, question.id);
+      const question = current.question;
+      if (question.type !== 'single-choice') return;
+      const chosen = question.options[index];
+      if (!chosen) return;
+
+      event.preventDefault();
+      setAnswer(question.id, chosen.value);
     },
-    [goNext, question, setAnswer, submitting, toggleMulti]
+    [chooseQuiz, current, goNext, setAnswer, submitting]
   );
 
-  const selectedCount = useMemo(() => {
-    if (!question || question.type !== 'multi-choice') return 0;
-    return (answers[question.id] as string[]).length;
-  }, [answers, question]);
+  // ── Reveal ────────────────────────────────────────────────────────────────
+  if (result) {
+    const firstName = answers.fullName.trim().split(/\s+/)[0] ?? '';
 
-  // ── Received ──────────────────────────────────────────────────────────────
-  if (submitted) {
-    return (
-      <main className="bg-void">
-        <div className="mx-auto flex min-h-[78svh] max-w-[680px] flex-col justify-center px-[24px] pb-[80px] pt-[124px] md:px-[40px]">
-          <div className="flex h-[56px] w-[56px] items-center justify-center rounded-full bg-lime">
-            <Check className="h-7 w-7 text-void" strokeWidth={3} aria-hidden="true" />
+    // personality is null only if the API answered without one (the honeypot
+    // path does). Show the plain receipt rather than an empty reveal.
+    if (!result.personality) {
+      return (
+        <main className="bg-void">
+          <div className="mx-auto flex min-h-[78svh] max-w-[680px] flex-col justify-center px-[24px] pb-[80px] pt-[124px] md:px-[40px]">
+            <div className="flex h-[56px] w-[56px] items-center justify-center rounded-full bg-lime">
+              <Check className="h-7 w-7 text-void" strokeWidth={3} aria-hidden="true" />
+            </div>
+            <h1 className="mt-[28px] font-display text-[clamp(30px,6vw,48px)] font-bold uppercase leading-[1.05] tracking-[-0.01em] text-white">
+              Application received.
+            </h1>
+            <p className="mt-[24px] font-body text-[16px] leading-relaxed text-white/70">
+              We review every application individually. If it feels like a fit, you’ll receive your
+              invitation directly.
+            </p>
+            <p className="mt-[32px] font-accent text-[26px] italic text-lime">Until then — stay curious.</p>
+            <Link
+              href="/curious-club"
+              className="mt-[36px] inline-flex w-fit items-center gap-[8px] font-display text-[12px] font-bold uppercase tracking-widest text-white/60 transition-colors hover:text-lime"
+            >
+              <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+              Back to the club
+            </Link>
           </div>
+        </main>
+      );
+    }
 
-          <h1 className="mt-[28px] font-display text-[clamp(30px,6vw,48px)] font-bold uppercase leading-[1.05] tracking-[-0.01em] text-white">
-            Application received.
-          </h1>
-
-          <p className="mt-[24px] font-body text-[16px] leading-relaxed text-white/70">
-            We review every application individually.
-          </p>
-          <p className="mt-[12px] font-body text-[16px] leading-relaxed text-white/70">
-            If it feels like a fit, you’ll receive your invitation directly.
-          </p>
-
-          <p className="mt-[32px] font-accent text-[26px] italic text-lime">Until then — stay curious.</p>
-
-          <p className="mt-[40px] font-display text-[11px] font-bold uppercase tracking-widest text-white/45">
-            The Curious Club
-          </p>
-          <p className="mt-[8px] font-body text-[13px] text-white/35">
-            Powered by <span className="text-lime">BagpackerMe</span>
-          </p>
-
-          <Link
-            href="/curious-club"
-            className="mt-[36px] inline-flex w-fit items-center gap-[8px] font-display text-[12px] font-bold uppercase tracking-widest text-white/60 transition-colors hover:text-lime"
-          >
-            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-            Back to the club
-          </Link>
-        </div>
-      </main>
-    );
+    return <PersonalityReveal type={result.personality} firstName={firstName} />;
   }
 
   // ── Intro ─────────────────────────────────────────────────────────────────
-  if (!started) {
+  if (!steps) {
     return (
       <main className="bg-void">
         <div className="mx-auto flex min-h-[78svh] max-w-[680px] flex-col justify-center px-[24px] pb-[80px] pt-[124px] md:px-[40px]">
@@ -324,14 +419,14 @@ export default function ClubApplicationFlow() {
           </p>
           <p className="mt-[12px] font-body text-[17px] leading-relaxed text-white/75">
             It’s an application to join a curated community of curious people, travellers and
-            explorers.
+            explorers — plus a short vibe match that tells you what kind of traveller you are.
           </p>
 
-          <p className="mt-[24px] font-body text-[15px] text-white/50">It should take about 2–3 minutes.</p>
+          <p className="mt-[24px] font-body text-[15px] text-white/50">It takes under a minute.</p>
 
           <button
             type="button"
-            onClick={() => setStarted(true)}
+            onClick={start}
             className="group mt-[36px] inline-flex w-fit items-center gap-[10px] rounded-full bg-lime px-[32px] py-[16px] font-display text-[12px] font-bold uppercase tracking-widest text-void transition-transform duration-300 hover:scale-[1.03]"
           >
             Start application
@@ -339,7 +434,7 @@ export default function ClubApplicationFlow() {
           </button>
 
           <p className="mt-[20px] font-body text-[13px] text-white/35">
-            {CLUB_QUESTIONS.length} questions, one at a time.
+            {CLUB_TOTAL_QUESTIONS} questions, one at a time.
           </p>
         </div>
       </main>
@@ -347,6 +442,9 @@ export default function ClubApplicationFlow() {
   }
 
   // ── Questions ─────────────────────────────────────────────────────────────
+  const profileQuestion = current?.kind === 'profile' ? current.question : null;
+  const quizQuestion = current?.kind === 'quiz' ? current.question : null;
+
   return (
     <main className="bg-void">
       {/* Progress */}
@@ -357,7 +455,7 @@ export default function ClubApplicationFlow() {
           role="progressbar"
           aria-valuenow={step + 1}
           aria-valuemin={1}
-          aria-valuemax={TOTAL_STEPS}
+          aria-valuemax={CLUB_TOTAL_QUESTIONS}
           aria-label="Application progress"
         />
       </div>
@@ -373,140 +471,127 @@ export default function ClubApplicationFlow() {
       >
         <HoneypotField inputRef={honeypotRef} />
 
-        {onConsentStep ? (
-          <>
-            <p className="font-display text-[12px] font-bold uppercase tracking-widest text-lime">
-              Last step
-            </p>
+        <p className="font-display text-[12px] font-bold uppercase tracking-widest text-lime">
+          {quizQuestion ? 'Vibe match · ' : ''}
+          {step + 1}
+          <span className="text-white/30"> / {steps.length}</span>
+        </p>
 
-            <h2
-              ref={headingRef}
-              tabIndex={-1}
-              className="mt-[14px] font-display text-[clamp(22px,4.2vw,32px)] font-bold leading-[1.2] text-white outline-none focus:outline-none focus-visible:outline-none"
+        <h2
+          ref={headingRef}
+          tabIndex={-1}
+          // Focused programmatically so a screen reader announces the new
+          // question. The ring is suppressed because nothing here is
+          // interactive — a box around the heading only reads as a glitch.
+          className="mt-[14px] font-display text-[clamp(22px,4.2vw,32px)] font-bold leading-[1.25] text-white outline-none focus:outline-none focus-visible:outline-none"
+        >
+          {current?.question.prompt}
+        </h2>
+
+        {profileQuestion?.help && (
+          <p className="mt-[14px] font-body text-[14px] leading-relaxed text-white/50">
+            {profileQuestion.help}
+          </p>
+        )}
+
+        <div className="mt-[32px]">
+          {profileQuestion?.type === 'short-text' && (
+            <input
+              ref={controlRef as React.RefObject<HTMLInputElement>}
+              type={
+                profileQuestion.inputMode === 'email'
+                  ? 'email'
+                  : profileQuestion.inputMode === 'tel'
+                    ? 'tel'
+                    : 'text'
+              }
+              inputMode={profileQuestion.inputMode === 'tel' ? 'tel' : undefined}
+              autoComplete={
+                profileQuestion.id === 'fullName'
+                  ? 'name'
+                  : profileQuestion.id === 'email'
+                    ? 'email'
+                    : profileQuestion.id === 'phone'
+                      ? 'tel'
+                      : 'off'
+              }
+              value={answers[profileQuestion.id]}
+              onChange={(event) => setAnswer(profileQuestion.id, event.target.value)}
+              placeholder={profileQuestion.placeholder}
+              aria-invalid={Boolean(error)}
+              className="w-full border-0 border-b border-white/25 bg-transparent pb-[12px] font-display text-[clamp(20px,3.6vw,28px)] text-white placeholder-white/25 outline-none transition-colors focus:border-lime"
+            />
+          )}
+
+          {profileQuestion?.type === 'date' && (
+            <input
+              ref={controlRef as React.RefObject<HTMLInputElement>}
+              type="date"
+              autoComplete="bday"
+              min={dobBounds.min}
+              max={dobBounds.max}
+              value={answers.dateOfBirth}
+              onChange={(event) => setAnswer('dateOfBirth', event.target.value)}
+              aria-invalid={Boolean(error)}
+              // color-scheme:dark keeps the native picker glyph visible on the
+              // void background; without it Safari draws a black-on-black icon.
+              style={{ colorScheme: 'dark' }}
+              className="w-full border-0 border-b border-white/25 bg-transparent pb-[12px] font-display text-[clamp(20px,3.6vw,28px)] text-white outline-none transition-colors focus:border-lime"
+            />
+          )}
+
+          {profileQuestion?.type === 'dropdown' && (
+            <select
+              ref={controlRef as React.RefObject<HTMLSelectElement>}
+              value={answers[profileQuestion.id]}
+              onChange={(event) => setAnswer(profileQuestion.id, event.target.value)}
+              aria-invalid={Boolean(error)}
+              style={{ colorScheme: 'dark' }}
+              className="w-full rounded-[14px] border border-white/25 bg-white/[0.04] px-[18px] py-[16px] font-display text-[clamp(18px,3vw,24px)] text-white outline-none transition-colors focus:border-lime"
             >
-              Before you send it in
-            </h2>
+              <option value="" disabled>
+                {profileQuestion.placeholder ?? 'Select one'}
+              </option>
+              {profileQuestion.options.map((choice) => (
+                <option key={choice.value} value={choice.value} className="bg-void text-white">
+                  {choice.label}
+                </option>
+              ))}
+            </select>
+          )}
 
-            <label className="mt-[28px] flex cursor-pointer items-start gap-[14px] rounded-[16px] border border-white/15 bg-white/[0.04] p-[20px] transition-colors hover:border-lime/40">
-              <input
-                type="checkbox"
-                checked={answers.consent}
-                onChange={(event) => setAnswer('consent', event.target.checked)}
-                className="mt-[3px] h-[18px] w-[18px] shrink-0 accent-lime"
-              />
-              <span className="font-body text-[14px] leading-relaxed text-white/75">{CONSENT_TEXT}</span>
-            </label>
-          </>
-        ) : question ? (
-          <>
-            <p className="font-display text-[12px] font-bold uppercase tracking-widest text-lime">
-              {step + 1}
-              <span className="text-white/30"> / {CLUB_QUESTIONS.length}</span>
-            </p>
+          {profileQuestion?.type === 'single-choice' && (
+            <ul className="grid gap-[10px] sm:grid-cols-2">
+              {profileQuestion.options.map((choice, index) => (
+                <li key={choice.value}>
+                  <OptionButton
+                    label={choice.label}
+                    hint={OPTION_KEYS[index] ?? '•'}
+                    selected={answers[profileQuestion.id] === choice.value}
+                    onClick={() => setAnswer(profileQuestion.id, choice.value)}
+                  />
+                </li>
+              ))}
+            </ul>
+          )}
 
-            <h2
-              ref={headingRef}
-              tabIndex={-1}
-              // Focused programmatically so a screen reader announces the new
-              // question. The ring is suppressed because nothing here is
-              // interactive — a box around the heading only reads as a glitch.
-              className="mt-[14px] font-display text-[clamp(22px,4.2vw,32px)] font-bold leading-[1.25] text-white outline-none focus:outline-none focus-visible:outline-none"
-            >
-              {question.prompt}
-              {question.optional && <span className="ml-[10px] font-body text-[14px] font-normal text-white/40">Optional</span>}
-            </h2>
-
-            {question.help && (
-              <p className="mt-[14px] font-body text-[14px] leading-relaxed text-white/50">{question.help}</p>
-            )}
-
-            <div className="mt-[32px]">
-              {question.type === 'short-text' && (
-                <input
-                  ref={controlRef as React.RefObject<HTMLInputElement>}
-                  type={question.inputMode === 'email' ? 'email' : question.inputMode === 'tel' ? 'tel' : 'text'}
-                  inputMode={question.inputMode === 'tel' ? 'tel' : undefined}
-                  autoComplete={
-                    question.id === 'fullName'
-                      ? 'name'
-                      : question.id === 'email'
-                        ? 'email'
-                        : question.id === 'phone'
-                          ? 'tel'
-                          : 'off'
-                  }
-                  value={answers[question.id] as string}
-                  onChange={(event) => setAnswer(question.id, event.target.value)}
-                  placeholder={question.placeholder}
-                  aria-invalid={Boolean(error)}
-                  className="w-full border-0 border-b border-white/25 bg-transparent pb-[12px] font-display text-[clamp(20px,3.6vw,28px)] text-white placeholder-white/25 outline-none transition-colors focus:border-lime"
-                />
-              )}
-
-              {question.type === 'long-text' && (
-                <textarea
-                  ref={controlRef as React.RefObject<HTMLTextAreaElement>}
-                  rows={5}
-                  value={answers[question.id] as string}
-                  onChange={(event) => setAnswer(question.id, event.target.value)}
-                  placeholder="Take your time…"
-                  aria-invalid={Boolean(error)}
-                  className="w-full resize-y rounded-[16px] border border-white/20 bg-white/[0.04] p-[18px] font-body text-[16px] leading-relaxed text-white placeholder-white/25 outline-none transition-colors focus:border-lime"
-                />
-              )}
-
-              {(question.type === 'single-choice' || question.type === 'multi-choice') && (
-                <>
-                  {question.type === 'multi-choice' && question.max && (
-                    <p className="mb-[14px] font-body text-[13px] text-white/45">
-                      {selectedCount} of {question.max} picked
-                    </p>
-                  )}
-
-                  <ul className="grid gap-[10px] sm:grid-cols-2">
-                    {question.options.map((choice, index) => {
-                      const selected =
-                        question.type === 'single-choice'
-                          ? answers[question.id] === choice.value
-                          : (answers[question.id] as string[]).includes(choice.value);
-
-                      const cappedOut =
-                        question.type === 'multi-choice' &&
-                        Boolean(question.max) &&
-                        !selected &&
-                        selectedCount >= (question.max ?? 0);
-
-                      return (
-                        <li key={choice.value}>
-                          <OptionButton
-                            label={choice.label}
-                            hint={OPTION_KEYS[index] ?? '•'}
-                            selected={selected}
-                            multi={question.type === 'multi-choice'}
-                            disabled={cappedOut}
-                            onClick={() => {
-                              if (question.type === 'single-choice') {
-                                setAnswer(question.id, choice.value);
-                                return;
-                              }
-                              toggleMulti(choice.value, question.max, question.id);
-                            }}
-                          />
-                        </li>
-                      );
-                    })}
-                  </ul>
-
-                  {capNotice && (
-                    <p className="mt-[14px] font-body text-[13px] text-white/50" aria-live="polite">
-                      {capNotice}
-                    </p>
-                  )}
-                </>
-              )}
-            </div>
-          </>
-        ) : null}
+          {quizQuestion && (
+            // One column: the vibe-match options are full sentences, and two
+            // columns of them wrap into an unreadable brick on a laptop.
+            <ul className="grid gap-[10px]">
+              {QUIZ_CHOICES.map((letter) => (
+                <li key={letter}>
+                  <OptionButton
+                    label={quizQuestion.options[letter]}
+                    hint={letter}
+                    selected={quiz[quizQuestion.id] === letter}
+                    onClick={() => chooseQuiz(quizQuestion.id, letter)}
+                  />
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
 
         {error && (
           <p role="alert" className="mt-[20px] font-body text-[14px] text-[#ff9a8b]">
@@ -535,13 +620,7 @@ export default function ClubApplicationFlow() {
             className="group inline-flex items-center gap-[10px] rounded-full bg-lime px-[30px] py-[15px] font-display text-[12px] font-bold uppercase tracking-widest text-void transition-transform duration-300 hover:scale-[1.03] disabled:opacity-60 disabled:hover:scale-100"
           >
             {submitting && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
-            {submitting
-              ? 'Sending…'
-              : onConsentStep
-                ? 'Submit application'
-                : question?.optional && !answers[question.id]
-                  ? 'Skip'
-                  : 'Next'}
+            {submitting ? 'Sending…' : isLast ? 'Reveal my traveller type' : 'Next'}
             {!submitting && (
               <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true" />
             )}
@@ -550,11 +629,21 @@ export default function ClubApplicationFlow() {
           <p className="hidden items-center gap-[6px] font-body text-[12px] text-white/35 sm:flex">
             press
             <kbd className="rounded-[5px] border border-white/20 px-[6px] py-[2px] font-display text-[10px] text-white/60">
-              {question?.type === 'long-text' ? `${isMac ? '⌘' : 'Ctrl'} + ↵` : <CornerDownLeft className="h-3 w-3" aria-hidden="true" />}
+              <CornerDownLeft className="h-3 w-3" aria-hidden="true" />
             </kbd>
             to continue
           </p>
         </div>
+
+        {isLast && (
+          <p className="mt-[24px] font-body text-[12px] leading-relaxed text-white/35">
+            By submitting you agree to us contacting you about The Curious Club. See our{' '}
+            <Link href="/privacy" className="underline underline-offset-2 hover:text-white/60">
+              privacy policy
+            </Link>
+            .
+          </p>
+        )}
       </div>
     </main>
   );

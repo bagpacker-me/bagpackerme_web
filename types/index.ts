@@ -165,35 +165,33 @@ export interface JobApplication {
 
 export type ClubApplicationStatus = 'new' | 'shortlisted' | 'invited' | 'declined';
 
+/** One answer to one Traveler Vibe Match question. See lib/personality-quiz.ts. */
+export interface ClubQuizAnswer {
+  questionId: string;
+  choice: string;
+}
+
 // The Curious Club membership application. Written only by
 // app/api/curious-club/apply/route.ts via the Admin SDK — firestore.rules give
 // browsers no create access, so the zod schema in lib/club-application.ts
 // cannot be sidestepped.
 //
-// Answers are personal (city, work, socials, long free text). Never publicly
+// Answers are personal (date of birth, gender, phone, email). Never publicly
 // readable, and deliberately no IP or user-agent stored alongside them.
 export interface ClubApplication {
   id: string;
   fullName: string;
-  ageBand: string;
+  /** ISO yyyy-mm-dd. Age is derived on read, never stored — it goes stale. */
+  dateOfBirth: string;
+  gender: string;
   city: string;
-  work: string;
-  instagram: string;
-  linkedin: string;
-  curiousAbout: string;
-  travelFor: string[];
-  sixHours: string;
-  travelStyle: string;
-  meetPreferences: string[];
-  experiences: string[];
-  holidayBudget: string;
-  bookTomorrow: string;
-  bringToCommunity: string;
-  whyInvite: string;
-  discoverySource: string;
   phone: string;
   email: string;
-  consent: boolean;
+  discoverySource: string;
+  /** The random six of ten they were served, in the order they answered them. */
+  quizAnswers: ClubQuizAnswer[];
+  /** Scored server-side from quizAnswers: 'spark' | 'magnet' | 'anchor' | 'architect'. */
+  personality: string;
   /** Slug of the trip page that sent them here, '' for a direct application. */
   trip: string;
   status: ClubApplicationStatus;

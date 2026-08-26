@@ -7,7 +7,7 @@ import ClubApplicationFlow from './_components/ClubApplicationFlow';
 export const metadata: Metadata = {
   title: 'Apply — The Curious Club',
   description:
-    'Apply to join The Curious Club. Nineteen questions, about two to three minutes, reviewed individually.',
+    'Apply to join The Curious Club. Thirteen quick questions, under a minute, and you find out what kind of traveller you are.',
   alternates: { canonical: '/curious-club/apply' },
   robots: { index: false, follow: true },
 };

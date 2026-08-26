@@ -9,14 +9,19 @@ import {
   updateClubApplication,
 } from '@/lib/firestore';
 import {
+  ageFromDob,
   CLUB_QUESTIONS,
   CLUB_QUESTION_LABELS,
   CLUB_STATUS_LABELS,
   CLUB_STATUS_ORDER,
-  instagramUrl,
-  linkedinUrl,
   type ClubQuestionId,
 } from '@/lib/club-application';
+import {
+  getQuizQuestion,
+  personalityType,
+  QUIZ_QUESTIONS,
+  type QuizChoice,
+} from '@/lib/personality-quiz';
 import { getClubTrip } from '@/lib/club-trips';
 import type { ClubApplication, ClubApplicationStatus } from '@/types';
 
@@ -29,22 +34,30 @@ const STATUS_STYLES: Record<ClubApplicationStatus, string> = {
   declined: 'bg-[#FEE2E2] dark:bg-[#FEE2E2]/20 text-[#991b1b] dark:text-[#fca5a5]',
 };
 
-// Short-answer questions read fine on one line; the long ones need room and the
-// multi-selects render as chips. Everything else is derived from CLUB_QUESTIONS
-// so adding a question to the form adds it here too.
-const LONG_ANSWER_IDS = new Set<ClubQuestionId>(
-  CLUB_QUESTIONS.filter((q) => q.type === 'long-text').map((q) => q.id)
-);
-const MULTI_ANSWER_IDS = new Set<ClubQuestionId>(
-  CLUB_QUESTIONS.filter((q) => q.type === 'multi-choice').map((q) => q.id)
-);
-
 // Shown in the compact detail grid at the top of the panel, before the answers.
-const SUMMARY_IDS: ClubQuestionId[] = ['ageBand', 'city', 'work', 'holidayBudget', 'discoverySource'];
+// Age is derived from dateOfBirth rather than listed here — see ageLabel.
+const SUMMARY_IDS: ClubQuestionId[] = ['gender', 'city', 'discoverySource'];
+
+const PERSONALITY_STYLES: Record<string, string> = {
+  spark: 'bg-[#FEF3C7] dark:bg-[#FEF3C7]/15 text-[#92400e] dark:text-[#fbbf24]',
+  magnet: 'bg-[#FCE7F3] dark:bg-[#FCE7F3]/15 text-[#9d174d] dark:text-[#f9a8d4]',
+  anchor: 'bg-[#CFFAFE] dark:bg-[#CFFAFE]/15 text-[#155e75] dark:text-[#67e8f9]',
+  architect: 'bg-[#E0E7FF] dark:bg-[#E0E7FF]/15 text-[#3730a3] dark:text-[#a5b4fc]',
+};
 
 function tripLabel(slug: string) {
   if (!slug) return 'Direct';
   return getClubTrip(slug)?.name ?? slug;
+}
+
+/** Age today, not at the time of applying — that is what a reviewer wants. */
+function ageLabel(dateOfBirth: string) {
+  const age = ageFromDob(dateOfBirth ?? '');
+  return age === null ? '—' : `${age}`;
+}
+
+function personalityName(key: string) {
+  return personalityType(key)?.name ?? '—';
 }
 
 function SkeletonRow() {
@@ -99,8 +112,7 @@ function ApplicationSlideOver({
     };
   }, []);
 
-  const instagram = instagramUrl(application.instagram);
-  const linkedin = linkedinUrl(application.linkedin);
+  const type = personalityType(application.personality);
 
   const mailtoUrl = `mailto:${application.email}?subject=${encodeURIComponent(
     'Your Curious Club application'
@@ -109,13 +121,6 @@ function ApplicationSlideOver({
   const whatsappUrl = application.phone
     ? `https://wa.me/${application.phone.replace(/\D/g, '')}`
     : null;
-
-  // Every question in form order, minus the ones already shown above.
-  const answerQuestions = CLUB_QUESTIONS.filter(
-    (question) =>
-      !SUMMARY_IDS.includes(question.id) &&
-      !['fullName', 'email', 'phone', 'instagram', 'linkedin'].includes(question.id)
-  );
 
   return (
     <>
@@ -131,7 +136,7 @@ function ApplicationSlideOver({
               {application.email}
             </p>
             <p className="mt-1 truncate text-xs text-gray-500 dark:text-[rgba(255,255,255,0.5)]">
-              {application.city} · {application.ageBand} · via {tripLabel(application.trip)}
+              {application.city} · {ageLabel(application.dateOfBirth)} · via {tripLabel(application.trip)}
             </p>
           </div>
           <button
@@ -169,50 +174,41 @@ function ApplicationSlideOver({
             </select>
           </div>
 
-          {/* Socials — the reason the review step exists at all. */}
+          {/* Traveller type — scored server-side from the vibe match. */}
           <div>
             <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-gray-400">
-              Profiles
+              Traveller type
             </label>
-            {instagram || linkedin ? (
-              <div className="space-y-2">
-                {instagram && (
-                  <a
-                    href={instagram}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block truncate text-sm text-teal hover:underline dark:text-[#C1EA00]"
-                  >
-                    Instagram — {application.instagram}
-                  </a>
-                )}
-                {linkedin && (
-                  <a
-                    href={linkedin}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block truncate text-sm text-teal hover:underline dark:text-[#C1EA00]"
-                  >
-                    LinkedIn — {application.linkedin}
-                  </a>
-                )}
+            {type ? (
+              <div className="rounded-xl border border-transparent bg-gray-50 p-4 dark:border-[rgba(255,255,255,0.04)] dark:bg-[rgba(255,255,255,0.02)]">
+                <span
+                  className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold ${
+                    PERSONALITY_STYLES[type.key] ?? 'bg-gray-100 text-gray-500'
+                  }`}
+                >
+                  {type.name}
+                </span>
+                <p className="mt-2 text-sm text-gray-600 dark:text-[rgba(255,255,255,0.7)]">
+                  {type.tagline}
+                </p>
               </div>
             ) : (
               <p className="rounded-xl bg-gray-50 px-4 py-3 text-sm italic text-gray-400 dark:bg-[rgba(255,255,255,0.02)]">
-                No profiles shared — both questions are optional.
-              </p>
-            )}
-            {(instagram || linkedin) && (
-              <p className="mt-2 text-xs text-gray-400">
-                {application.consent
-                  ? 'Consented to a public-profile review.'
-                  : 'No consent recorded — do not review these profiles.'}
+                No type recorded — this application predates the vibe match.
               </p>
             )}
           </div>
 
           {/* At a glance */}
           <div className="grid grid-cols-2 gap-3">
+            <div className="rounded-xl border border-transparent bg-gray-50 p-3 dark:border-[rgba(255,255,255,0.04)] dark:bg-[rgba(255,255,255,0.02)]">
+              <p className="mb-0.5 text-xs font-medium text-gray-400 dark:text-[rgba(255,255,255,0.5)]">
+                Age
+              </p>
+              <p className="text-sm font-medium text-gray-800 dark:text-[rgba(255,255,255,0.9)]">
+                {ageLabel(application.dateOfBirth)}
+              </p>
+            </div>
             {SUMMARY_IDS.map((id) => (
               <div
                 key={id}
@@ -222,7 +218,7 @@ function ApplicationSlideOver({
                   {CLUB_QUESTION_LABELS[id]}
                 </p>
                 <p className="text-sm font-medium text-gray-800 dark:text-[rgba(255,255,255,0.9)]">
-                  {(application[id] as string) || '—'}
+                  {application[id] || '—'}
                 </p>
               </div>
             ))}
@@ -236,45 +232,41 @@ function ApplicationSlideOver({
             </div>
           </div>
 
-          {/* Every remaining answer, in form order */}
-          {answerQuestions.map((question) => {
-            const value = application[question.id];
-            const isMulti = MULTI_ANSWER_IDS.has(question.id);
-            const list = Array.isArray(value) ? value : [];
+          {/* The six vibe-match questions this applicant was served. */}
+          <div>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
+              Vibe match answers
+            </p>
+            {application.quizAnswers?.length ? (
+              <ol className="space-y-3">
+                {application.quizAnswers.map((answer) => {
+                  const question = getQuizQuestion(answer.questionId);
+                  const choice = answer.choice as QuizChoice;
 
-            return (
-              <div key={question.id}>
-                <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
-                  {CLUB_QUESTION_LABELS[question.id]}
-                </p>
-
-                {isMulti ? (
-                  list.length ? (
-                    <ul className="flex flex-wrap gap-1.5">
-                      {list.map((item) => (
-                        <li
-                          key={item}
-                          className="rounded-full bg-teal/10 px-2.5 py-1 text-xs font-medium text-teal dark:bg-[#C1EA00]/10 dark:text-[#C1EA00]"
-                        >
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p className="text-sm italic text-gray-300">No answer</p>
-                  )
-                ) : (
-                  <div
-                    className={`rounded-xl border border-transparent bg-gray-50 p-4 text-sm text-gray-700 dark:border-[rgba(255,255,255,0.04)] dark:bg-[rgba(255,255,255,0.02)] dark:text-[rgba(255,255,255,0.8)] ${
-                      LONG_ANSWER_IDS.has(question.id) ? 'whitespace-pre-wrap leading-relaxed' : ''
-                    }`}
-                  >
-                    {(value as string) || <span className="italic text-gray-300">No answer</span>}
-                  </div>
-                )}
-              </div>
-            );
-          })}
+                  return (
+                    <li
+                      key={answer.questionId}
+                      className="rounded-xl border border-transparent bg-gray-50 p-4 dark:border-[rgba(255,255,255,0.04)] dark:bg-[rgba(255,255,255,0.02)]"
+                    >
+                      <p className="text-xs font-medium text-gray-400 dark:text-[rgba(255,255,255,0.5)]">
+                        {question?.prompt ?? answer.questionId}
+                      </p>
+                      <p className="mt-1.5 text-sm text-gray-700 dark:text-[rgba(255,255,255,0.8)]">
+                        <span className="mr-1.5 font-semibold text-teal dark:text-[#C1EA00]">
+                          {choice}
+                        </span>
+                        {question?.options[choice] ?? '—'}
+                      </p>
+                    </li>
+                  );
+                })}
+              </ol>
+            ) : (
+              <p className="rounded-xl bg-gray-50 px-4 py-3 text-sm italic text-gray-400 dark:bg-[rgba(255,255,255,0.02)]">
+                No quiz answers recorded.
+              </p>
+            )}
+          </div>
 
           {/* Internal notes */}
           <div>
@@ -335,24 +327,36 @@ function ApplicationSlideOver({
 function exportToCSV(data: ClubApplication[]) {
   const escape = (value: string | number | null) => `"${String(value ?? '').replace(/"/g, '""')}"`;
 
+  // Every applicant answers a different six of the ten, so the quiz gets all ten
+  // columns and each row fills in the six it was served. Blank means "not asked",
+  // which is why the letter alone is stored rather than the option text.
   const headers = [
     ...CLUB_QUESTIONS.map((question) => CLUB_QUESTION_LABELS[question.id]),
+    'Age',
+    'Traveller type',
+    ...QUIZ_QUESTIONS.map((question) => question.id.toUpperCase()),
     'Came from',
     'Status',
     'Applied',
     'Notes',
   ];
 
-  const rows = data.map((application) => [
-    ...CLUB_QUESTIONS.map((question) => {
-      const value = application[question.id];
-      return escape(Array.isArray(value) ? value.join('; ') : (value as string));
-    }),
-    escape(tripLabel(application.trip)),
-    escape(CLUB_STATUS_LABELS[application.status] ?? application.status),
-    escape(application.createdAt ? format(new Date(application.createdAt), 'd MMM yyyy') : ''),
-    escape(application.notes),
-  ]);
+  const rows = data.map((application) => {
+    const byQuestion = new Map(
+      (application.quizAnswers ?? []).map((answer) => [answer.questionId, answer.choice])
+    );
+
+    return [
+      ...CLUB_QUESTIONS.map((question) => escape(application[question.id])),
+      escape(ageLabel(application.dateOfBirth)),
+      escape(personalityName(application.personality)),
+      ...QUIZ_QUESTIONS.map((question) => escape(byQuestion.get(question.id) ?? '')),
+      escape(tripLabel(application.trip)),
+      escape(CLUB_STATUS_LABELS[application.status] ?? application.status),
+      escape(application.createdAt ? format(new Date(application.createdAt), 'd MMM yyyy') : ''),
+      escape(application.notes),
+    ];
+  });
 
   const csv = [headers.map(escape), ...rows].map((row) => row.join(',')).join('\n');
   const blob = new Blob([csv], { type: 'text/csv' });
@@ -438,7 +442,8 @@ export default function AdminClubPage() {
       return (
         application.fullName.toLowerCase().includes(term) ||
         application.email.toLowerCase().includes(term) ||
-        application.city.toLowerCase().includes(term)
+        application.city.toLowerCase().includes(term) ||
+        personalityName(application.personality).toLowerCase().includes(term)
       );
     });
   }, [applications, filter, search]);
@@ -550,7 +555,7 @@ export default function AdminClubPage() {
               {[
                 { id: 'name', label: 'Applicant', class: 'text-left' },
                 { id: 'city', label: 'City', class: 'text-left hidden md:table-cell' },
-                { id: 'work', label: 'What they do', class: 'text-left hidden lg:table-cell' },
+                { id: 'personality', label: 'Type', class: 'text-left hidden lg:table-cell' },
                 { id: 'trip', label: 'Came from', class: 'text-left hidden xl:table-cell' },
                 { id: 'status', label: 'Status', class: 'text-left' },
               ].map((col) => (
@@ -605,8 +610,18 @@ export default function AdminClubPage() {
                   <td className="hidden px-[16px] font-body text-[14px] text-[#221E2A] dark:text-[rgba(255,255,255,0.9)] md:table-cell">
                     {application.city}
                   </td>
-                  <td className="hidden max-w-[220px] truncate px-[16px] font-body text-[14px] text-[#221E2A] dark:text-[rgba(255,255,255,0.9)] lg:table-cell">
-                    {application.work}
+                  <td className="hidden px-[16px] lg:table-cell">
+                    {application.personality ? (
+                      <span
+                        className={`inline-flex items-center rounded-full px-[10px] py-[3px] font-body text-[12px] font-medium ${
+                          PERSONALITY_STYLES[application.personality] ?? 'bg-gray-100 text-gray-500'
+                        }`}
+                      >
+                        {personalityName(application.personality)}
+                      </span>
+                    ) : (
+                      <span className="font-body text-[14px] text-[#718096]">—</span>
+                    )}
                   </td>
                   <td className="hidden whitespace-nowrap px-[16px] font-body text-[14px] text-[#221E2A] dark:text-[rgba(255,255,255,0.9)] xl:table-cell">
                     {tripLabel(application.trip)}

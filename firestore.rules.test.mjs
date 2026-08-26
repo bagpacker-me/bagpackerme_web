@@ -248,18 +248,22 @@ await check(
   assertSucceeds(deleteDoc(doc(admin, 'job_applications/a1')))
 );
 
-// Curious Club applications: personal answers plus voluntarily shared socials.
+// Curious Club applications: contact details, date of birth and quiz answers.
 // Same shape as job applications — the apply route owns creation through the
-// Admin SDK so its zod caps and consent check cannot be sidestepped.
+// Admin SDK, so its zod schema and the 18+ cut-off cannot be sidestepped, and
+// the personality type is scored there rather than accepted from the client.
 console.log('\n--- Curious Club ---');
 await testEnv.withSecurityRulesDisabled(async (ctx) => {
   await setDoc(doc(ctx.firestore(), 'club_applications/c1'), {
     fullName: 'Applicant',
     email: 'applicant@example.com',
     phone: '+910000000000',
+    dateOfBirth: '1995-04-12',
+    gender: 'Female',
     city: 'Mumbai',
-    instagram: '@applicant',
-    consent: true,
+    discoverySource: 'Instagram',
+    quizAnswers: [{ questionId: 'q1', choice: 'A' }],
+    personality: 'spark',
     status: 'new',
   });
 });

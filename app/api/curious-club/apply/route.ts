@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebase-admin';
-import { clubApplicationSchema } from '@/lib/club-application';
+import { clubApplicationSchema, personalityFor } from '@/lib/club-application';
 import { clientIpFrom, isHoneypotTripped, isRateLimited } from '@/lib/spam-guard';
 
 // Admin SDK.
@@ -34,6 +34,11 @@ export async function POST(request: Request) {
 
     const now = new Date().toISOString();
 
+    // Scored here, not in the browser. The reveal screen shows whatever this
+    // returns, so a payload claiming "The Architect" without the answers to
+    // back it up gets the type its answers actually earned.
+    const personality = personalityFor(parsed.data);
+
     // Not deliverEnquiry: this is an application to review, not a lead to chase.
     // A failed write must surface as an error rather than a silent 200 — the
     // applicant is told their application was received, so it has to exist.
@@ -41,6 +46,7 @@ export async function POST(request: Request) {
       .collection('club_applications')
       .add({
         ...parsed.data,
+        personality,
         status: 'new',
         notes: '',
         source: 'curious-club',
@@ -48,7 +54,8 @@ export async function POST(request: Request) {
         updatedAt: now,
       });
 
-    return NextResponse.json({ success: true });
+    // The applicant needs this back to see their result.
+    return NextResponse.json({ success: true, personality });
   } catch (error) {
     console.error('Curious Club application failed:', error);
 
