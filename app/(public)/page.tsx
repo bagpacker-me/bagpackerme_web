@@ -1,11 +1,6 @@
 import React from 'react';
-import HeroInteractive from '@/components/home/HeroInteractive';
-import DiscoverTheWorld from '@/components/home/DiscoverTheWorld';
-import SeasonExplorer from '@/components/home/SeasonExplorer';
-import EffortlessPlanning from '@/components/home/EffortlessPlanning';
-import MemorableMoments from '@/components/home/MemorableMoments';
-import FAQSection from '@/components/home/FAQSection';
-import ImageGallery from '@/components/ui/image-gallery';
+import Hero from '@/components/home/Hero';
+import DeferredHomeSections from '@/components/home/DeferredHomeSections';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { buildFaqPageSchema } from '@/lib/structured-data';
 import { HOME_FAQS } from '@/lib/faq';
@@ -28,13 +23,8 @@ export default function HomePage() {
   return (
     <main className="flex flex-col min-h-screen bg-surface-lowest">
       <JsonLd data={buildFaqPageSchema(HOME_FAQS)} />
-      <HeroInteractive market="global" />
-      <DiscoverTheWorld market="global" />
-      <SeasonExplorer />
-      <EffortlessPlanning market="global" />
-      <MemorableMoments market="global" />
-      <ImageGallery market="global" />
-      <FAQSection />
+      <Hero market="global" />
+      <DeferredHomeSections />
 
     </main>
   );

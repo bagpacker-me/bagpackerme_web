@@ -47,6 +47,13 @@ const config: Config = {
         lime: '#C1EA00', // Acid Lime
         teal: '#285056', // Deep Slate
         void: '#221E2A', // Dark Navy
+        content: {
+          DEFAULT: 'var(--color-content-default)',
+          muted: 'var(--color-content-muted)',
+          subtle: 'var(--color-content-subtle)',
+          inverse: 'var(--color-content-inverse)',
+          'inverse-muted': 'var(--color-content-inverse-muted)',
+        },
         surface: {
           lowest: '#FFFFFF',
           DEFAULT: '#F0FCFE',

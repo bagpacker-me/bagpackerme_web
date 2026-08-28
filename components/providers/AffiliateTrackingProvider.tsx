@@ -1,21 +1,20 @@
 'use client';
 
-import { Suspense } from 'react';
-import { useAffiliateTracking } from '@/hooks/useAffiliateTracking';
+import dynamic from 'next/dynamic';
+import { useEffect, useState } from 'react';
+import { scheduleIdleTask } from '@/lib/browser-idle';
 
-function AffiliateTracker() {
-  useAffiliateTracking();
-  return null;
-}
+const AffiliateTracker = dynamic(() => import('./AffiliateTracker'), { ssr: false });
 
 /**
- * Wraps the tracking hook in a Suspense boundary because useSearchParams()
- * requires one when used in a client component inside a Server Component layout.
+ * Attribution does not affect first paint or interaction. Loading its
+ * useSearchParams hook after the page is idle keeps it out of the landing
+ * route's critical client bundle while retaining the same session behaviour.
  */
 export function AffiliateTrackingProvider() {
-  return (
-    <Suspense fallback={null}>
-      <AffiliateTracker />
-    </Suspense>
-  );
+  const [enabled, setEnabled] = useState(false);
+
+  useEffect(() => scheduleIdleTask(() => setEnabled(true), 2500), []);
+
+  return enabled ? <AffiliateTracker /> : null;
 }

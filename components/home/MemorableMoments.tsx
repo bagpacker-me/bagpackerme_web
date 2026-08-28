@@ -122,7 +122,7 @@ export default function MemorableMoments({ market = 'global' }: { market?: Packa
                     )}
                     <div className="flex-1 min-w-0">
                       <h4 className="font-display font-bold text-base text-white leading-tight">{moment.authorName}</h4>
-                      <p className="font-body text-[11px] text-white/45 tracking-wide">{moment.location}</p>
+                      <p className="font-body text-[11px] text-content-inverse-muted tracking-wide">{moment.location}</p>
                     </div>
                   </div>
 

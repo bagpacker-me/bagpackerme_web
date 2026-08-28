@@ -59,6 +59,15 @@
   --color-text-inverse:     #FFFFFF;
   --color-text-inverse-dim: rgba(255,255,255,0.68);
 
+  /* AA-safe semantic content colours. Use these instead of opacity-based text
+     utilities for copy and controls: alpha compositing varies with the surface
+     below it and was the source of the low-contrast audit failures. */
+  --color-content-default: #221E2A;
+  --color-content-muted: #514B58;
+  --color-content-subtle: #625B69;
+  --color-content-inverse: #FFFFFF;
+  --color-content-inverse-muted: #E6F0F1;
+
   /* Semantic */
   --color-success: #22c55e;
   --color-error:   #ef4444;
@@ -291,17 +300,6 @@ body {
 .mb-safe     { margin-bottom:  max(1.5rem, calc(env(safe-area-inset-bottom) + 0.5rem)); }
 .mr-safe     { margin-right:   max(1.5rem, calc(env(safe-area-inset-right)  + 0.5rem)); }
 
-@keyframes page-enter {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 10px, 0);
-  }
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
-}
-
 @keyframes mobile-menu-enter {
   from {
     opacity: 0;
@@ -335,12 +333,12 @@ body {
   }
 }
 
-.page-transition-shell {
-  animation: page-enter 240ms var(--ease-default) both;
-}
-
 .mobile-menu-panel {
   animation: mobile-menu-enter 260ms var(--ease-default) both;
+}
+
+.mobile-menu-toggle::-webkit-details-marker {
+  display: none;
 }
 
 .mobile-menu-item {
@@ -357,7 +355,6 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .page-transition-shell,
   .mobile-menu-panel,
   .mobile-menu-item,
   .wa-pulse-ring {

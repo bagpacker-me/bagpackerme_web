@@ -1,10 +1,6 @@
 import React from 'react';
-import HeroInteractive from '@/components/home/HeroInteractive';
-import DiscoverTheWorld from '@/components/home/DiscoverTheWorld';
-import EffortlessPlanning from '@/components/home/EffortlessPlanning';
-import MemorableMoments from '@/components/home/MemorableMoments';
-import FAQSection from '@/components/home/FAQSection';
-import ImageGallery from '@/components/ui/image-gallery';
+import Hero from '@/components/home/Hero';
+import DeferredHomeSections from '@/components/home/DeferredHomeSections';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { buildBreadcrumbSchema } from '@/lib/structured-data';
 
@@ -34,12 +30,8 @@ export default function IndiaHomePage() {
           { name: 'India', path: '/in' },
         ])}
       />
-      <HeroInteractive market="india" />
-      <DiscoverTheWorld market="india" />
-      <EffortlessPlanning market="india" />
-      <MemorableMoments market="india" />
-      <ImageGallery market="india" />
-      <FAQSection />
+      <Hero market="india" />
+      <DeferredHomeSections market="india" includeSeason={false} />
     </main>
   );
 }

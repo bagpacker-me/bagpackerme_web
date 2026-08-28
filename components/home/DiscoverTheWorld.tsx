@@ -165,7 +165,7 @@ export default function DiscoverTheWorld({ market = 'global' }: { market?: Packa
             <h2 className="font-display text-4xl md:text-5xl font-bold text-void mb-4 tracking-tight">
               {heading}
             </h2>
-            <p className="text-void/60 text-base md:text-lg font-body leading-relaxed">
+            <p className="text-content-muted text-base md:text-lg font-body leading-relaxed">
               {description}
             </p>
           </motion.div>
@@ -280,7 +280,7 @@ export default function DiscoverTheWorld({ market = 'global' }: { market?: Packa
               <h3 className="font-display text-3xl md:text-4xl font-bold text-void mb-4">
                 {hasError ? 'We couldn’t load journeys just now' : 'New journeys are on the way'}
               </h3>
-              <p className="font-body text-void/60 text-base md:text-lg leading-relaxed mb-8">
+              <p className="font-body text-content-muted text-base md:text-lg leading-relaxed mb-8">
                 {hasError
                   ? 'Something went wrong on our end. Please refresh, or tell us where you’d like to go and we’ll plan it with you.'
                   : 'Our next set of curated journeys is being prepared. In the meantime, tell us where you’d like to go and we’ll design a private trip around you.'}

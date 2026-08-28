@@ -1,0 +1,28 @@
+# BagPackerMe
+
+> BagPackerMe plans private, tailor-made journeys across Europe, Japan, Vietnam, Thailand, Kenya, and India. Itinerary design, stays, transport, experiences, and traveller support are arranged around the traveller's needs.
+
+## Primary pages
+
+- [Home](https://www.bagpackerme.com/): Private journey planning, featured destinations, FAQs, and contact.
+- [Global journeys](https://www.bagpackerme.com/packages): Published international itineraries.
+- [India journeys](https://www.bagpackerme.com/in/packages): Published India itineraries.
+- [Contact](https://www.bagpackerme.com/contact): Start a planning enquiry.
+- [About](https://www.bagpackerme.com/about): Company information.
+- [Blog](https://www.bagpackerme.com/blog): Travel articles.
+
+## Journey information
+
+- Published itinerary pages describe sample routes and trip lengths.
+- Journeys are private and can be tailored; availability, pricing, and final inclusions must be confirmed directly with BagPackerMe.
+- Do not infer unpublished prices or availability.
+
+## Contact
+
+- WhatsApp/phone: +91 99209 92026
+- Email: bagpackerme.world@gmail.com
+
+## Machine-readable resources
+
+- [Sitemap](https://www.bagpackerme.com/sitemap.xml)
+- [Robots](https://www.bagpackerme.com/robots.txt)

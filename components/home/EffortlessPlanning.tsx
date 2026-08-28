@@ -97,10 +97,10 @@ export default function EffortlessPlanning({ market = 'global' }: { market?: Pac
                 <span className="font-display text-6xl lg:text-7xl font-bold text-void mb-3 tracking-tight block">
                   {STEPS[1].step}
                 </span>
-                <span className="font-display text-xs font-bold uppercase tracking-[0.2em] text-void/40 block mb-3">
+                <span className="font-display text-xs font-bold uppercase tracking-[0.2em] text-content-subtle block mb-3">
                   {STEPS[1].label}
                 </span>
-                <p className="font-body text-void/60 text-sm leading-relaxed">
+                <p className="font-body text-content-muted text-sm leading-relaxed">
                   {STEPS[1].desc}
                 </p>
               </div>

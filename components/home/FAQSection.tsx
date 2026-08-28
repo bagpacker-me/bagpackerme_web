@@ -83,7 +83,7 @@ export default function FAQSection() {
           transition={shouldReduceMotion ? undefined : { duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
           className="overflow-hidden"
         >
-          <p className="px-6 md:px-7 pb-6 md:pb-7 font-body text-void/70 text-sm md:text-base leading-relaxed pr-8">
+          <p className="px-6 md:px-7 pb-6 md:pb-7 font-body text-content-muted text-sm md:text-base leading-relaxed pr-8">
             {faq.answer}
           </p>
         </motion.div>
@@ -101,14 +101,14 @@ export default function FAQSection() {
             <h2 className="font-display text-4xl md:text-5xl font-bold text-void mb-5 tracking-tight">
               Frequently asked questions
             </h2>
-            <p className="text-void/60 text-base font-body leading-relaxed mb-8">
+            <p className="text-content-muted text-base font-body leading-relaxed mb-8">
               Got questions before your next trip? Here is everything you need to know about starting your journey with BagPackerMe.
             </p>
 
             {/* Quick Contact Card */}
             <div className="bg-ice/40 border border-medium rounded-2xl p-6 md:p-8">
               <h3 className="font-display font-semibold text-lg text-void mb-2">Still have questions?</h3>
-              <p className="font-body text-sm text-void/60 mb-6 leading-relaxed">
+              <p className="font-body text-sm text-content-muted mb-6 leading-relaxed">
                 Can&apos;t find what you are looking for? Send us a quick inquiry and we&apos;ll get right back to you.
               </p>
               <Link

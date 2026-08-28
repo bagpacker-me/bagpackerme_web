@@ -14,14 +14,17 @@ import '@/styles/globals.css';
 
 const outfit = Outfit({
   subsets: ['latin'],
-  weight: ['400', '600', '700'],
+  // The interface uses regular and bold for the initial shell. A distinct 600
+  // face was fetched for a handful of below-the-fold labels, so let the browser
+  // synthesize that intermediate weight rather than blocking first paint on it.
+  weight: ['400', '700'],
   variable: '--font-display',
   display: 'swap',
 });
 
 const dmSans = DM_Sans({
   subsets: ['latin'],
-  weight: ['400', '500', '600'],
+  weight: ['400', '600'],
   variable: '--font-body',
   display: 'swap',
 });

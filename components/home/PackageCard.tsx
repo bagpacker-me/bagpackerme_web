@@ -67,20 +67,20 @@ export default function PackageCard({ pkg, market }: { pkg: Package; market?: Pa
         )}
 
         {pkg.tagline?.trim() && (
-          <p className="font-body text-sm text-void/60 mb-4 line-clamp-2 leading-relaxed">
+          <p className="font-body text-sm text-content-muted mb-4 line-clamp-2 leading-relaxed">
             {pkg.tagline}
           </p>
         )}
 
         {/* Details Row */}
-        <div className="flex items-center gap-5 text-[11px] font-body text-void/60 mb-5">
+        <div className="flex items-center gap-5 text-[11px] font-body text-content-muted mb-5">
           <div className="flex items-center gap-1.5">
-            <Clock className="w-3.5 h-3.5 text-void/40" />
+            <Clock className="w-3.5 h-3.5 text-content-subtle" />
             <span>{pkg.duration || 'Flexible'}</span>
           </div>
           <div className="w-[1.5px] h-3 bg-void/10" />
           <div className="flex items-center gap-1.5">
-            <Users className="w-3.5 h-3.5 text-void/40" />
+            <Users className="w-3.5 h-3.5 text-content-subtle" />
             <span>{pkg.groupSize || 'Private'}</span>
           </div>
         </div>
@@ -88,7 +88,7 @@ export default function PackageCard({ pkg, market }: { pkg: Package; market?: Pa
         {/* Price & Link Area */}
         <div className="mt-auto pt-4 border-t border-void/5 flex items-center justify-between">
           <div className="flex flex-col">
-            <span className="text-[10px] text-void/45 uppercase tracking-[0.08em] font-display font-bold mb-[2px]">
+            <span className="text-[10px] text-content-subtle uppercase tracking-[0.08em] font-display font-bold mb-[2px]">
               {hasPrice ? 'Starts From' : 'Pricing'}
             </span>
             <span className="font-display font-bold text-[18px] text-teal leading-none">
