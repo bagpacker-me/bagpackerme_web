@@ -182,61 +182,24 @@ export default function SeasonExplorer() {
               {destinations.map((destination, index) => {
                 const { x, y } = projectLatLng(destination.lat, destination.lng);
                 const isActive = index === activeIndex;
-                // Flip the label to the left near the right edge so it can't
-                // run off the map.
-                const flip = x / MAP_WIDTH > 0.82;
-
                 return (
-                  <React.Fragment key={destination.id}>
-                    {/* Several destinations occupy the same few pixels on a
-                        world map. Below xl, interactable pins would overlap and
-                        fail WCAG 2.5.8's unobscured 24px target requirement.
-                        The map remains an accurate visual summary and the 48px
-                        previous/next buttons in the adjacent detail panel expose
-                        every destination without an ambiguous tap. */}
-                    <span
-                      aria-hidden="true"
-                      style={{
-                        left: `${(x / MAP_WIDTH) * 100}%`,
-                        top: `${(y / MAP_HEIGHT) * 100}%`,
-                      }}
-                      className={`pointer-events-none absolute flex h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full ring-2 transition-all duration-300 xl:hidden ${
-                        isActive
-                          ? 'z-20 bg-lime ring-lime/30 shadow-glow-lime scale-125'
-                          : 'z-10 bg-white/80 ring-white/20'
-                      }`}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setSelectedIndex(index)}
-                      aria-pressed={isActive}
-                      style={{
-                        left: `${(x / MAP_WIDTH) * 100}%`,
-                        top: `${(y / MAP_HEIGHT) * 100}%`,
-                      }}
-                      className={`group absolute hidden h-6 w-6 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime xl:flex ${
-                        isActive ? 'z-20 text-lime' : 'z-10 text-white/75 hover:text-white'
-                      }`}
-                    >
-                      <span
-                        aria-hidden="true"
-                        className={`block h-2.5 w-2.5 rounded-full ring-2 transition-all duration-300 ${
-                          isActive
-                            ? 'bg-lime ring-lime/30 shadow-glow-lime scale-125'
-                            : 'bg-white/80 ring-white/20 group-hover:bg-white group-hover:scale-110'
-                        }`}
-                      />
-                      <span
-                        aria-hidden="true"
-                        className={`pointer-events-none absolute top-1/2 -translate-y-1/2 whitespace-nowrap font-body text-xs font-semibold drop-shadow-[0_1px_3px_rgba(0,0,0,0.7)] ${
-                          flip ? 'right-full mr-1' : 'left-full ml-1'
-                        }`}
-                      >
-                        {destination.name}
-                      </span>
-                      <span className="sr-only">{destination.name}</span>
-                    </button>
-                  </React.Fragment>
+                  /* Several destinations share the same map coordinates at all
+                     rendered widths. Keeping them as visual markers avoids
+                     overlapping touch targets; the 48px previous/next buttons
+                     in the adjacent panel select every destination. */
+                  <span
+                    key={destination.id}
+                    aria-hidden="true"
+                    style={{
+                      left: `${(x / MAP_WIDTH) * 100}%`,
+                      top: `${(y / MAP_HEIGHT) * 100}%`,
+                    }}
+                    className={`pointer-events-none absolute h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full ring-2 transition-all duration-300 ${
+                      isActive
+                        ? 'z-20 bg-lime ring-lime/30 shadow-glow-lime scale-125'
+                        : 'z-10 bg-white/80 ring-white/20'
+                    }`}
+                  />
                 );
               })}
             </div>
