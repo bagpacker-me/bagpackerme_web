@@ -22,6 +22,9 @@ const nextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
   experimental: {
+    // Critters extracts above-the-fold CSS during the production build and
+    // asynchronously loads the remaining stylesheet bytes.
+    optimizeCss: true,
     optimizePackageImports: ['lucide-react', '@remixicon/react'],
   },
   async headers() {
