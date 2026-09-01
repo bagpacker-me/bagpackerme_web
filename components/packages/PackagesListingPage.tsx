@@ -18,6 +18,8 @@ const DURATIONS = [
   { label: 'Long (14+ days)', value: 'Long', min: 14, max: 999 },
 ];
 
+const EMPTY_PACKAGES: Package[] = [];
+
 const MARKET_PRICE_CONFIG = {
   global: {
     // Global source prices are converted at the fixed ₹100 per US$ rate.
@@ -52,6 +54,8 @@ interface PackagesListingPageProps {
   eyebrow?: string;
   heroImage: string;
   heroAlt: string;
+  /** Server-rendered cards keep every published package crawlable before JS runs. */
+  initialPackages?: Package[];
 }
 
 export default function PackagesListingPage({
@@ -61,12 +65,15 @@ export default function PackagesListingPage({
   eyebrow = 'Our Journeys',
   heroImage,
   heroAlt,
+  initialPackages,
 }: PackagesListingPageProps) {
   const priceConfig = MARKET_PRICE_CONFIG[market];
+  const seedPackages = initialPackages ?? (market === 'global' ? STATIC_GLOBAL_PACKAGE_SUMMARIES : EMPTY_PACKAGES);
+  const hasServerPackages = initialPackages !== undefined;
   const [packages, setPackages] = useState<Package[]>(
-    market === 'global' ? STATIC_GLOBAL_PACKAGE_SUMMARIES : []
+    seedPackages
   );
-  const [loading, setLoading] = useState(market !== 'global');
+  const [loading, setLoading] = useState(!hasServerPackages && market !== 'global');
   const [hasError, setHasError] = useState(false);
   const [filters, setFilters] = useState<PremiumFilterState>({
     category: 'All',
@@ -82,8 +89,8 @@ export default function PackagesListingPage({
   useEffect(() => {
     let mounted = true;
 
-    setPackages(market === 'global' ? STATIC_GLOBAL_PACKAGE_SUMMARIES : []);
-    setLoading(market !== 'global');
+    setPackages(seedPackages);
+    setLoading(!hasServerPackages && market !== 'global');
     setHasError(false);
 
     const cancel = scheduleIdleTask(async () => {
@@ -111,7 +118,7 @@ export default function PackagesListingPage({
       mounted = false;
       cancel();
     };
-  }, [market]);
+  }, [hasServerPackages, market, seedPackages]);
 
   const categories = useMemo(() => {
     const available = new Set(packages.map((pkg) => pkg.category).filter(Boolean));
