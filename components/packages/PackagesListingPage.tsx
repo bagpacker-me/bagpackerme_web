@@ -20,12 +20,12 @@ const DURATIONS = [
 
 const MARKET_PRICE_CONFIG = {
   global: {
-    // Must stay above the priciest global package — the range filter is
-    // inclusive on both ends, so anything above `max` is hidden at every
-    // slider position, including the default one.
-    max: 8000,
-    step: 100,
-    currency: 'USD' as const,
+    // Global source prices are converted at the fixed ₹100 per US$ rate.
+    // Keep this above the priciest converted price because the range filter is
+    // inclusive at both ends, including its default position.
+    max: 800000,
+    step: 10000,
+    currency: 'INR' as const,
   },
   india: {
     max: 200000,
@@ -143,13 +143,10 @@ export default function PackagesListingPage({
       const primary = getPackagePrimaryPrice(p, market);
       const amount = primary.amount;
 
-      // The slider is denominated in priceConfig.currency (USD for global, INR
-      // for india). A package priced in the *other* currency — e.g. a global
-      // package with only an INR price — has no comparable amount here, and we
-      // have no FX table to convert it. Comparing an INR figure against a USD
-      // range would silently hide it at every slider position, so treat it like
-      // an on-request price: visible at the default range, filtered out only
-      // once the visitor actively narrows the range.
+      // Public package prices are normalised to INR, including global packages
+      // whose stored USD source values are converted at the fixed site rate.
+      // An on-request package remains visible until a visitor narrows the
+      // range, rather than disappearing from the default listing.
       if (!hasPackagePrice(amount) || primary.currency !== priceConfig.currency) {
         return usingDefaultPriceRange;
       }

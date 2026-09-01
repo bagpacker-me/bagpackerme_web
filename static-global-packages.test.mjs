@@ -21,7 +21,8 @@ import { PACKAGE_CATEGORIES } from './types/index.ts';
 
 // Keep in step with MARKET_PRICE_CONFIG.global.max in
 // components/packages/PackagesListingPage.tsx.
-const GLOBAL_PRICE_CEILING = 8000;
+const GLOBAL_PRICE_CEILING = 800000;
+const USD_TO_INR_RATE = 100;
 
 let pass = 0, fail = 0;
 const check = (name, cond) => {
@@ -70,10 +71,11 @@ for (const p of FULL) {
     p.itinerary.every((d) => d.location && d.location.trim() !== ''));
 }
 
-console.log('--- Images are https Unsplash URLs ---');
+console.log('--- Images are local assets or https URLs ---');
 for (const p of FULL) {
   for (const url of [p.heroImageUrl, ...p.galleryUrls]) {
-    check(`${p.slug}: ${url.slice(0, 60)} is https`, url.startsWith('https://'));
+    check(`${p.slug}: ${url.slice(0, 60)} is a supported image URL`,
+      url.startsWith('/') || url.startsWith('https://'));
   }
 }
 
@@ -82,8 +84,8 @@ for (const p of FULL) {
   check(`${p.slug}: has a price in at least one currency`,
     p.priceUsd != null || p.priceInr != null);
   if (p.priceUsd != null) {
-    check(`${p.slug}: USD price is within the listing filter ceiling`,
-      p.priceUsd > 0 && p.priceUsd <= GLOBAL_PRICE_CEILING);
+    check(`${p.slug}: converted USD price is within the listing filter ceiling`,
+      p.priceUsd > 0 && p.priceUsd * USD_TO_INR_RATE <= GLOBAL_PRICE_CEILING);
   }
 }
 
