@@ -20,7 +20,7 @@ const MENU_ITEMS = [
 export function Navbar() {
   return (
     <header>
-      <nav className="fixed left-0 top-0 z-[100] w-full px-[max(1rem,env(safe-area-inset-left))] pt-[env(safe-area-inset-top)] pr-[max(1rem,env(safe-area-inset-right))]">
+      <nav className="fixed left-0 top-0 z-[1000] w-full px-[max(1rem,env(safe-area-inset-left))] pt-[env(safe-area-inset-top)] pr-[max(1rem,env(safe-area-inset-right))]">
         <NavbarScrollChrome />
         <div
           data-nav-surface
@@ -65,15 +65,16 @@ export function Navbar() {
                 Start Planning
               </Link>
 
-              <details className="group xl:hidden">
+              <details className="group relative xl:hidden">
                 <summary
-                  aria-label="Open site navigation"
-                  className="mobile-menu-toggle -mr-2 flex h-11 w-11 cursor-pointer list-none items-center justify-center rounded-full text-white transition-colors hover:text-lime focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime"
+                  aria-label="Toggle site navigation"
+                  aria-controls="mobile-navigation"
+                  className="mobile-menu-toggle relative z-[100] -mr-2 flex h-11 w-11 cursor-pointer list-none items-center justify-center rounded-full text-white transition-colors hover:text-lime group-open:bg-void/80 group-open:text-lime focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime"
                 >
-                  <span className="flex h-5 w-6 flex-col justify-between" aria-hidden="true">
-                    <span className="h-[1.5px] w-full rounded bg-current" />
-                    <span className="h-[1.5px] w-full rounded bg-current" />
-                    <span className="h-[1.5px] w-full rounded bg-current" />
+                  <span className="relative h-5 w-6" aria-hidden="true">
+                    <span className="absolute left-0 top-1/2 h-[1.5px] w-full -translate-y-[7px] rounded bg-current transition-transform duration-200 group-open:translate-y-0 group-open:rotate-45" />
+                    <span className="absolute left-0 top-1/2 h-[1.5px] w-full -translate-y-1/2 rounded bg-current transition-opacity duration-200 group-open:opacity-0" />
+                    <span className="absolute left-0 top-1/2 h-[1.5px] w-full translate-y-[6px] rounded bg-current transition-transform duration-200 group-open:translate-y-0 group-open:-rotate-45" />
                   </span>
                 </summary>
                 <div
