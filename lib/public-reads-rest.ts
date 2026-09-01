@@ -24,6 +24,7 @@ import {
   type FirestoreRunQueryResult,
 } from './firestore-rest';
 import type { Package, PackageMarket, SiteSettings, Testimonial } from '@/types';
+import { withPackageImageOverrides } from './package-image-overrides';
 
 /**
  * The fields PackageCard, PremiumFilter, and the listing filters actually read.
@@ -53,11 +54,11 @@ const REST_BASE = 'https://firestore.googleapis.com/v1/projects';
 const packageFromRestDocument = (document: FirestoreRestDocument): Package => {
   const data = restDocumentToObject(document) as Omit<Package, 'id'>;
 
-  return {
+  return withPackageImageOverrides({
     id: document.name.split('/').pop() ?? data.slug,
     ...data,
     market: data.market === 'global' ? 'global' : 'india',
-  } as Package;
+  } as Package);
 };
 
 const sortByCreatedAtDesc = (packages: Package[]) =>

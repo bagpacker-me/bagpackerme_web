@@ -3,6 +3,7 @@ import { db } from './firebase';
 import { Package, BlogPost, Enquiry, Customer, Booking, GalleryImage, Testimonial, Affiliate, AffiliateClick, AffiliateEvent, AffiliatePublic, AffiliateRegistrationIndex, PackageMarket, JobOpening, JobApplication, ClubApplication } from '@/types';
 import { buildAffiliatePublicData, normalizeAffiliateCode, normalizeAffiliateSessionId } from './affiliate';
 import { STATIC_GLOBAL_PACKAGES } from './static-global-packages';
+import { withPackageImageOverrides } from './package-image-overrides';
 import {
   restDocumentToObject,
   firestoreRestConfig,
@@ -22,11 +23,11 @@ export const normalizePackageMarket = (pkg: Pick<Package, 'market'>): PackageMar
 const packageFromRestDocument = (document: FirestoreRestDocument) => {
   const data = restDocumentToObject(document) as Omit<Package, 'id'>;
 
-  return {
+  return withPackageImageOverrides({
     id: document.name.split('/').pop() ?? data.slug,
     ...data,
     market: data.market === 'global' ? 'global' : 'india',
-  } as Package;
+  } as Package);
 };
 
 const getPublishedPackagesFromRest = async () => {
@@ -80,7 +81,11 @@ const sortPackagesByCreatedAt = (packages: Package[]) =>
 
 const packageFromDoc = (document: { id: string; data: () => unknown }) => {
   const data = document.data() as Omit<Package, 'id'>;
-  return { id: document.id, ...data, market: data.market === 'global' ? 'global' : 'india' } as Package;
+  return withPackageImageOverrides({
+    id: document.id,
+    ...data,
+    market: data.market === 'global' ? 'global' : 'india',
+  } as Package);
 };
 
 const mergeWithStaticGlobalPackages = (firestorePackages: Package[]) => {
