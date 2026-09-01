@@ -36,7 +36,10 @@ const critters = new Critters({
   fonts: false,
   logLevel: 'silent',
 });
-const optimizedHtml = await critters.process(html);
+const optimizedHtml = (await critters.process(html)).replace(
+  /<noscript><link ([^>]*?) media="print" onload="this\.media='all'"><\/noscript>/g,
+  '<noscript><link $1></noscript>',
+);
 
 if (!optimizedHtml.includes('<style')) {
   throw new Error('Critical CSS extraction produced no inline styles.');
