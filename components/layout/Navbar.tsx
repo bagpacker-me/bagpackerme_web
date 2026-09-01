@@ -25,7 +25,7 @@ export function Navbar() {
         <div
           data-nav-surface
           data-scrolled="false"
-          className="mx-auto mt-4 max-w-6xl rounded-full bg-transparent px-4 transition-all duration-300 data-[scrolled=true]:max-w-4xl data-[scrolled=true]:border data-[scrolled=true]:border-white/10 data-[scrolled=true]:bg-teal/90 data-[scrolled=true]:px-6 data-[scrolled=true]:shadow-[0_8px_32px_rgba(40,80,86,0.18)] data-[scrolled=true]:backdrop-blur-xl"
+          className="mx-auto mt-4 max-w-6xl rounded-full bg-transparent px-4 transition-all duration-300 data-[scrolled=true]:border data-[scrolled=true]:border-white/10 data-[scrolled=true]:bg-teal/90 data-[scrolled=true]:px-6 data-[scrolled=true]:shadow-[0_8px_32px_rgba(40,80,86,0.18)] data-[scrolled=true]:backdrop-blur-xl"
         >
           <div className="relative flex items-center justify-between py-4">
             <Link
@@ -44,7 +44,7 @@ export function Navbar() {
               />
             </Link>
 
-            <ul className="absolute inset-x-0 mx-auto hidden w-fit items-center gap-8 font-body text-sm lg:flex">
+            <ul className="absolute inset-x-0 mx-auto hidden w-fit items-center gap-8 font-body text-sm xl:flex">
               {MENU_ITEMS.map((item) => (
                 <li key={item.href}>
                   <Link
@@ -60,12 +60,12 @@ export function Navbar() {
             <div className="z-[101] flex items-center gap-4">
               <Link
                 href="/contact?intent=trip"
-                className="hidden rounded-full bg-lime px-6 py-3 font-display text-[11px] font-bold uppercase tracking-widest text-void transition-transform duration-200 hover:-translate-y-0.5 hover:bg-lime/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime focus-visible:ring-offset-2 focus-visible:ring-offset-void lg:inline-flex"
+                className="hidden rounded-full bg-lime px-6 py-3 font-display text-[11px] font-bold uppercase tracking-widest text-void transition-transform duration-200 hover:-translate-y-0.5 hover:bg-lime/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime focus-visible:ring-offset-2 focus-visible:ring-offset-void xl:inline-flex"
               >
                 Start Planning
               </Link>
 
-              <details className="group lg:hidden">
+              <details className="group xl:hidden">
                 <summary
                   aria-label="Open site navigation"
                   className="mobile-menu-toggle -mr-2 flex h-11 w-11 cursor-pointer list-none items-center justify-center rounded-full text-white transition-colors hover:text-lime focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime"
