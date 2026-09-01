@@ -4,7 +4,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, Binoculars, Camera, Compass, Eye, Globe, Key, Lightbulb, Lock, Mail, MapPin, Music, Sparkles, Users, Utensils } from 'lucide-react';
 import { FadeInSection } from '@/components/ui/FadeInSection';
-import { CLUB_TRIPS, tripPath } from '@/lib/club-trips';
 
 const APPLY_HREF = '/curious-club/apply';
 
@@ -447,71 +446,6 @@ export default function CuriousClubContent() {
               </div>
             </FadeInSection>
           </div>
-        </Shell>
-      </section>
-
-      {/* ── Where the club is going next ───────────────────────────────────── */}
-      <section className={`bg-ice ${SECTION}`}>
-        <Shell>
-          <FadeInSection>
-            <div className={HEADER_ROW}>
-              <div className="lg:col-span-6">
-                <SectionEyebrow tone="teal">First departures</SectionEyebrow>
-                <h2 className={`${H2_LIGHT} mt-[14px]`}>Thailand, twice over.</h2>
-              </div>
-
-              <p className="max-w-[58ch] font-body text-[15px] leading-relaxed text-void/65 text-pretty lg:col-span-5 lg:col-start-8">
-                Same route, two completely different weeks. Both are captain-tested, both travel with a
-                content crew, and both are filled from the applications we receive.
-              </p>
-            </div>
-          </FadeInSection>
-
-          <ul className="mt-[56px] grid gap-[24px] md:grid-cols-2">
-            {CLUB_TRIPS.map((trip, index) => (
-              <li key={trip.slug}>
-                <FadeInSection delay={0.08 * index}>
-                  <Link
-                    href={tripPath(trip)}
-                    className="group relative block overflow-hidden rounded-[20px] bg-void focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-teal"
-                  >
-                    <Image
-                      src={trip.hero.src}
-                      alt={trip.hero.alt}
-                      width={trip.hero.width}
-                      height={trip.hero.height}
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                      className="aspect-[4/3] w-full object-cover opacity-75 transition-all duration-700 group-hover:scale-[1.04] group-hover:opacity-85"
-                    />
-                    <div
-                      className="absolute inset-0 bg-gradient-to-t from-void via-void/55 to-transparent"
-                      aria-hidden="true"
-                    />
-                    <div className="absolute inset-x-0 bottom-0 p-[24px] md:p-[28px]">
-                      <span
-                        className={`${ITEM_LABEL} block ${trip.accent === 'lime' ? 'text-lime' : 'text-cyan'}`}
-                      >
-                        {trip.duration} · {trip.route.join(' → ')}
-                      </span>
-                      <h3 className="mt-[12px] font-display text-[26px] font-bold uppercase leading-none tracking-[-0.02em] text-white">
-                        Thailand
-                      </h3>
-                      <p className="mt-[2px] font-accent text-[24px] italic leading-tight text-white/85">
-                        {trip.subtitle}
-                      </p>
-                      <p className="mt-[16px] flex items-center gap-[8px] border-t border-white/20 pt-[14px] font-display text-[13px] font-bold tracking-[0.04em] text-white">
-                        {trip.priceLabel}
-                        <ArrowRight
-                          className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
-                          aria-hidden="true"
-                        />
-                      </p>
-                    </div>
-                  </Link>
-                </FadeInSection>
-              </li>
-            ))}
-          </ul>
         </Shell>
       </section>
 
