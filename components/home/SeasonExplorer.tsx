@@ -59,7 +59,7 @@ export default function SeasonExplorer() {
   const counter = `${String(activeIndex + 1).padStart(2, '0')} / ${String(total).padStart(2, '0')}`;
   const ctaHref = active.packageSlug
     ? `/packages/${active.packageSlug}`
-    : '/contact?intent=trip';
+    : '/contact#trip';
   const ctaLabel = active.packageSlug ? 'View this journey' : `Plan a trip to ${active.name}`;
 
   return (

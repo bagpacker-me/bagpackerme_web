@@ -21,6 +21,7 @@ import { getStoredAffiliateCode, getStoredAffiliateSessionId } from '@/hooks/use
 import { useSiteSettings } from '@/hooks/useSiteSettings';
 import { HoneypotField } from '@/components/ui/HoneypotField';
 import { HONEYPOT_FIELD } from '@/lib/honeypot';
+import { normalizeContactIntent } from '@/lib/contact-intent';
 import {
   Field,
   FieldLabel,
@@ -1296,7 +1297,10 @@ export function InquiryExperiencePage({
 }) {
   const settings = useSiteSettings();
   const honeypotRef = useRef<HTMLInputElement>(null);
-  const [selectedIntent, setSelectedIntent] = useState<ContactIntent | null>(initialIntent);
+  const [selectedIntent, setSelectedIntent] = useState<ContactIntent | null>(() => {
+    if (initialIntent || typeof window === 'undefined') return initialIntent;
+    return normalizeContactIntent(window.location.hash.slice(1));
+  });
   const pageCopy = selectedIntent ? intentCopy[selectedIntent] : defaultCopy;
   const [submittedUrl, setSubmittedUrl] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -1310,8 +1314,10 @@ export function InquiryExperiencePage({
   const [corporateFinalAttempted, setCorporateFinalAttempted] = useState(false);
 
   useEffect(() => {
-    setSelectedIntent(initialIntent);
-    setSubmittedUrl(null);
+    if (initialIntent) {
+      setSelectedIntent(initialIntent);
+      setSubmittedUrl(null);
+    }
   }, [initialIntent]);
 
   useEffect(() => {
@@ -1319,12 +1325,11 @@ export function InquiryExperiencePage({
       return;
     }
 
-    const nextUrl =
-      selectedIntent === 'trip' || selectedIntent === 'corporate'
-        ? `/contact?intent=${selectedIntent}`
-        : '/contact';
+    const nextUrl = selectedIntent ? `/contact#${selectedIntent}` : '/contact';
 
-    window.history.replaceState(window.history.state, '', nextUrl);
+    if (`${window.location.pathname}${window.location.hash}` !== nextUrl) {
+      window.history.replaceState(window.history.state, '', nextUrl);
+    }
   }, [selectedIntent]);
 
   const b2cErrors = b2cSubmitAttempted ? validateB2CForm(b2cForm) : {};

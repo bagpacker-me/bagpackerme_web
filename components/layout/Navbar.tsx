@@ -59,7 +59,7 @@ export function Navbar() {
 
             <div className="z-[101] flex items-center gap-4">
               <Link
-                href="/contact?intent=trip"
+                href="/contact#trip"
                 className="hidden rounded-full bg-lime px-6 py-3 font-display text-[11px] font-bold uppercase tracking-widest text-void transition-transform duration-200 hover:-translate-y-0.5 hover:bg-lime/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime focus-visible:ring-offset-2 focus-visible:ring-offset-void xl:inline-flex"
               >
                 Start Planning
@@ -95,7 +95,7 @@ export function Navbar() {
                       ))}
                     </ul>
                     <Link
-                      href="/contact?intent=trip"
+                      href="/contact#trip"
                       className="mt-12 inline-flex min-h-12 w-full items-center justify-center rounded-full bg-lime px-6 py-3 font-display text-[12px] font-bold uppercase tracking-widest text-void focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime focus-visible:ring-offset-2 focus-visible:ring-offset-void"
                     >
                       Start Planning

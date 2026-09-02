@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Package } from '@/types';
 import { X, ChevronLeft, ChevronRight, Maximize2 } from 'lucide-react';
 import { FadeInSection } from '@/components/ui/FadeInSection';
+import { shortPackageTitle } from '@/lib/seo';
 
 // `galleryUrls` is a bare string[] — no width or height is stored with an
 // upload, so the real aspect ratio of a photo is not knowable until the file
@@ -97,7 +98,7 @@ export default function PackageGallery({ pkg }: { pkg: Package }) {
              <div className="h-[1px] w-[32px] bg-[#221E2A]" />
           </div>
           <h2 className="text-[#221E2A] font-display text-[clamp(1.75rem,3.5vw,2.75rem)] font-bold uppercase tracking-[-0.02em] leading-[1.1]">
-            Photo Gallery
+            Photos from {shortPackageTitle(pkg.title)}
           </h2>
         </FadeInSection>
 
@@ -120,7 +121,7 @@ export default function PackageGallery({ pkg }: { pkg: Package }) {
                     collapsed and then shoved the page down image by image. */}
                 <Image
                   src={src}
-                  alt=""
+                  alt={`${pkg.title} gallery image ${idx + 1}`}
                   fill
                   sizes="(max-width: 768px) 50vw, 33vw"
                   quality={65}

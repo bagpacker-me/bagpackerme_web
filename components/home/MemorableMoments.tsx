@@ -74,7 +74,7 @@ export default function MemorableMoments({ market = 'global' }: { market?: Packa
             transition={{ delay: 0.2 }}
           >
             <Link
-              href="/contact?intent=trip"
+              href="/contact#trip"
               className="inline-flex items-center justify-center gap-2 rounded-full bg-lime text-void px-7 py-4 font-display text-[12px] font-bold uppercase tracking-widest transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(193,234,0,0.3)] active:scale-[0.98]"
             >
               Plan your journey

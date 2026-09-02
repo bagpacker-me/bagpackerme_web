@@ -8,11 +8,11 @@ import type { Package } from '@/types';
  */
 const PACKAGE_IMAGE_OVERRIDES: Record<string, Pick<Package, 'heroImageUrl' | 'galleryUrls'>> = {
   'satpura-wildscape-jeep-trails-and-riverside-serenity': {
-    heroImageUrl: '/images/packages/satpura/satpura-jeep-trails-cover.png',
+    heroImageUrl: '/images/packages/satpura/satpura-jeep-trails-cover.webp',
     galleryUrls: [
-      '/images/packages/satpura/satpura-backwaters-boat.png',
-      '/images/packages/satpura/satpura-serpent-eagle.png',
-      '/images/packages/satpura/satpura-riverside-lodge.png',
+      '/images/packages/satpura/satpura-backwaters-boat.webp',
+      '/images/packages/satpura/satpura-serpent-eagle.webp',
+      '/images/packages/satpura/satpura-riverside-lodge.webp',
     ],
   },
 };

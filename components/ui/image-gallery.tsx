@@ -138,12 +138,13 @@ export default function ImageGallery({ market = "global" }: { market?: PackageMa
                 }}
               >
                 <Image
-                  className="h-full w-full object-cover object-center transition-transform duration-700 hover:scale-105"
                   src={img.src}
                   alt={img.alt}
-                  fill
+                  width={800}
+                  height={1200}
                   sizes="(max-width: 768px) 100vw, 33vw"
                   quality={60}
+                  className="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-700 hover:scale-105"
                 />
                 
                 {/* Overlay gradient */}

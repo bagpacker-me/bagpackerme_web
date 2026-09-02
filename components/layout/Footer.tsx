@@ -13,7 +13,7 @@ const companyLinks = [
   { name: 'About', href: '/about' },
   { name: 'Careers', href: '/careers' },
   { name: 'Blog', href: '/blog' },
-  { name: 'Corporate Retreats', href: '/contact?intent=corporate' },
+  { name: 'Corporate Retreats', href: '/contact#corporate' },
   { name: 'Affiliate Program', href: '/affiliate' },
   { name: 'Contact', href: '/contact' },
 ];

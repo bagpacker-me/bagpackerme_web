@@ -4,6 +4,7 @@ import { Package } from '@/types';
 import Image from 'next/image';
 import { motion, useInView, useReducedMotion } from 'framer-motion';
 import { useRef } from 'react';
+import { shortPackageTitle } from '@/lib/seo';
 
 const EASE = [0.25, 0.46, 0.45, 0.94] as const;
 
@@ -30,7 +31,7 @@ export default function ItineraryTimeline({ pkg }: { pkg: Package }) {
             <div className="h-[1px] w-[32px] bg-[#FFFFFF]/40" />
           </div>
           <h2 className="text-white font-display text-[clamp(2rem,4vw,3rem)] font-bold uppercase tracking-[-0.02em] leading-[1.1]">
-            Day by Day
+            {shortPackageTitle(pkg.title)} itinerary
           </h2>
         </div>
 

@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { Package, PackageMarket } from '@/types';
 import { Clock, Users, MapPin } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
+import { shortPackageTitle } from '@/lib/seo';
 
 const EASE = [0.25, 0.46, 0.45, 0.94] as const;
 
@@ -80,7 +81,7 @@ export default function HeroSection({ pkg, market = 'global' }: { pkg: Package; 
 
           {/* Title */}
           <h1 className="font-display font-bold text-white text-[clamp(2.5rem,6vw,4.5rem)] tracking-[-0.02em] leading-[1.05] uppercase break-words">
-            {pkg.title}
+            {shortPackageTitle(pkg.title, 70)}
           </h1>
 
           {/* Tagline */}

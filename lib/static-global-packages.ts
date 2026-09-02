@@ -80,7 +80,7 @@ export const STATIC_GLOBAL_PACKAGES: Package[] = [
     market: 'global',
     category: 'Culture',
     tagline: 'Golden Bridge, Hoi An lanterns, Saigon landmarks, and the Cu Chi tunnel network.',
-    heroImageUrl: '/vietnam/da-nang-golden-bridge-cover.png',
+    heroImageUrl: '/vietnam/da-nang-golden-bridge-cover.webp',
     galleryUrls: [
       'https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&q=80&w=1200',
       'https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&q=80&w=1200',

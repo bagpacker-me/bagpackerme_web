@@ -45,7 +45,7 @@ export const STATIC_GLOBAL_PACKAGE_SUMMARIES: Package[] = [
     market: 'global',
     category: 'Culture',
     tagline: 'Golden Bridge, Hoi An lanterns, Saigon landmarks, and the Cu Chi tunnel network.',
-    heroImageUrl: '/vietnam/da-nang-golden-bridge-cover.png',
+    heroImageUrl: '/vietnam/da-nang-golden-bridge-cover.webp',
     galleryUrls: [],
     duration: '7 days / 6 nights',
     groupSize: 'Private tour for couples, families, and small groups',

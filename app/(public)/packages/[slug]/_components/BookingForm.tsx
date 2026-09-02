@@ -13,6 +13,7 @@ import { useSiteSettings } from '@/hooks/useSiteSettings';
 import { HoneypotField } from '@/components/ui/HoneypotField';
 import { HONEYPOT_FIELD } from '@/lib/honeypot';
 import { Field, FieldLabel, FieldInput, FieldTextarea, FieldError } from '@/components/ui/form';
+import { shortPackageTitle } from '@/lib/seo';
 
 const bookingSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -104,7 +105,7 @@ export default function BookingForm({ pkg }: { pkg: Package }) {
     <section id="book" className="relative w-full bg-[#221E2A] py-16 md:py-24 flex items-center min-h-[800px]">
       {/* Background */}
       <div className="absolute inset-0 z-0">
-         <Image src={pkg.heroImageUrl} alt="" fill sizes="100vw" className="object-cover object-bottom" />
+         <Image src={pkg.heroImageUrl} alt={`${pkg.title} travel landscape`} fill sizes="100vw" className="object-cover object-bottom" />
          <div className="absolute inset-0 bg-[#221E2A]/80 backdrop-blur-sm" />
          <div className="absolute inset-0 opacity-[0.06] pointer-events-none mix-blend-overlay" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`, backgroundSize: '256px 256px' }} />
       </div>
@@ -115,7 +116,7 @@ export default function BookingForm({ pkg }: { pkg: Package }) {
         <div className="lg:col-span-7 bg-[#FFFFFF] rounded-none p-[32px] md:p-[48px] shadow-none">
           
           <div className="mb-[40px] text-center md:text-left">
-            <h2 className="text-[#221E2A] font-display font-bold text-[clamp(2rem,3vw,2.5rem)] uppercase mb-[16px] tracking-tight leading-[1.1]">Ready to Go?</h2>
+            <h2 className="text-[#221E2A] font-display font-bold text-[clamp(2rem,3vw,2.5rem)] uppercase mb-[16px] tracking-tight leading-[1.1]">Plan {shortPackageTitle(pkg.title)}</h2>
             <p className="font-body text-[rgba(34,30,42,0.6)] text-[16px]">Leave your details and a trip expert will personally tailor this journey to you. It&apos;s a no-obligation enquiry — no payment now, no pressure to book.</p>
           </div>
 

@@ -12,6 +12,7 @@ import BookingForm from './_components/BookingForm';
 import RelatedPackages from './_components/RelatedPackages';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { buildTouristTripSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
+import { packageMetaDescription, packageMetaTitle } from '@/lib/seo';
 
 interface Props {
   params: { slug: string };
@@ -40,8 +41,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   return {
-    title: pkg.metaTitle || pkg.title,
-    description: pkg.metaDescription || pkg.tagline,
+    title: packageMetaTitle(pkg),
+    description: packageMetaDescription(pkg),
     alternates: {
       canonical: `/packages/${pkg.slug}`,
     },
@@ -52,8 +53,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       type: 'website',
       url: `/packages/${pkg.slug}`,
       siteName: 'BagPackerMe',
-      title: pkg.metaTitle || pkg.title,
-      description: pkg.metaDescription || pkg.tagline,
+      title: packageMetaTitle(pkg),
+      description: packageMetaDescription(pkg),
     },
   };
 }
@@ -104,7 +105,7 @@ export default async function PackageDetailPage({ params }: Props) {
       <BookingForm pkg={pkg} />
 
       {/* Part 8: Related Packages */}
-      <RelatedPackages category={pkg.category} currentSlug={pkg.slug} market="global" />
+      <RelatedPackages category={pkg.category} currentSlug={pkg.slug} currentTitle={pkg.title} market="global" />
 
     </main>
   );

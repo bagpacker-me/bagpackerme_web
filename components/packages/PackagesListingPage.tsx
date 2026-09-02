@@ -172,9 +172,11 @@ export default function PackagesListingPage({
         <Image
           src={heroImage}
           alt={heroAlt}
-          fill
+          width={1920}
+          height={1080}
           priority
-          className="z-0 object-cover opacity-80"
+          sizes="100vw"
+          className="absolute inset-0 z-0 h-full w-full object-cover opacity-80"
         />
 
         <div
@@ -281,7 +283,7 @@ export default function PackagesListingPage({
                         Something went wrong on our end — this isn’t an empty catalogue. Please refresh, or tell us where you’d like to go and we’ll plan it with you.
                       </p>
                       <a
-                        href="/contact?intent=trip"
+                        href="/contact#trip"
                         className="relative z-10 rounded-full bg-teal px-8 py-3.5 font-display text-[11px] font-bold uppercase tracking-widest text-white shadow-[0_8px_24px_rgba(40,80,86,0.2)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-teal/90 active:scale-[0.98]"
                       >
                         Start planning

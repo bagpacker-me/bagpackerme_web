@@ -1,6 +1,7 @@
 import { Package } from '@/types';
 import { Check, X } from 'lucide-react';
 import { FadeInSection } from '@/components/ui/FadeInSection';
+import { shortPackageTitle } from '@/lib/seo';
 
 export default function WhatsIncluded({ pkg }: { pkg: Package }) {
   if (!pkg.inclusions) return null;
@@ -31,7 +32,7 @@ export default function WhatsIncluded({ pkg }: { pkg: Package }) {
              <div className="h-[1px] w-[32px] bg-[#221E2A]" />
           </div>
           <h2 className="text-[#221E2A] font-display text-[clamp(1.75rem,3.5vw,2.75rem)] font-bold uppercase tracking-[-0.02em] leading-[1.1]">
-            What&apos;s Included
+            What {shortPackageTitle(pkg.title)} includes
           </h2>
         </FadeInSection>
 

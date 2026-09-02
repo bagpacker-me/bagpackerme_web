@@ -6,6 +6,7 @@ import { BadgeCheck, HeartHandshake } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { FadeInSection } from '@/components/ui/FadeInSection';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
+import { shortPackageTitle } from '@/lib/seo';
 
 const EASE = [0.25, 0.46, 0.45, 0.94] as const;
 
@@ -39,7 +40,7 @@ export default function OverviewSection({ pkg, market }: { pkg: Package; market?
             </div>
 
             <h2 className="font-display font-bold text-[#221E2A] text-[clamp(1.75rem,3.5vw,2.75rem)] leading-[1.1] mb-[28px]">
-              About This Journey
+              About {shortPackageTitle(pkg.title)}
             </h2>
 
             {/* description HTML content from Firestore */}

@@ -46,11 +46,12 @@ export default function Hero({ market = 'global' }: { market?: PackageMarket }) 
       <Image
         src={hero.image}
         alt={hero.alt}
-        fill
+        width={1920}
+        height={1080}
         priority
         sizes="100vw"
         quality={60}
-        className="object-cover"
+        className="absolute inset-0 h-full w-full object-cover"
       />
       <div className="absolute inset-0 bg-gradient-to-r from-void/80 via-void/40 to-transparent" />
       <div className="absolute inset-0 bg-gradient-to-t from-void/70 via-transparent to-void/20" />
@@ -70,7 +71,7 @@ export default function Hero({ market = 'global' }: { market?: PackageMarket }) 
         </p>
         <div className="flex flex-col gap-3 sm:flex-row">
           <Link
-            href="/contact?intent=trip"
+            href="/contact#trip"
             className="inline-flex items-center justify-center gap-2 rounded-full bg-lime px-7 py-4 font-display text-[12px] font-bold uppercase tracking-widest text-void transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(193,234,0,0.3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime focus-visible:ring-offset-2 focus-visible:ring-offset-void active:translate-y-0 active:scale-[0.98]"
           >
             Start planning

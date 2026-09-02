@@ -223,10 +223,11 @@ export default function DiscoverTheWorld({ market = 'global' }: { market?: Packa
                   <Image
                     src={pkg.heroImageUrl || FALLBACK_IMAGE}
                     alt={pkg.title}
-                    fill
+                    width={760}
+                    height={950}
                     sizes="(max-width: 768px) 85vw, 380px"
                     quality={60}
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
 
                   <div className="absolute inset-0 bg-gradient-to-t from-void/85 via-void/25 to-transparent" />
@@ -285,7 +286,7 @@ export default function DiscoverTheWorld({ market = 'global' }: { market?: Packa
                   ? 'Something went wrong on our end. Please refresh, or tell us where you’d like to go and we’ll plan it with you.'
                   : 'Our next set of curated journeys is being prepared. In the meantime, tell us where you’d like to go and we’ll design a private trip around you.'}
               </p>
-              <Link href={hasError ? packagesHref : '/contact?intent=trip'} className="btn-teal btn-shimmer inline-flex">
+              <Link href={hasError ? packagesHref : '/contact#trip'} className="btn-teal btn-shimmer inline-flex">
                 {hasError ? 'Browse all journeys' : 'Start planning'}
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Link>

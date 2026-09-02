@@ -1,5 +1,5 @@
 import { permanentRedirect } from 'next/navigation';
 
 export default function BookPage() {
-  permanentRedirect('/contact?intent=trip');
+  permanentRedirect('/contact#trip');
 }

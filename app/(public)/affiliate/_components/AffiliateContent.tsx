@@ -352,7 +352,7 @@ export default function AffiliateContent() {
         <section className="max-w-[960px] mx-auto px-6 py-16 text-center">
           <p className="font-body text-void/50 text-[15px]">
             Already an affiliate?{' '}
-            <Link href="/affiliate/dashboard" className="text-teal font-bold hover:underline">
+            <Link href="/affiliate/dashboard" rel="nofollow" className="text-teal font-bold hover:underline">
               Access your dashboard →
             </Link>
           </p>

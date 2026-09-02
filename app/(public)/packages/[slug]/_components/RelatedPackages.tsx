@@ -2,14 +2,17 @@ import { getRelatedPackagesForMarket } from '@/lib/firestore';
 import PackageCard from '@/components/home/PackageCard';
 import { FadeInSection } from '@/components/ui/FadeInSection';
 import type { PackageMarket } from '@/types';
+import { shortPackageTitle } from '@/lib/seo';
 
 export default async function RelatedPackages({
   category,
   currentSlug,
+  currentTitle,
   market = 'global',
 }: {
   category: string;
   currentSlug: string;
+  currentTitle: string;
   market?: PackageMarket;
 }) {
   const related = await getRelatedPackagesForMarket(market, category, currentSlug, 3);
@@ -27,7 +30,7 @@ export default async function RelatedPackages({
              <div className="h-[1px] w-[32px] bg-[#221E2A]" />
           </div>
           <h2 className="text-[#221E2A] font-display text-[clamp(2rem,4vw,3rem)] font-bold uppercase tracking-[-0.02em] leading-[1.1]">
-            You May Also Like
+            More from {shortPackageTitle(currentTitle)}
           </h2>
         </FadeInSection>
 
