@@ -749,7 +749,13 @@ function ContactRail({
     <div className="flex flex-col gap-6">
       <div className="relative isolate aspect-video w-full overflow-hidden rounded-3xl border border-void/8 bg-white shadow-sm md:aspect-[4/3]">
         <div className="absolute inset-0 bg-gradient-to-br from-teal/6 via-white to-lime/10" />
-        <Image src="/logo_b.webp" alt="BagPackerMe logo" fill className="object-contain p-10 opacity-90" />
+        <Image
+          src="/logo_b.webp"
+          alt="BagPackerMe logo"
+          width={320}
+          height={160}
+          className="absolute inset-0 h-full w-full object-contain p-10 opacity-90"
+        />
       </div>
 
       <div className="rounded-[28px] border border-void/8 bg-[#F7FBFC] p-6 shadow-sm">

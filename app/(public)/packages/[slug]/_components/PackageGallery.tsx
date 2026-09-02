@@ -122,10 +122,11 @@ export default function PackageGallery({ pkg }: { pkg: Package }) {
                 <Image
                   src={src}
                   alt={`${pkg.title} gallery image ${idx + 1}`}
-                  fill
+                  width={1200}
+                  height={900}
                   sizes="(max-width: 768px) 50vw, 33vw"
                   quality={65}
-                  className="object-cover transition-transform duration-700 ease-[var(--ease-default)] group-hover:scale-[1.05]"
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-[var(--ease-default)] group-hover:scale-[1.05]"
                 />
                 <div className="absolute inset-0 bg-transparent group-hover:bg-[#221E2A]/25 transition-colors duration-300 flex items-center justify-center pointer-events-none">
                    <Maximize2 size={28} className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 drop-shadow-lg" />
@@ -159,8 +160,9 @@ export default function PackageGallery({ pkg }: { pkg: Package }) {
             <Image
               src={images[lightboxIndex]}
               alt={`${pkg.title} — image ${lightboxIndex + 1}`}
-              fill
-              className="object-contain"
+              width={1920}
+              height={1080}
+              className="absolute inset-0 h-full w-full object-contain"
               sizes="100vw"
             />
           </div>

@@ -44,11 +44,12 @@ export default function HeroSection({ pkg, market = 'global' }: { pkg: Package; 
         <Image
           src={pkg.heroImageUrl}
           alt={pkg.title}
-          fill
+          width={1920}
+          height={1080}
           priority
           sizes="100vw"
           quality={90}
-          className="object-cover"
+          className="absolute inset-0 h-full w-full object-cover"
         />
         {/* Gradient Overlay */}
         <div
