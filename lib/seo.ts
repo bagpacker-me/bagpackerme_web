@@ -53,7 +53,7 @@ export function blogMetaTitle(blog: Pick<BlogPost, 'slug' | 'title' | 'metaTitle
   // The app layout appends " | BagPackerMe" (15 characters). Reserve that
   // space so titles stay within the common 60-character search-result limit.
   const source =
-    blog.metaTitle?.trim() || BLOG_TITLE_OVERRIDES[blog.slug] || blog.title;
+    BLOG_TITLE_OVERRIDES[blog.slug] || blog.metaTitle?.trim() || blog.title;
 
   return truncateSeoText(source.replace(BRAND_SUFFIX, ''), 44);
 }
