@@ -2,6 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { scheduleIdleTask } from '@/lib/browser-idle';
 import { getPackagePrimaryPrice, hasPackagePrice } from '@/lib/packagePricing';
@@ -19,6 +20,71 @@ const DURATIONS = [
 ];
 
 const EMPTY_PACKAGES: Package[] = [];
+
+function CatalogueEditorialContent({ market }: { market: PackageMarket }) {
+  const isIndia = market === 'india';
+  const heading = isIndia
+    ? 'How to choose an India journey that feels like your own'
+    : 'How to choose an international journey that feels like your own';
+  const destinationCopy = isIndia
+    ? 'India rewards a slower, more considered route. A food-focused stay in Kolkata, a wildlife escape in Kabini, a heritage trail through Rajasthan, or a restorative break in Kerala each asks for a different rhythm. Start with the experiences you want to have, then decide how much moving between places feels enjoyable rather than rushed.'
+    : 'A great international itinerary leaves room for the reason you chose a place in the first place. That might mean a few unhurried days in a European city, time for food and neighbourhoods in Japan, a mix of coast and culture in Vietnam, or a safari paced around the natural world.';
+  const planningCopy = isIndia
+    ? 'Use the filters above to compare the journey themes, trip lengths, and price ranges that fit your plans. Each itinerary is a starting point: we can adjust dates, accommodation style, transport, activity level, and the balance between guided time and time to explore independently.'
+    : 'Use the filters above to compare themes, trip lengths, and price ranges. Each itinerary is a starting point rather than a rigid template, so dates, stays, transport, activity level, and free time can be shaped around the people travelling.';
+
+  return (
+    <section
+      aria-labelledby={`catalogue-planning-${market}`}
+      className="border-t border-teal/10 bg-white py-16 lg:py-20"
+    >
+      <div className="container mx-auto max-w-6xl px-6">
+        <div className="max-w-3xl">
+          <span className="font-display text-xs font-bold uppercase tracking-[0.16em] text-teal">
+            Plan with purpose
+          </span>
+          <h2
+            id={`catalogue-planning-${market}`}
+            className="mt-3 font-display text-3xl font-bold leading-tight text-void md:text-4xl"
+          >
+            {heading}
+          </h2>
+          <p className="mt-5 font-body text-base leading-relaxed text-void/70">
+            {destinationCopy}
+          </p>
+        </div>
+
+        <div className="mt-10 grid gap-8 md:grid-cols-2">
+          <div className="rounded-2xl bg-ice/50 p-7">
+            <h3 className="font-display text-xl font-bold text-void">Start with your travel priorities</h3>
+            <p className="mt-3 font-body text-sm leading-relaxed text-void/70">
+              Think about who is travelling, the time of year, the pace you enjoy, and the moments you
+              do not want to miss. Those choices are more useful than choosing a destination from a
+              list alone, and they help shape a route that works in real life.
+            </p>
+          </div>
+          <div className="rounded-2xl bg-ice/50 p-7">
+            <h3 className="font-display text-xl font-bold text-void">Make the itinerary flexible</h3>
+            <p className="mt-3 font-body text-sm leading-relaxed text-void/70">
+              {planningCopy}
+            </p>
+          </div>
+        </div>
+
+        <p className="mt-8 max-w-3xl font-body text-sm leading-relaxed text-void/70">
+          When you are ready, share the places and experiences you have in mind. We will help turn
+          them into a considered travel plan with practical timings and a clear next step.
+        </p>
+        <Link
+          href="/contact#trip"
+          className="mt-7 inline-flex min-h-[44px] items-center rounded-full bg-teal px-6 py-3 font-display text-xs font-bold uppercase tracking-[0.14em] text-white transition-colors hover:bg-teal/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal"
+        >
+          Start planning your journey
+        </Link>
+      </div>
+    </section>
+  );
+}
 
 const MARKET_PRICE_CONFIG = {
   global: {
@@ -311,6 +377,8 @@ export default function PackagesListingPage({
           )}
         </div>
       </section>
+
+      <CatalogueEditorialContent market={market} />
     </main>
   );
 }

@@ -306,7 +306,9 @@ export default function BlogListingClient({ initialBlogs }: { initialBlogs: Blog
           >
             {/* Title row */}
             <motion.div variants={fadeUp} className="mb-6">
-              <h1 className="font-display font-bold text-[36px] md:text-[44px] text-void leading-[1.1]">Blog</h1>
+              <h1 className="font-display font-bold text-[36px] md:text-[44px] text-void leading-[1.1]">
+                Travel stories, destination guides &amp; ideas
+              </h1>
               <p className="font-body text-[15px] text-gray-500 mt-2">
                 Here, we share travel tips, destination guides, and stories that inspire your next adventure.
               </p>
@@ -428,6 +430,51 @@ export default function BlogListingClient({ initialBlogs }: { initialBlogs: Blog
               </button>
             </div>
           )}
+        </div>
+      </section>
+
+      <section aria-labelledby="journal-planning-guide" className="w-full bg-white px-5 py-14 md:px-8 md:py-20 lg:px-12">
+        <div className="mx-auto max-w-[1400px]">
+          <div className="max-w-3xl">
+            <span className="font-display text-[11px] font-bold uppercase tracking-[0.16em] text-teal">
+              The BagPackerMe Journal
+            </span>
+            <h2 id="journal-planning-guide" className="mt-3 font-display text-[30px] font-bold leading-tight text-void md:text-[38px]">
+              Read before you plan your next journey
+            </h2>
+            <p className="mt-5 font-body text-[16px] leading-[1.8] text-void/70">
+              Good travel planning starts well before a booking. Our journal brings together destination
+              guides, cultural context, food and nature ideas, and practical notes that help you choose
+              the kind of trip you want to take. Use the stories to move beyond a checklist and discover
+              the neighbourhoods, landscapes, traditions, and experiences that make a place memorable.
+            </p>
+          </div>
+
+          <div className="mt-9 grid gap-6 md:grid-cols-2">
+            <div className="rounded-[18px] bg-ice/60 p-7">
+              <h3 className="font-display text-[21px] font-bold text-void">Find ideas that match your pace</h3>
+              <p className="mt-3 font-body text-[14px] leading-[1.8] text-void/70">
+                Whether you are looking for a slower cultural escape, an active outdoor route, local food
+                experiences, or a family-friendly plan, start with the topics that reflect how you like to
+                travel. Save the details that matter, then use them to shape a route with room to enjoy it.
+              </p>
+            </div>
+            <div className="rounded-[18px] bg-ice/60 p-7">
+              <h3 className="font-display text-[21px] font-bold text-void">Turn inspiration into a real itinerary</h3>
+              <p className="mt-3 font-body text-[14px] leading-[1.8] text-void/70">
+                A guide is most useful when it helps with a decision. Compare seasons, trip durations,
+                and the experiences you value most, then tell us what has caught your attention. We can
+                help translate those ideas into a practical, tailor-made journey.
+              </p>
+            </div>
+          </div>
+
+          <a
+            href="/contact#trip"
+            className="mt-8 inline-flex min-h-[44px] items-center rounded-full bg-teal px-6 py-3 font-display text-[12px] font-bold uppercase tracking-widest text-white transition-colors hover:bg-teal/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal"
+          >
+            Plan a tailor-made journey
+          </a>
         </div>
       </section>
 
