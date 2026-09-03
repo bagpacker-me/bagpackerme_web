@@ -38,7 +38,7 @@ export function packageMetaDescription(
 // headline remains untouched in the on-page H1 and the article schema.
 const BLOG_TITLE_OVERRIDES: Record<string, string> = {
   'beyond-the-taj-exploring-lesser-known-architectural-masterpieces-of-india':
-    "Beyond the Taj: India's Hidden Architecture",
+    'Beyond the Taj: Hidden Indian Architecture',
   'experiences-in-india-2026-travel-beyond-the-familiar':
     'India 2026: Travel Beyond the Familiar',
   'india-unhurried-a-curated-journey-through-the-countrys-most-intimate-luxury-retreats':
