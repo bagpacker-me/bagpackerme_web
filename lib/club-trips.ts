@@ -239,7 +239,7 @@ const SUNSETS_TO_SUNRISE: ClubTrip = {
     'Final invoice will show applicable statutory taxes and TCS. Visuals are representative.',
     'Launch-departure price includes on-trip content production. Final dates, deliverables and payment schedule are confirmed in the booking invite.',
   ],
-  metaTitle: 'Thailand: Sunsets to Sunrise — 7-day group trip',
+  metaTitle: 'Thailand: Sunsets to Sunrise — 7-day trip',
   metaDescription:
     'A 7-day Phuket, Phi Phi and Krabi departure for The Curious Club — island days, magnetic nights, a route-tested captain and a content crew that travels with you. INR 50,000.',
 };
@@ -370,7 +370,7 @@ const THE_WILD_SIDE: ClubTrip = {
     'Final invoice will show applicable statutory taxes and TCS. Visuals are representative.',
     'Launch price includes on-trip content production. Activities depend on weather, fitness declarations and operator availability; safety-led substitutions may apply.',
   ],
-  metaTitle: 'Thailand: The Wild Side — 7-day adventure group trip',
+  metaTitle: 'Thailand: The Wild Side — 7-day trip',
   metaDescription:
     'A 7-day Phuket, Phi Phi and Krabi departure for The Curious Club — ATV trails, island climbs, Muay Thai and Railay rock climbing, with a route-tested captain and an on-trip content crew. INR 58,999.',
 };

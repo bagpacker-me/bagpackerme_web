@@ -10,15 +10,17 @@ import { JsonLd } from '@/components/seo/JsonLd';
 import { buildBlogPostingSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 import { absoluteUrl } from '@/lib/site-url';
 import { findAuthor } from '@/lib/authors';
+import { blogMetaTitle } from '@/lib/seo';
 
 export const revalidate = 3600;
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const blog = await getBlogBySlug(params.slug);
   if (!blog) return { title: 'Post Not Found' };
+  const title = blogMetaTitle(blog);
 
   return {
-    title: blog.metaTitle || blog.title,
+    title,
     description: blog.metaDescription || blog.excerpt,
     alternates: { canonical: `/blog/${blog.slug}` },
     // No openGraph.images here — the colocated opengraph-image.tsx supplies the
@@ -27,7 +29,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
       type: 'article',
       url: `/blog/${blog.slug}`,
       siteName: 'BagPackerMe',
-      title: blog.metaTitle || blog.title,
+      title,
       description: blog.metaDescription || blog.excerpt,
     },
   };
