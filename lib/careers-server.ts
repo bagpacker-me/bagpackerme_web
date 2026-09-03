@@ -83,8 +83,11 @@ async function fetchPublishedJobOpenings(): Promise<JobOpening[]> {
 }
 
 /** Published openings, newest-first within their manual order. Never throws. */
-export const getPublishedJobOpenings = unstable_cache(fetchPublishedJobOpenings, ['job-openings'], {
+export const getPublishedJobOpenings = unstable_cache(fetchPublishedJobOpenings, ['published-job-openings'], {
   revalidate: 300,
+  // The admin updates openings directly through Firestore, so the secured
+  // revalidation route invalidates this tag as soon as a role is saved.
+  tags: ['published-job-openings'],
 });
 
 /** A single published opening by slug, or null. Never throws. */

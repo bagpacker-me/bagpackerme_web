@@ -13,8 +13,8 @@ export const metadata: Metadata = {
   alternates: { canonical: '/careers' },
 };
 
-// Matches the cache in getPublishedJobOpenings, so publishing a role shows up
-// within five minutes without a redeploy.
+// The fallback cache is five minutes; the authenticated admin save flow also
+// invalidates this page immediately, so published roles do not wait for it.
 export const revalidate = 300;
 
 export default async function CareersPage() {

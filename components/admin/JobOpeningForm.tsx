@@ -150,14 +150,38 @@ export default function JobOpeningForm({ initialData, jobId }: JobOpeningFormPro
 
       if (isEditing && jobId) {
         await updateJobOpening(jobId, payload);
-        toast.success('Role updated');
       } else {
         await createJobOpening({ ...payload, createdAt: new Date().toISOString() });
-        toast.success('Role created');
       }
+
+      // Jobs are written directly to Firestore from this admin form. Refresh
+      // the public route cache after the write so a published role appears on
+      // /careers immediately rather than waiting for its five-minute TTL.
+      const refreshResponse = await fetch('/api/admin/careers/revalidate', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ slug: payload.slug }),
+      });
+
+      if (!refreshResponse.ok) {
+        throw new Error('The role was saved, but the public Careers listing could not be refreshed.');
+      }
+
+      toast.success(
+        payload.status === 'published'
+          ? 'Role saved and Careers listing refreshed'
+          : 'Role saved and Careers cache refreshed'
+      );
       router.push('/admin/careers');
-    } catch {
-      toast.error('Failed to save role');
+    } catch (error) {
+      // A Firestore write can have succeeded before the cache refresh failed.
+      // Do not suggest that the role was discarded; the admin can safely retry
+      // Update Role and the next cache revalidation will publish the change.
+      toast.error(
+        error instanceof Error && error.message.startsWith('The role was saved')
+          ? error.message
+          : 'Failed to save role'
+      );
     } finally {
       setSaving(false);
     }
