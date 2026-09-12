@@ -115,9 +115,9 @@ export function Footer() {
 
           {/* Column 2 - Quick Links (3 columns on large screen) */}
           <div className="space-y-6 lg:col-span-3">
-            <h3 className="font-display text-[10px] tracking-[0.25em] text-content-inverse-muted uppercase font-bold">
+            <p className="font-display text-[10px] tracking-[0.25em] text-content-inverse-muted uppercase font-bold">
               Company
-            </h3>
+            </p>
             {/* Padding rather than margin between the rows: it turns each 20px
                 line of text into a ~44px row a thumb can actually hit, instead
                 of leaving the gap as dead space between small targets. */}
@@ -135,9 +135,9 @@ export function Footer() {
           {/* Column 3 - Newsletter & Contact (4 columns on large screen) */}
           <div className="space-y-8 lg:col-span-4">
             <div className="space-y-4">
-              <h3 className="font-display text-[10px] tracking-[0.25em] text-content-inverse-muted uppercase font-bold">
+              <p className="font-display text-[10px] tracking-[0.25em] text-content-inverse-muted uppercase font-bold">
                 Get In Touch
-              </h3>
+              </p>
               <div className="-my-2.5 text-sm font-body text-white/75">
                 <a href={`mailto:${contactEmail}`} className="hover:text-lime transition-colors block truncate py-2.5">
                   {contactEmail}
@@ -150,9 +150,9 @@ export function Footer() {
             
             <div className="space-y-4 pt-2">
               <div>
-                <h4 className="font-display text-sm font-semibold text-white mb-1">
+                <p className="font-display text-sm font-semibold text-white mb-1">
                   Join our newsletter
-                </h4>
+                </p>
                 <p className="text-xs text-content-inverse-muted font-body">
                   Weekly curations, local insights, and custom deals.
                 </p>
