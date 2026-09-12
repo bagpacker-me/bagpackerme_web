@@ -22,7 +22,7 @@ export default function PackageCard({ pkg, market }: { pkg: Package; market?: Pa
       <div className="relative w-full aspect-[3/2] md:aspect-[4/5] overflow-hidden">
         <Image
           src={pkg.heroImageUrl || FALLBACK_IMAGE}
-          alt={pkg.title}
+          alt={pkg.heroImageAlt || pkg.title}
           width={760}
           height={950}
           sizes="(max-width: 768px) 85vw, (max-width: 1024px) 45vw, 30vw"

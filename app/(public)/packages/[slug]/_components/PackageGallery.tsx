@@ -121,7 +121,7 @@ export default function PackageGallery({ pkg }: { pkg: Package }) {
                     collapsed and then shoved the page down image by image. */}
                 <Image
                   src={src}
-                  alt={`${pkg.title} gallery image ${idx + 1}`}
+                  alt={pkg.galleryImageAlts?.[idx] || `${pkg.title} gallery image ${idx + 1}`}
                   width={1200}
                   height={900}
                   sizes="(max-width: 768px) 50vw, 33vw"
@@ -159,7 +159,10 @@ export default function PackageGallery({ pkg }: { pkg: Package }) {
           <div className="relative w-[90vw] h-[90vh] flex items-center justify-center" onClick={e => e.stopPropagation()}>
             <Image
               src={images[lightboxIndex]}
-              alt={`${pkg.title} — image ${lightboxIndex + 1}`}
+              alt={
+                pkg.galleryImageAlts?.[lightboxIndex] ||
+                `${pkg.title} — image ${lightboxIndex + 1}`
+              }
               width={1920}
               height={1080}
               className="absolute inset-0 h-full w-full object-contain"

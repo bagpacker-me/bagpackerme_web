@@ -6,7 +6,10 @@ import type { Package } from '@/types';
  * are read keeps the page, cards, metadata, and structured data in sync while
  * preserving all of the itinerary and booking data in Firestore.
  */
-const PACKAGE_IMAGE_OVERRIDES: Record<string, Pick<Package, 'heroImageUrl' | 'galleryUrls'>> = {
+const PACKAGE_IMAGE_OVERRIDES: Record<
+  string,
+  Pick<Package, 'heroImageUrl' | 'heroImageAlt' | 'galleryUrls' | 'galleryImageAlts'>
+> = {
   'kanha-beyond-the-safari': {
     heroImageUrl: '/images/packages/kanha/kanha-beyond-safari-cover.webp',
     galleryUrls: ['/images/packages/kanha/kanha-beyond-safari-cover.webp'],
@@ -33,6 +36,19 @@ const PACKAGE_IMAGE_OVERRIDES: Record<string, Pick<Package, 'heroImageUrl' | 'ga
       '/images/packages/satpura/satpura-backwaters-boat.webp',
       '/images/packages/satpura/satpura-serpent-eagle.webp',
       '/images/packages/satpura/satpura-riverside-lodge.webp',
+    ],
+  },
+  'enchanting-kashmir-sojourn': {
+    heroImageUrl: '/images/packages/kashmir/kashmir-dal-lake-shikara-hero.png',
+    heroImageAlt:
+      'Traditional shikaras resting on Dal Lake beneath the snow-capped Kashmir Himalayas at sunrise',
+    galleryUrls: [
+      '/images/packages/kashmir/kashmir-gulmarg-meadow.png',
+      '/images/packages/kashmir/kashmir-pahalgam-river.png',
+    ],
+    galleryImageAlts: [
+      'A wildflower meadow and traditional mountain cottages below the snow-capped Gulmarg range',
+      'A clear mountain river flowing through the cedar forests and peaks of Pahalgam',
     ],
   },
 };

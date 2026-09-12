@@ -25,7 +25,11 @@ export interface Package {
   subTheme?: string;
   tagline: string;
   heroImageUrl: string;
+  /** Plain-language description for the package cover image. */
+  heroImageAlt?: string;
   galleryUrls: string[];
+  /** Optional descriptions matched to galleryUrls by index. */
+  galleryImageAlts?: string[];
   duration: string;
   groupSize: string;
   priceInr?: number | null;
