@@ -1,9 +1,12 @@
 import type { Metadata, Viewport } from 'next';
 import { Outfit, DM_Sans, Cormorant_Garamond } from 'next/font/google';
+import Script from 'next/script';
 import { SITE_URL } from '@/lib/site-url';
 import { DeferredAnalytics } from '@/components/providers/DeferredAnalytics';
 import { ToastViewport } from '@/components/ui/ToastViewport';
 import '@/styles/globals.css';
+
+const GA_MEASUREMENT_ID = 'G-BCXFEQY9FJ';
 
 // ── DESIGN-SYSTEM FONT STACK ──────────────────────────────────────────────────
 // MASTER.md §2 — Font Families
@@ -129,6 +132,19 @@ export default function AppRootLayout({ children }: { children: React.ReactNode 
         {children}
         <ToastViewport />
         <DeferredAnalytics />
+        {/* One GA4 Google tag for the entire App Router tree. `next/script`
+            preserves the non-blocking gtag loading behaviour while avoiding a
+            duplicate snippet on nested pages. */}
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '${GA_MEASUREMENT_ID}');`}
+        </Script>
         <script
           type="speculationrules"
           dangerouslySetInnerHTML={{ __html: SPECULATION_RULES }}
