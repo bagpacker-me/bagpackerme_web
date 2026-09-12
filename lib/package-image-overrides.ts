@@ -51,6 +51,45 @@ const PACKAGE_IMAGE_OVERRIDES: Record<
       'A clear mountain river flowing through the cedar forests and peaks of Pahalgam',
     ],
   },
+  'essence-of-goa': {
+    heroImageUrl: '/images/packages/goa/goa-coast-sunrise-hero.png',
+    heroImageAlt:
+      'Traditional wooden fishing boats resting on a palm-lined Goa beach at sunrise',
+    galleryUrls: [
+      '/images/packages/goa/goa-portuguese-heritage-street.png',
+      '/images/packages/goa/goa-chorao-mangroves.png',
+    ],
+    galleryImageAlts: [
+      'A quiet Portuguese-influenced Goa heritage street with a whitewashed chapel and bougainvillea',
+      'An empty wooden kayak on Chorao Island mangrove backwaters at sunrise',
+    ],
+  },
+  'enchanting-wilderness-getaway-corbett-romance': {
+    heroImageUrl: '/images/packages/corbett/corbett-tiger-sal-forest-hero.png',
+    heroImageAlt:
+      'A Bengal tiger walking along a misty sal forest track in Jim Corbett at dawn',
+    galleryUrls: [
+      '/images/packages/corbett/corbett-forest-lodge-firepit.png',
+      '/images/packages/corbett/corbett-safari-jeep-forest.png',
+    ],
+    galleryImageAlts: [
+      'An empty wooden forest lodge deck beside a glowing fire bowl at blue hour',
+      'An empty open-top safari jeep on a sunlit sal forest track in Jim Corbett',
+    ],
+  },
+  'coorgs-enchanted-getaway': {
+    heroImageUrl: '/images/packages/coorg/coorg-coffee-estate-dawn-hero.png',
+    heroImageAlt:
+      'A misty coffee estate stretching across the Coorg hills at dawn',
+    galleryUrls: [
+      '/images/packages/coorg/coorg-coffee-cherry-walk.png',
+      '/images/packages/coorg/coorg-lakeside-dinner.png',
+    ],
+    galleryImageAlts: [
+      'A quiet walking path through a Coorg coffee estate with ripe coffee cherries',
+      'A lantern-lit dinner setting beside a misty Coorg plantation lake at blue hour',
+    ],
+  },
 };
 
 export function withPackageImageOverrides(pkg: Package): Package {
