@@ -107,7 +107,7 @@ export default function BookingForm({ pkg }: { pkg: Package }) {
       <div className="absolute inset-0 z-0">
          <Image
            src={pkg.heroImageUrl}
-           alt={`${pkg.title} travel landscape`}
+           alt={`${shortPackageTitle(pkg.title, 72)} travel landscape`}
            width={1920}
            height={1080}
            sizes="100vw"

@@ -467,8 +467,8 @@ export default function CuriousClubContent() {
             {/* One scale for both lines — the previous 44px/40px pairing read as
                 a mistake rather than a decision. */}
             <h2 className="mx-auto max-w-[19ch] font-display text-[clamp(30px,5.4vw,52px)] font-bold uppercase leading-[1.06] tracking-[-0.025em] text-white text-balance">
-              The world is already interesting.
-              <span className="mt-[14px] block text-lime">You just need to find your people in it.</span>
+              Find your people
+              <span className="mt-[14px] block text-lime">in the world.</span>
             </h2>
 
             <p className={`${ITEM_LABEL} mt-[36px] text-white/55`}>The Curious Club</p>

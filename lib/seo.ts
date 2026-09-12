@@ -49,6 +49,11 @@ const BLOG_TITLE_OVERRIDES: Record<string, string> = {
     'Slow Journeys: Discover India in 2026',
 };
 
+/** Concise editorial H1/card copy for the handful of exceptionally long headlines. */
+export function blogDisplayTitle(blog: Pick<BlogPost, 'slug' | 'title'>): string {
+  return BLOG_TITLE_OVERRIDES[blog.slug] || blog.title;
+}
+
 export function blogMetaTitle(blog: Pick<BlogPost, 'slug' | 'title' | 'metaTitle'>): string {
   // The app layout appends " | BagPackerMe" (15 characters). Reserve that
   // space so titles stay within the common 60-character search-result limit.
@@ -56,4 +61,16 @@ export function blogMetaTitle(blog: Pick<BlogPost, 'slug' | 'title' | 'metaTitle
     BLOG_TITLE_OVERRIDES[blog.slug] || blog.metaTitle?.trim() || blog.title;
 
   return truncateSeoText(source.replace(BRAND_SUFFIX, ''), 44);
+}
+
+/** Keep article snippets descriptive without asking search engines to truncate them. */
+export function blogMetaDescription(
+  blog: Pick<BlogPost, 'title' | 'excerpt' | 'metaDescription'>
+): string {
+  const source =
+    blog.metaDescription?.trim() ||
+    blog.excerpt?.trim() ||
+    `Read ${blog.title} from BagPackerMe for practical travel ideas and route inspiration.`;
+
+  return truncateSeoText(source, 155);
 }

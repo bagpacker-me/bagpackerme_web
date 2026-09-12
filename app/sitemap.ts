@@ -13,24 +13,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // that return 200. /affiliate/dashboard is absent because it is noindex, and
   // /curious-club/apply for the same reason.
   const staticPages: MetadataRoute.Sitemap = [
-    { url: BASE_URL, lastModified: new Date(), changeFrequency: 'weekly', priority: 1 },
-    { url: `${BASE_URL}/contact`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
-    { url: `${BASE_URL}/packages`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
-    { url: `${BASE_URL}/in`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
-    { url: `${BASE_URL}/in/packages`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.85 },
-    { url: `${BASE_URL}/curious-club`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
-    { url: `${BASE_URL}/blog`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
-    { url: `${BASE_URL}/about`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.7 },
-    { url: `${BASE_URL}/careers`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.6 },
-    { url: `${BASE_URL}/affiliate`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.5 },
-    { url: `${BASE_URL}/privacy`, lastModified: new Date(), changeFrequency: 'yearly', priority: 0.3 },
-    { url: `${BASE_URL}/terms`, lastModified: new Date(), changeFrequency: 'yearly', priority: 0.3 },
+    // No `lastModified` on static pages: generating a new timestamp at every
+    // sitemap revalidation is inaccurate and encourages unnecessary recrawls.
+    { url: BASE_URL, changeFrequency: 'weekly', priority: 1 },
+    { url: `${BASE_URL}/contact`, changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${BASE_URL}/packages`, changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${BASE_URL}/in`, changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${BASE_URL}/in/packages`, changeFrequency: 'weekly', priority: 0.85 },
+    { url: `${BASE_URL}/curious-club`, changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${BASE_URL}/blog`, changeFrequency: 'weekly', priority: 0.8 },
+    { url: `${BASE_URL}/about`, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${BASE_URL}/careers`, changeFrequency: 'weekly', priority: 0.6 },
+    { url: `${BASE_URL}/affiliate`, changeFrequency: 'monthly', priority: 0.5 },
+    { url: `${BASE_URL}/privacy`, changeFrequency: 'yearly', priority: 0.3 },
+    { url: `${BASE_URL}/terms`, changeFrequency: 'yearly', priority: 0.3 },
   ];
 
   // Curious Club departures. Hard-coded content, so no try/catch needed.
   const tripPages: MetadataRoute.Sitemap = CLUB_TRIPS.map((trip) => ({
     url: `${BASE_URL}${tripPath(trip)}`,
-    lastModified: new Date(),
     changeFrequency: 'weekly' as const,
     priority: 0.8,
   }));

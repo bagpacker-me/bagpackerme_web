@@ -10,7 +10,7 @@ import { JsonLd } from '@/components/seo/JsonLd';
 import { buildBlogPostingSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 import { absoluteUrl } from '@/lib/site-url';
 import { findAuthor } from '@/lib/authors';
-import { blogMetaTitle } from '@/lib/seo';
+import { blogDisplayTitle, blogMetaDescription, blogMetaTitle } from '@/lib/seo';
 
 export const revalidate = 3600;
 
@@ -18,10 +18,11 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   const blog = await getBlogBySlug(params.slug);
   if (!blog) return { title: 'Post Not Found' };
   const title = blogMetaTitle(blog);
+  const description = blogMetaDescription(blog);
 
   return {
     title,
-    description: blog.metaDescription || blog.excerpt,
+    description,
     alternates: { canonical: `/blog/${blog.slug}` },
     // No openGraph.images here — the colocated opengraph-image.tsx supplies the
     // card and would be ignored if this segment set openGraph.images.
@@ -30,7 +31,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
       url: `/blog/${blog.slug}`,
       siteName: 'BagPackerMe',
       title,
-      description: blog.metaDescription || blog.excerpt,
+      description,
     },
   };
 }
@@ -51,6 +52,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
   const relatedBlogs = await getRelatedBlogs(blog.category, blog.slug, 3);
   const { firstHalf, secondHalf } = splitHtml(blog.contentHtml);
   const author = findAuthor(blog.author);
+  const displayTitle = blogDisplayTitle(blog);
 
   const formatDate = (dateString?: string) => {
     if (!dateString) return '';
@@ -101,6 +103,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
               alt={blog.title}
               fill
               priority
+              sizes="(min-width: 1536px) 1400px, 100vw"
               className="object-cover"
             />
             {/* Gradient overlay */}
@@ -117,7 +120,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
             {/* Hero text */}
             <div className="absolute bottom-0 left-0 right-0 p-6 md:p-12 lg:p-16 z-10">
               <h1 className="font-display font-bold text-white text-[clamp(1.8rem,4vw,3.5rem)] leading-[1.08] mb-5 [text-wrap:balance] max-w-[80%]">
-                {blog.title}
+                {displayTitle}
               </h1>
 
               {/* Meta strip */}
@@ -287,6 +290,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                       src={related.featuredImageUrl || 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=700'}
                       alt={related.title}
                       fill
+                      sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                       className="object-cover transition-transform duration-600 ease-out group-hover:scale-[1.06]"
                     />
                     <span className="absolute top-3 left-3 z-10 inline-block bg-white/90 backdrop-blur-sm text-void px-2.5 py-1 rounded-full font-display text-[10px] font-bold uppercase tracking-widest shadow-sm">

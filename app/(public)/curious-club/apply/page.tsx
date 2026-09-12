@@ -3,7 +3,8 @@ import { Suspense } from 'react';
 import ClubApplicationFlow from './_components/ClubApplicationFlow';
 
 // noindex: a form has no search value, and the club's story lives on
-// /curious-club. robots.ts disallows the path too, which saves the crawl.
+// /curious-club. Keep this URL crawlable so Google can observe the noindex tag
+// instead of treating it as an unknown, blocked URL.
 export const metadata: Metadata = {
   title: 'Apply — The Curious Club',
   description:

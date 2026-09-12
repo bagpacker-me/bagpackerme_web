@@ -106,7 +106,7 @@ const CREW_IMAGE = {
   src: '/thailand/crew-golden-hour.webp',
   width: 1672,
   height: 941,
-  alt: 'A BagPackerMe photographer and cinematographer filming the group walking along a Thai beach at golden hour',
+  alt: 'BagPackerMe crew filming travellers on a Thai beach at golden hour',
 };
 
 export const CONTENT_TEAM_IMAGE = CREW_IMAGE;
@@ -241,7 +241,7 @@ const SUNSETS_TO_SUNRISE: ClubTrip = {
   ],
   metaTitle: 'Thailand: Sunsets to Sunrise — 7-day trip',
   metaDescription:
-    'A 7-day Phuket, Phi Phi and Krabi departure for The Curious Club — island days, magnetic nights, a route-tested captain and a content crew that travels with you. INR 50,000.',
+    'A 7-day Phuket, Phi Phi and Krabi trip with island days, magnetic nights, a route-tested captain and content crew. INR 50,000.',
 };
 
 // ─── The Wild Side ───────────────────────────────────────────────────────────
@@ -372,7 +372,7 @@ const THE_WILD_SIDE: ClubTrip = {
   ],
   metaTitle: 'Thailand: The Wild Side — 7-day trip',
   metaDescription:
-    'A 7-day Phuket, Phi Phi and Krabi departure for The Curious Club — ATV trails, island climbs, Muay Thai and Railay rock climbing, with a route-tested captain and an on-trip content crew. INR 58,999.',
+    'A 7-day Phuket, Phi Phi and Krabi adventure with ATV, Muay Thai, Railay climbing, a route-tested captain and content crew. INR 58,999.',
 };
 
 export const CLUB_TRIPS: ClubTrip[] = [SUNSETS_TO_SUNRISE, THE_WILD_SIDE];

@@ -48,7 +48,7 @@ export default function HeroSection({ pkg, market = 'global' }: { pkg: Package; 
           height={1080}
           priority
           sizes="100vw"
-          quality={90}
+          quality={75}
           className="absolute inset-0 h-full w-full object-cover"
         />
         {/* Gradient Overlay */}

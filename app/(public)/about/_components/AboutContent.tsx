@@ -112,6 +112,7 @@ export default function AboutContent() {
             alt="About BagpackerMe" 
             fill 
             priority
+            sizes="100vw"
             className="object-cover object-bottom opacity-90 z-0 scale-105 hover:scale-100 transition-transform duration-1000" 
           />
           <div className="absolute inset-0 bg-gradient-to-t from-void/60 via-transparent to-transparent z-10 pointer-events-none" />
@@ -129,6 +130,7 @@ export default function AboutContent() {
                   src="/web_photos/about_1.webp"
                   alt="Travelers exploring a curated route"
                   fill
+                  sizes="(min-width: 1024px) 25vw, 33vw"
                   className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-[1.03]"
                 />
               </div>
@@ -137,6 +139,7 @@ export default function AboutContent() {
                   src="/web_photos/about_2.webp"
                   alt="A guided journey moment"
                   fill
+                  sizes="(min-width: 1024px) 25vw, 33vw"
                   className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-[1.03]"
                 />
               </div>
@@ -145,6 +148,7 @@ export default function AboutContent() {
                   src="/web_photos/about_3.webp"
                   alt="Travel group on a planned experience"
                   fill
+                  sizes="(min-width: 1024px) 25vw, 33vw"
                   className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-[1.03]"
                 />
               </div>
@@ -244,6 +248,7 @@ export default function AboutContent() {
                 src="/web_photos/about_kevin.webp"
                 alt="Kevin, founder of BagpackerMe"
                 fill
+                sizes="(min-width: 1024px) 50vw, 100vw"
                 className="object-cover object-center"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent lg:bg-gradient-to-r" />

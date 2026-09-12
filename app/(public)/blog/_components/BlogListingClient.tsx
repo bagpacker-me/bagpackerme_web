@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ChevronLeft, ChevronRight, ArrowRight, User } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { blogDisplayTitle } from '@/lib/seo';
 
 const CATEGORIES = ['All', 'Adventure', 'Culture', 'Food', 'Spiritual', 'Tips & Guides', 'Corporate Travel'];
 const SORT_OPTIONS = ['Newest', 'Oldest', 'Popular'];
@@ -66,6 +67,7 @@ function FeaturedHero({ post, formatDate }: { post: BlogPost; formatDate: (d?: s
           alt={post.title}
           fill
           priority
+          sizes="100vw"
           className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
         />
         {/* Top gradient — ensures white navbar text is readable */}
@@ -84,7 +86,7 @@ function FeaturedHero({ post, formatDate }: { post: BlogPost; formatDate: (d?: s
         {/* Bottom content */}
         <div className="absolute bottom-0 left-0 right-0 p-6 md:p-12 z-20">
           <h2 className="font-display font-bold text-white text-[clamp(1.8rem,4vw,3.2rem)] leading-[1.05] mb-5 [text-wrap:balance] max-w-[70%]">
-            {post.title}
+            {blogDisplayTitle(post)}
           </h2>
           <div className="flex items-center gap-3 text-white/80 font-body text-[13px]">
             <div className="w-7 h-7 rounded-full bg-teal/60 backdrop-blur-sm flex items-center justify-center border border-white/20 flex-shrink-0">
@@ -119,6 +121,7 @@ function BlogCard({ post, formatDate, index }: { post: BlogPost; formatDate: (d?
             src={post.featuredImageUrl || 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=700'}
             alt={post.title}
             fill
+            sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
             className="object-cover transition-transform duration-600 ease-out group-hover:scale-[1.06]"
           />
           {/* Category badge */}
@@ -222,6 +225,7 @@ function PromoBanners({ articleCount }: { articleCount: number }) {
             src="https://images.unsplash.com/photo-1512100356356-de1b84283e18?auto=format&fit=crop&q=80&w=900"
             alt="Beyond accommodation, creating memories of a lifetime"
             fill
+            sizes="(min-width: 768px) 50vw, 100vw"
             className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-void/70 via-void/20 to-transparent" />
@@ -288,6 +292,7 @@ export default function BlogListingClient({ initialBlogs }: { initialBlogs: Blog
 
   return (
     <div className="min-h-screen bg-[#F5F5F5]">
+      <h1 className="sr-only">BagPackerMe travel stories, destination guides and ideas</h1>
 
       {/* ── Featured Post Hero (full-bleed, behind navbar) ───── */}
       {featuredPost && currentPage === 1 && (
@@ -306,9 +311,9 @@ export default function BlogListingClient({ initialBlogs }: { initialBlogs: Blog
           >
             {/* Title row */}
             <motion.div variants={fadeUp} className="mb-6">
-              <h1 className="font-display font-bold text-[36px] md:text-[44px] text-void leading-[1.1]">
+              <h2 className="font-display font-bold text-[36px] md:text-[44px] text-void leading-[1.1]">
                 Travel stories, destination guides &amp; ideas
-              </h1>
+              </h2>
               <p className="font-body text-[15px] text-gray-500 mt-2">
                 Here, we share travel tips, destination guides, and stories that inspire your next adventure.
               </p>

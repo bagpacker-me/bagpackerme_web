@@ -7,7 +7,9 @@ import type { Metadata } from 'next';
 // URL indexed without a snippet.
 export const metadata: Metadata = {
   title: 'Affiliate Dashboard',
-  robots: { index: false, follow: false },
+  // Privacy comes from `noindex`; nofollow has no privacy benefit here and
+  // would suppress legitimate link discovery if this URL is ever crawled.
+  robots: { index: false, follow: true },
 };
 
 export default function AffiliateDashboardLayout({ children }: { children: React.ReactNode }) {
