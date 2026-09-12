@@ -68,6 +68,10 @@ export interface BlogPost {
   slug: string;
   category: string;
   featuredImageUrl: string;
+  /** Plain-language description of the featured image for assistive tech. */
+  featuredImageAlt?: string;
+  /** Reader-facing article topics. Optional for posts created before tags. */
+  tags?: string[];
   excerpt: string;
   contentHtml: string;
   author: string;

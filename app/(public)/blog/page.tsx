@@ -3,12 +3,33 @@ import { getPublishedBlogs } from '@/lib/firestore';
 import { BlogPost } from '@/types';
 import BlogListingClient from './_components/BlogListingClient';
 import { JsonLd } from '@/components/seo/JsonLd';
-import { buildBreadcrumbSchema } from '@/lib/structured-data';
+import { buildBlogCollectionSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
+
+const BLOG_TITLE = 'India Travel Guides, Culture & Safari Stories';
+const BLOG_DESCRIPTION =
+  'Explore India travel guides, heritage walks, wildlife safaris, slow journeys and cultural experiences from BagPackerMe’s Journal.';
 
 export const metadata: Metadata = {
-  title: 'Travel Stories & The Journal',
-  description: 'Destination guides, cultural deep-dives, and honest travel stories from the road to inspire your next adventure.',
+  title: BLOG_TITLE,
+  description: BLOG_DESCRIPTION,
   alternates: { canonical: '/blog' },
+  openGraph: {
+    type: 'website',
+    url: '/blog',
+    siteName: 'BagPackerMe',
+    title: BLOG_TITLE,
+    description: BLOG_DESCRIPTION,
+    images: [{
+      url: '/web_photos/hero_3.webp',
+      alt: 'The illuminated Hawa Mahal facade in Jaipur at dusk',
+    }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: BLOG_TITLE,
+    description: BLOG_DESCRIPTION,
+    images: ['/web_photos/hero_3.webp'],
+  },
 };
 
 export const revalidate = 60;
@@ -30,6 +51,7 @@ export default async function BlogPage() {
           { name: 'Journal', path: '/blog' },
         ])}
       />
+      <JsonLd data={buildBlogCollectionSchema(blogs)} />
       <BlogListingClient initialBlogs={blogs} />
     </main>
   );

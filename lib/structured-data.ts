@@ -4,6 +4,8 @@ import type { ResolvedSiteSettings } from '@/lib/site-settings';
 import { findAuthor } from '@/lib/authors';
 import type { FaqItem } from '@/lib/faq';
 import type { BlogPost, JobOpening, JobType, Package, PackageMarket } from '@/types';
+import { getBlogPresentation } from '@/lib/blog-presentation';
+import { blogMetaDescription } from '@/lib/seo';
 
 // A loose alias at the boundary so JSON.stringify is happy; each builder returns
 // a precise object literal internally. No `any`.
@@ -17,6 +19,9 @@ const CONTEXT = 'https://schema.org' as const;
 // than having no image property at all. Omit rather than emit the empty.
 const optionalImage = (url: string | undefined) =>
   url && url.trim() ? { image: url } : {};
+
+const absoluteAssetUrl = (url: string) =>
+  /^https?:\/\//i.test(url) ? url : absoluteUrl(url);
 // Stable @ids so blocks in separate <script> tags cross-reference. Google merges
 // all JSON-LD on a page before resolving @id.
 export const ORG_ID = `${SITE_URL}/#organization`;
@@ -205,14 +210,15 @@ export function buildFaqPageSchema(faqs: readonly FaqItem[]): JsonLdDocument {
 export function buildBlogPostingSchema(post: BlogPost): JsonLdDocument {
   const url = absoluteUrl(`/blog/${post.slug}`);
   const author = findAuthor(post.author);
+  const presentation = getBlogPresentation(post);
 
   return {
     '@context': CONTEXT,
     '@type': 'BlogPosting',
     '@id': `${url}#article`,
     headline: post.title.slice(0, 110),
-    description: post.excerpt,
-    ...optionalImage(post.featuredImageUrl),
+    description: blogMetaDescription(post),
+    ...optionalImage(absoluteAssetUrl(presentation.imageSrc)),
     // publishDate is already 'yyyy-MM-dd' (valid ISO 8601) — emit as-is.
     datePublished: post.publishDate,
     // Posts predating the updatedAt field fall back to publishDate: an unedited
@@ -236,6 +242,37 @@ export function buildBlogPostingSchema(post: BlogPost): JsonLdDocument {
       : { '@type': 'Person', name: post.author },
     publisher: { '@id': ORG_ID },
     mainEntityOfPage: url,
-    ...(post.category ? { articleSection: post.category } : {}),
+    articleSection: presentation.category,
+    ...(presentation.tags.length > 0 ? { keywords: presentation.tags.join(', ') } : {}),
+  };
+}
+
+/** Semantic index of the Journal's current articles for search engines. */
+export function buildBlogCollectionSchema(posts: BlogPost[]): JsonLdDocument {
+  const url = absoluteUrl('/blog');
+
+  return {
+    '@context': CONTEXT,
+    '@type': 'CollectionPage',
+    '@id': `${url}#journal`,
+    name: 'BagPackerMe Journal',
+    description: 'India travel guides, heritage walks, wildlife safaris, slow journeys and cultural experiences from BagPackerMe.',
+    url,
+    isPartOf: { '@id': SITE_ID },
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: posts.length,
+      itemListElement: posts.map((post, index) => {
+        const presentation = getBlogPresentation(post);
+        const postUrl = absoluteUrl(`/blog/${post.slug}`);
+        return {
+          '@type': 'ListItem',
+          position: index + 1,
+          name: post.title,
+          url: postUrl,
+          image: absoluteAssetUrl(presentation.imageSrc),
+        };
+      }),
+    },
   };
 }

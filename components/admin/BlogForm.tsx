@@ -10,6 +10,7 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { format } from 'date-fns';
 import toast from 'react-hot-toast';
 import dynamic from 'next/dynamic';
+import TagInput from './TagInput';
 
 const RichTextEditor = dynamic(() => import('./RichTextEditor'), { ssr: false });
 
@@ -61,6 +62,8 @@ const defaultPost: Omit<BlogPost, 'id'> = {
   slug: '',
   category: 'Adventure',
   featuredImageUrl: '',
+  featuredImageAlt: '',
+  tags: [],
   excerpt: '',
   author: 'Kevin',
   publishDate: format(new Date(), 'yyyy-MM-dd'),
@@ -86,6 +89,8 @@ export default function BlogForm({ initialData, blogId }: BlogFormProps) {
       slug: initialData.slug,
       category: initialData.category,
       featuredImageUrl: initialData.featuredImageUrl,
+      featuredImageAlt: initialData.featuredImageAlt ?? '',
+      tags: initialData.tags ?? [],
       excerpt: initialData.excerpt,
       author: initialData.author,
       publishDate: initialData.publishDate,
@@ -267,7 +272,10 @@ export default function BlogForm({ initialData, blogId }: BlogFormProps) {
                   <div className="absolute inset-0 bg-[#285056]/80 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                     <button
                       type="button"
-                      onClick={() => set('featuredImageUrl', '')}
+                      onClick={() => {
+                        set('featuredImageUrl', '');
+                        set('featuredImageAlt', '');
+                      }}
                       className="font-body text-[14px] font-bold text-white uppercase tracking-widest hover:underline"
                     >
                       Remove
@@ -304,6 +312,20 @@ export default function BlogForm({ initialData, blogId }: BlogFormProps) {
                   )}
                 </label>
               )}
+              <div className="mt-4">
+                <FormField
+                  label="Image description"
+                  hint="Describe the visible scene for readers using screen readers."
+                >
+                  <input
+                    type="text"
+                    value={form.featuredImageAlt ?? ''}
+                    onChange={(e) => set('featuredImageAlt', e.target.value)}
+                    placeholder="e.g. A tiger walking beside a safari jeep in Kanha"
+                    className={inputClass}
+                  />
+                </FormField>
+              </div>
             </div>
 
             {/* Post Details */}
@@ -321,6 +343,14 @@ export default function BlogForm({ initialData, blogId }: BlogFormProps) {
                     <option key={c} value={c}>{c}</option>
                   ))}
                 </select>
+              </FormField>
+
+              <FormField label="Topics" hint="Add specific reader topics; press Enter after each one.">
+                <TagInput
+                  value={form.tags ?? []}
+                  onChange={(tags) => set('tags', tags)}
+                  placeholder="e.g. Heritage travel"
+                />
               </FormField>
 
               {/* Author */}

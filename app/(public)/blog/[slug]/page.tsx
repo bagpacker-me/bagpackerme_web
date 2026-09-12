@@ -11,6 +11,7 @@ import { buildBlogPostingSchema, buildBreadcrumbSchema } from '@/lib/structured-
 import { absoluteUrl } from '@/lib/site-url';
 import { findAuthor } from '@/lib/authors';
 import { blogDisplayTitle, blogMetaDescription, blogMetaTitle } from '@/lib/seo';
+import { getBlogPresentation } from '@/lib/blog-presentation';
 
 export const revalidate = 3600;
 
@@ -19,19 +20,25 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   if (!blog) return { title: 'Post Not Found' };
   const title = blogMetaTitle(blog);
   const description = blogMetaDescription(blog);
+  const presentation = getBlogPresentation(blog);
 
   return {
     title,
     description,
     alternates: { canonical: `/blog/${blog.slug}` },
-    // No openGraph.images here — the colocated opengraph-image.tsx supplies the
-    // card and would be ignored if this segment set openGraph.images.
     openGraph: {
       type: 'article',
       url: `/blog/${blog.slug}`,
       siteName: 'BagPackerMe',
       title,
       description,
+      images: [{ url: presentation.imageSrc, alt: presentation.imageAlt }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [presentation.imageSrc],
     },
   };
 }
@@ -53,6 +60,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
   const { firstHalf, secondHalf } = splitHtml(blog.contentHtml);
   const author = findAuthor(blog.author);
   const displayTitle = blogDisplayTitle(blog);
+  const presentation = getBlogPresentation(blog);
 
   const formatDate = (dateString?: string) => {
     if (!dateString) return '';
@@ -99,8 +107,8 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
           {/* Hero image container */}
           <div className="relative w-full rounded-[20px] md:rounded-[28px] overflow-hidden aspect-[16/7] min-h-[300px] md:min-h-[460px] bg-void">
             <Image
-              src={blog.featuredImageUrl || 'https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&q=80&w=1400'}
-              alt={blog.title}
+              src={presentation.imageSrc}
+              alt={presentation.imageAlt}
               fill
               priority
               sizes="(min-width: 1536px) 1400px, 100vw"
@@ -113,7 +121,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
             <div className="absolute top-5 left-5 z-10">
               <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/15 backdrop-blur-md border border-white/25 text-white font-display text-[11px] font-bold tracking-widest uppercase">
                 <span className="w-1.5 h-1.5 rounded-full bg-cyan animate-pulse" />
-                {blog.category}
+                {presentation.category}
               </span>
             </div>
 
@@ -157,6 +165,15 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                   </>
                 )}
               </div>
+              {presentation.tags.length > 0 && (
+                <ul aria-label={`Topics for ${blog.title}`} className="mt-4 flex flex-wrap gap-2">
+                  {presentation.tags.map((tag) => (
+                    <li key={tag} className="rounded-full border border-white/25 bg-white/10 px-3 py-1 font-body text-[11px] font-semibold text-white backdrop-blur-sm">
+                      {tag}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           </div>
         </div>
@@ -279,22 +296,25 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
 
             {/* Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {relatedBlogs.map((related) => (
-                <Link
+              {relatedBlogs.map((related) => {
+                const relatedPresentation = getBlogPresentation(related);
+
+                return (
+                  <Link
                   href={`/blog/${related.slug}`}
                   key={related.id}
                   className="group flex flex-col bg-white rounded-[14px] overflow-hidden shadow-sm hover:shadow-[0_16px_40px_rgba(34,30,42,0.12)] hover:-translate-y-1.5 transition-all duration-350"
                 >
                   <div className="relative aspect-[4/3] w-full overflow-hidden">
                     <Image
-                      src={related.featuredImageUrl || 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=700'}
-                      alt={related.title}
+                      src={relatedPresentation.imageSrc}
+                      alt={relatedPresentation.imageAlt}
                       fill
                       sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                       className="object-cover transition-transform duration-600 ease-out group-hover:scale-[1.06]"
                     />
                     <span className="absolute top-3 left-3 z-10 inline-block bg-white/90 backdrop-blur-sm text-void px-2.5 py-1 rounded-full font-display text-[10px] font-bold uppercase tracking-widest shadow-sm">
-                      {related.category}
+                      {relatedPresentation.category}
                     </span>
                   </div>
                   <div className="flex flex-col flex-grow p-5 md:p-6">
@@ -304,7 +324,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                       {related.readTimeMinutes && <span>{related.readTimeMinutes} min read</span>}
                     </p>
                     <h3 className="font-display font-bold text-[18px] text-void leading-[1.25] mb-3 group-hover:text-teal transition-colors duration-300 line-clamp-2">
-                      {related.title}
+                      {blogDisplayTitle(related)}
                     </h3>
                     <p className="font-body text-[14px] text-gray-500 leading-[1.7] line-clamp-2 mb-4 flex-grow">
                       {related.excerpt}
@@ -316,8 +336,9 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                       <span className="font-body font-medium text-[13px] text-void line-clamp-1">{related.author || 'BagPackerMe'}</span>
                     </div>
                   </div>
-                </Link>
-              ))}
+                  </Link>
+                );
+              })}
             </div>
           </div>
         </section>

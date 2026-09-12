@@ -7,8 +7,8 @@ import Image from 'next/image';
 import { ChevronLeft, ChevronRight, ArrowRight, User } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { blogDisplayTitle } from '@/lib/seo';
+import { getBlogPresentation } from '@/lib/blog-presentation';
 
-const CATEGORIES = ['All', 'Adventure', 'Culture', 'Food', 'Spiritual', 'Tips & Guides', 'Corporate Travel'];
 const SORT_OPTIONS = ['Newest', 'Oldest', 'Popular'];
 const POSTS_PER_PAGE = 9;
 
@@ -47,6 +47,7 @@ function useInView(ref: React.RefObject<Element>, threshold = 0.15) {
 function FeaturedHero({ post, formatDate }: { post: BlogPost; formatDate: (d?: string) => string }) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref as React.RefObject<Element>);
+  const presentation = getBlogPresentation(post);
 
   return (
     // Full-bleed: no side padding, starts from top-0 behind the fixed navbar
@@ -63,8 +64,8 @@ function FeaturedHero({ post, formatDate }: { post: BlogPost; formatDate: (d?: s
         style={{ aspectRatio: '16/7', minHeight: '480px' }}
       >
         <Image
-          src={post.featuredImageUrl || 'https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&q=80&w=1400'}
-          alt={post.title}
+          src={presentation.imageSrc}
+          alt={presentation.imageAlt}
           fill
           priority
           sizes="100vw"
@@ -79,7 +80,7 @@ function FeaturedHero({ post, formatDate }: { post: BlogPost; formatDate: (d?: s
         <div className="absolute top-[88px] left-6 z-20">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/25 text-white font-display text-[11px] font-bold tracking-widest uppercase">
             <span className="w-1.5 h-1.5 rounded-full bg-lime" />
-            {post.category}
+            {presentation.category}
           </span>
         </div>
 
@@ -109,6 +110,8 @@ function FeaturedHero({ post, formatDate }: { post: BlogPost; formatDate: (d?: s
 }
 
 function BlogCard({ post, formatDate, index }: { post: BlogPost; formatDate: (d?: string) => string; index: number }) {
+  const presentation = getBlogPresentation(post);
+
   return (
     <motion.div variants={fadeUp} custom={index}>
       <Link
@@ -118,15 +121,15 @@ function BlogCard({ post, formatDate, index }: { post: BlogPost; formatDate: (d?
         {/* Image */}
         <div className="relative aspect-[4/3] w-full overflow-hidden flex-shrink-0">
           <Image
-            src={post.featuredImageUrl || 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=700'}
-            alt={post.title}
+            src={presentation.imageSrc}
+            alt={presentation.imageAlt}
             fill
             sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
             className="object-cover transition-transform duration-600 ease-out group-hover:scale-[1.06]"
           />
           {/* Category badge */}
           <span className="absolute top-3 left-3 z-10 inline-block bg-white/90 backdrop-blur-sm text-void px-2.5 py-1 rounded-full font-display text-[10px] font-bold uppercase tracking-widest shadow-sm">
-            {post.category}
+            {presentation.category}
           </span>
         </div>
 
@@ -139,12 +142,25 @@ function BlogCard({ post, formatDate, index }: { post: BlogPost; formatDate: (d?
           </p>
 
           <h3 className="font-display font-bold text-[18px] md:text-[20px] text-void leading-[1.25] mb-3 group-hover:text-teal transition-colors duration-300 line-clamp-2">
-            {post.title}
+            {blogDisplayTitle(post)}
           </h3>
 
           <p className="font-body text-[14px] text-gray-500 leading-[1.7] line-clamp-2 mb-4 flex-grow">
             {post.excerpt}
           </p>
+
+          {presentation.tags.length > 0 && (
+            <ul aria-label={`Topics for ${post.title}`} className="flex flex-wrap gap-1.5 mb-4">
+              {presentation.tags.slice(0, 2).map((tag) => (
+                <li
+                  key={tag}
+                  className="rounded-full bg-ice px-2.5 py-1 font-body text-[10px] font-semibold tracking-wide text-teal"
+                >
+                  {tag}
+                </li>
+              ))}
+            </ul>
+          )}
 
           {/* Author */}
           <div className="flex items-center gap-2.5 mt-auto pt-4 border-t border-gray-100">
@@ -251,9 +267,16 @@ export default function BlogListingClient({ initialBlogs }: { initialBlogs: Blog
     setCurrentPage(1);
   };
 
+  // Tags are derived from actual published content, so every filter has a
+  // matching story rather than exposing empty, generic category chips.
+  const categories = useMemo(
+    () => ['All', ...Array.from(new Set(initialBlogs.map((blog) => getBlogPresentation(blog).category)))],
+    [initialBlogs]
+  );
+
   const filteredBlogs = useMemo(() => {
     let result = initialBlogs.filter((blog) => {
-      return activeCategory === 'All' || blog.category === activeCategory;
+      return activeCategory === 'All' || getBlogPresentation(blog).category === activeCategory;
     });
 
     if (sortBy === 'Newest') {
@@ -323,7 +346,7 @@ export default function BlogListingClient({ initialBlogs }: { initialBlogs: Blog
             <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 flex-wrap">
               {/* Category pills */}
               <div className="flex flex-wrap gap-2">
-                {CATEGORIES.map((cat) => (
+                {categories.map((cat) => (
                   <button
                     key={cat}
                     onClick={() => handleCategoryChange(cat)}
