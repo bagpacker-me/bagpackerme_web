@@ -90,6 +90,73 @@ const PACKAGE_IMAGE_OVERRIDES: Record<
       'A lantern-lit dinner setting beside a misty Coorg plantation lake at blue hour',
     ],
   },
+  'just-us-by-the-sea-at-xandari-pearl-marari-kerala': {
+    heroImageUrl: '/images/packages/marari/marari-beach-coconut-hero.png',
+    heroImageAlt:
+      'A traditional Kerala fishing boat on the palm-lined Marari Beach at sunrise',
+    galleryUrls: [
+      '/images/packages/marari/marari-backwater-canoe.png',
+      '/images/packages/marari/marari-beach-dinner.png',
+    ],
+    galleryImageAlts: [
+      'An empty traditional canoe on a calm Kerala backwater lined with coconut palms',
+      'An intimate lantern-lit dinner setting on quiet Marari Beach at dusk',
+    ],
+  },
+  'nature-nurture-babymoon-at-oleander-farms-karjat': {
+    heroImageUrl: '/images/packages/karjat/karjat-vineyard-estate-hero.png',
+    heroImageAlt:
+      'A lush Karjat country estate and vineyard beneath misty Western Ghats hills',
+    galleryUrls: [
+      '/images/packages/karjat/karjat-garden-potting.png',
+      '/images/packages/karjat/karjat-vineyard-dinner.png',
+    ],
+    galleryImageAlts: [
+      'A terracotta potting bench surrounded by young herbs in a shaded Karjat garden',
+      'An intimate two-place dinner setting overlooking a Karjat vineyard at golden hour',
+    ],
+  },
+  'nature-nurture-babymoon-at-shreyas-retreat-bangalore': {
+    heroImageUrl:
+      '/images/packages/bangalore/bangalore-wellness-pavilion-hero.png',
+    heroImageAlt:
+      'An open-sided yoga pavilion in a tranquil Bengaluru wellness garden at dawn',
+    galleryUrls: [
+      '/images/packages/bangalore/bangalore-ayurvedic-pavilion.png',
+      '/images/packages/bangalore/bangalore-organic-garden-dining.png',
+    ],
+    galleryImageAlts: [
+      'An Ayurvedic garden treatment pavilion with linen, brass oil bowl, and herbs',
+      'An empty farm-to-table dining setting in an organic Bengaluru retreat garden',
+    ],
+  },
+  'cultural-soulscapes-babymoon-at-anopura-jaipur': {
+    heroImageUrl: '/images/packages/jaipur/jaipur-aravalli-villa-hero.png',
+    heroImageAlt:
+      'A secluded sandstone villa courtyard and private pool in the Aravalli hills near Jaipur',
+    galleryUrls: [
+      '/images/packages/jaipur/jaipur-pottery-studio.png',
+      '/images/packages/jaipur/jaipur-lantern-courtyard-dinner.png',
+    ],
+    galleryImageAlts: [
+      'An open-air Rajasthan pottery studio framed by sandstone walls and the Aravalli hills',
+      'A lantern-lit two-place dinner beneath a native tree in a Jaipur heritage courtyard',
+    ],
+  },
+  'cultural-soulscapes-babymoon-at-jagat-niwas-udaipur': {
+    heroImageUrl:
+      '/images/packages/udaipur/udaipur-lake-pichola-haveli-hero.png',
+    heroImageAlt:
+      'A white heritage haveli terrace overlooking Lake Pichola in Udaipur at sunrise',
+    galleryUrls: [
+      '/images/packages/udaipur/udaipur-yoga-terrace.png',
+      '/images/packages/udaipur/udaipur-lake-high-tea-boat.png',
+    ],
+    galleryImageAlts: [
+      'A quiet Udaipur heritage rooftop with yoga mats overlooking Lake Pichola',
+      'An empty high-tea setting aboard a traditional wooden boat on Lake Pichola',
+    ],
+  },
 };
 
 export function withPackageImageOverrides(pkg: Package): Package {
