@@ -20,6 +20,38 @@ export default function WhatsIncluded({ pkg }: { pkg: Package }) {
   const excludedItems = items.filter(i => !i.included);
   const otherExclusions = pkg.exclusions || [];
 
+  // Legacy imported itineraries encode an unconfigured inclusion form as six
+  // `false` flags. Presenting that as six firm exclusions is misleading; keep
+  // the honest support promise and explain that a bespoke proposal confirms
+  // the commercial details instead.
+  if (includedItems.length === 0) {
+    return (
+      <section id="inclusions" className="w-full bg-[#F0F7F8] py-[64px] md:py-[96px] px-6 md:px-12">
+        <div className="max-w-7xl mx-auto">
+          <FadeInSection className="mb-[40px] flex flex-col items-center text-center">
+            <div className="flex items-center gap-[16px] mb-[20px]">
+              <div className="h-[1px] w-[32px] bg-[#221E2A]" />
+              <span className="font-display font-bold uppercase text-[11px] tracking-widest text-[#221E2A]">Planning details</span>
+              <div className="h-[1px] w-[32px] bg-[#221E2A]" />
+            </div>
+            <h2 className="text-[#221E2A] font-display text-[clamp(1.75rem,3.5vw,2.75rem)] font-bold uppercase tracking-[-0.02em] leading-[1.1]">
+              Your journey, clearly planned
+            </h2>
+          </FadeInSection>
+          <FadeInSection delay={0.1} className="mx-auto max-w-2xl border border-[rgba(34,30,42,0.08)] bg-white p-8 text-center shadow-sm md:p-10">
+            <Check className="mx-auto mb-4 h-7 w-7 text-[#22c55e]" aria-hidden="true" />
+            <h3 className="font-display text-xl font-bold text-[#221E2A]">Inclusions confirmed for your route</h3>
+            <p className="mx-auto mt-3 max-w-xl font-body text-sm leading-relaxed text-[#4a5568]">
+              Because each trip can be tailored, your final proposal will clearly confirm stays, transport,
+              guides, activities and any additional services before you book.
+            </p>
+            <p className="mt-5 font-body text-sm font-medium text-[#285056]">24/7 on-ground support while you travel</p>
+          </FadeInSection>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section id="inclusions" className="w-full bg-[#F0F7F8] py-[64px] md:py-[96px] px-6 md:px-12">
       <div className="max-w-7xl mx-auto">

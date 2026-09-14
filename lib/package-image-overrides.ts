@@ -6,10 +6,8 @@ import type { Package } from '@/types';
  * metadata, and structured data in sync while preserving the itinerary and
  * booking data in Firestore.
  */
-const PACKAGE_IMAGE_OVERRIDES: Record<
-  string,
-  Partial<
-    Pick<
+type PackageEditorialOverride = Partial<
+  Pick<
     Package,
     | 'heroImageUrl'
     | 'heroImageAlt'
@@ -20,8 +18,21 @@ const PACKAGE_IMAGE_OVERRIDES: Record<
     | 'tagline'
     | 'overviewHtml'
     | 'duration'
-    >
+    | 'groupSize'
+    | 'destinations'
   >
+> & {
+  /**
+   * CMS entries from the original import often carry good day descriptions but
+   * no location headings. Overlay only the headings so the rendered itinerary
+   * and TouristTrip schema stay informative without rewriting editorial copy.
+   */
+  itineraryLocations?: string[];
+};
+
+const PACKAGE_IMAGE_OVERRIDES: Record<
+  string,
+  PackageEditorialOverride
 > = {
   'kanha-beyond-the-safari': {
     heroImageUrl: '/images/packages/kanha/kanha-beyond-safari-cover.webp',
@@ -257,9 +268,183 @@ const PACKAGE_IMAGE_OVERRIDES: Record<
       '<p>Experience Himachal through Kangra and Palampur’s food traditions. Blend tea at an estate, cook Kangri Dham over wood fire, taste Tibetan momos and thukpa, and finish with organic herbs and mountain-homestay baking.</p>',
     duration: '4 Days / 3 Nights',
   },
+  'ahmedabad-heritage-handcraft-and-history': {
+    heroImageUrl: '/images/packages/ahmedabad/ahmedabad-old-city-hero.png',
+    heroImageAlt:
+      'Carved wooden façades and a heritage rickshaw in Ahmedabad’s historic old city at golden hour',
+    galleryUrls: [
+      '/images/packages/ahmedabad/ahmedabad-adalaj-stepwell.png',
+      '/images/packages/ahmedabad/ahmedabad-block-printing.png',
+    ],
+    galleryImageAlts: [
+      'Sandstone tiers and geometric carvings inside Adalaj Stepwell near Ahmedabad',
+      'Wooden blocks and hand-printed textiles in an Ahmedabad craft workshop',
+    ],
+    metaTitle: 'Ahmedabad Heritage & Handcraft Tour',
+    metaDescription:
+      'Explore Ahmedabad’s old-city pols, Adalaj Stepwell, Sabarmati Ashram and block-printing traditions on a private five-day heritage journey.',
+    tagline: 'A five-day private journey through Ahmedabad’s living heritage, craft and conscience.',
+    overviewHtml:
+      '<p>Trace Ahmedabad’s living heritage over five days: stay in the old city, explore UNESCO-listed pols, Adalaj Stepwell and Sabarmati Ashram, and meet local block-printing artisans. This private journey blends architecture, Gujarati food and craft with thoughtful local storytelling.</p>',
+    duration: '5 Days / 4 Nights',
+    groupSize: 'Private journey',
+    destinations: ['Ahmedabad', 'Adalaj'],
+    itineraryLocations: ['Ahmedabad', 'Ahmedabad', 'Adalaj', 'Ahmedabad', 'Ahmedabad'],
+  },
+  'golden-triangle-and-sacred-varanasi': {
+    heroImageUrl:
+      '/images/packages/golden-triangle-varanasi/golden-triangle-varanasi-ghats-hero.png',
+    heroImageAlt:
+      'Sunrise over the Ganges and historic Varanasi ghats with a traditional wooden boat',
+    galleryUrls: [
+      '/images/packages/golden-triangle-varanasi/golden-triangle-amer-fort.png',
+      '/images/packages/golden-triangle-varanasi/golden-triangle-banarasi-silk.png',
+    ],
+    galleryImageAlts: [
+      'Amer Fort courtyard in Jaipur illuminated by early morning light',
+      'Banarasi silk being woven on a traditional handloom in Varanasi',
+    ],
+    metaTitle: 'Golden Triangle & Varanasi Tour',
+    metaDescription:
+      'Travel Delhi, Jaipur, Agra and Varanasi on a nine-day private journey of forts, the Taj Mahal, Ganga Aarti, river dawns and Banarasi crafts.',
+    tagline: 'Nine days through Delhi, Jaipur, Agra and Varanasi—heritage, sacred river life and craft.',
+    overviewHtml:
+      '<p>Travel through Delhi, Jaipur, Agra and Varanasi on a nine-day private journey shaped around storytelling, architecture and living traditions. Walk Old Delhi, watch sunset from Nahargarh, see the Taj at dawn, join a Ganga Aarti and meet Banarasi silk weavers.</p>',
+    duration: '9 Days / 8 Nights',
+    groupSize: 'Private journey',
+    destinations: ['Delhi', 'Jaipur', 'Agra', 'Varanasi'],
+    itineraryLocations: ['Delhi', 'Delhi', 'Jaipur', 'Jaipur', 'Agra', 'Agra', 'Varanasi', 'Varanasi', 'Varanasi'],
+  },
+  'the-sacred-flames-of-kerala-theyyam-hills-and-coast': {
+    heroImageUrl: '/images/packages/kerala-theyyam/kerala-theyyam-hero.png',
+    heroImageAlt:
+      'A flame-lit Theyyam ritual in a Kerala temple courtyard at night',
+    galleryUrls: [
+      '/images/packages/kerala-theyyam/kerala-wayanad-tea-estate.png',
+      '/images/packages/kerala-theyyam/kerala-bekal-fort.png',
+    ],
+    galleryImageAlts: [
+      'Tea estate terraces beneath misty Wayanad hills in Kerala',
+      'Bekal Fort rising above Kerala’s Arabian Sea coast at sunset',
+    ],
+    metaTitle: 'Kerala Theyyam, Wayanad & Bekal Tour',
+    metaDescription:
+      'Experience Kerala’s living Theyyam traditions, Wayanad tea estates, Edakkal Caves and Bekal Fort on a seven-day private cultural journey.',
+    tagline: 'A seven-day Kerala journey of Theyyam ritual, Wayanad hills and the Bekal coast.',
+    overviewHtml:
+      '<p>Move from Kerala’s living Theyyam traditions in Neeleshwar to Wayanad’s forests, tea estates and Edakkal Caves, then slow down along the Bekal coast. This seven-day private route brings together ritual, regional food, hill-country nature and quiet heritage.</p>',
+    duration: '7 Days / 6 Nights',
+    groupSize: 'Private journey',
+    destinations: ['Kannur', 'Neeleshwar', 'Wayanad', 'Bekal'],
+    itineraryLocations: ['Neeleshwar', 'Neeleshwar', 'Wayanad', 'Wayanad', 'Bekal', 'Bekal', 'Kannur'],
+  },
+  'wild-trails-and-royal-tales': {
+    heroImageUrl:
+      '/images/packages/rajasthan-jawai/rajasthan-jawai-leopard-hero.png',
+    heroImageAlt:
+      'An Indian leopard on granite boulders in Jawai, Rajasthan at dawn',
+    galleryUrls: [
+      '/images/packages/rajasthan-jawai/rajasthan-mehrangarh-fort.png',
+      '/images/packages/rajasthan-jawai/rajasthan-lake-pichola-boat.png',
+    ],
+    galleryImageAlts: [
+      'Mehrangarh Fort above Jodhpur at blue hour',
+      'A heritage boat on Lake Pichola facing Udaipur City Palace at sunset',
+    ],
+    metaTitle: 'Rajasthan Heritage & Jawai Leopard Tour',
+    metaDescription:
+      'Travel Rajasthan from Jodhpur’s forts and Rajput kitchens to Jawai leopard country, Ranakpur temples and Lake Pichola in Udaipur.',
+    tagline: 'Eight days of fort cities, leopard country, royal kitchens and lakeside Udaipur.',
+    overviewHtml:
+      '<p>Follow a private Rajasthan route from Jodhpur’s forts and Rajput kitchens to Jawai’s granite leopard country, the marble temples of Ranakpur and Lake Pichola in Udaipur. It balances wildlife, royal history, rural life and time to linger.</p>',
+    duration: '8 Days / 7 Nights',
+    groupSize: 'Private journey',
+    destinations: ['Jodhpur', 'Jawai', 'Ranakpur', 'Udaipur'],
+    itineraryLocations: ['Jodhpur', 'Jodhpur', 'Jawai', 'Jawai', 'Udaipur via Ranakpur', 'Udaipur', 'Udaipur', 'Udaipur'],
+  },
+  'tales-and-trails-of-golden-triangle': {
+    heroImageUrl:
+      '/images/packages/golden-triangle/golden-triangle-taj-hero.png',
+    heroImageAlt:
+      'The Taj Mahal at sunrise above soft Yamuna River mist in Agra',
+    galleryUrls: [
+      '/images/packages/golden-triangle/golden-triangle-jaipur-block-printing.png',
+      '/images/packages/golden-triangle/golden-triangle-old-delhi-lane.png',
+    ],
+    galleryImageAlts: [
+      'Indigo block-printing in a Jaipur artisan workshop',
+      'A cycle rickshaw in a historic Old Delhi market lane at dawn',
+    ],
+    metaTitle: 'Golden Triangle: Delhi, Jaipur & Agra',
+    metaDescription:
+      'Explore Delhi, Jaipur and Agra through street food, crafts, stepwells, forts and a sunrise Taj Mahal visit on this ten-day cultural tour.',
+    tagline: 'Ten days of Delhi stories, Jaipur craft and Agra’s Mughal artistry.',
+    overviewHtml:
+      '<p>Explore Delhi, Jaipur and Agra through Old Delhi stories and food, Abhaneri’s stepwell, Amer Fort, block printing and blue pottery. Continue via Fatehpur Sikri for a sunrise Taj Mahal visit, marble inlay and zardosi workshops.</p>',
+    duration: '10 Days / 9 Nights',
+    groupSize: 'Private journey',
+    destinations: ['Delhi', 'Jaipur', 'Agra'],
+    itineraryLocations: ['Delhi', 'Delhi', 'Delhi', 'Jaipur via Abhaneri', 'Jaipur', 'Jaipur', 'Agra via Fatehpur Sikri', 'Agra', 'Agra', 'Delhi'],
+  },
+  'hornbill-festival': {
+    heroImageUrl: '/images/packages/hornbill/hornbill-kisama-hero.png',
+    heroImageAlt:
+      'Kisama Heritage Village in the Naga Hills of Nagaland in the early morning',
+    galleryUrls: [
+      '/images/packages/hornbill/hornbill-khonoma-terraces.png',
+      '/images/packages/hornbill/hornbill-kaziranga-rhino.png',
+    ],
+    galleryImageAlts: [
+      'Terraced fields and village homes in Khonoma, Nagaland',
+      'A one-horned rhinoceros in Kaziranga grassland at dawn',
+    ],
+    metaTitle: 'Hornbill Festival Tour: Nagaland',
+    metaDescription:
+      'Experience Nagaland’s Hornbill Festival, Khonoma village and a Kaziranga safari on a six-day culture and wildlife journey.',
+    tagline: 'Six days of Nagaland culture, Khonoma village life and Kaziranga wildlife.',
+    overviewHtml:
+      '<p>Experience Nagaland’s Hornbill Festival through Kisama Heritage Village, Dimapur and the green village of Khonoma, then continue to Kaziranga for a wildlife finale. This six-day route combines regional culture, food, landscapes and a one-horned rhino safari.</p>',
+    duration: '6 Days / 5 Nights',
+    groupSize: 'Private journey',
+    destinations: ['Dimapur', 'Kohima', 'Khonoma', 'Kaziranga'],
+    itineraryLocations: ['Dimapur', 'Kohima', 'Kohima', 'Khonoma', 'Kaziranga', 'Guwahati'],
+  },
+  'the-royal-rath-yatra-chronicles': {
+    heroImageUrl: '/images/packages/rath-yatra/baripada-rath-yatra-hero.png',
+    heroImageAlt:
+      'The ceremonial Rath Yatra route near Baripada Jagannath Temple in Odisha at early light',
+    galleryUrls: [
+      '/images/packages/rath-yatra/baripada-heritage-courtyard.png',
+      '/images/packages/rath-yatra/odisha-chhau-craft.png',
+    ],
+    galleryImageAlts: [
+      'A tranquil heritage courtyard in Baripada, Odisha',
+      'Traditional Odisha Chhau dance masks and craft details',
+    ],
+    metaTitle: 'Baripada Rath Yatra Tour, Odisha',
+    metaDescription:
+      'Experience Baripada’s Rath Yatra with temple rituals, Chhau dance, Odia feasts and heritage-palace hospitality on a five-day Odisha journey.',
+    tagline: 'Five days of Baripada ritual, Chhau artistry, Odia food and heritage hospitality.',
+    overviewHtml:
+      '<p>Experience Baripada’s distinctive Rath Yatra through temple rituals, Chhau dance, Odia feasts and heritage-palace hospitality. This five-day Odisha journey is timed around the festival calendar, with travel dates confirmed before booking.</p>',
+    duration: '5 Days / 4 Nights',
+    groupSize: 'Private journey',
+    destinations: ['Baripada', 'Odisha'],
+    itineraryLocations: ['Baripada', 'Baripada', 'Baripada', 'Baripada', 'Baripada'],
+  },
 };
 
 export function withPackageImageOverrides(pkg: Package): Package {
   const override = PACKAGE_IMAGE_OVERRIDES[pkg.slug];
-  return override ? { ...pkg, ...override } : pkg;
+  if (!override) return pkg;
+
+  const { itineraryLocations, ...fields } = override;
+  const itinerary = itineraryLocations
+    ? pkg.itinerary.map((day, index) => ({
+        ...day,
+        location: itineraryLocations[index] || day.location,
+      }))
+    : pkg.itinerary;
+
+  return { ...pkg, ...fields, itinerary };
 }

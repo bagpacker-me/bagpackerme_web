@@ -50,6 +50,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: packageMetaTitle(pkg),
       description: packageMetaDescription(pkg),
     },
+    twitter: {
+      card: 'summary_large_image',
+      title: packageMetaTitle(pkg),
+      description: packageMetaDescription(pkg),
+    },
   };
 }
 
@@ -72,7 +77,7 @@ export default async function IndiaPackageDetailPage({ params }: Props) {
         ])}
       />
       <HeroSection pkg={pkg} market="india" />
-      <StickyNav />
+      <StickyNav hasGallery={pkg.galleryUrls.some((image) => Boolean(image?.trim()))} />
       <OverviewSection pkg={pkg} market="india" />
       <ItineraryTimeline pkg={pkg} />
       <WhatsIncluded pkg={pkg} />

@@ -19,6 +19,24 @@ const DURATIONS = [
   { label: 'Long (14+ days)', value: 'Long', min: 14, max: 999 },
 ];
 
+// Keep the journeys receiving a complete editorial refresh discoverable at the
+// top of the unfiltered India catalogue. This is a deterministic sort of the
+// server-rendered cards — not a carousel or a client-only promotion — so the
+// routes remain visible and crawlable in the initial document.
+const INDIA_EDITORIAL_FEATURES = [
+  'ahmedabad-heritage-handcraft-and-history',
+  'golden-triangle-and-sacred-varanasi',
+  'the-sacred-flames-of-kerala-theyyam-hills-and-coast',
+  'wild-trails-and-royal-tales',
+  'tales-and-trails-of-golden-triangle',
+  'hornbill-festival',
+  'the-royal-rath-yatra-chronicles',
+] as const;
+
+const INDIA_EDITORIAL_FEATURE_RANK = new Map<string, number>(
+  INDIA_EDITORIAL_FEATURES.map((slug, index) => [slug, index])
+);
+
 const EMPTY_PACKAGES: Package[] = [];
 
 function CatalogueEditorialContent({ market }: { market: PackageMarket }) {
@@ -227,13 +245,28 @@ export default function PackagesListingPage({
       return amount >= filters.priceRange[0] && amount <= filters.priceRange[1];
     });
 
-    return result;
+    const showingDefaultCatalogue =
+      filters.category === 'All' &&
+      filters.duration === 'Any' &&
+      usingDefaultPriceRange;
+
+    if (market !== 'india' || !showingDefaultCatalogue) return result;
+
+    return [...result].sort((a, b) => {
+      const aRank = INDIA_EDITORIAL_FEATURE_RANK.get(a.slug);
+      const bRank = INDIA_EDITORIAL_FEATURE_RANK.get(b.slug);
+      if (aRank === undefined && bRank === undefined) return 0;
+      if (aRank === undefined) return 1;
+      if (bRank === undefined) return -1;
+      return aRank - bRank;
+    });
   }, [packages, filters, market, priceConfig.max, priceConfig.currency]);
 
   return (
-    <main className="flex min-h-screen flex-col bg-ice/30">
-      <section className="relative flex h-[460px] w-full items-center justify-center overflow-hidden bg-void">
-        <div className="absolute inset-0 z-10 bg-void/70" />
+    <main className="flex min-h-screen flex-col bg-[linear-gradient(180deg,#e9f7f8_0%,#f8fcfc_28%,#ffffff_68%)]">
+      <section className="relative flex min-h-[540px] w-full items-end overflow-hidden bg-void pb-20 pt-36 md:min-h-[600px] md:pb-28">
+        <div className="absolute inset-0 z-10 bg-[linear-gradient(90deg,rgba(34,30,42,0.86)_0%,rgba(34,30,42,0.58)_53%,rgba(34,30,42,0.2)_100%)]" />
+        <div className="absolute inset-0 z-10 bg-[linear-gradient(0deg,rgba(34,30,42,0.66)_0%,transparent_50%)]" />
 
         <Image
           src={heroImage}
@@ -242,7 +275,7 @@ export default function PackagesListingPage({
           height={1080}
           priority
           sizes="100vw"
-          className="absolute inset-0 z-0 h-full w-full object-cover opacity-80"
+          className="absolute inset-0 z-0 h-full w-full object-cover opacity-90"
         />
 
         <div
@@ -254,20 +287,32 @@ export default function PackagesListingPage({
           }}
         />
 
-        <div className="relative z-30 mt-12 flex w-full max-w-[800px] flex-col items-center px-6 text-center">
-          <div className="mb-5 flex items-center justify-center gap-3">
+        <div className="relative z-30 mx-auto flex w-full max-w-6xl flex-col px-6 md:px-10">
+          <div className="max-w-3xl">
+          <div className="mb-5 flex items-center gap-3">
             <div className="h-[1.5px] w-6 bg-lime" />
             <span className="font-display text-[11px] font-bold uppercase tracking-[0.22em] text-lime">
               {eyebrow}
             </span>
-            <div className="h-[1.5px] w-6 bg-lime" />
           </div>
-          <h1 className="mb-6 font-display text-5xl font-extrabold leading-[1.1] tracking-tight text-white md:text-6xl">
+          <h1 className="mb-6 max-w-3xl font-display text-[clamp(2.8rem,6vw,5rem)] font-extrabold leading-[0.98] tracking-[-0.035em] text-white">
             {title}
           </h1>
-          <p className="max-w-[560px] text-center font-body text-base leading-relaxed text-white/70 md:text-lg">
+          <p className="max-w-[620px] font-body text-base leading-relaxed text-white/75 md:text-lg">
             {description}
           </p>
+          <div className="mt-7 flex flex-wrap gap-2.5" aria-label="Journey planning highlights">
+            <span className="rounded-full border border-white/20 bg-white/10 px-3.5 py-2 font-body text-xs text-white/85 backdrop-blur-sm">
+              {packages.length > 0 ? `${packages.length} curated routes` : 'Curated routes'}
+            </span>
+            <span className="rounded-full border border-white/20 bg-white/10 px-3.5 py-2 font-body text-xs text-white/85 backdrop-blur-sm">
+              Built around your pace
+            </span>
+            <span className="rounded-full border border-white/20 bg-white/10 px-3.5 py-2 font-body text-xs text-white/85 backdrop-blur-sm">
+              Culture, nature & wellness
+            </span>
+          </div>
+          </div>
         </div>
       </section>
 
@@ -285,19 +330,24 @@ export default function PackagesListingPage({
         </div>
       </section>
 
-      <section className="min-h-[500px] py-20 lg:py-28">
+      <section id="journeys" className="min-h-[500px] py-20 lg:py-28">
         <div className="container mx-auto max-w-6xl px-6">
-          <div className="mb-10">
+          <div className="mb-10 flex flex-col gap-5 border-b border-teal/10 pb-8 md:flex-row md:items-end md:justify-between">
+            <div>
             <div className="flex items-center justify-center gap-3 md:justify-start">
               <span className="block h-[1.5px] w-6 bg-teal/30" aria-hidden="true" />
               <span className="font-display text-xs font-bold uppercase tracking-[0.15em] text-teal">
-                {filteredPackages.length} sample {filteredPackages.length === 1 ? 'itinerary' : 'itineraries'}
+                {filteredPackages.length} curated {filteredPackages.length === 1 ? 'itinerary' : 'itineraries'}
               </span>
             </div>
-            <p className="mt-3 max-w-2xl text-center font-body text-sm leading-relaxed text-void/55 md:text-left">
-              Every trip below is a starting point, not a fixed package. Tell us what you have in mind
-              and we&apos;ll tailor the route, pace, stays, and dates around you.
+            <p className="mt-3 max-w-2xl text-center font-body text-sm leading-relaxed text-void/60 md:text-left">
+              Every route is a considered starting point, ready to be shaped around your dates, interests,
+              stays and preferred pace.
             </p>
+            </div>
+            <span className="hidden rounded-full bg-teal/5 px-4 py-2 font-display text-[10px] font-bold uppercase tracking-[0.14em] text-teal md:inline-flex">
+              Choose a journey, then make it yours
+            </span>
           </div>
 
           {loading ? (

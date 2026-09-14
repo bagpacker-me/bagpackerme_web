@@ -1,18 +1,24 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
-const SECTIONS = [
+const BASE_SECTIONS = [
   { id: 'overview', label: 'Overview' },
   { id: 'itinerary', label: 'Itinerary' },
-  { id: 'gallery', label: 'Gallery' },
   { id: 'inclusions', label: 'Inclusions' },
   { id: 'book', label: 'Enquire' },
 ];
 
-export default function StickyNav() {
+export default function StickyNav({ hasGallery = false }: { hasGallery?: boolean }) {
   const [activeSection, setActiveSection] = useState('overview');
   const [isSticky, setIsSticky] = useState(false);
+  const sections = useMemo(
+    () =>
+      hasGallery
+        ? [BASE_SECTIONS[0], BASE_SECTIONS[1], { id: 'gallery', label: 'Gallery' }, ...BASE_SECTIONS.slice(2)]
+        : BASE_SECTIONS,
+    [hasGallery]
+  );
 
   useEffect(() => {
     // Non-passive and unthrottled, this fired a layout read plus a setState on
@@ -52,13 +58,13 @@ export default function StickyNav() {
       }
     );
 
-    SECTIONS.forEach(({ id }) => {
+    sections.forEach(({ id }) => {
       const el = document.getElementById(id);
       if (el) observer.observe(el);
     });
 
     return () => observer.disconnect();
-  }, []);
+  }, [sections]);
 
   const scrollToSection = (id: string, e: React.MouseEvent) => {
     e.preventDefault();
@@ -81,7 +87,7 @@ export default function StickyNav() {
       <div className="w-full h-[52px] overflow-x-auto hide-scrollbar flex items-center bg-white px-6 md:px-12 max-w-7xl mx-auto">
         {/* Links */}
         <nav className="flex items-center whitespace-nowrap">
-          {SECTIONS.map((section) => {
+          {sections.map((section) => {
             const isActive = activeSection === section.id;
             return (
               <a

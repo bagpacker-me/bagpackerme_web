@@ -87,7 +87,7 @@ export default async function PackageDetailPage({ params }: Props) {
       <HeroSection pkg={pkg} market="global" />
 
       {/* Part 2: Sticky Anchor Navigation */}
-      <StickyNav />
+      <StickyNav hasGallery={pkg.galleryUrls.some((image) => Boolean(image?.trim()))} />
 
       {/* Part 3: Overview Section */}
       <OverviewSection pkg={pkg} market="global" />

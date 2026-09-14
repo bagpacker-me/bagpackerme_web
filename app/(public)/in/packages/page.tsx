@@ -6,9 +6,16 @@ import { getPublishedPackagesForMarket } from '@/lib/firestore';
 import type { Package } from '@/types';
 
 export const metadata: Metadata = {
-  title: 'India Travel Packages: Culture & Wellness',
+  title: 'India Travel Packages: Curated Journeys',
   description:
-    'Discover curated India travel packages for food, wildlife, heritage, wellness and romantic escapes. Tailor your route, stays and pace with BagPackerMe.',
+    'Discover curated India travel packages for heritage, food, wildlife, wellness and romantic escapes. Tailor your route, stays and pace with BagPackerMe.',
+  keywords: [
+    'India travel packages',
+    'private India tours',
+    'India heritage tours',
+    'India wellness trips',
+    'custom India itineraries',
+  ],
   alternates: {
     canonical: '/in/packages',
     languages: { en: '/packages', 'en-IN': '/in/packages', 'x-default': '/packages' },
@@ -17,15 +24,22 @@ export const metadata: Metadata = {
     type: 'website',
     url: '/in/packages',
     siteName: 'BagPackerMe',
-    title: 'India Travel Packages: Culture & Wellness',
+    title: 'India Travel Packages: Curated Journeys',
     description:
-      'Discover curated India travel packages for food, wildlife, heritage, wellness and romantic escapes. Tailor your route, stays and pace with BagPackerMe.',
+      'Discover curated India travel packages for heritage, food, wildlife, wellness and romantic escapes. Tailor your route, stays and pace with BagPackerMe.',
+    images: [
+      {
+        url: '/images/packages/india/india-curated-journeys-hero.png',
+        alt: 'Sunrise over an Indian lake, hills and a distant heritage palace',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'India Travel Packages: Culture & Wellness',
+    title: 'India Travel Packages: Curated Journeys',
     description:
-      'Discover curated India travel packages for food, wildlife, heritage, wellness and romantic escapes. Tailor your route, stays and pace with BagPackerMe.',
+      'Discover curated India travel packages for heritage, food, wildlife, wellness and romantic escapes. Tailor your route, stays and pace with BagPackerMe.',
+    images: ['/images/packages/india/india-curated-journeys-hero.png'],
   },
 };
 
@@ -56,10 +70,10 @@ export default async function IndiaPackagesPage() {
     <PackagesListingPage
       market="india"
       eyebrow="India Journeys"
-      title="Curated trips across India"
-      description="From culinary trails to spiritual paths, experience the subcontinent through deeply intentional travel."
-      heroImage="https://images.unsplash.com/photo-1598091383021-15ddea10925d?w=1600"
-      heroAlt="Landscape in India with mountains and dramatic evening light"
+      title="India travel packages, curated around you"
+      description="Discover heritage, food, wildlife, wellness and festival journeys designed with local context, a slower rhythm and room to make every detail your own."
+      heroImage="/images/packages/india/india-curated-journeys-hero.png"
+      heroAlt="Sunrise over an Indian lake, hills and a distant heritage palace"
       initialPackages={initialPackages}
     />
     </>

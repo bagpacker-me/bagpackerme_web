@@ -11,6 +11,8 @@ const EASE = [0.25, 0.46, 0.45, 0.94] as const;
 export default function HeroSection({ pkg, market = 'global' }: { pkg: Package; market?: PackageMarket }) {
   const shouldReduceMotion = useReducedMotion();
   const breadcrumbRoot = market === 'india' ? 'India' : 'Global';
+  const heroImageUrl = pkg.heroImageUrl?.trim() || '/web_photos/hero_1.webp';
+  const cityCount = (pkg.destinations ?? []).filter(Boolean).length;
 
   const containerVariants = {
     hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 40 },
@@ -42,7 +44,7 @@ export default function HeroSection({ pkg, market = 'global' }: { pkg: Package; 
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
-          src={pkg.heroImageUrl}
+          src={heroImageUrl}
           alt={pkg.heroImageAlt || pkg.title}
           width={1920}
           height={1080}
@@ -86,24 +88,34 @@ export default function HeroSection({ pkg, market = 'global' }: { pkg: Package; 
           </h1>
 
           {/* Tagline */}
-          <p className="font-accent italic text-[clamp(16px,1.8vw,22px)] text-white/70 mt-[16px] max-w-[540px]">
-            {pkg.tagline}
-          </p>
+          {pkg.tagline?.trim() && (
+            <p className="font-accent italic text-[clamp(16px,1.8vw,22px)] text-white/70 mt-[16px] max-w-[540px]">
+              {pkg.tagline}
+            </p>
+          )}
 
           {/* Meta row — stat blocks */}
           <div className="flex flex-wrap items-center gap-[12px] mt-[24px]">
-            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 border border-white/15">
-              <Clock className="w-4 h-4 text-[#0ED2E9] shrink-0" />
-              <span className="font-body text-[13px] text-white/80">{pkg.duration}</span>
-            </div>
-            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 border border-white/15">
-              <Users className="w-4 h-4 text-[#0ED2E9] shrink-0" />
-              <span className="font-body text-[13px] text-white/80">{pkg.groupSize}</span>
-            </div>
-            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 border border-white/15">
-              <MapPin className="w-4 h-4 text-[#0ED2E9] shrink-0" />
-              <span className="font-body text-[13px] text-white/80">{pkg.destinations?.length || 0} Cities</span>
-            </div>
+            {pkg.duration?.trim() && (
+              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 border border-white/15">
+                <Clock className="w-4 h-4 text-[#0ED2E9] shrink-0" />
+                <span className="font-body text-[13px] text-white/80">{pkg.duration}</span>
+              </div>
+            )}
+            {pkg.groupSize?.trim() && (
+              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 border border-white/15">
+                <Users className="w-4 h-4 text-[#0ED2E9] shrink-0" />
+                <span className="font-body text-[13px] text-white/80">{pkg.groupSize}</span>
+              </div>
+            )}
+            {cityCount > 0 && (
+              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 border border-white/15">
+                <MapPin className="w-4 h-4 text-[#0ED2E9] shrink-0" />
+                <span className="font-body text-[13px] text-white/80">
+                  {cityCount} {cityCount === 1 ? 'City' : 'Cities'}
+                </span>
+              </div>
+            )}
           </div>
 
           {/* CTAs */}
