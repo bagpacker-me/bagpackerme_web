@@ -18,6 +18,8 @@ export const metadata: Metadata = {
     'Gujarat textile tour',
     'North India spiritual tour',
     'Golden Triangle Jodhpur tour',
+    'Sariska luxury safari',
+    'Sariska couples retreat',
   ],
   alternates: {
     canonical: '/in/packages',

@@ -24,6 +24,7 @@ const DURATIONS = [
 // server-rendered cards — not a carousel or a client-only promotion — so the
 // routes remain visible and crawlable in the initial document.
 const INDIA_EDITORIAL_FEATURES = [
+  'soulmates-in-the-safari-sariskas-luxe-romance-experience',
   'timeless-textile-traditions-of-gujarat',
   'sacred-sands-and-spiritual-cities-a-journey-through-north-india',
   'heritage-havens-golden-triangle-with-jodhpur',
@@ -48,7 +49,7 @@ function CatalogueEditorialContent({ market }: { market: PackageMarket }) {
     ? 'How to choose an India journey that feels like your own'
     : 'How to choose an international journey that feels like your own';
   const destinationCopy = isIndia
-    ? 'India rewards a slower, more considered route. A textile trail through Gujarat, a spiritual circuit across North India, a heritage journey to Jodhpur, or a restorative break in Kerala each asks for a different rhythm. Start with the experiences you want to have, then decide how much moving between places feels enjoyable rather than rushed.'
+    ? 'India rewards a slower, more considered route. A romantic safari in Sariska, a textile trail through Gujarat, a spiritual circuit across North India, or a heritage journey to Jodhpur each asks for a different rhythm. Start with the experiences you want to have, then decide how much moving between places feels enjoyable rather than rushed.'
     : 'A great international itinerary leaves room for the reason you chose a place in the first place. That might mean a few unhurried days in a European city, time for food and neighbourhoods in Japan, a mix of coast and culture in Vietnam, or a safari paced around the natural world.';
   const planningCopy = isIndia
     ? 'Use the filters above to compare the journey themes, trip lengths, and price ranges that fit your plans. Each itinerary is a starting point: we can adjust dates, accommodation style, transport, activity level, and the balance between guided time and time to explore independently.'

@@ -537,6 +537,36 @@ const PACKAGE_IMAGE_OVERRIDES: Record<
       'Delhi',
     ],
   },
+  'soulmates-in-the-safari-sariskas-luxe-romance-experience': {
+    heroImageUrl:
+      '/images/packages/sariska-romance/sariska-tiger-aravalli-hero.webp',
+    heroImageAlt:
+      'A Bengal tiger walking through the dry Aravalli forest of Sariska Tiger Reserve at sunrise',
+    galleryUrls: [
+      '/images/packages/sariska-romance/sariska-chhatri-dinner.webp',
+      '/images/packages/sariska-romance/tehla-fort-yoga.webp',
+    ],
+    galleryImageAlts: [
+      'A private candlelit dinner for two in a stone chhatri overlooking the Aravalli hills near Sariska',
+      'Two yoga mats prepared for a private sunrise wellness session on the terrace of Tehla Fort',
+    ],
+    metaTitle: 'Sariska Luxury Safari for Couples',
+    metaDescription:
+      'Plan a four-day luxury Sariska safari for couples with a private jeep drive, spa therapy, fort yoga, candlelit dining and a wilderness lodge stay.',
+    tagline:
+      'Four private days of Sariska wildlife, restorative rituals and romance beneath the Aravallis.',
+    overviewHtml:
+      '<p>Escape to the edge of Sariska Tiger Reserve for a four-day private journey designed for two. Pair a naturalist-led jeep safari with a wilderness lodge, couple spa therapy, sunrise yoga at Tehla Fort and intimate dining beneath the Aravalli sky.</p><ul><li>Private jeep safari with an expert naturalist in Sariska Tiger Reserve</li><li>Couple spa therapy at a scenic rooftop wellness centre</li><li>Candlelit chhatri dinner in a historic stone pavilion</li><li>Sunrise yoga and a secluded fort breakfast at Tehla</li><li>Village pottery experience and tranquil lakeside birding</li></ul>',
+    duration: '4 Days / 3 Nights',
+    groupSize: 'Private couple journey',
+    destinations: ['Sariska Tiger Reserve', 'Tehla'],
+    itineraryLocations: [
+      'Delhi to Sariska',
+      'Sariska Tiger Reserve',
+      'Tehla & Sariska',
+      'Sariska to Delhi',
+    ],
+  },
 };
 
 export function withPackageImageOverrides(pkg: Package): Package {

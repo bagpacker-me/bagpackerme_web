@@ -12,7 +12,7 @@ export default function HeroSection({ pkg, market = 'global' }: { pkg: Package; 
   const shouldReduceMotion = useReducedMotion();
   const breadcrumbRoot = market === 'india' ? 'India' : 'Global';
   const heroImageUrl = pkg.heroImageUrl?.trim() || '/web_photos/hero_1.webp';
-  const cityCount = (pkg.destinations ?? []).filter(Boolean).length;
+  const destinationCount = (pkg.destinations ?? []).filter(Boolean).length;
 
   const containerVariants = {
     hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 40 },
@@ -108,11 +108,12 @@ export default function HeroSection({ pkg, market = 'global' }: { pkg: Package; 
                 <span className="font-body text-[13px] text-white/80">{pkg.groupSize}</span>
               </div>
             )}
-            {cityCount > 0 && (
+            {destinationCount > 0 && (
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 border border-white/15">
                 <MapPin className="w-4 h-4 text-[#0ED2E9] shrink-0" />
                 <span className="font-body text-[13px] text-white/80">
-                  {cityCount} {cityCount === 1 ? 'City' : 'Cities'}
+                  {destinationCount}{' '}
+                  {destinationCount === 1 ? 'Destination' : 'Destinations'}
                 </span>
               </div>
             )}
