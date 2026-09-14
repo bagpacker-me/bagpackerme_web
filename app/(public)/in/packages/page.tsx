@@ -15,6 +15,9 @@ export const metadata: Metadata = {
     'India heritage tours',
     'India wellness trips',
     'custom India itineraries',
+    'Gujarat textile tour',
+    'North India spiritual tour',
+    'Golden Triangle Jodhpur tour',
   ],
   alternates: {
     canonical: '/in/packages',

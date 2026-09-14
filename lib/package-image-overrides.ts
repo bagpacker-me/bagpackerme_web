@@ -432,6 +432,111 @@ const PACKAGE_IMAGE_OVERRIDES: Record<
     destinations: ['Baripada', 'Odisha'],
     itineraryLocations: ['Baripada', 'Baripada', 'Baripada', 'Baripada', 'Baripada'],
   },
+  'timeless-textile-traditions-of-gujarat': {
+    heroImageUrl:
+      '/images/packages/gujarat-textiles/gujarat-textile-workshop-hero.webp',
+    heroImageAlt:
+      'An artisan hand block-printing indigo and madder-red cloth in a traditional Kutch workshop',
+    galleryUrls: [
+      '/images/packages/gujarat-textiles/gujarat-patola-loom.webp',
+      '/images/packages/gujarat-textiles/gujarat-little-rann-wild-ass.webp',
+    ],
+    galleryImageAlts: [
+      'A Patola artisan weaving colourful double-ikat silk on a traditional loom in Patan, Gujarat',
+      'Indian wild asses crossing the salt flats of the Little Rann of Kutch at sunrise',
+    ],
+    metaTitle: 'Gujarat Textile & Craft Tour',
+    metaDescription:
+      'Follow Gujarat’s textile traditions from Ahmedabad and Patan to the Little Rann and Kutch, with block printing, Patola weaving, village craft and wildlife.',
+    tagline:
+      'Ten days through Gujarat’s textile workshops, heritage cities, salt desert and craft villages.',
+    overviewHtml:
+      '<p>Follow Gujarat’s living textile traditions from Ahmedabad’s old city and Calico Museum to Pethapur block printing, Patan’s Patola weaving and the artisan villages of Kutch. Over ten days, heritage architecture, natural dyes, embroidery and a Little Rann wildlife safari reveal the landscape behind the craft.</p>',
+    duration: '10 Days / 9 Nights',
+    groupSize: 'Private journey',
+    destinations: ['Ahmedabad', 'Patan', 'Little Rann of Kutch', 'Bhuj', 'Gondal'],
+    itineraryLocations: [
+      'Ahmedabad',
+      'Ahmedabad',
+      'Pethapur & Ahmedabad',
+      'Patan & Little Rann of Kutch',
+      'Little Rann of Kutch',
+      'Ajrakhpur & Bhuj',
+      'Kutch craft villages',
+      'Gondal',
+      'Ahmedabad',
+      'Ahmedabad',
+    ],
+  },
+  'sacred-sands-and-spiritual-cities-a-journey-through-north-india': {
+    heroImageUrl:
+      '/images/packages/north-india-spiritual/varanasi-ghats-hero.webp',
+    heroImageAlt:
+      'A traditional wooden boat on the Ganges facing Varanasi’s historic ghats at sunrise',
+    galleryUrls: [
+      '/images/packages/north-india-spiritual/bodh-gaya-mahabodhi-temple.webp',
+      '/images/packages/north-india-spiritual/prayagraj-triveni-sangam.webp',
+    ],
+    galleryImageAlts: [
+      'Mahabodhi Temple and the sacred Bodhi tree in Bodh Gaya during quiet morning light',
+      'Wooden boats and flower offerings on the Triveni Sangam at Prayagraj at sunrise',
+    ],
+    metaTitle: 'North India Spiritual Cities Tour',
+    metaDescription:
+      'Journey through Varanasi, Bodh Gaya, Prayagraj, Chitrakoot, Ayodhya and Lucknow on an eight-day private pilgrimage and cultural tour.',
+    tagline:
+      'Eight days along North India’s sacred rivers, Buddhist heritage and pilgrimage cities.',
+    overviewHtml:
+      '<p>Journey through North India’s sacred geography over eight days, from Ganga Aarti and a sunrise boat ride in Varanasi to Sarnath, Bodh Gaya, Prayagraj, Chitrakoot and Ayodhya. Continue through Naimisharanya to Lucknow on a private route shaped around living traditions, history and time for reflection.</p>',
+    duration: '8 Days / 7 Nights',
+    groupSize: 'Private journey',
+    destinations: ['Varanasi', 'Bodh Gaya', 'Prayagraj', 'Chitrakoot', 'Ayodhya', 'Lucknow'],
+    itineraryLocations: [
+      'Varanasi',
+      'Varanasi, Sarnath & Bodh Gaya',
+      'Bodh Gaya, Gaya & Varanasi',
+      'Prayagraj',
+      'Chitrakoot & Prayagraj',
+      'Ayodhya',
+      'Naimisharanya & Lucknow',
+      'Lucknow',
+    ],
+  },
+  'heritage-havens-golden-triangle-with-jodhpur': {
+    heroImageUrl:
+      '/images/packages/golden-triangle-jodhpur/jodhpur-mehrangarh-hero.webp',
+    heroImageAlt:
+      'Mehrangarh Fort rising above Jodhpur’s blue old city in warm sunrise light',
+    galleryUrls: [
+      '/images/packages/golden-triangle-jodhpur/agra-taj-mahal-dawn.webp',
+      '/images/packages/golden-triangle-jodhpur/jaipur-amer-fort.webp',
+    ],
+    galleryImageAlts: [
+      'The Taj Mahal reflected in its central garden pool at dawn in Agra',
+      'A sunlit arcade opening onto a quiet courtyard at Amer Fort in Jaipur',
+    ],
+    metaTitle: 'Golden Triangle & Jodhpur Tour',
+    metaDescription:
+      'Explore Delhi, Agra, Jaipur and Jodhpur on a nine-day private heritage journey with Old Delhi food, Taj Mahal sunrise, Amer Fort and Mehrangarh Fort.',
+    tagline:
+      'Nine days from Delhi and the Taj to Jaipur’s palaces and Jodhpur’s blue old city.',
+    overviewHtml:
+      '<p>Travel beyond the classic Golden Triangle on a nine-day private journey through Delhi, Agra, Jaipur and Jodhpur. Pair Old Delhi food and storytelling with the Taj Mahal at sunrise, Jaipur’s forts and stepwells, and walks through the blue old city beneath Mehrangarh Fort.</p>',
+    duration: '9 Days / 8 Nights',
+    groupSize: 'Private journey',
+    destinations: ['Delhi', 'Agra', 'Jaipur', 'Jodhpur'],
+    itineraryLocations: [
+      'Delhi',
+      'Old Delhi',
+      'Agra',
+      'Agra',
+      'Jaipur',
+      'Jaipur',
+      'Jodhpur',
+      'Jodhpur & Delhi',
+      'Delhi',
+    ],
+  },
 };
 
 export function withPackageImageOverrides(pkg: Package): Package {
