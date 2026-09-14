@@ -1,14 +1,27 @@
 import type { Package } from '@/types';
 
 /**
- * Local editorial image sets for packages whose supplied CMS images have been
- * replaced with commissioned BagPackerMe artwork. Applying these as packages
- * are read keeps the page, cards, metadata, and structured data in sync while
- * preserving all of the itinerary and booking data in Firestore.
+ * Local editorial image and SEO sets for packages whose supplied CMS fields
+ * are incomplete. Applying these as packages are read keeps the page, cards,
+ * metadata, and structured data in sync while preserving the itinerary and
+ * booking data in Firestore.
  */
 const PACKAGE_IMAGE_OVERRIDES: Record<
   string,
-  Pick<Package, 'heroImageUrl' | 'heroImageAlt' | 'galleryUrls' | 'galleryImageAlts'>
+  Partial<
+    Pick<
+    Package,
+    | 'heroImageUrl'
+    | 'heroImageAlt'
+    | 'galleryUrls'
+    | 'galleryImageAlts'
+    | 'metaTitle'
+    | 'metaDescription'
+    | 'tagline'
+    | 'overviewHtml'
+    | 'duration'
+    >
+  >
 > = {
   'kanha-beyond-the-safari': {
     heroImageUrl: '/images/packages/kanha/kanha-beyond-safari-cover.webp',
@@ -156,6 +169,93 @@ const PACKAGE_IMAGE_OVERRIDES: Record<
       'A quiet Udaipur heritage rooftop with yoga mats overlooking Lake Pichola',
       'An empty high-tea setting aboard a traditional wooden boat on Lake Pichola',
     ],
+    metaTitle: 'Udaipur Babymoon at Jagat Niwas',
+    metaDescription:
+      'Plan a 4-day Udaipur babymoon at Jagat Niwas on Lake Pichola, with lakeside yoga, spa rituals, sunset high tea and a private boat experience.',
+    tagline: 'Lake Pichola wellness, heritage stays and private high tea.',
+  },
+  'timeless-wonders-of-maharashtra': {
+    heroImageUrl:
+      '/images/packages/maharashtra/maharashtra-ellora-kailasa-hero.png',
+    heroImageAlt:
+      'The monolithic Kailasa Temple at Ellora Caves in Maharashtra at sunrise',
+    galleryUrls: [
+      '/images/packages/maharashtra/maharashtra-elephanta-ferry.png',
+      '/images/packages/maharashtra/maharashtra-ajanta-gorge.png',
+    ],
+    galleryImageAlts: [
+      'An empty ferry crossing Mumbai Harbour toward Elephanta Island at sunrise',
+      'Ancient Ajanta Cave façades above the green Waghora gorge in Maharashtra',
+    ],
+    metaTitle: 'Maharashtra Heritage Tour: Mumbai & Ajanta',
+    metaDescription:
+      'Explore Maharashtra’s heritage, from Mumbai’s Fort precinct and Elephanta Caves to Ajanta and Ellora, with village life, yoga and pottery near Aurangabad.',
+    tagline: 'Mumbai, Elephanta, Ajanta and Ellora at an unhurried pace.',
+    overviewHtml:
+      '<p>Follow an eight-day Maharashtra heritage journey from Mumbai’s Fort precinct and Elephanta Caves to Ajanta and Ellora. Balance monumental history with an Aurangabad farmstay, village life, yoga and pottery for a slower, more connected route.</p>',
+    duration: '8 Days / 7 Nights',
+  },
+  'just-us-by-the-sea-babymoon-at-ahilya-by-the-sea-goa': {
+    heroImageUrl:
+      '/images/packages/ahilya-goa/ahilya-goa-heritage-villa-hero.png',
+    heroImageAlt:
+      'A quiet Indo-Portuguese coastal villa terrace overlooking the Arabian Sea in Goa',
+    galleryUrls: [
+      '/images/packages/ahilya-goa/ahilya-goa-infinity-pool.png',
+      '/images/packages/ahilya-goa/ahilya-goa-courtyard-dinner.png',
+    ],
+    galleryImageAlts: [
+      'An empty infinity plunge pool in a lush Goa coastal garden at sunset',
+      'An intimate candlelit Goan dinner setting in an open-air heritage courtyard',
+    ],
+    metaTitle: 'Goa Babymoon at Ahilya by the Sea',
+    metaDescription:
+      'Plan a restorative Goa babymoon at Ahilya by the Sea with private yoga, spa time, sunset beach walks, a cooking class and candlelit dining.',
+    tagline: 'A restorative Goa babymoon of coastal calm, wellness and romance.',
+    overviewHtml:
+      '<p>Slow down with a four-day Goa babymoon at Ahilya by the Sea. Private yoga, spa time, sunset beach walks, a hands-on cooking experience and candlelit dining make space for rest, connection and unhurried coastal days.</p>',
+    duration: '4 Days / 3 Nights',
+  },
+  'culinary-and-cultural-delights-of-kolkata': {
+    heroImageUrl: '/images/packages/kolkata/kolkata-hooghly-howrah-hero.png',
+    heroImageAlt:
+      'Sunrise over Kolkata’s Hooghly River and Howrah Bridge',
+    galleryUrls: [
+      '/images/packages/kolkata/kolkata-bengali-thali.png',
+      '/images/packages/kolkata/kolkata-coffeehouse.png',
+    ],
+    galleryImageAlts: [
+      'A traditional Bengali thali with regional dishes in a warm Kolkata home',
+      'An empty vintage Kolkata coffeehouse with high ceilings and timber tables',
+    ],
+    metaTitle: 'Kolkata Food & Culture Tour',
+    metaDescription:
+      'Explore Kolkata through Bengali thalis, home cooking, Indian Coffee House and a guided street-food tour on this four-day culinary escape.',
+    tagline: 'A four-day Kolkata journey of Bengali food, heritage, coffee and street-food culture.',
+    overviewHtml:
+      '<p>Discover Kolkata through its food and layered cultural life. This four-day culinary escape brings together Bengali thalis, host-home cooking, Indian Coffee House, heritage streets and a guided street-food walk.</p>',
+    duration: '4 Days / 3 Nights',
+  },
+  'flavours-of-himachal-an-immersive-culinary-experience': {
+    heroImageUrl:
+      '/images/packages/himachal/himachal-palampur-tea-estate-hero.png',
+    heroImageAlt:
+      'Palampur tea estate beneath the Dhauladhar range in Himachal Pradesh',
+    galleryUrls: [
+      '/images/packages/himachal/himachal-kangra-tea-blending.png',
+      '/images/packages/himachal/himachal-woodfired-kitchen.png',
+    ],
+    galleryImageAlts: [
+      'Kangra tea blending on a veranda overlooking a Himachal tea estate',
+      'Wood-fired Himachali cooking in a mountain homestay kitchen',
+    ],
+    metaTitle: 'Himachal Culinary Tour: Kangra & Palampur',
+    metaDescription:
+      'Experience Himachal food in Kangra and Palampur: tea blending, Kangri Dham, Tibetan momos, wood-fired pizza and organic-herb cooking.',
+    tagline: 'A four-day Kangra and Palampur journey of tea, Kangri Dham and mountain cooking.',
+    overviewHtml:
+      '<p>Experience Himachal through Kangra and Palampur’s food traditions. Blend tea at an estate, cook Kangri Dham over wood fire, taste Tibetan momos and thukpa, and finish with organic herbs and mountain-homestay baking.</p>',
+    duration: '4 Days / 3 Nights',
   },
 };
 

@@ -1,17 +1,31 @@
 import type { Metadata } from 'next';
 import PackagesListingPage from '@/components/packages/PackagesListingPage';
 import { JsonLd } from '@/components/seo/JsonLd';
-import { buildBreadcrumbSchema } from '@/lib/structured-data';
+import { buildBreadcrumbSchema, buildPackageCollectionSchema } from '@/lib/structured-data';
 import { getPublishedPackagesForMarket } from '@/lib/firestore';
 import type { Package } from '@/types';
 
 export const metadata: Metadata = {
-  title: 'India Travel Packages',
+  title: 'India Travel Packages: Culture & Wellness',
   description:
-    'Explore curated India journeys across culture, food, wellness, wildlife, heritage, and adventure.',
+    'Discover curated India travel packages for food, wildlife, heritage, wellness and romantic escapes. Tailor your route, stays and pace with BagPackerMe.',
   alternates: {
     canonical: '/in/packages',
     languages: { en: '/packages', 'en-IN': '/in/packages', 'x-default': '/packages' },
+  },
+  openGraph: {
+    type: 'website',
+    url: '/in/packages',
+    siteName: 'BagPackerMe',
+    title: 'India Travel Packages: Culture & Wellness',
+    description:
+      'Discover curated India travel packages for food, wildlife, heritage, wellness and romantic escapes. Tailor your route, stays and pace with BagPackerMe.',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'India Travel Packages: Culture & Wellness',
+    description:
+      'Discover curated India travel packages for food, wildlife, heritage, wellness and romantic escapes. Tailor your route, stays and pace with BagPackerMe.',
   },
 };
 
@@ -36,6 +50,9 @@ export default async function IndiaPackagesPage() {
         { name: 'India Packages', path: '/in/packages' },
       ])}
     />
+    {initialPackages.length > 0 && (
+      <JsonLd data={buildPackageCollectionSchema(initialPackages, 'india')} />
+    )}
     <PackagesListingPage
       market="india"
       eyebrow="India Journeys"

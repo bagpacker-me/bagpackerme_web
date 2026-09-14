@@ -5,7 +5,7 @@ import { findAuthor } from '@/lib/authors';
 import type { FaqItem } from '@/lib/faq';
 import type { BlogPost, JobOpening, JobType, Package, PackageMarket } from '@/types';
 import { getBlogPresentation } from '@/lib/blog-presentation';
-import { blogMetaDescription } from '@/lib/seo';
+import { blogMetaDescription, packageMetaDescription } from '@/lib/seo';
 
 // A loose alias at the boundary so JSON.stringify is happy; each builder returns
 // a precise object literal internally. No `any`.
@@ -100,12 +100,13 @@ export function buildTouristTripSchema(pkg: Package, market: PackageMarket): Jso
 
   // itinerary[].location holds narrative day headings ("Four islands and cable
   // car"), not clean place names — Place is the honest supertype, not City.
+  const itineraryDays = pkg.itinerary.filter((day) => Boolean(day.location?.trim()));
   const itinerary =
-    pkg.itinerary.length > 0
+    itineraryDays.length > 0
       ? {
           '@type': 'ItemList',
-          numberOfItems: pkg.itinerary.length,
-          itemListElement: pkg.itinerary.map((day) => ({
+          numberOfItems: itineraryDays.length,
+          itemListElement: itineraryDays.map((day) => ({
             '@type': 'ListItem',
             position: day.day,
             item: { '@type': 'Place', name: day.location, description: day.description },
@@ -118,8 +119,10 @@ export function buildTouristTripSchema(pkg: Package, market: PackageMarket): Jso
     '@type': 'TouristTrip',
     '@id': `${url}#trip`,
     name: pkg.title,
-    description: pkg.metaDescription || pkg.tagline,
-    ...optionalImage(pkg.heroImageUrl),
+    description: packageMetaDescription(pkg),
+    ...optionalImage(
+      pkg.heroImageUrl?.trim() ? absoluteAssetUrl(pkg.heroImageUrl) : undefined
+    ),
     url,
     touristType: pkg.category,
     provider: { '@id': ORG_ID },
@@ -244,6 +247,42 @@ export function buildBlogPostingSchema(post: BlogPost): JsonLdDocument {
     mainEntityOfPage: url,
     articleSection: presentation.category,
     ...(presentation.tags.length > 0 ? { keywords: presentation.tags.join(', ') } : {}),
+  };
+}
+
+/** Semantic, crawlable catalogue for either the India or global journey listing. */
+export function buildPackageCollectionSchema(
+  packages: Package[],
+  market: PackageMarket
+): JsonLdDocument {
+  const path = market === 'india' ? '/in/packages' : '/packages';
+  const url = absoluteUrl(path);
+  const label = market === 'india' ? 'India Travel Packages' : 'Global Travel Packages';
+
+  return {
+    '@context': CONTEXT,
+    '@type': 'CollectionPage',
+    '@id': `${url}#journeys`,
+    name: label,
+    description:
+      market === 'india'
+        ? 'Curated India travel packages for food, wildlife, heritage, wellness and romantic escapes, tailored by BagPackerMe.'
+        : 'Curated global travel packages, tailored by BagPackerMe.',
+    url,
+    isPartOf: { '@id': SITE_ID },
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: packages.length,
+      itemListElement: packages.map((pkg, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        name: pkg.title,
+        url: absoluteUrl(packagePath(pkg, market)),
+        ...optionalImage(
+          pkg.heroImageUrl?.trim() ? absoluteAssetUrl(pkg.heroImageUrl) : undefined
+        ),
+      })),
+    },
   };
 }
 
