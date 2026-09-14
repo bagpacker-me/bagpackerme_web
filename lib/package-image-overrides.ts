@@ -537,6 +537,186 @@ const PACKAGE_IMAGE_OVERRIDES: Record<
       'Delhi',
     ],
   },
+  'a-journey-of-taste-and-tradition-of-nainital': {
+    heroImageUrl: '/images/packages/nainital/nainital-lake-sunrise-hero.webp',
+    heroImageAlt:
+      'A traditional wooden rowing boat on Naini Lake beneath Nainital’s forested hills at sunrise',
+    galleryUrls: [
+      '/images/packages/nainital/nainital-kumaoni-thali.webp',
+      '/images/packages/nainital/nainital-himalayan-picnic.webp',
+    ],
+    galleryImageAlts: [
+      'A traditional Kumaoni thali served in a mountain homestay overlooking Naini Lake',
+      'A quiet breakfast picnic beside a forest trail above Nainital with views across the Kumaon hills',
+    ],
+    metaTitle: 'Nainital Culinary & Heritage Escape',
+    metaDescription:
+      'Discover Nainital in four days with a heritage walk, Kumaoni food trail, homestay cooking, Himalayan birding picnic and an Awadhi dinner under the stars.',
+    tagline:
+      'Four days of Kumaoni flavours, mountain heritage and slow mornings beside Naini Lake.',
+    overviewHtml:
+      '<p>Experience Nainital through the food, stories and landscapes of the Kumaon hills. This four-day private journey combines a colonial heritage walk with the flavours of Bara Bazaar, a host-led Kumaoni cooking experience, Himalayan birding and an Awadhi dinner shaped by family recipes.</p><ul><li>Heritage walk through colonial Nainital, churches and local markets</li><li>Kumaoni ingredient trail and traditional homestay dinner</li><li>Guided birding walk with a Himalayan breakfast picnic</li><li>Awadhi cooking traditions shared beside a private bonfire</li></ul>',
+    duration: '4 Days / 3 Nights',
+    groupSize: 'Private journey',
+    destinations: ['Nainital'],
+    itineraryLocations: ['Nainital', 'Nainital', 'Nainital', 'Nainital to Pantnagar'],
+  },
+  'riverside-romance-wellness-and-local-experiences': {
+    heroImageUrl:
+      '/images/packages/muvattupuzha/muvattupuzha-river-romance-hero.webp',
+    heroImageAlt:
+      'A traditional Kerala canoe beside a candlelit table for two on the Muvattupuzha River at sunset',
+    galleryUrls: [
+      '/images/packages/muvattupuzha/muvattupuzha-ayurveda-pavilion.webp',
+      '/images/packages/muvattupuzha/muvattupuzha-canoe-tea-house.webp',
+    ],
+    galleryImageAlts: [
+      'Two Ayurveda treatment tables prepared in an open riverside pavilion in Kerala',
+      'A traditional canoe approaching a family-run tea house on the Muvattupuzha River',
+    ],
+    metaTitle: 'Kerala Riverside Romance & Wellness',
+    metaDescription:
+      'Plan a five-day Kerala riverside escape for two with Ayurveda rituals, sunset cruising, local temple traditions, a canoe crossing and private dining.',
+    tagline:
+      'Five private days of riverside calm, Ayurveda, local encounters and candlelit evenings.',
+    overviewHtml:
+      '<p>Slow down together at a private retreat on the Muvattupuzha River. Over five days, restorative Ayurveda, candlelit dining and a sunset cruise are balanced with community-led temple traditions, a culinary session, toddy tapping and a canoe journey to a family-run tea house.</p><ul><li>Private riverside suite and chef-curated dinners for two</li><li>Couple’s Ayurveda ritual with herbal steam therapy</li><li>Sunset cruise on the Kaliyar River and a private astronomy session</li><li>Temple walk, culinary session, toddy tapping and local tea-house visit</li></ul>',
+    duration: '5 Days / 4 Nights',
+    groupSize: 'Private couple journey',
+    destinations: ['Muvattupuzha', 'Kaliyar River'],
+    itineraryLocations: [
+      'Kochi to Muvattupuzha',
+      'Muvattupuzha & Kaliyar River',
+      'Muvattupuzha',
+      'Muvattupuzha River',
+      'Muvattupuzha to Kochi',
+    ],
+  },
+  'kashmirs-culinary-trails-and-traditions': {
+    heroImageUrl:
+      '/images/packages/kashmir-culinary/kashmir-wazwan-dal-lake-hero.webp',
+    heroImageAlt:
+      'A traditional Kashmiri wazwan feast served on a copper trami inside a Dal Lake houseboat',
+    galleryUrls: [
+      '/images/packages/kashmir-culinary/kashmir-shikara-samovar.webp',
+      '/images/packages/kashmir-culinary/kashmir-saffron-harvest.webp',
+    ],
+    galleryImageAlts: [
+      'A traditional shikara carrying a copper samovar tea service across Dal Lake in Srinagar',
+      'Saffron crocuses being carefully harvested by hand in Pampore in the Kashmir Valley',
+    ],
+    metaTitle: 'Kashmir Culinary Trail & Wazwan Tour',
+    metaDescription:
+      'Taste Kashmir on a four-day private food journey with a wazwan cooking class, Srinagar spice market, Dal Lake shikara ride, saffron and Pahalgam trout lunch.',
+    tagline:
+      'Four days of wazwan, saffron, mountain herbs and stories from Srinagar to Pahalgam.',
+    overviewHtml:
+      '<p>Explore Kashmir through its kitchens, markets and mountain landscapes on a four-day private culinary journey. Learn the craft of wazwan with a professional chef, follow the aromas of Srinagar’s Old City, take tea on Dal Lake and seek the herbs and seasonal saffron that shape the valley’s food traditions.</p><ul><li>Hands-on wazwan cooking class and traditional dinner</li><li>Old City spice market and seasonal Pampore saffron experience</li><li>Houseboat high tea and a shikara ride on Dal Lake</li><li>Mountain herb walk and trout lunch beside Pahalgam’s Lidder River</li></ul>',
+    duration: '4 Days / 3 Nights',
+    groupSize: 'Private journey',
+    destinations: ['Srinagar', 'Pampore', 'Pahalgam'],
+    itineraryLocations: [
+      'Srinagar',
+      'Srinagar & Pampore',
+      'Pahalgam & Srinagar',
+      'Srinagar',
+    ],
+  },
+  'royal-flavours-of-rajasthan': {
+    heroImageUrl:
+      '/images/packages/jaipur-culinary/jaipur-rajasthani-thali-hero.webp',
+    heroImageAlt:
+      'A traditional Rajasthani thali served in a pink-sandstone haveli courtyard in Jaipur',
+    galleryUrls: [
+      '/images/packages/jaipur-culinary/jaipur-market-ingredients.webp',
+      '/images/packages/jaipur-culinary/jaipur-haveli-cooking.webp',
+    ],
+    galleryImageAlts: [
+      'Fresh vegetables, whole spices and clay bowls arranged in Jaipur’s historic market quarter',
+      'Dough, spices and clay pots prepared for a traditional cooking class in a Jaipur haveli kitchen',
+    ],
+    metaTitle: 'Royal Flavours of Jaipur: Food Tour',
+    metaDescription:
+      'Spend four days tasting Jaipur with an Old City food walk, Rajasthani and Kayastha cooking, local market visit, family recipes and a private homestay.',
+    tagline:
+      'Four days in Jaipur shaped by market flavours, family kitchens and Rajasthani hospitality.',
+    overviewHtml:
+      '<p>Meet Jaipur through the flavours that live beyond its palace walls. This four-day private culinary escape pairs an old-city food walk with market visits and welcoming home kitchens, where Rajasthani and Kayastha recipes reveal the family histories behind the city’s celebrated food culture.</p><ul><li>Guided Jaipur street-food walk with local cultural context</li><li>Rajasthani and Kayastha cooking experience in a chef’s home</li><li>Traditional breakfast and a local ingredient market visit</li><li>Private homestay with time to explore Jaipur at your own pace</li></ul>',
+    duration: '4 Days / 3 Nights',
+    groupSize: 'Private journey',
+    destinations: ['Jaipur'],
+    itineraryLocations: ['Jaipur', 'Jaipur Old City', 'Jaipur', 'Jaipur'],
+  },
+  'heritage-trail-golden-triangle-with-mandawa': {
+    heroImageUrl: '/images/packages/mandawa/mandawa-fresco-haveli-hero.webp',
+    heroImageAlt:
+      'A frescoed arch framing the courtyard of a historic haveli in Mandawa, Rajasthan',
+    galleryUrls: [
+      '/images/packages/mandawa/jaipur-hawa-mahal-sunrise.webp',
+      '/images/packages/mandawa/agra-fort-courtyard.webp',
+    ],
+    galleryImageAlts: [
+      'Jaipur’s Hawa Mahal rising above the Pink City rooftops at sunrise',
+      'The red sandstone arcades and courtyard of Agra Fort in warm afternoon light',
+    ],
+    metaTitle: 'Golden Triangle & Mandawa Heritage Tour',
+    metaDescription:
+      'Explore Delhi, Agra, Jaipur and Mandawa over nine days with Old Delhi food, Taj Mahal sunrise, forts, stepwells and Shekhawati’s frescoed havelis.',
+    tagline:
+      'Nine days from Delhi and the Taj to Jaipur’s palaces and Mandawa’s painted havelis.',
+    overviewHtml:
+      '<p>Extend India’s Golden Triangle into the painted towns of Shekhawati on this nine-day private heritage journey. Begin with Delhi’s monuments and old-city food, continue to Agra and Jaipur, then slow the pace among Mandawa’s frescoed havelis, medieval fort and colourful bazaar.</p><ul><li>Delhi sightseeing, Sikh heritage and an Old Delhi food walk</li><li>Agra Fort, Taj Mahal at sunrise and a Beyond the Taj sunset walk</li><li>Jaipur’s City Palace, Hawa Mahal, Amer Fort and historic stepwell</li><li>Two nights among Mandawa’s painted havelis and Shekhawati heritage</li></ul>',
+    duration: '9 Days / 8 Nights',
+    groupSize: 'Private journey',
+    destinations: ['Delhi', 'Agra', 'Jaipur', 'Mandawa'],
+    itineraryLocations: [
+      'Delhi',
+      'Old Delhi',
+      'Delhi to Agra',
+      'Agra',
+      'Agra to Jaipur',
+      'Jaipur',
+      'Jaipur to Mandawa',
+      'Mandawa',
+      'Mandawa to Delhi',
+    ],
+  },
+  'heritage-and-royal-splendor-golden-triangle-with-udaipur': {
+    heroImageUrl:
+      '/images/packages/golden-triangle-udaipur/udaipur-lake-pichola-hero.webp',
+    heroImageAlt:
+      'Udaipur City Palace and Lake Pichola framed by a white haveli arch at sunrise',
+    galleryUrls: [
+      '/images/packages/golden-triangle-udaipur/jaipur-amer-fort.webp',
+      '/images/packages/golden-triangle-udaipur/agra-taj-mahal-dawn.webp',
+    ],
+    galleryImageAlts: [
+      'Amer Fort reflected in Maota Lake beneath the Aravalli hills outside Jaipur',
+      'The Taj Mahal and its reflection in the central garden pool at dawn in Agra',
+    ],
+    metaTitle: 'Golden Triangle & Udaipur Heritage Tour',
+    metaDescription:
+      'Travel Delhi, Agra, Jaipur and Udaipur in ten days with Old Delhi food, Taj Mahal sunrise, Amer Fort, Lake Pichola, palaces, temples and local art.',
+    tagline:
+      'Ten days from Old Delhi and the Taj to Jaipur’s forts and Udaipur’s lake palaces.',
+    overviewHtml:
+      '<p>Combine the Golden Triangle with Udaipur’s lakefront splendour on a ten-day private journey through Delhi, Agra, Jaipur and Rajasthan’s white city. Alongside landmark architecture, local storytellers, food, embroidery and miniature painting introduce the people and traditions behind each place.</p><ul><li>Delhi landmarks, Sikh heritage and an Old Delhi food walk</li><li>Agra Fort, Taj Mahal at sunrise and a hands-on embroidery workshop</li><li>Jaipur’s palaces, Amer Fort, stepwell and Aravalli viewpoints</li><li>Udaipur City Palace, Lake Pichola boat ride, temples and miniature art</li></ul>',
+    duration: '10 Days / 9 Nights',
+    groupSize: 'Private journey',
+    destinations: ['Delhi', 'Agra', 'Jaipur', 'Udaipur'],
+    itineraryLocations: [
+      'Delhi',
+      'Old Delhi',
+      'Delhi to Agra',
+      'Agra',
+      'Agra to Jaipur',
+      'Jaipur',
+      'Jaipur to Udaipur',
+      'Udaipur',
+      'Udaipur to Delhi',
+      'Delhi',
+    ],
+  },
   'soulmates-in-the-safari-sariskas-luxe-romance-experience': {
     heroImageUrl:
       '/images/packages/sariska-romance/sariska-tiger-aravalli-hero.webp',
