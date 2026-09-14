@@ -717,6 +717,336 @@ const PACKAGE_IMAGE_OVERRIDES: Record<
       'Delhi',
     ],
   },
+  'a-culinary-portrait-of-kerala-tea-spice-and-tradition': {
+    heroImageUrl:
+      '/images/packages/kerala-culinary/kerala-spice-tea-hero.webp',
+    heroImageAlt:
+      'Fresh cardamom, black pepper and tea leaves overlooking the misty plantations of Munnar',
+    galleryUrls: [
+      '/images/packages/kerala-culinary/mattancherry-spice-market.webp',
+      '/images/packages/kerala-culinary/alleppey-houseboat-feast.webp',
+    ],
+    galleryImageAlts: [
+      'Cardamom, pepper, turmeric and chillies displayed beside a historic Mattancherry spice lane in Kochi',
+      'A Kerala meal served on banana leaves aboard a private houseboat in the Alleppey backwaters',
+    ],
+    metaTitle: 'Kerala Culinary Tour: Tea & Spice',
+    metaDescription:
+      'Taste Kerala over ten days with Malabar cooking, Fort Kochi street food, Munnar tea, Thekkady spices and a private Alleppey houseboat journey.',
+    tagline:
+      'Ten days from Malabar kitchens and Kochi lanes to Munnar tea, Thekkady spice and Alleppey backwaters.',
+    overviewHtml:
+      '<p>Follow Kerala through its kitchens, markets and growing regions on a ten-day private culinary journey. Learn Malabar recipes in Muvattupuzha, taste Fort Kochi and Mattancherry, walk a Munnar tea estate, cook with Thekkady spices and finish with regional food aboard an Alleppey houseboat.</p><ul><li>Local market visit, toddy tapping and Malabar cooking in Muvattupuzha</li><li>Fort Kochi heritage, Mattancherry street food and coastal recipes</li><li>Lockhart tea trail, factory visit and guided tasting in Munnar</li><li>Spice plantation walk and hands-on cooking in Thekkady</li><li>Private Alleppey houseboat with backwater dining</li></ul>',
+    duration: '10 Days / 9 Nights',
+    groupSize: 'Private journey',
+    destinations: ['Muvattupuzha', 'Kochi', 'Munnar', 'Thekkady', 'Alleppey'],
+    itineraryLocations: [
+      'Kochi to Muvattupuzha',
+      'Muvattupuzha',
+      'Kochi & Mattancherry',
+      'Fort Kochi',
+      'Kochi to Munnar',
+      'Munnar',
+      'Munnar to Thekkady',
+      'Thekkady',
+      'Thekkady to Alleppey',
+      'Alleppey to Kochi',
+    ],
+  },
+  'royal-routes-and-wilderness-trails-golden-triangle-with-udaipur-and-jawai': {
+    heroImageUrl: '/images/packages/udaipur-jawai/jawai-leopard-hero.webp',
+    heroImageAlt:
+      'A leopard standing on the granite hills of Jawai in Rajasthan at sunset',
+    galleryUrls: [
+      '/images/packages/udaipur-jawai/udaipur-lake-pichola.webp',
+      '/images/packages/udaipur-jawai/jawai-luxury-camp.webp',
+    ],
+    galleryImageAlts: [
+      'Udaipur City Palace and white lakefront havelis reflected in Lake Pichola at sunrise',
+      'A lantern-lit private tented camp among the granite hills of Jawai at blue hour',
+    ],
+    metaTitle: 'Golden Triangle, Udaipur & Jawai Tour',
+    metaDescription:
+      'Travel Delhi, Agra, Jaipur, Udaipur and Jawai in 13 days with the Taj Mahal, Lake Pichola, heritage storytelling and private leopard safaris.',
+    tagline:
+      'Thirteen days from Mughal landmarks and lake palaces to the granite wilds of Jawai.',
+    overviewHtml:
+      '<p>Pair North India’s celebrated heritage circuit with Udaipur’s lakes and Jawai’s leopard country on a thirteen-day private journey. The route balances Delhi, Agra and Jaipur landmarks with local storytelling, palace architecture, Lake Pichola and naturalist-led wilderness drives among Rajasthan’s granite hills.</p><ul><li>Old and New Delhi with neighbourhood food and living heritage</li><li>Agra Fort and the Taj Mahal in the soft morning light</li><li>Jaipur City Palace, Amer Fort, stepwells and Aravalli viewpoints</li><li>Udaipur palaces, temples, art and a Lake Pichola boat ride</li><li>Multiple private wilderness drives with Jawai naturalists</li></ul>',
+    duration: '13 Days / 12 Nights',
+    groupSize: 'Private journey',
+    destinations: ['Delhi', 'Agra', 'Jaipur', 'Udaipur', 'Jawai'],
+    itineraryLocations: [
+      'Delhi',
+      'Old Delhi',
+      'Delhi to Agra',
+      'Agra',
+      'Agra to Jaipur',
+      'Jaipur to Udaipur',
+      'Udaipur',
+      'Udaipur',
+      'Udaipur to Jawai',
+      'Jawai',
+      'Jawai',
+      'Jawai to Delhi via Udaipur',
+      'Delhi',
+    ],
+  },
+  'bengal-tapestry-kolkata-murshidabad-and-rajbari-journey': {
+    heroImageUrl: '/images/packages/bengal-tapestry/bengal-rajbari-hero.webp',
+    heroImageAlt:
+      'A historic Bengal rajbari courtyard with white columns, green shutters and a reflecting pond at dawn',
+    galleryUrls: [
+      '/images/packages/bengal-tapestry/north-kolkata-heritage.webp',
+      '/images/packages/bengal-tapestry/murshidabad-riverside-palace.webp',
+    ],
+    galleryImageAlts: [
+      'A heritage tram passing pastel colonial buildings on a rain-washed street in North Kolkata',
+      'Murshidabad palace architecture beside the Bhagirathi River in warm evening light',
+    ],
+    metaTitle: 'Kolkata, Murshidabad & Rajbari Tour',
+    metaDescription:
+      'Explore Bengal in nine days through Kolkata, Murshidabad and Rajbari Bawali, with colonial architecture, Nawabi heritage, silk, cuisine and Baul music.',
+    tagline:
+      'Nine days through Kolkata’s layered streets, Murshidabad’s Nawabi past and a restored Bengal rajbari.',
+    overviewHtml:
+      '<p>Trace Bengal’s cultural layers across Kolkata, Murshidabad and Rajbari Bawali on a nine-day private journey. Colonial-era streets give way to the Nawabi architecture and craft traditions of Murshidabad before the route slows inside a restored country estate with regional cuisine and Baul music.</p><ul><li>Curated walks through Kolkata’s architecture, markets and neighbourhoods</li><li>Murshidabad palaces, riverside history and silk craftsmanship</li><li>Local Bengali menus shaped by each region on the route</li><li>Unhurried estate time and village encounters at Rajbari Bawali</li><li>Traditional Baul music in an atmospheric heritage setting</li></ul>',
+    duration: '9 Days / 8 Nights',
+    groupSize: 'Private journey',
+    destinations: ['Kolkata', 'Murshidabad', 'Rajbari Bawali'],
+    itineraryLocations: [
+      'Kolkata',
+      'Kolkata',
+      'Kolkata to Murshidabad',
+      'Murshidabad',
+      'Murshidabad',
+      'Murshidabad to Kolkata',
+      'Kolkata to Rajbari Bawali',
+      'Rajbari Bawali',
+      'Rajbari Bawali to Kolkata',
+    ],
+  },
+  'serene-kerala-escapade': {
+    heroImageUrl: '/images/packages/serene-kerala/alleppey-houseboat-hero.webp',
+    heroImageAlt:
+      'A traditional Kerala kettuvallam houseboat gliding through palm-lined Alleppey backwaters at sunrise',
+    galleryUrls: [
+      '/images/packages/serene-kerala/kolukkumalai-tea-hills.webp',
+      '/images/packages/serene-kerala/periyar-elephants.webp',
+    ],
+    galleryImageAlts: [
+      'Sunrise and drifting mist over the steep green tea plantations of Kolukkumalai near Munnar',
+      'A distant elephant family beside the calm forested shore of Periyar Lake in Thekkady',
+    ],
+    metaTitle: 'Classic Kerala Tour: Hills & Backwaters',
+    metaDescription:
+      'Explore Kerala in nine days with Fort Kochi, Munnar tea, Periyar wildlife, Thekkady spices, an Alleppey houseboat and a peaceful Marari beach stay.',
+    tagline:
+      'Nine serene days of Kochi heritage, misty tea hills, forest waterways, backwaters and beach.',
+    overviewHtml:
+      '<p>Experience Kerala’s classic landscapes at an easy pace on a nine-day private journey from Kochi to Marari. Heritage streets and Kathakali lead into Munnar’s tea country, Periyar’s forest, Thekkady’s spices, an overnight Alleppey houseboat and a final pause beside the Arabian Sea.</p><ul><li>Fort Kochi landmarks and an evening Kathakali performance</li><li>High-elevation tea scenery around Munnar and Kolukkumalai</li><li>Periyar wildlife landscape and a guided spice plantation visit</li><li>Overnight cruise on a traditional Alleppey houseboat</li><li>Unhurried beach time in quiet Marari</li></ul>',
+    duration: '9 Days / 8 Nights',
+    groupSize: 'Private journey',
+    destinations: ['Kochi', 'Munnar', 'Thekkady', 'Alleppey', 'Marari'],
+    itineraryLocations: [
+      'Kochi',
+      'Fort Kochi',
+      'Kochi to Munnar',
+      'Munnar & Kolukkumalai',
+      'Munnar to Thekkady',
+      'Thekkady',
+      'Thekkady to Alleppey',
+      'Alleppey to Marari',
+      'Marari to Kochi',
+    ],
+  },
+  'enchanted-heritage-a-journey-through-lucknow-and-varanasi': {
+    heroImageUrl: '/images/packages/lucknow-varanasi/varanasi-ghats-hero.webp',
+    heroImageAlt:
+      'A wooden boat approaching the historic Varanasi ghats on the Ganges at sunrise',
+    galleryUrls: [
+      '/images/packages/lucknow-varanasi/lucknow-imambara-rumi-darwaza.webp',
+      '/images/packages/lucknow-varanasi/banarasi-silk-weaving.webp',
+    ],
+    galleryImageAlts: [
+      'The monumental arches and gardens of Bara Imambara and Rumi Darwaza in Lucknow',
+      'An artisan weaving crimson and gold Banarasi silk on a traditional handloom in Varanasi',
+    ],
+    metaTitle: 'Lucknow & Varanasi Heritage Tour',
+    metaDescription:
+      'Discover Lucknow and Varanasi in six days with Awadhi architecture, the Ganga Aarti, sunrise boating, sacred lanes and a Banarasi silk workshop.',
+    tagline:
+      'Six days between Lucknow’s Awadhi grace and Varanasi’s river rituals, lanes and living craft.',
+    overviewHtml:
+      '<p>Connect two of North India’s most distinctive cultural cities on a six-day private journey. Lucknow introduces Awadhi architecture, layered history and gracious traditions before Varanasi reveals the Ganges at dawn, evening aarti, sacred lanes and the patient craft of Banarasi silk.</p><ul><li>Bara Imambara, Chota Imambara, the Residency and Rumi Darwaza</li><li>Evening Ganga Aarti viewed respectfully beside the river</li><li>Sunrise boat journey along Varanasi’s historic ghats</li><li>Old-city walk near Kashi Vishwanath and Manikarnika Ghat</li><li>Meet artisans in a traditional Banarasi silk workshop</li></ul>',
+    duration: '6 Days / 5 Nights',
+    groupSize: 'Private journey',
+    destinations: ['Lucknow', 'Varanasi'],
+    itineraryLocations: [
+      'Lucknow',
+      'Lucknow',
+      'Lucknow to Varanasi',
+      'Varanasi',
+      'Varanasi',
+      'Varanasi',
+    ],
+  },
+  'himalayan-tranquillity-tea-tranquillity-and-tibetan-culture': {
+    heroImageUrl:
+      '/images/packages/kangra-tranquillity/kangra-tea-dhauladhar-hero.webp',
+    heroImageAlt:
+      'Green Kangra tea terraces overlooking the snow-capped Dhauladhar mountains at sunrise',
+    galleryUrls: [
+      '/images/packages/kangra-tranquillity/norbulingka-tibetan-garden.webp',
+      '/images/packages/kangra-tranquillity/kangra-waterfall-picnic.webp',
+    ],
+    galleryImageAlts: [
+      'A colorful Tibetan-style temple and peaceful garden at Norbulingka near Dharamshala',
+      'A quiet picnic prepared beside a forest waterfall in the Kangra Valley',
+    ],
+    metaTitle: 'Kangra Tea & Tibetan Culture Retreat',
+    metaDescription:
+      'Spend six days in Kangra with Wah Tea Estate, Baijnath, Bir, McLeod Ganj, Norbulingka, Andretta village, waterfall walks and Tibetan culture.',
+    tagline:
+      'Six restorative days of Kangra tea, Himalayan trails, Tibetan culture and creative villages.',
+    overviewHtml:
+      '<p>Slow down beneath the Dhauladhar range on a six-day private retreat centred on Kangra tea and Tibetan culture. Estate tastings and waterfall trails are paired with Baijnath, Bir, Dharamshala, McLeod Ganj, Norbulingka and the artistic village of Andretta.</p><ul><li>Guided Wah Tea Estate walk, factory visit and tea tasting</li><li>Baijnath temple, Bir and the Sherabling monastic landscape</li><li>Forest nature trail with a quiet waterfall picnic</li><li>Dharamshala, McLeod Ganj and Norbulingka cultural visits</li><li>Pottery and creative traditions in Andretta village</li></ul>',
+    duration: '6 Days / 5 Nights',
+    groupSize: 'Private journey',
+    destinations: [
+      'Kangra Valley',
+      'Baijnath',
+      'Bir',
+      'Dharamshala',
+      'McLeod Ganj',
+      'Andretta',
+    ],
+    itineraryLocations: [
+      'Dharamshala to Wah Tea Estate',
+      'Baijnath & Bir',
+      'Wah Tea Estate',
+      'Dharamshala & McLeod Ganj',
+      'Andretta & Wah Tea Estate',
+      'Wah Tea Estate to Dharamshala',
+    ],
+  },
+  'unexplored-kerala': {
+    heroImageUrl: '/images/packages/unexplored-kerala/bekal-fort-hero.webp',
+    heroImageAlt:
+      'Bekal Fort ramparts above the Arabian Sea on Kerala’s northern coast at sunset',
+    galleryUrls: [
+      '/images/packages/unexplored-kerala/wayanad-rainforest-waterfall.webp',
+      '/images/packages/unexplored-kerala/kannur-theyyam.webp',
+    ],
+    galleryImageAlts: [
+      'A mossy rainforest trail leading to a secluded waterfall in Wayanad',
+      'A Theyyam ceremonial performer in traditional red costume inside a lamp-lit Kannur shrine courtyard',
+    ],
+    metaTitle: 'North Kerala Heritage & Nature Tour',
+    metaDescription:
+      'Explore North Kerala in nine days through Kozhikode, Wayanad, Kannur and Bekal, with rainforest trails, Theyyam heritage, forts, beaches and backwaters.',
+    tagline:
+      'Nine days along North Kerala’s spice coast, rainforest highlands, ritual traditions and quiet backwaters.',
+    overviewHtml:
+      '<p>Go beyond Kerala’s familiar south on a nine-day private route through Kozhikode, Wayanad, Kannur, Bekal and Kasaragod. Food history and coastal trade lead into rainforest trails, Theyyam traditions, seafront forts, uncrowded beaches and an overnight backwater experience.</p><ul><li>Kozhikode’s spice-port history and distinctive Malabar food culture</li><li>Guided Wayanad rainforest walking and a night nature experience</li><li>Kannur fort, museums, beach time and Theyyam heritage</li><li>Bekal Fort and the quieter landscapes of North Kerala</li><li>Private houseboat stay on the Kasaragod backwaters</li></ul>',
+    duration: '9 Days / 8 Nights',
+    groupSize: 'Private journey',
+    destinations: ['Kozhikode', 'Wayanad', 'Kannur', 'Bekal', 'Kasaragod'],
+    itineraryLocations: [
+      'Kozhikode',
+      'Kozhikode',
+      'Kozhikode to Wayanad',
+      'Wayanad',
+      'Wayanad to Kannur',
+      'Kannur',
+      'Kannur to Bekal & Kasaragod',
+      'Bekal & Kasaragod',
+      'Bekal to Kozhikode',
+    ],
+  },
+  'gujarats-regal-heritage-expedition': {
+    heroImageUrl: '/images/packages/gujarat-regal/vadodara-palace-hero.webp',
+    heroImageAlt:
+      'The ornate Laxmi Vilas Palace in Vadodara glowing in late-afternoon light',
+    galleryUrls: [
+      '/images/packages/gujarat-regal/rani-ki-vav-patan.webp',
+      '/images/packages/gujarat-regal/palitana-jain-temples.webp',
+    ],
+    galleryImageAlts: [
+      'The carved sandstone galleries and geometric terraces of Rani ki Vav stepwell in Patan',
+      'White marble Jain temple spires across Shatrunjaya Hill at Palitana in the early morning',
+    ],
+    metaTitle: 'Gujarat Royal Heritage Tour',
+    metaDescription:
+      'Explore Gujarat in ten days through Ahmedabad, Patan, Champaner, Vadodara, Palitana, Gondal and Muli, with stepwells, palaces and sacred architecture.',
+    tagline:
+      'Ten days through Gujarat’s stepwells, princely palaces, sacred hills and living heritage towns.',
+    overviewHtml:
+      '<p>Journey across Gujarat’s royal and sacred landscapes on a ten-day private expedition from Ahmedabad. UNESCO architecture, former princely capitals and characterful heritage stays connect Patan, Champaner, Vadodara, Bhavnagar, Palitana, Gondal and Muli.</p><ul><li>Ahmedabad heritage and an excursion to Patan and Modhera</li><li>Champaner-Pavagadh and the communities around Chhota Udepur</li><li>Vadodara’s Laxmi Vilas Palace and cultural collections</li><li>Bhavnagar, Lothal and the marble temples of Palitana</li><li>Gondal and Muli heritage before returning to Ahmedabad</li></ul>',
+    duration: '10 Days / 9 Nights',
+    groupSize: 'Private journey',
+    destinations: [
+      'Ahmedabad',
+      'Patan',
+      'Champaner',
+      'Vadodara',
+      'Palitana',
+      'Gondal',
+      'Muli',
+    ],
+    itineraryLocations: [
+      'Ahmedabad',
+      'Patan & Modhera',
+      'Ahmedabad to Santrampur',
+      'Champaner & Jambughoda',
+      'Chhota Udepur & Jambughoda',
+      'Vadodara',
+      'Lothal & Bhavnagar',
+      'Palitana to Gondal',
+      'Gondal to Muli',
+      'Muli to Ahmedabad',
+    ],
+  },
+  'timeless-tamil-nadu-temples-traditions-and-treasures': {
+    heroImageUrl:
+      '/images/packages/tamil-nadu-heritage/madurai-meenakshi-hero.webp',
+    heroImageAlt:
+      'The richly sculpted gopurams of Meenakshi Amman Temple rising over Madurai at dawn',
+    galleryUrls: [
+      '/images/packages/tamil-nadu-heritage/mahabalipuram-shore-temple.webp',
+      '/images/packages/tamil-nadu-heritage/chettinad-mansion-courtyard.webp',
+    ],
+    galleryImageAlts: [
+      'The ancient granite Shore Temple at Mahabalipuram beside the Bay of Bengal at dawn',
+      'A restored Chettinad mansion courtyard with carved teak columns and patterned Athangudi tiles',
+    ],
+    metaTitle: 'Tamil Nadu Temple & Culture Tour',
+    metaDescription:
+      'Travel Tamil Nadu in eight days through Mahabalipuram, Pondicherry, Kumbakonam, Thanjavur, Chettinad and Madurai for temples, art, food and heritage.',
+    tagline:
+      'Eight days of coastal temples, Tamil sacred towns, French-era lanes and Chettinad heritage.',
+    overviewHtml:
+      '<p>Travel from the Coromandel Coast to Madurai on an eight-day private journey through Tamil Nadu’s temples, traditions and distinctive regional architecture. Mahabalipuram and Pondicherry lead to the Chola heartland, Thanjavur, Chettinad mansions and the living sacred city of Madurai.</p><ul><li>Mahabalipuram’s UNESCO monuments and the seaside Shore Temple</li><li>Pondicherry heritage quarters and the creative community of Auroville</li><li>Chidambaram, Gangaikonda Cholapuram, Darasuram and Kumbakonam</li><li>Thanjavur’s Brihadeeswarar Temple and artistic legacy</li><li>Chettinad mansions, Athangudi craft and Madurai’s Meenakshi Temple</li></ul>',
+    duration: '8 Days / 7 Nights',
+    groupSize: 'Private journey',
+    destinations: [
+      'Mahabalipuram',
+      'Pondicherry',
+      'Kumbakonam',
+      'Thanjavur',
+      'Chettinad',
+      'Madurai',
+    ],
+    itineraryLocations: [
+      'Chennai to Pondicherry via Mahabalipuram',
+      'Pondicherry & Auroville',
+      'Pondicherry to Kumbakonam via Chidambaram',
+      'Kumbakonam & Darasuram',
+      'Thanjavur to Chettinad',
+      'Chettinad',
+      'Chettinad to Madurai',
+      'Madurai',
+    ],
+  },
   'soulmates-in-the-safari-sariskas-luxe-romance-experience': {
     heroImageUrl:
       '/images/packages/sariska-romance/sariska-tiger-aravalli-hero.webp',

@@ -24,6 +24,15 @@ const DURATIONS = [
 // server-rendered cards — not a carousel or a client-only promotion — so the
 // routes remain visible and crawlable in the initial document.
 const INDIA_EDITORIAL_FEATURES = [
+  'a-culinary-portrait-of-kerala-tea-spice-and-tradition',
+  'royal-routes-and-wilderness-trails-golden-triangle-with-udaipur-and-jawai',
+  'bengal-tapestry-kolkata-murshidabad-and-rajbari-journey',
+  'serene-kerala-escapade',
+  'enchanted-heritage-a-journey-through-lucknow-and-varanasi',
+  'himalayan-tranquillity-tea-tranquillity-and-tibetan-culture',
+  'unexplored-kerala',
+  'gujarats-regal-heritage-expedition',
+  'timeless-tamil-nadu-temples-traditions-and-treasures',
   'a-journey-of-taste-and-tradition-of-nainital',
   'riverside-romance-wellness-and-local-experiences',
   'kashmirs-culinary-trails-and-traditions',
@@ -55,7 +64,7 @@ function CatalogueEditorialContent({ market }: { market: PackageMarket }) {
     ? 'How to choose an India journey that feels like your own'
     : 'How to choose an international journey that feels like your own';
   const destinationCopy = isIndia
-    ? 'India rewards a slower, more considered route. Choose a culinary stay beside Naini Lake, follow Kashmir’s markets and family food traditions, unwind on a private Kerala river retreat, or extend the Golden Triangle to Mandawa or Udaipur. Start with the experiences you want to have, then decide how much moving between places feels enjoyable rather than rushed.'
+    ? 'India rewards a slower, more considered route. Follow Kerala through spice gardens and backwaters, combine the Golden Triangle with Udaipur and Jawai, explore Bengal’s rajbaris, pause among Kangra tea estates, or trace Gujarat and Tamil Nadu through palaces and sacred architecture. Start with the experiences you want to have, then decide how much moving between places feels enjoyable rather than rushed.'
     : 'A great international itinerary leaves room for the reason you chose a place in the first place. That might mean a few unhurried days in a European city, time for food and neighbourhoods in Japan, a mix of coast and culture in Vietnam, or a safari paced around the natural world.';
   const planningCopy = isIndia
     ? 'Use the filters above to compare the journey themes, trip lengths, and price ranges that fit your plans. Each itinerary is a starting point: we can adjust dates, accommodation style, transport, activity level, and the balance between guided time and time to explore independently.'
