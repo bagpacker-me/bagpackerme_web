@@ -1,7 +1,6 @@
 'use client';
 
 import { createContext, useEffect, useState, type ReactNode } from 'react';
-import { scheduleIdleTask } from '@/lib/browser-idle';
 import {
   DEFAULT_SITE_SETTINGS,
   resolveSiteSettings,
@@ -15,8 +14,8 @@ export function SiteSettingsProvider({
   initialSettings,
 }: {
   children: ReactNode;
-  // Seeded server-side from getSiteSettingsServer so contact details render
-  // correctly on first paint instead of showing defaults then swapping.
+  // Seeded with the public shell values so contact details render correctly on
+  // first paint instead of waiting for a remote settings request.
   initialSettings?: ResolvedSiteSettings;
 }) {
   const [settings, setSettings] = useState<ResolvedSiteSettings>(
@@ -25,20 +24,31 @@ export function SiteSettingsProvider({
 
   useEffect(() => {
     let isMounted = true;
+    let hasRefreshed = false;
 
-    const cancel = scheduleIdleTask(async () => {
-      // REST rather than the Firebase SDK. This provider wraps every public
-      // route, so importing lib/firestore here loaded the whole SDK (and its
-      // auth iframe) sitewide just to re-read one settings document that the
-      // server already rendered into `initialSettings`.
+    const refreshAfterIntent = async () => {
+      if (hasRefreshed) return;
+      hasRefreshed = true;
+
+      // The initial values are already correct for the public shell. A
+      // Firestore refresh is useful only after a real visitor interaction;
+      // running it during first paint creates a third-party request that can
+      // lengthen the mobile critical path for no visible benefit.
       const { fetchSiteSettingsRest } = await import('@/lib/public-reads-rest');
       const data = await fetchSiteSettingsRest();
       if (isMounted && data) setSettings(resolveSiteSettings(data));
-    }, 3000);
+    };
+
+    window.addEventListener('pointerdown', refreshAfterIntent, {
+      once: true,
+      passive: true,
+    });
+    window.addEventListener('keydown', refreshAfterIntent, { once: true });
 
     return () => {
       isMounted = false;
-      cancel();
+      window.removeEventListener('pointerdown', refreshAfterIntent);
+      window.removeEventListener('keydown', refreshAfterIntent);
     };
   }, []);
 

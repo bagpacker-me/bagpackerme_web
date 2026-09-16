@@ -5,13 +5,13 @@ import Image from 'next/image';
 import { motion, useReducedMotion } from 'framer-motion';
 import Link from 'next/link';
 import { ArrowRight, Star } from 'lucide-react';
-import { scheduleIdleTask } from '@/lib/browser-idle';
 import { PackageMarket, Testimonial } from '@/types';
 
 export default function MemorableMoments({ market = 'global' }: { market?: PackageMarket }) {
   const shouldReduceMotion = useReducedMotion();
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const [hasScrollIntent, setHasScrollIntent] = useState(false);
 
   const heading =
     market === 'india'
@@ -19,26 +19,45 @@ export default function MemorableMoments({ market = 'global' }: { market?: Packa
       : 'Travel moments across borders';
 
   useEffect(() => {
+    const handleScroll = () => {
+      // This section is far below the hero. Start its optional data work only
+      // once a visitor has begun exploring the page.
+      if (window.scrollY < 96) return;
+      setHasScrollIntent(true);
+      window.removeEventListener('scroll', handleScroll);
+    };
+
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
     let mounted = true;
     setTestimonials([]);
     setLoaded(false);
 
-    const cancel = scheduleIdleTask(async () => {
+    if (!hasScrollIntent) {
+      return () => {
+        mounted = false;
+      };
+    }
+
+    void (async () => {
       // REST rather than the Firebase SDK — the section renders a handful of
-      // quotes and is hidden when there are none, so it has no business
-      // pulling the SDK (and its auth iframe) onto the homepage.
+      // quotes and is hidden when there are none, so it loads only after a
+      // visitor has shown intent to reach the lower page content.
       const { fetchPublishedTestimonials } = await import('@/lib/public-reads-rest');
       const next = await fetchPublishedTestimonials(market);
       if (!mounted) return;
       if (next) setTestimonials(next);
       setLoaded(true);
-    }, 1200);
+    })();
 
     return () => {
       mounted = false;
-      cancel();
     };
-  }, [market]);
+  }, [hasScrollIntent, market]);
 
   // Hidden until there is at least one real, published testimonial. The prior
   // version shipped invented customers with stock-photo avatars; an empty state

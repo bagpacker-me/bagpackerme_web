@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
-import { scheduleIdleTask } from '@/lib/browser-idle';
+import { scheduleAfterPageLoad } from '@/lib/browser-idle';
 
 const Analytics = dynamic(
   () => import('@vercel/analytics/next').then((mod) => mod.Analytics),
@@ -17,7 +17,10 @@ const SpeedInsights = dynamic(
 export function DeferredAnalytics() {
   const [enabled, setEnabled] = useState(false);
 
-  useEffect(() => scheduleIdleTask(() => setEnabled(true), 3000), []);
+  // GA stays available independently in the root layout. Vercel's optional
+  // analytics and vitals collection should never compete with the hero, CSS,
+  // or first interaction on a mobile visit.
+  useEffect(() => scheduleAfterPageLoad(() => setEnabled(true), 5000), []);
 
   if (!enabled) return null;
 

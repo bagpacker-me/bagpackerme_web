@@ -5,11 +5,15 @@ import { WhatsAppButton } from '../../components/ui/WhatsAppButton';
 import { SiteSettingsProvider } from '../../components/providers/SiteSettingsProvider';
 import { AffiliateTrackingProvider } from '../../components/providers/AffiliateTrackingProvider';
 import { JsonLd } from '@/components/seo/JsonLd';
-import { getSiteSettingsServer } from '@/lib/site-settings-server';
+import { resolveSiteSettings } from '@/lib/site-settings';
 import { buildOrganizationSchema, buildWebSiteSchema } from '@/lib/structured-data';
 
-export default async function PublicLayout({ children }: { children: ReactNode }) {
-  const settings = await getSiteSettingsServer();
+export default function PublicLayout({ children }: { children: ReactNode }) {
+  // These production contact details are part of the initial document. Waiting
+  // for a public Firestore read here turns a cold third-party connection into
+  // slower HTML/TTFB. The provider can refresh edited values after visitor
+  // intent, outside the landing page's critical path.
+  const settings = resolveSiteSettings(null);
 
   return (
     <SiteSettingsProvider initialSettings={settings}>

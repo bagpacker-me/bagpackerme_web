@@ -196,6 +196,15 @@ export default function PackagesListingPage({
     setLoading(!hasServerPackages && market !== 'global');
     setHasError(false);
 
+    // India package cards are already rendered by the server for SEO and the
+    // first view. Re-reading the same catalogue from Firestore adds a mobile
+    // network request without changing what the visitor can see.
+    if (hasServerPackages) {
+      return () => {
+        mounted = false;
+      };
+    }
+
     const cancel = scheduleIdleTask(async () => {
       // REST rather than the Firebase SDK — the listing renders card fields
       // only, so it has no use for the SDK or for whole package documents.

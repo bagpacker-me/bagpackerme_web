@@ -1,11 +1,10 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
-import { scheduleIdleTask } from '@/lib/browser-idle';
 import { STATIC_GLOBAL_PACKAGE_SUMMARIES } from '@/lib/static-global-package-summaries';
 import { Package, PackageMarket, PACKAGE_CATEGORIES } from '@/types';
 
@@ -86,12 +85,14 @@ function LoadingCard({ index }: { index: number }) {
 }
 
 export default function DiscoverTheWorld({ market = 'global' }: { market?: PackageMarket }) {
+  const sectionRef = useRef<HTMLElement>(null);
   const [packages, setPackages] = useState<Package[]>(
     market === 'global' ? STATIC_GLOBAL_PACKAGE_SUMMARIES : []
   );
   const [activeTab, setActiveTab] = useState('All');
   const [loading, setLoading] = useState(market !== 'global');
   const [hasError, setHasError] = useState(false);
+  const [isInViewport, setIsInViewport] = useState(false);
   const shouldReduceMotion = useReducedMotion();
   const packagesHref = market === 'india' ? '/in/packages' : '/packages';
   const heading =
@@ -102,15 +103,46 @@ export default function DiscoverTheWorld({ market = 'global' }: { market?: Packa
       : 'Thailand, Vietnam, Kenya, and custom routes ready for your next chapter.';
 
   useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    // The cards live below the full-height hero. Wait until the visitor starts
+    // approaching them before asking Firestore for a live refresh.
+    if (!('IntersectionObserver' in window)) {
+      setIsInViewport(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        setIsInViewport(true);
+        observer.disconnect();
+      },
+      { threshold: 0.01 }
+    );
+
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
     let mounted = true;
 
     setPackages(market === 'global' ? STATIC_GLOBAL_PACKAGE_SUMMARIES : []);
     setLoading(market !== 'global');
     setHasError(false);
 
-    const cancel = scheduleIdleTask(async () => {
+    if (!isInViewport) {
+      return () => {
+        mounted = false;
+      };
+    }
+
+    void (async () => {
       // REST rather than the Firebase SDK: this refresh is not worth ~200 KB of
-      // SDK plus an auth iframe on a marketing page. See lib/public-reads-rest.
+      // SDK plus an auth iframe on a marketing page. It is deliberately gated
+      // by viewport entry so it cannot compete with the hero's initial load.
       const { fetchPublishedPackageCards, mergePackagesBySlug } = await import(
         '@/lib/public-reads-rest'
       );
@@ -129,13 +161,12 @@ export default function DiscoverTheWorld({ market = 'global' }: { market?: Packa
         setHasError(market !== 'global');
       }
       setLoading(false);
-    }, market === 'global' ? 2500 : 800);
+    })();
 
     return () => {
       mounted = false;
-      cancel();
     };
-  }, [market]);
+  }, [isInViewport, market]);
 
   const availableCategories = ['All', ...sortCategories(Array.from(new Set(packages.map((pkg) => pkg.category).filter(Boolean))))];
   const filteredPackages = packages.filter((pkg) => activeTab === 'All' || pkg.category === activeTab);
@@ -149,7 +180,7 @@ export default function DiscoverTheWorld({ market = 'global' }: { market?: Packa
   }, [activeTab, packages]);
 
   return (
-    <section className="py-28 bg-ice/50 overflow-hidden">
+    <section ref={sectionRef} className="py-28 bg-ice/50 overflow-hidden">
       {/* Header — Left-aligned with filters to the right on desktop */}
       <div className="container mx-auto px-6 lg:px-8 mb-12">
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
