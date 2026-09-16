@@ -6,7 +6,7 @@ import { DeferredAnalytics } from '@/components/providers/DeferredAnalytics';
 import { ToastViewport } from '@/components/ui/ToastViewport';
 import '@/styles/globals.css';
 
-const GA_MEASUREMENT_ID = 'G-BCXFEQY9FJ';
+const GA_MEASUREMENT_ID = 'G-V3Y77CW67P';
 
 // ── DESIGN-SYSTEM FONT STACK ──────────────────────────────────────────────────
 // MASTER.md §2 — Font Families
