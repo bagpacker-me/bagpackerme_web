@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import { motion, useReducedMotion } from "framer-motion";
+import { useReducedMotion } from "framer-motion";
 import { PackageMarket } from "@/types";
 
 const INDIA_GALLERY_IMAGES = [
@@ -120,18 +120,17 @@ export default function ImageGallery({ market = "global" }: { market?: PackageMa
             const isAnyHovered = hoveredIdx !== null;
             
             return (
-              <motion.div
+              <div
                 key={idx}
-                layout={shouldReduceMotion ? false : "size"}
-                transition={{ type: "spring", stiffness: 300, damping: 25 }}
                 onMouseEnter={() => setHoveredIdx(idx)}
                 className={cn(
-                  "relative rounded-2xl overflow-hidden h-[240px] md:h-auto cursor-pointer origin-center transition-all duration-500 ease-out border border-medium/10",
-                  isExpanded 
-                    ? "md:flex-[4.5]" 
-                    : isAnyHovered 
-                      ? "md:flex-[0.6]" 
-                      : "md:flex-1"
+                  "relative h-[240px] cursor-pointer overflow-hidden rounded-2xl border border-medium/10 origin-center md:h-auto md:basis-0",
+                  shouldReduceMotion ? "" : "transition-[flex-grow,box-shadow] duration-500 ease-out",
+                  isExpanded
+                    ? "md:grow-[4.5]"
+                    : isAnyHovered
+                      ? "md:grow-[0.6]"
+                      : "md:grow"
                 )}
                 style={{
                   boxShadow: isExpanded ? '0 12px 32px rgba(40,80,86,0.15)' : '0 4px 16px rgba(0,0,0,0.02)'
@@ -169,7 +168,7 @@ export default function ImageGallery({ market = "global" }: { market?: PackageMa
                     </p>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             );
           })}
         </div>

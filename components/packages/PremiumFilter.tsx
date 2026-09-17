@@ -81,13 +81,31 @@ const PriceRangeSlider = forwardRef<HTMLDivElement, PriceRangeSliderProps>(
     const [isMaxThumbDragging, setIsMaxThumbDragging] = useState(false);
 
     const sliderRef = useRef<HTMLDivElement>(null);
+    const sliderRectRef = useRef<DOMRect | null>(null);
+    const draggingThumbRef = useRef<"min" | "max" | null>(null);
+    const valuesRef = useRef<[number, number]>(defaultValue);
 
     const [minVal, maxVal] = localValues;
     const minPercent = valueToPercent(minVal, min, max);
     const maxPercent = valueToPercent(maxVal, min, max);
 
+    const updateSliderRect = useCallback(() => {
+      sliderRectRef.current = sliderRef.current?.getBoundingClientRect() ?? null;
+    }, []);
+
+    const getValueForClientX = useCallback(
+      (clientX: number, rect: DOMRect) => {
+        if (rect.width <= 0) return min;
+
+        const percent = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
+        return Math.round((min + (percent / 100) * (max - min)) / step) * step;
+      },
+      [min, max, step]
+    );
+
     const handleValueChange = useCallback(
       (newValues: [number, number]) => {
+        valuesRef.current = newValues;
         setLocalValues(newValues);
         if (onValueChange) {
           onValueChange(newValues);
@@ -97,19 +115,23 @@ const PriceRangeSlider = forwardRef<HTMLDivElement, PriceRangeSliderProps>(
     );
 
     useEffect(() => {
+      valuesRef.current = defaultValue;
       setLocalValues(defaultValue);
     }, [defaultValue]);
 
     const isDragging = isMinThumbDragging || isMaxThumbDragging;
 
     useEffect(() => {
-      // Bind only while a thumb is actually held. The previous version kept four
-      // document-level listeners attached for the life of the page and re-bound
-      // all of them on every value change.
+      // Bind only while a thumb is actually held. The track rect is captured at
+      // drag start and refreshed only on resize, rather than read on every move.
+      // That prevents the read -> React style write -> next read loop that
+      // causes forced synchronous reflows while dragging a price filter.
       if (!isDragging) return;
 
       const handleMove = (event: MouseEvent | TouchEvent) => {
-        if (!sliderRef.current) return;
+        const rect = sliderRectRef.current;
+        const thumb = draggingThumbRef.current;
+        if (!rect || !thumb) return;
 
         // A touchmove that reaches the document while a thumb is held is the
         // drag, not a scroll. Without preventDefault the browser scrolled the
@@ -118,19 +140,20 @@ const PriceRangeSlider = forwardRef<HTMLDivElement, PriceRangeSliderProps>(
         if ("touches" in event && event.cancelable) event.preventDefault();
 
         const clientX = "touches" in event ? event.touches[0].clientX : event.clientX;
-        const rect = sliderRef.current.getBoundingClientRect();
-        const percent = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
-        const newValue = Math.round((min + (percent / 100) * (max - min)) / step) * step;
+        const newValue = getValueForClientX(clientX, rect);
+        const [currentMin, currentMax] = valuesRef.current;
 
-        if (isMinThumbDragging) {
-          handleValueChange([Math.min(newValue, maxVal - step), maxVal]);
+        if (thumb === "min") {
+          handleValueChange([Math.min(newValue, currentMax - step), currentMax]);
         }
-        if (isMaxThumbDragging) {
-          handleValueChange([minVal, Math.max(newValue, minVal + step)]);
+        if (thumb === "max") {
+          handleValueChange([currentMin, Math.max(newValue, currentMin + step)]);
         }
       };
 
       const handleEnd = () => {
+        draggingThumbRef.current = null;
+        sliderRectRef.current = null;
         setIsMinThumbDragging(false);
         setIsMaxThumbDragging(false);
       };
@@ -140,6 +163,13 @@ const PriceRangeSlider = forwardRef<HTMLDivElement, PriceRangeSliderProps>(
       document.addEventListener("mouseup", handleEnd);
       document.addEventListener("touchend", handleEnd);
       document.addEventListener("touchcancel", handleEnd);
+      window.addEventListener("resize", updateSliderRect, { passive: true });
+      const sliderElement = sliderRef.current;
+      const resizeObserver =
+        typeof ResizeObserver === "undefined" || !sliderElement
+          ? null
+          : new ResizeObserver(updateSliderRect);
+      if (sliderElement) resizeObserver?.observe(sliderElement);
 
       return () => {
         document.removeEventListener("mousemove", handleMove);
@@ -147,8 +177,20 @@ const PriceRangeSlider = forwardRef<HTMLDivElement, PriceRangeSliderProps>(
         document.removeEventListener("mouseup", handleEnd);
         document.removeEventListener("touchend", handleEnd);
         document.removeEventListener("touchcancel", handleEnd);
+        window.removeEventListener("resize", updateSliderRect);
+        resizeObserver?.disconnect();
       };
-    }, [isDragging, isMinThumbDragging, isMaxThumbDragging, min, max, step, minVal, maxVal, handleValueChange]);
+    }, [isDragging, getValueForClientX, handleValueChange, step, updateSliderRect]);
+
+    const beginDrag = useCallback(
+      (thumb: "min" | "max") => {
+        updateSliderRect();
+        draggingThumbRef.current = thumb;
+        setIsMinThumbDragging(thumb === "min");
+        setIsMaxThumbDragging(thumb === "max");
+      },
+      [updateSliderRect]
+    );
 
     // Pressing anywhere on the track jumps the nearer thumb there and starts
     // dragging it. Grabbing a 16px dot was the only way to change the price on
@@ -156,27 +198,27 @@ const PriceRangeSlider = forwardRef<HTMLDivElement, PriceRangeSliderProps>(
     // so at some scroll offsets the max thumb could not be touched at all.
     const handleTrackPointerDown = useCallback(
       (event: React.MouseEvent | React.TouchEvent) => {
-        if (!sliderRef.current) return;
+        beginDrag("min");
+        const rect = sliderRectRef.current;
+        if (!rect) return;
 
         const clientX =
           "touches" in event ? event.touches[0].clientX : (event as React.MouseEvent).clientX;
-        const rect = sliderRef.current.getBoundingClientRect();
-        const percent = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
-        const newValue = Math.round((min + (percent / 100) * (max - min)) / step) * step;
+        const newValue = getValueForClientX(clientX, rect);
+        const [currentMin, currentMax] = valuesRef.current;
 
         // Nearer thumb wins; a tie hands it to the max thumb, which is the one
         // people reach for when narrowing a budget.
-        const grabMin = Math.abs(newValue - minVal) < Math.abs(newValue - maxVal);
+        const grabMin = Math.abs(newValue - currentMin) < Math.abs(newValue - currentMax);
 
         if (grabMin) {
-          setIsMinThumbDragging(true);
-          handleValueChange([Math.min(newValue, maxVal - step), maxVal]);
+          handleValueChange([Math.min(newValue, currentMax - step), currentMax]);
         } else {
-          setIsMaxThumbDragging(true);
-          handleValueChange([minVal, Math.max(newValue, minVal + step)]);
+          beginDrag("max");
+          handleValueChange([currentMin, Math.max(newValue, currentMin + step)]);
         }
       },
-      [min, max, step, minVal, maxVal, handleValueChange]
+      [beginDrag, getValueForClientX, handleValueChange, step]
     );
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>, thumb: "min" | "max") => {
@@ -233,8 +275,8 @@ const PriceRangeSlider = forwardRef<HTMLDivElement, PriceRangeSliderProps>(
             aria-valuemax={maxVal - step}
             aria-valuenow={minVal}
             aria-label="Minimum price"
-            onMouseDown={(e) => { e.stopPropagation(); setIsMinThumbDragging(true); }}
-            onTouchStart={(e) => { e.stopPropagation(); setIsMinThumbDragging(true); }}
+            onMouseDown={(e) => { e.stopPropagation(); beginDrag("min"); }}
+            onTouchStart={(e) => { e.stopPropagation(); beginDrag("min"); }}
             onKeyDown={(e) => handleKeyDown(e, "min")}
             // `after:` expands the hit area to 44×44 without growing the dot —
             // a 16px target is roughly a third of what a fingertip needs.
@@ -249,8 +291,8 @@ const PriceRangeSlider = forwardRef<HTMLDivElement, PriceRangeSliderProps>(
             aria-valuemax={max}
             aria-valuenow={maxVal}
             aria-label="Maximum price"
-            onMouseDown={(e) => { e.stopPropagation(); setIsMaxThumbDragging(true); }}
-            onTouchStart={(e) => { e.stopPropagation(); setIsMaxThumbDragging(true); }}
+            onMouseDown={(e) => { e.stopPropagation(); beginDrag("max"); }}
+            onTouchStart={(e) => { e.stopPropagation(); beginDrag("max"); }}
             onKeyDown={(e) => handleKeyDown(e, "max")}
             className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-4 h-4 bg-white rounded-full shadow-md border-[1.5px] border-teal outline-none hover:scale-110 transition-transform cursor-grab active:cursor-grabbing focus-visible:ring-2 focus-visible:ring-cyan z-10 touch-none after:absolute after:-inset-[14px] after:content-['']"
             style={{ left: `${maxPercent}%` }}

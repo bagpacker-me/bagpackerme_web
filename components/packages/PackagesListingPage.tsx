@@ -385,11 +385,10 @@ export default function PackagesListingPage({
               ))}
             </div>
           ) : (
-            <AnimatePresence mode="popLayout">
+            <AnimatePresence mode="wait">
               {filteredPackages.length > 0 ? (
                 <motion.div
                   key={`package-grid-${market}-${filters.category}-${filters.duration}-${filters.priceRange[0]}-${filters.priceRange[1]}`}
-                  layout
                   className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
                   variants={shouldReduceMotion ? undefined : CARD_GRID_VARIANTS}
                   initial={shouldReduceMotion ? undefined : 'hidden'}
@@ -397,7 +396,6 @@ export default function PackagesListingPage({
                 >
                   {filteredPackages.map((pkg) => (
                     <motion.div
-                      layout
                       key={pkg.id}
                       variants={shouldReduceMotion ? undefined : CARD_ITEM_VARIANTS}
                       className="h-full"
@@ -409,7 +407,6 @@ export default function PackagesListingPage({
               ) : (
                 <motion.div
                   key="empty-state"
-                  layout
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95 }}

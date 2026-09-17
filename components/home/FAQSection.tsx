@@ -69,24 +69,28 @@ export default function FAQSection() {
             for any crawler or AI answer engine — they do not click. Content
             collapsed behind an accordion is explicitly fine to index; content
             that does not exist until an event fires is not. */}
-        <motion.div
+        <div
           id={panelId}
           role="region"
           aria-labelledby={triggerId}
-          initial={false}
-          animate={
-            shouldReduceMotion
-              ? undefined
-              : { height: isOpen ? 'auto' : 0, opacity: isOpen ? 1 : 0 }
-          }
-          style={shouldReduceMotion ? { height: isOpen ? 'auto' : 0 } : undefined}
-          transition={shouldReduceMotion ? undefined : { duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
-          className="overflow-hidden"
+          aria-hidden={!isOpen}
+          // Keep the closed answer out of the accessibility tree and tab order,
+          // while leaving it in the HTML for readers and crawlers.
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          {...({ inert: isOpen ? undefined : '' } as any)}
+          // Framer Motion resolves `height: auto` by synchronously measuring the
+          // DOM. A CSS grid row lets the browser animate this without a JS
+          // layout read during hydration or on every FAQ toggle.
+          className={`grid ${
+            shouldReduceMotion ? '' : 'transition-[grid-template-rows,opacity] duration-300 ease-out'
+          } ${isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}
         >
-          <p className="px-6 md:px-7 pb-6 md:pb-7 font-body text-content-muted text-sm md:text-base leading-relaxed pr-8">
-            {faq.answer}
-          </p>
-        </motion.div>
+          <div className="min-h-0 overflow-hidden">
+            <p className="px-6 md:px-7 pb-6 md:pb-7 font-body text-content-muted text-sm md:text-base leading-relaxed pr-8">
+              {faq.answer}
+            </p>
+          </div>
+        </div>
       </motion.div>
     );
   };
@@ -133,24 +137,22 @@ export default function FAQSection() {
                 them behind a conditional mount put 10 of 16 answers beyond
                 reach of every crawler. aria-hidden + inert keeps the collapsed
                 block out of the a11y tree and tab order while it is closed. */}
-            <motion.div
-              initial={false}
-              animate={
-                shouldReduceMotion
-                  ? undefined
-                  : { height: showAll ? 'auto' : 0, opacity: showAll ? 1 : 0 }
-              }
-              style={shouldReduceMotion ? { height: showAll ? 'auto' : 0 } : undefined}
-              transition={shouldReduceMotion ? undefined : { duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
-              className="overflow-hidden"
+            <div
+              // Like the individual panels above, avoid Framer Motion's
+              // automatic-height measurement path for this larger disclosure.
+              className={`grid ${
+                shouldReduceMotion ? '' : 'transition-[grid-template-rows,opacity] duration-[400ms] ease-out'
+              } ${showAll ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}
               aria-hidden={!showAll}
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               {...({ inert: showAll ? undefined : '' } as any)}
             >
-              <div className="space-y-3 pt-3">
-                {hiddenFaqs.map((faq, idx) => renderFaqItem(faq, idx + defaultFaqsCount))}
+              <div className="min-h-0 overflow-hidden">
+                <div className="space-y-3 pt-3">
+                  {hiddenFaqs.map((faq, idx) => renderFaqItem(faq, idx + defaultFaqsCount))}
+                </div>
               </div>
-            </motion.div>
+            </div>
 
             <div className="pt-6">
               <button
