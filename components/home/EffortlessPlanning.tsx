@@ -1,10 +1,6 @@
-'use client';
-
-import React from 'react';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import { motion, useReducedMotion } from 'framer-motion';
-import { PackageMarket } from '@/types';
+import type { PackageMarket } from '@/types';
 
 // A three-step "how it works", replacing the previous animated vanity counters
 // ("1200+ Happy explorers", "4 Live global journeys") — the latter of which
@@ -24,7 +20,6 @@ const STEPS = [
 ] as const;
 
 export default function EffortlessPlanning({ market = 'global' }: { market?: PackageMarket }) {
-  const shouldReduceMotion = useReducedMotion();
   const packagesHref = market === 'india' ? '/in/packages' : '/packages';
   const heading =
     market === 'india'
@@ -42,13 +37,7 @@ export default function EffortlessPlanning({ market = 'global' }: { market?: Pac
 
       {/* Intro — left-aligned for variety */}
       <div className="container mx-auto px-6 lg:px-8 max-w-6xl relative z-10">
-        <motion.div
-          initial={shouldReduceMotion ? undefined : { opacity: 0, y: 20 }}
-          whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.1 }}
-          className="max-w-2xl mb-16"
-        >
+        <div className="max-w-2xl mb-16">
           <span className="font-display text-xs font-bold uppercase tracking-[0.2em] text-teal/60 block mb-4">
             How it works
           </span>
@@ -58,17 +47,12 @@ export default function EffortlessPlanning({ market = 'global' }: { market?: Pac
           <p className="text-void/55 font-body text-base md:text-lg leading-relaxed max-w-lg">
             {intro}
           </p>
-        </motion.div>
+        </div>
 
         {/* Asymmetric Bento Grid */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
           {/* Step 01 — spans 7 columns */}
-          <motion.div
-            initial={shouldReduceMotion ? undefined : { opacity: 0, y: 30 }}
-            whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="md:col-span-7 card-bezel"
-          >
+          <div className="md:col-span-7 card-bezel">
             <div className="card-bezel-inner p-7 sm:p-10 md:p-14 min-h-[240px] flex flex-col justify-between">
               <div>
                 <span className="font-display text-6xl lg:text-8xl font-bold text-teal mb-3 tracking-tight block">
@@ -82,16 +66,10 @@ export default function EffortlessPlanning({ market = 'global' }: { market?: Pac
                 </p>
               </div>
             </div>
-          </motion.div>
+          </div>
 
           {/* Step 02 — spans 5 columns */}
-          <motion.div
-            initial={shouldReduceMotion ? undefined : { opacity: 0, y: 30 }}
-            whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="md:col-span-5 card-bezel"
-          >
+          <div className="md:col-span-5 card-bezel">
             <div className="card-bezel-inner p-7 sm:p-10 md:p-12 min-h-[240px] flex flex-col justify-between">
               <div>
                 <span className="font-display text-6xl lg:text-7xl font-bold text-void mb-3 tracking-tight block">
@@ -105,16 +83,10 @@ export default function EffortlessPlanning({ market = 'global' }: { market?: Pac
                 </p>
               </div>
             </div>
-          </motion.div>
+          </div>
 
           {/* Step 03 — full-width row with the CTA and the real 10% member perk */}
-          <motion.div
-            initial={shouldReduceMotion ? undefined : { opacity: 0, y: 30 }}
-            whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="md:col-span-12"
-          >
+          <div className="md:col-span-12">
             <div className="bg-gradient-to-r from-teal to-teal/90 rounded-[24px] p-7 sm:p-10 md:p-12 flex flex-col md:flex-row md:items-center md:justify-between gap-6 relative overflow-hidden">
               {/* Subtle grain on dark card */}
               <div
@@ -146,7 +118,7 @@ export default function EffortlessPlanning({ market = 'global' }: { market?: Pac
                 </Link>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>

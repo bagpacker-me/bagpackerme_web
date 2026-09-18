@@ -17,9 +17,9 @@ const SpeedInsights = dynamic(
 export function DeferredAnalytics() {
   const [enabled, setEnabled] = useState(false);
 
-  // GA stays available independently in the root layout. Vercel's optional
-  // analytics and vitals collection should never compete with the hero, CSS,
-  // or first interaction on a mobile visit.
+  // Vercel's optional analytics and vitals collection should never compete
+  // with the hero, CSS, or first interaction on a mobile visit. GA itself is
+  // likewise deferred in DeferredGoogleAnalytics.
   useEffect(() => scheduleAfterPageLoad(() => setEnabled(true), 5000), []);
 
   if (!enabled) return null;

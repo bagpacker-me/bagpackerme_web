@@ -36,20 +36,9 @@ export default async function JobDetailPage({ params }: { params: { slug: string
   const job = await getPublishedJobOpeningBySlug(params.slug);
 
   // Covers a draft, a closed role, and a bad slug alike — an unpublished role
-  // must not be reachable by guessing its URL.
-  //
-  // KNOWN LIMITATION: this renders the 404 page but the response still carries
-  // HTTP 200 — a soft 404. app/(public)/loading.tsx puts a Suspense boundary
-  // above every public route, so Next streams and flushes the status before
-  // this code runs; nothing thrown from here (or from generateMetadata — tested)
-  // can change it afterwards. /blog/[slug] and /packages/[slug] have the same
-  // behaviour in production today.
-  //
-  // Worth fixing for careers specifically: Google wants an expired or missing
-  // JobPosting URL to return 404/410, and a 200 risks the postings being
-  // dropped. The one change that works is removing app/(public)/loading.tsx,
-  // which trades away streaming on every public route — a site-wide call, not
-  // one to make quietly from here.
+  // must not be reachable by guessing its URL. The public route has no
+  // top-level loading boundary, so Next can still return this as a real 404
+  // rather than flushing a streamed fallback with HTTP 200 first.
   if (!job) notFound();
 
   return (

@@ -874,6 +874,49 @@ blockquote::before,
 }
 .img-zoom:hover img { transform: scale(1.06); }
 
+/* CSS-only expansion keeps the editorial gallery interactive without making
+   the entire section a client component. `:has()` is supported by current
+   Chrome/Edge, Safari/iOS 16.4+, and Firefox 121+. Older Firefox releases and
+   non-hover devices retain the readable, evenly sized card fallback. */
+@media (min-width: 768px) and (hover: hover) {
+  .image-gallery-grid:has(.image-gallery-card:hover) .image-gallery-card {
+    flex-grow: 0.6;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.02);
+  }
+
+  .image-gallery-grid:has(.image-gallery-card:hover) .image-gallery-overlay {
+    opacity: 0.3;
+  }
+
+  .image-gallery-grid:has(.image-gallery-card:hover) .image-gallery-caption {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+
+  .image-gallery-grid:has(.image-gallery-card:hover) .image-gallery-tagline {
+    max-height: 0;
+    margin-top: 0;
+    opacity: 0;
+  }
+
+  .image-gallery-grid:has(.image-gallery-card:hover) .image-gallery-card:hover {
+    flex-grow: 4.5;
+    box-shadow: 0 12px 32px rgba(40,80,86,0.15);
+  }
+
+  .image-gallery-grid:has(.image-gallery-card:hover) .image-gallery-card:hover .image-gallery-overlay,
+  .image-gallery-grid:has(.image-gallery-card:hover) .image-gallery-card:hover .image-gallery-caption {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .image-gallery-grid:has(.image-gallery-card:hover) .image-gallery-card:hover .image-gallery-tagline {
+    max-height: 60px;
+    margin-top: 0.5rem;
+    opacity: 1;
+  }
+}
+
 /* ─────────────────────────────────────────────────────────────────────────────
    FOCUS RING  (global — WCAG AA)
    ───────────────────────────────────────────────────────────────────────────── */

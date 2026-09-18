@@ -1,14 +1,12 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { motion, useReducedMotion } from 'framer-motion';
 import Link from 'next/link';
 import { ArrowRight, Star } from 'lucide-react';
 import { PackageMarket, Testimonial } from '@/types';
 
 export default function MemorableMoments({ market = 'global' }: { market?: PackageMarket }) {
-  const shouldReduceMotion = useReducedMotion();
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [hasScrollIntent, setHasScrollIntent] = useState(false);
@@ -73,25 +71,14 @@ export default function MemorableMoments({ market = 'global' }: { market?: Packa
       {/* Header */}
       <div className="container mx-auto px-6 lg:px-8 max-w-6xl mb-16">
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
-          <motion.div
-            initial={shouldReduceMotion ? undefined : { opacity: 0, y: 20 }}
-            whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="max-w-xl"
-          >
+          <div className="max-w-xl">
             <div className="accent-line" />
             <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white tracking-tight leading-[1.05]">
               {heading}
             </h2>
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={shouldReduceMotion ? undefined : { opacity: 0, y: 12 }}
-            whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-          >
+          <div>
             <Link
               href="/contact#trip"
               className="inline-flex items-center justify-center gap-2 rounded-full bg-lime text-void px-7 py-4 font-display text-[12px] font-bold uppercase tracking-widest transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(193,234,0,0.3)] active:scale-[0.98]"
@@ -99,24 +86,19 @@ export default function MemorableMoments({ market = 'global' }: { market?: Packa
               Plan your journey
               <ArrowRight strokeWidth={2} className="w-4 h-4" />
             </Link>
-          </motion.div>
+          </div>
         </div>
       </div>
 
       {/* Grid container aligned with the header */}
       <div className="container mx-auto px-6 lg:px-8 max-w-6xl">
         <div className="flex flex-wrap justify-center gap-6 lg:gap-8">
-          {testimonials.map((moment, idx) => {
+          {testimonials.map((moment) => {
             const rating = Math.max(0, Math.min(5, Math.round(moment.rating)));
             return (
-              <motion.div
+              <div
                 key={moment.id}
-                initial={shouldReduceMotion ? undefined : { opacity: 0, y: 40 }}
-                whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-60px' }}
-                transition={shouldReduceMotion ? undefined : { delay: idx * 0.06, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                whileHover={shouldReduceMotion ? undefined : { y: -6 }}
-                className="glass-card-dark rounded-[20px] p-6 cursor-default flex flex-col justify-between w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-22px)]"
+                className="glass-card-dark flex w-full cursor-default flex-col justify-between rounded-[20px] p-6 transition-transform duration-300 hover:-translate-y-1.5 motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-22px)]"
               >
                 <div>
                   {/* Image + profile row */}
@@ -159,7 +141,7 @@ export default function MemorableMoments({ market = 'global' }: { market?: Packa
                     &ldquo;{moment.quote}&rdquo;
                   </p>
                 </div>
-              </motion.div>
+              </div>
             );
           })}
         </div>

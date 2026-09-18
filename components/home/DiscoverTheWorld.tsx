@@ -3,32 +3,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { STATIC_GLOBAL_PACKAGE_SUMMARIES } from '@/lib/static-global-package-summaries';
 import { Package, PackageMarket, PACKAGE_CATEGORIES } from '@/types';
 
 const FALLBACK_IMAGE = '/web_photos/hero_1.webp';
-
-const containerVariants = {
-  hidden: {},
-  visible: {
-    transition: { staggerChildren: 0.08 }
-  }
-};
-
-const cardVariants = {
-  hidden: { opacity: 0, scale: 0.94, x: 40 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    x: 0,
-    transition: {
-      duration: 0.5,
-      ease: [0.25, 0.46, 0.45, 0.94] as [number, number, number, number]
-    }
-  }
-};
 
 const categoryOrder = new Map(PACKAGE_CATEGORIES.map((category, index) => [category, index]));
 
@@ -93,7 +72,6 @@ export default function DiscoverTheWorld({ market = 'global' }: { market?: Packa
   const [loading, setLoading] = useState(market !== 'global');
   const [hasError, setHasError] = useState(false);
   const [isInViewport, setIsInViewport] = useState(false);
-  const shouldReduceMotion = useReducedMotion();
   const packagesHref = market === 'india' ? '/in/packages' : '/packages';
   const heading =
     market === 'india' ? 'Discover India\'s hidden gems' : 'Discover global journeys';
@@ -184,13 +162,7 @@ export default function DiscoverTheWorld({ market = 'global' }: { market?: Packa
       {/* Header — Left-aligned with filters to the right on desktop */}
       <div className="container mx-auto px-6 lg:px-8 mb-12">
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
-          <motion.div
-            initial={shouldReduceMotion ? undefined : { opacity: 0, y: 20 }}
-            whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: 0.6 }}
-            className="max-w-xl"
-          >
+          <div className="max-w-xl">
             <div className="accent-line-cyan" />
 
             <h2 className="font-display text-4xl md:text-5xl font-bold text-void mb-4 tracking-tight">
@@ -199,27 +171,22 @@ export default function DiscoverTheWorld({ market = 'global' }: { market?: Packa
             <p className="text-content-muted text-base md:text-lg font-body leading-relaxed">
               {description}
             </p>
-          </motion.div>
+          </div>
 
           {/* Filter pills — right-aligned on desktop */}
           <div className="flex flex-wrap gap-2 lg:justify-end lg:max-w-lg">
-            {availableCategories.map((category, index) => (
-              <motion.button
+            {availableCategories.map((category) => (
+              <button
                 key={category}
-                initial={shouldReduceMotion ? undefined : { opacity: 0, y: 10 }}
-                whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: shouldReduceMotion ? 0 : index * 0.04, duration: 0.4 }}
-                whileTap={shouldReduceMotion ? undefined : { scale: 0.95 }}
                 onClick={() => setActiveTab(category)}
-                className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 font-body border cursor-pointer ${
+                className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 font-body border cursor-pointer active:scale-95 motion-reduce:transform-none ${
                   activeTab === category
                     ? 'bg-teal text-white border-teal shadow-card-teal'
                     : 'bg-white text-void/70 border-void/8 hover:border-teal/30 hover:text-teal'
                 }`}
               >
                 {category}
-              </motion.button>
+              </button>
             ))}
           </div>
         </div>
@@ -234,21 +201,14 @@ export default function DiscoverTheWorld({ market = 'global' }: { market?: Packa
             ))}
           </div>
         ) : filteredPackages.length > 0 ? (
-          <AnimatePresence mode="wait">
-            <motion.div
+          <div
               key={activeTab}
-              variants={shouldReduceMotion ? undefined : containerVariants}
-              initial={shouldReduceMotion ? undefined : 'hidden'}
-              animate={shouldReduceMotion ? undefined : 'visible'}
               className="flex gap-6 overflow-x-auto snap-x snap-mandatory hide-scrollbar pb-10 pt-4 -mx-6 px-6 lg:mx-0 lg:px-0"
             >
               {filteredPackages.map((pkg) => (
-                <motion.div
+                <div
                   key={pkg.id}
-                  variants={shouldReduceMotion ? undefined : cardVariants}
-                  whileHover={shouldReduceMotion ? undefined : { y: -6 }}
-                  transition={{ type: 'spring', stiffness: 350, damping: 25 }}
-                  className="relative w-[85vw] md:w-[380px] flex-shrink-0 aspect-[4/5] rounded-[24px] overflow-hidden snap-center group cursor-pointer"
+                  className="relative w-[85vw] md:w-[380px] flex-shrink-0 aspect-[4/5] rounded-[24px] overflow-hidden snap-center group cursor-pointer motion-safe:transform motion-safe:transition-transform motion-safe:duration-300 motion-safe:hover:-translate-y-1.5"
                   style={{ boxShadow: '0 8px 40px rgba(40,80,86,0.10)' }}
                 >
                   <Image
@@ -302,10 +262,9 @@ export default function DiscoverTheWorld({ market = 'global' }: { market?: Packa
                       </Link>
                     </div>
                   </div>
-                </motion.div>
+                </div>
               ))}
-            </motion.div>
-          </AnimatePresence>
+          </div>
         ) : (
           <div className="relative overflow-hidden rounded-3xl border border-subtle bg-white px-8 py-16 text-center" style={{ boxShadow: '0 8px 40px rgba(40,80,86,0.08)' }}>
             <div className="mx-auto max-w-xl">
@@ -327,18 +286,12 @@ export default function DiscoverTheWorld({ market = 'global' }: { market?: Packa
       </div>
 
       {!loading && filteredPackages.length > 0 && (
-        <motion.div
-          initial={shouldReduceMotion ? undefined : { opacity: 0, y: 16 }}
-          whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-center mt-6"
-        >
+        <div className="text-center mt-6">
           <Link href={packagesHref} className="btn-teal btn-shimmer inline-flex">
             View all journeys
             <ArrowRight className="w-4 h-4 ml-2" />
           </Link>
-        </motion.div>
+        </div>
       )}
     </section>
   );

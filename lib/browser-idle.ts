@@ -56,3 +56,36 @@ export function scheduleAfterPageLoad(callback: () => void, delay = 0) {
     if (timeoutHandle !== undefined) window.clearTimeout(timeoutHandle);
   };
 }
+
+/**
+ * Schedule work only after a visitor has made a meaningful page interaction.
+ *
+ * This is intentionally limited to actions that signal a user is actively
+ * using the page. It keeps optional telemetry and UI code out of the initial
+ * render path without treating passive browser work as engagement.
+ */
+export function scheduleOnFirstInteraction(callback: () => void) {
+  if (typeof window === 'undefined') return () => {};
+
+  let handled = false;
+  const events = ['pointerdown', 'touchstart', 'keydown'] as const;
+
+  const handleInteraction = () => {
+    if (handled) return;
+    handled = true;
+    removeListeners();
+    callback();
+  };
+
+  const removeListeners = () => {
+    events.forEach((eventName) => {
+      window.removeEventListener(eventName, handleInteraction);
+    });
+  };
+
+  events.forEach((eventName) => {
+    window.addEventListener(eventName, handleInteraction, { passive: true });
+  });
+
+  return removeListeners;
+}

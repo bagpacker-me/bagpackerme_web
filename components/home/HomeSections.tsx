@@ -1,17 +1,16 @@
-'use client';
-
 import DiscoverTheWorld from './DiscoverTheWorld';
 import SeasonExplorer from './SeasonExplorer';
 import EffortlessPlanning from './EffortlessPlanning';
-import MemorableMoments from './MemorableMoments';
+import DeferredMemorableMoments from './DeferredMemorableMoments';
 import ImageGallery from '@/components/ui/image-gallery';
 import FAQSection from './FAQSection';
 import type { PackageMarket } from '@/types';
 
 /**
- * Below-the-fold interactive content is a separate chunk. It still renders on
- * the server (see DeferredHomeSections) so links, FAQs and public copy remain
- * visible to crawlers and work before its client code hydrates.
+ * This deliberately stays a Server Component. Interactive sections establish
+ * their own client boundaries, while static sections stay out of the home
+ * route's hydration payload. All of the public copy, links and FAQ content is
+ * therefore present in the initial HTML for visitors and crawlers alike.
  */
 export default function HomeSections({
   market = 'global',
@@ -25,7 +24,7 @@ export default function HomeSections({
       <DiscoverTheWorld market={market} />
       {includeSeason && <SeasonExplorer />}
       <EffortlessPlanning market={market} />
-      <MemorableMoments market={market} />
+      <DeferredMemorableMoments market={market} />
       <ImageGallery market={market} />
       <FAQSection />
     </>

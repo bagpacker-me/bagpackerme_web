@@ -1,10 +1,5 @@
-"use client";
-
-import React, { useState } from "react";
-import { cn } from "@/lib/utils";
 import Image from "next/image";
-import { useReducedMotion } from "framer-motion";
-import { PackageMarket } from "@/types";
+import type { PackageMarket } from "@/types";
 
 const INDIA_GALLERY_IMAGES = [
   {
@@ -85,8 +80,6 @@ const GLOBAL_GALLERY_IMAGES = [
 ];
 
 export default function ImageGallery({ market = "global" }: { market?: PackageMarket }) {
-  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
-  const shouldReduceMotion = useReducedMotion();
   const images = market === "india" ? INDIA_GALLERY_IMAGES : GLOBAL_GALLERY_IMAGES;
   const title = market === "india" ? "Glimpses of Incredible India" : "Glimpses of the world";
   const description =
@@ -111,30 +104,11 @@ export default function ImageGallery({ market = "global" }: { market?: PackageMa
 
       {/* Accordion Gallery */}
       <div className="container mx-auto px-6 lg:px-8 max-w-6xl">
-        <div 
-          className="flex flex-col md:flex-row items-stretch gap-4 h-auto md:h-[480px] w-full"
-          onMouseLeave={() => setHoveredIdx(null)}
-        >
-          {images.map((img, idx) => {
-            const isExpanded = hoveredIdx === idx;
-            const isAnyHovered = hoveredIdx !== null;
-            
-            return (
-              <div
-                key={idx}
-                onMouseEnter={() => setHoveredIdx(idx)}
-                className={cn(
-                  "relative h-[240px] cursor-pointer overflow-hidden rounded-2xl border border-medium/10 origin-center md:h-auto md:basis-0",
-                  shouldReduceMotion ? "" : "transition-[flex-grow,box-shadow] duration-500 ease-out",
-                  isExpanded
-                    ? "md:grow-[4.5]"
-                    : isAnyHovered
-                      ? "md:grow-[0.6]"
-                      : "md:grow"
-                )}
-                style={{
-                  boxShadow: isExpanded ? '0 12px 32px rgba(40,80,86,0.15)' : '0 4px 16px rgba(0,0,0,0.02)'
-                }}
+        <div className="image-gallery-grid flex h-auto w-full flex-col items-stretch gap-4 md:h-[480px] md:flex-row">
+          {images.map((img) => (
+            <div
+                key={img.title}
+                className="image-gallery-card group relative h-[240px] origin-center overflow-hidden rounded-2xl border border-medium/10 shadow-[0_4px_16px_rgba(0,0,0,0.02)] transition-[flex-grow,box-shadow] duration-500 ease-out motion-reduce:transition-none md:h-auto md:basis-0 md:grow"
               >
                 <Image
                   src={img.src}
@@ -147,30 +121,20 @@ export default function ImageGallery({ market = "global" }: { market?: PackageMa
                 />
                 
                 {/* Overlay gradient */}
-                <div className={cn(
-                  "absolute inset-0 bg-gradient-to-t from-void/90 via-void/40 to-transparent transition-opacity duration-300 pointer-events-none",
-                  (isExpanded || !isAnyHovered) ? "opacity-100" : "opacity-30"
-                )} />
+                <div className="image-gallery-overlay pointer-events-none absolute inset-0 bg-gradient-to-t from-void/90 via-void/40 to-transparent opacity-100 transition-opacity duration-300 motion-reduce:transition-none" />
                 
-                <div className={cn(
-                  "absolute bottom-6 left-6 right-6 transition-all duration-500 pointer-events-none z-10",
-                  (isExpanded || !isAnyHovered) ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-                )}>
+                <div className="image-gallery-caption pointer-events-none absolute bottom-6 left-6 right-6 z-10 translate-y-0 opacity-100 transition-all duration-500 motion-reduce:transition-none">
                   <p className="text-[10px] font-display font-bold uppercase tracking-[0.22em] text-lime mb-1">
                     {img.title}
                   </p>
-                  <div className={cn(
-                    "overflow-hidden transition-all duration-500 ease-out",
-                    isExpanded ? "max-h-[60px] opacity-100 mt-2" : "max-h-0 opacity-0 mt-0"
-                  )}>
+                  <div className="image-gallery-tagline mt-2 max-h-[60px] overflow-hidden opacity-100 transition-all duration-500 ease-out motion-reduce:transition-none">
                     <p className="text-white/80 text-sm font-body leading-relaxed">
                       {img.tagline}
                     </p>
                   </div>
                 </div>
-              </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
       </div>
     </section>

@@ -1,177 +1,104 @@
-'use client';
-
-import React, { useState } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
-import { Plus, Minus, ChevronDown, ChevronUp, ArrowRight } from 'lucide-react';
+import { ArrowRight, ChevronDown, ChevronUp, Minus, Plus } from 'lucide-react';
 import Link from 'next/link';
 import { HOME_FAQS, type FaqItem } from '@/lib/faq';
 
 const FAQS = HOME_FAQS;
+const DEFAULT_FAQ_COUNT = 6;
+
+function FaqItem({ faq, index, open = false }: { faq: FaqItem; index: number; open?: boolean }) {
+  const panelId = `faq-panel-${index}`;
+  const triggerId = `faq-trigger-${index}`;
+
+  return (
+    <details
+      open={open}
+      className="group overflow-hidden rounded-2xl border border-medium transition-all duration-300 hover:border-teal/30 open:border-teal/20 open:bg-white open:shadow-card-teal motion-reduce:transition-none"
+    >
+      <summary
+        id={triggerId}
+        aria-controls={panelId}
+        className="flex w-full cursor-pointer list-none items-center justify-between gap-4 rounded-2xl p-6 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-teal md:p-7 [&::-webkit-details-marker]:hidden"
+      >
+        <span className="font-display text-base font-semibold text-void/80 transition-colors group-open:text-teal motion-reduce:transition-none md:text-lg">
+          {faq.question}
+        </span>
+        <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-void/5 text-void/50 transition-all duration-300 group-open:bg-teal group-open:text-white motion-reduce:transition-none">
+          <Plus strokeWidth={2} className="h-3.5 w-3.5 group-open:hidden" aria-hidden="true" />
+          <Minus strokeWidth={2} className="hidden h-3.5 w-3.5 group-open:block" aria-hidden="true" />
+        </span>
+      </summary>
+      {/* Native <details> keeps every answer in the initial HTML while retaining
+          keyboard support and disclosure semantics without client hydration. */}
+      <div id={panelId} role="region" aria-labelledby={triggerId}>
+        <p className="px-6 pb-6 pr-8 font-body text-sm leading-relaxed text-content-muted md:px-7 md:pb-7 md:text-base">
+          {faq.answer}
+        </p>
+      </div>
+    </details>
+  );
+}
 
 export default function FAQSection() {
-  const [openIndex, setOpenIndex] = useState<number>(0);
-  const [showAll, setShowAll] = useState<boolean>(false);
-  const shouldReduceMotion = useReducedMotion();
-
-  const defaultFaqsCount = 6;
-  const visibleFaqs = FAQS.slice(0, defaultFaqsCount);
-  const hiddenFaqs = FAQS.slice(defaultFaqsCount);
-
-  const renderFaqItem = (faq: FaqItem, idx: number) => {
-    const isOpen = openIndex === idx;
-    const panelId = `faq-panel-${idx}`;
-    const triggerId = `faq-trigger-${idx}`;
-    return (
-      <motion.div
-        key={idx}
-        initial={shouldReduceMotion ? undefined : { opacity: 0, y: 10 }}
-        whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={shouldReduceMotion ? undefined : { duration: 0.4 }}
-        className={`rounded-2xl border transition-all duration-300 overflow-hidden ${
-          isOpen
-            ? 'bg-white shadow-card-teal border-teal/20'
-            : 'bg-transparent border-medium hover:border-teal/30'
-        }`}
-      >
-        <h3 className="m-0">
-          <button
-            type="button"
-            id={triggerId}
-            aria-expanded={isOpen}
-            aria-controls={panelId}
-            onClick={() => setOpenIndex(isOpen ? -1 : idx)}
-            className="flex w-full cursor-pointer justify-between items-center gap-4 p-6 md:p-7 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-inset rounded-2xl"
-          >
-            <span className={`font-display font-semibold text-base md:text-lg transition-colors ${
-              isOpen ? 'text-teal' : 'text-void/80'
-            }`}>
-              {faq.question}
-            </span>
-
-            <span className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${
-              isOpen
-                ? 'bg-teal text-white rotate-0'
-                : 'bg-void/5 text-void/50'
-            }`}>
-              {isOpen
-                ? <Minus strokeWidth={2} className="w-3.5 h-3.5" />
-                : <Plus strokeWidth={2} className="w-3.5 h-3.5" />
-              }
-            </span>
-          </button>
-        </h3>
-
-        {/* The answer stays mounted and is collapsed by height, rather than
-            being conditionally rendered. Google's structured-data policy
-            requires content marked up in FAQPage JSON-LD to be present on the
-            page, and an answer that only enters the DOM on click is not present
-            for any crawler or AI answer engine — they do not click. Content
-            collapsed behind an accordion is explicitly fine to index; content
-            that does not exist until an event fires is not. */}
-        <div
-          id={panelId}
-          role="region"
-          aria-labelledby={triggerId}
-          aria-hidden={!isOpen}
-          // Keep the closed answer out of the accessibility tree and tab order,
-          // while leaving it in the HTML for readers and crawlers.
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          {...({ inert: isOpen ? undefined : '' } as any)}
-          // Framer Motion resolves `height: auto` by synchronously measuring the
-          // DOM. A CSS grid row lets the browser animate this without a JS
-          // layout read during hydration or on every FAQ toggle.
-          className={`grid ${
-            shouldReduceMotion ? '' : 'transition-[grid-template-rows,opacity] duration-300 ease-out'
-          } ${isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}
-        >
-          <div className="min-h-0 overflow-hidden">
-            <p className="px-6 md:px-7 pb-6 md:pb-7 font-body text-content-muted text-sm md:text-base leading-relaxed pr-8">
-              {faq.answer}
-            </p>
-          </div>
-        </div>
-      </motion.div>
-    );
-  };
+  const visibleFaqs = FAQS.slice(0, DEFAULT_FAQ_COUNT);
+  const hiddenFaqs = FAQS.slice(DEFAULT_FAQ_COUNT);
 
   return (
     <section className="bg-surface-lowest py-24 md:py-32">
-      <div className="container mx-auto px-6 lg:px-8 max-w-6xl">
+      <div className="container mx-auto max-w-6xl px-6 lg:px-8">
         <div className="split-layout">
           {/* Left Column: Heading and Info card */}
           <div className="lg:sticky lg:top-28">
             <div className="accent-line-cyan" />
-            <h2 className="font-display text-4xl md:text-5xl font-bold text-void mb-5 tracking-tight">
+            <h2 className="mb-5 font-display text-4xl font-bold tracking-tight text-void md:text-5xl">
               Frequently asked questions
             </h2>
-            <p className="text-content-muted text-base font-body leading-relaxed mb-8">
+            <p className="mb-8 font-body text-base leading-relaxed text-content-muted">
               Got questions before your next trip? Here is everything you need to know about starting your journey with BagPackerMe.
             </p>
 
             {/* Quick Contact Card */}
-            <div className="bg-ice/40 border border-medium rounded-2xl p-6 md:p-8">
-              <h3 className="font-display font-semibold text-lg text-void mb-2">Still have questions?</h3>
-              <p className="font-body text-sm text-content-muted mb-6 leading-relaxed">
+            <div className="rounded-2xl border border-medium bg-ice/40 p-6 md:p-8">
+              <h3 className="mb-2 font-display text-lg font-semibold text-void">Still have questions?</h3>
+              <p className="mb-6 font-body text-sm leading-relaxed text-content-muted">
                 Can&apos;t find what you are looking for? Send us a quick inquiry and we&apos;ll get right back to you.
               </p>
               <Link
                 href="/contact"
                 // A 16px-tall text link is the smallest kind of target there is.
                 // The negative margin keeps its optical position in the card.
-                className="inline-flex min-h-[44px] -my-3 items-center gap-2 text-teal font-display text-xs font-bold uppercase tracking-widest hover:text-teal/85 group"
+                className="group -my-3 inline-flex min-h-[44px] items-center gap-2 font-display text-xs font-bold uppercase tracking-widest text-teal hover:text-teal/85"
               >
                 Let&apos;s chat
-                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none" />
               </Link>
             </div>
           </div>
 
-          {/* Right Column: Accordions list */}
+          {/* Every Q&A is served in the document, matching FAQPage JSON-LD.
+              Native disclosures preserve visibility and a11y without a large
+              client-side accordion runtime. */}
           <div className="space-y-3">
-            {visibleFaqs.map((faq, idx) => renderFaqItem(faq, idx))}
+            {visibleFaqs.map((faq, index) => (
+              <FaqItem key={faq.question} faq={faq} index={index} open={index === 0} />
+            ))}
 
-            {/* Same reasoning as the answer panels: the overflow questions stay
-                mounted and are revealed by height so all 16 Q&As are in the
-                served HTML, matching what the FAQPage JSON-LD claims. Hiding
-                them behind a conditional mount put 10 of 16 answers beyond
-                reach of every crawler. aria-hidden + inert keeps the collapsed
-                block out of the a11y tree and tab order while it is closed. */}
-            <div
-              // Like the individual panels above, avoid Framer Motion's
-              // automatic-height measurement path for this larger disclosure.
-              className={`grid ${
-                shouldReduceMotion ? '' : 'transition-[grid-template-rows,opacity] duration-[400ms] ease-out'
-              } ${showAll ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}
-              aria-hidden={!showAll}
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              {...({ inert: showAll ? undefined : '' } as any)}
-            >
-              <div className="min-h-0 overflow-hidden">
-                <div className="space-y-3 pt-3">
-                  {hiddenFaqs.map((faq, idx) => renderFaqItem(faq, idx + defaultFaqsCount))}
-                </div>
+            <details className="group/show-all pt-6">
+              <summary className="inline-flex min-h-[44px] cursor-pointer list-none items-center rounded-full border border-teal px-6 py-3 font-display text-[12px] font-bold uppercase tracking-widest text-teal transition-all duration-300 hover:bg-teal hover:text-white hover:shadow-card-teal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal active:scale-[0.98] motion-reduce:transition-none [&::-webkit-details-marker]:hidden">
+                <span className="inline-flex items-center gap-2 group-open/show-all:hidden">
+                  Show all questions ({FAQS.length})
+                  <ChevronDown className="h-4 w-4" aria-hidden="true" />
+                </span>
+                <span className="hidden items-center gap-2 group-open/show-all:inline-flex">
+                  Show fewer questions
+                  <ChevronUp className="h-4 w-4" aria-hidden="true" />
+                </span>
+              </summary>
+              <div className="space-y-3 pt-6">
+                {hiddenFaqs.map((faq, index) => (
+                  <FaqItem key={faq.question} faq={faq} index={index + DEFAULT_FAQ_COUNT} />
+                ))}
               </div>
-            </div>
-
-            <div className="pt-6">
-              <button
-                onClick={() => setShowAll(!showAll)}
-                className="inline-flex items-center gap-2 rounded-full border border-teal text-teal hover:bg-teal hover:text-white px-6 py-3 font-display text-[12px] font-bold uppercase tracking-widest transition-all duration-300 hover:shadow-card-teal active:scale-[0.98] cursor-pointer"
-              >
-                {showAll ? (
-                  <>
-                    Show less questions
-                    <ChevronUp className="w-4 h-4" />
-                  </>
-                ) : (
-                  <>
-                    Show all questions ({FAQS.length})
-                    <ChevronDown className="w-4 h-4" />
-                  </>
-                )}
-              </button>
-            </div>
+            </details>
           </div>
         </div>
       </div>

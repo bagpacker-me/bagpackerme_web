@@ -2,7 +2,6 @@
 
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import {
   MONTHS,
@@ -18,14 +17,11 @@ import {
   projectLatLng,
 } from '@/lib/world-map-geometry';
 
-const EASE_HOUSE = [0.25, 0.46, 0.45, 0.94] as [number, number, number, number];
-
 export default function SeasonExplorer() {
   // Opening on the visitor's current month makes the first pin relevant
   // without needing any personalisation.
   const [month, setMonth] = useState<Month>(() => getCurrentMonth());
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const shouldReduceMotion = useReducedMotion();
   const monthButtonRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
   const destinations = useMemo(() => getDestinationsForMonth(month), [month]);
@@ -67,31 +63,19 @@ export default function SeasonExplorer() {
       <div className="container mx-auto px-6 lg:px-8">
         {/* Header */}
         <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
-          <motion.div
-            initial={shouldReduceMotion ? undefined : { opacity: 0, y: 20 }}
-            whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: 0.6 }}
-            className="max-w-xl"
-          >
+          <div className="max-w-xl">
             <div className="accent-line-cyan" />
             <h2 className="font-display text-4xl font-bold tracking-tight text-white md:text-5xl">
               Where should you go
               <br />
               <span className="font-accent italic font-normal">this month?</span>
             </h2>
-          </motion.div>
+          </div>
 
-          <motion.p
-            initial={shouldReduceMotion ? undefined : { opacity: 0, y: 20 }}
-            whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="max-w-md font-body text-base leading-relaxed text-content-inverse-muted"
-          >
+          <p className="max-w-md font-body text-base leading-relaxed text-content-inverse-muted">
             Pick when you want to travel and we&apos;ll show you the places entering their
             finest season — not simply the ones everyone is posting about.
-          </motion.p>
+          </p>
         </div>
 
         {/* Month selector */}
@@ -234,13 +218,8 @@ export default function SeasonExplorer() {
               </div>
             </div>
 
-            <AnimatePresence mode="wait">
-              <motion.div
+            <div
                 key={`${month}-${active.id}`}
-                initial={shouldReduceMotion ? undefined : { opacity: 0, y: 8 }}
-                animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-                exit={shouldReduceMotion ? undefined : { opacity: 0, y: -8 }}
-                transition={{ duration: 0.35, ease: EASE_HOUSE }}
               >
                 <p className="font-display text-[11px] font-bold uppercase tracking-widest text-teal">
                   {active.region}
@@ -266,8 +245,7 @@ export default function SeasonExplorer() {
                   {ctaLabel}
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
-              </motion.div>
-            </AnimatePresence>
+            </div>
           </div>
         </div>
       </div>
