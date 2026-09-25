@@ -91,8 +91,9 @@ export default function DiscoverTheWorld({
     const section = sectionRef.current;
     if (!section) return;
 
-    // The cards live below the full-height hero. Wait until the visitor starts
-    // approaching them before asking Firestore for a live refresh.
+    // The cards live below the hero. Hold their network work until the section
+    // is meaningfully close to view; native lazy loading otherwise begins its
+    // requests several screens early on a tall mobile viewport.
     if (!('IntersectionObserver' in window)) {
       setIsInViewport(true);
       return;
@@ -104,7 +105,7 @@ export default function DiscoverTheWorld({
         setIsInViewport(true);
         observer.disconnect();
       },
-      { threshold: 0.01 }
+      { rootMargin: '0px 0px -20%', threshold: 0 }
     );
 
     observer.observe(section);
@@ -228,15 +229,24 @@ export default function DiscoverTheWorld({
                   className="relative w-[85vw] md:w-[380px] flex-shrink-0 aspect-[4/5] rounded-[24px] overflow-hidden snap-center group cursor-pointer motion-safe:transform motion-safe:transition-transform motion-safe:duration-300 motion-safe:hover:-translate-y-1.5"
                   style={{ boxShadow: '0 8px 40px rgba(40,80,86,0.10)' }}
                 >
-                  <Image
-                    src={pkg.heroImageUrl || FALLBACK_IMAGE}
-                    alt={pkg.title}
-                    width={760}
-                    height={950}
-                    sizes="(max-width: 768px) 85vw, 380px"
-                    quality={60}
-                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
+                  {isInViewport ? (
+                    <Image
+                      src={pkg.heroImageUrl || FALLBACK_IMAGE}
+                      alt={pkg.title}
+                      width={760}
+                      height={950}
+                      sizes="(max-width: 768px) 85vw, 380px"
+                      quality={60}
+                      className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                  ) : (
+                    // Native lazy loading starts requests thousands of pixels
+                    // before a card is visible. This neutral placeholder keeps
+                    // the server-rendered links and layout intact, while the
+                    // actual images start only as the discovery rail enters
+                    // the viewport.
+                    <div aria-hidden="true" className="absolute inset-0 bg-teal/70" />
+                  )}
 
                   <div className="absolute inset-0 bg-gradient-to-t from-void/85 via-void/25 to-transparent" />
 
@@ -270,6 +280,7 @@ export default function DiscoverTheWorld({
 
                       <Link
                         href={`${packagesHref}/${pkg.slug}`}
+                        prefetch={false}
                         // shrink-0: as a flex child next to a long destination
                         // name it was being squeezed under 44px on 360px screens.
                         className="ml-auto shrink-0 w-11 h-11 rounded-full backdrop-blur-md bg-white/8 border border-white/15 flex items-center justify-center text-white group-hover:bg-lime group-hover:text-void group-hover:border-lime transition-all duration-300 active:scale-90"
@@ -293,7 +304,11 @@ export default function DiscoverTheWorld({
                   ? 'Something went wrong on our end. Please refresh, or tell us where you’d like to go and we’ll plan it with you.'
                   : 'Our next set of curated journeys is being prepared. In the meantime, tell us where you’d like to go and we’ll design a private trip around you.'}
               </p>
-              <Link href={hasError ? packagesHref : '/contact#trip'} className="btn-teal btn-shimmer inline-flex">
+              <Link
+                href={hasError ? packagesHref : '/contact#trip'}
+                prefetch={false}
+                className="btn-teal btn-shimmer inline-flex"
+              >
                 {hasError ? 'Browse all journeys' : 'Start planning'}
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Link>
@@ -304,7 +319,7 @@ export default function DiscoverTheWorld({
 
       {!loading && filteredPackages.length > 0 && (
         <div className="text-center mt-6">
-          <Link href={packagesHref} className="btn-teal btn-shimmer inline-flex">
+          <Link href={packagesHref} prefetch={false} className="btn-teal btn-shimmer inline-flex">
             View all journeys
             <ArrowRight className="w-4 h-4 ml-2" />
           </Link>

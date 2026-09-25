@@ -30,6 +30,7 @@ export function Navbar() {
           <div className="relative flex items-center justify-between py-4">
             <Link
               href="/"
+              prefetch={false}
               aria-label="BagPackerMe home"
               className="-mx-2 flex min-h-[44px] items-center rounded-full px-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime"
             >
@@ -49,6 +50,7 @@ export function Navbar() {
                 <li key={item.href}>
                   <Link
                     href={item.href}
+                    prefetch={false}
                     className="block rounded py-2 font-display text-[11px] font-bold uppercase tracking-[0.2em] text-content-inverse-muted transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime"
                   >
                     {item.name}
@@ -60,6 +62,7 @@ export function Navbar() {
             <div className="z-[101] flex items-center gap-4">
               <Link
                 href="/contact#trip"
+                prefetch={false}
                 className="hidden rounded-full bg-lime px-6 py-3 font-display text-[11px] font-bold uppercase tracking-widest text-void transition-transform duration-200 hover:-translate-y-0.5 hover:bg-lime/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime focus-visible:ring-offset-2 focus-visible:ring-offset-void xl:inline-flex"
               >
                 Start Planning
@@ -87,6 +90,7 @@ export function Navbar() {
                         <li key={item.href}>
                           <Link
                             href={item.href}
+                            prefetch={false}
                             className="block rounded py-3 text-content-inverse-muted transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime"
                           >
                             {item.name}
@@ -96,6 +100,7 @@ export function Navbar() {
                     </ul>
                     <Link
                       href="/contact#trip"
+                      prefetch={false}
                       className="mt-12 inline-flex min-h-12 w-full items-center justify-center rounded-full bg-lime px-6 py-3 font-display text-[12px] font-bold uppercase tracking-widest text-void focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime focus-visible:ring-offset-2 focus-visible:ring-offset-void"
                     >
                       Start Planning

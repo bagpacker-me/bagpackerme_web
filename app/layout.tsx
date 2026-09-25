@@ -91,9 +91,9 @@ export const metadata: Metadata = {
   },
 };
 
-// Document-level prefetch via the Speculation Rules API. Next already prefetches
-// the RSC payload for links in the viewport; this adds the full document fetch
-// on top, which is what removes the remaining navigation latency in Chromium.
+// Document-level prefetch via the Speculation Rules API. Marketing links opt out
+// of Next's eager viewport prefetch so they do not compete with the first paint;
+// this restores a full-document prefetch once a Chromium visitor shows intent.
 //
 // Deliberately `prefetch` and not `prerender`: prerender executes the target
 // page's JavaScript before the user commits to the navigation, which fires

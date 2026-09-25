@@ -72,6 +72,7 @@ export default function Hero({ market = 'global' }: { market?: PackageMarket }) 
         <div className="flex flex-col gap-3 sm:flex-row">
           <Link
             href="/contact#trip"
+            prefetch={false}
             className="inline-flex items-center justify-center gap-2 rounded-full bg-lime px-7 py-4 font-display text-[12px] font-bold uppercase tracking-widest text-void transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(193,234,0,0.3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime focus-visible:ring-offset-2 focus-visible:ring-offset-void active:translate-y-0 active:scale-[0.98]"
           >
             Start planning
@@ -79,6 +80,7 @@ export default function Hero({ market = 'global' }: { market?: PackageMarket }) 
           </Link>
           <Link
             href={hero.packagesHref}
+            prefetch={false}
             className="inline-flex items-center justify-center rounded-full border border-white/30 bg-white/10 px-7 py-4 font-display text-[12px] font-bold uppercase tracking-widest text-white transition-colors duration-200 hover:border-white/60 hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime focus-visible:ring-offset-2 focus-visible:ring-offset-void"
           >
             Explore trips
@@ -94,6 +96,7 @@ export default function Hero({ market = 'global' }: { market?: PackageMarket }) 
           <Link
             key={destination.label}
             href={destination.href}
+            prefetch={false}
             className="text-content-inverse-muted underline decoration-white/40 underline-offset-4 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime"
           >
             {destination.label}
