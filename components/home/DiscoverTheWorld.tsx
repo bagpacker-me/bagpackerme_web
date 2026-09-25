@@ -1,10 +1,9 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import { STATIC_GLOBAL_PACKAGE_SUMMARIES } from '@/lib/static-global-package-summaries';
 import { Package, PackageMarket, PACKAGE_CATEGORIES } from '@/types';
 
 const FALLBACK_IMAGE = '/web_photos/hero_1.webp';
@@ -63,11 +62,19 @@ function LoadingCard({ index }: { index: number }) {
   );
 }
 
-export default function DiscoverTheWorld({ market = 'global' }: { market?: PackageMarket }) {
+export default function DiscoverTheWorld({
+  market = 'global',
+  initialPackages = [],
+}: {
+  market?: PackageMarket;
+  initialPackages?: Package[];
+}) {
   const sectionRef = useRef<HTMLElement>(null);
-  const [packages, setPackages] = useState<Package[]>(
-    market === 'global' ? STATIC_GLOBAL_PACKAGE_SUMMARIES : []
+  const initialSeed = useMemo(
+    () => (market === 'global' ? initialPackages : []),
+    [initialPackages, market]
   );
+  const [packages, setPackages] = useState<Package[]>(initialSeed);
   const [activeTab, setActiveTab] = useState('All');
   const [loading, setLoading] = useState(market !== 'global');
   const [hasError, setHasError] = useState(false);
@@ -107,7 +114,7 @@ export default function DiscoverTheWorld({ market = 'global' }: { market?: Packa
   useEffect(() => {
     let mounted = true;
 
-    setPackages(market === 'global' ? STATIC_GLOBAL_PACKAGE_SUMMARIES : []);
+    setPackages(initialSeed);
     setLoading(market !== 'global');
     setHasError(false);
 
@@ -121,18 +128,23 @@ export default function DiscoverTheWorld({ market = 'global' }: { market?: Packa
       // REST rather than the Firebase SDK: this refresh is not worth ~200 KB of
       // SDK plus an auth iframe on a marketing page. It is deliberately gated
       // by viewport entry so it cannot compete with the hero's initial load.
-      const { fetchPublishedPackageCards, mergePackagesBySlug } = await import(
-        '@/lib/public-reads-rest'
-      );
+      const { fetchPublishedPackageCards, mergePackagesBySlug } = await import('@/lib/public-reads-rest');
       const livePackages = await fetchPublishedPackageCards(market);
       if (!mounted) return;
 
       if (livePackages) {
-        setPackages(
-          market === 'global'
-            ? mergePackagesBySlug(STATIC_GLOBAL_PACKAGE_SUMMARIES, livePackages)
-            : livePackages
-        );
+        if (market === 'global') {
+          // Keep the complete fallback catalogue available after the visitor
+          // reaches this section, but load it as a separate chunk rather than
+          // making every first-page visitor parse its 27 cards up front.
+          const { STATIC_GLOBAL_PACKAGE_SUMMARIES } = await import(
+            '@/lib/static-global-package-summaries'
+          );
+          if (!mounted) return;
+          setPackages(mergePackagesBySlug(STATIC_GLOBAL_PACKAGE_SUMMARIES, livePackages));
+        } else {
+          setPackages(livePackages);
+        }
       } else {
         // Global always has the static seed, so a failed read there is
         // invisible. On India the list would otherwise look deceptively empty.
@@ -144,10 +156,15 @@ export default function DiscoverTheWorld({ market = 'global' }: { market?: Packa
     return () => {
       mounted = false;
     };
-  }, [isInViewport, market]);
+  }, [initialSeed, isInViewport, market]);
 
   const availableCategories = ['All', ...sortCategories(Array.from(new Set(packages.map((pkg) => pkg.category).filter(Boolean))))];
   const filteredPackages = packages.filter((pkg) => activeTab === 'All' || pkg.category === activeTab);
+  // A horizontally scrollable landing-page rail should feature a concise
+  // selection. Rendering every catalogue card created 27 sibling elements and
+  // hundreds of descendants before the visitor ever reached the section. The
+  // full, filterable catalogue remains one click away at /packages.
+  const visiblePackages = filteredPackages.slice(0, 6);
 
   useEffect(() => {
     const categorySet = new Set<string>(packages.map((pkg) => pkg.category).filter(Boolean));
@@ -205,7 +222,7 @@ export default function DiscoverTheWorld({ market = 'global' }: { market?: Packa
               key={activeTab}
               className="flex gap-6 overflow-x-auto snap-x snap-mandatory hide-scrollbar pb-10 pt-4 -mx-6 px-6 lg:mx-0 lg:px-0"
             >
-              {filteredPackages.map((pkg) => (
+              {visiblePackages.map((pkg) => (
                 <div
                   key={pkg.id}
                   className="relative w-[85vw] md:w-[380px] flex-shrink-0 aspect-[4/5] rounded-[24px] overflow-hidden snap-center group cursor-pointer motion-safe:transform motion-safe:transition-transform motion-safe:duration-300 motion-safe:hover:-translate-y-1.5"
