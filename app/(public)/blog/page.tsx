@@ -1,13 +1,12 @@
 import { Metadata } from 'next';
-import { getPublishedBlogs } from '@/lib/firestore';
-import { BlogPost } from '@/types';
-import BlogListingClient from './_components/BlogListingClient';
+import { getPublishedBlogPosts } from '@/lib/blogs';
+import BlogHub from './_components/BlogHub';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { buildBlogCollectionSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 
-const BLOG_TITLE = 'India Travel Guides, Culture & Safari Stories';
+const BLOG_TITLE = 'Travel Stories, Ideas & Guides for the Curious';
 const BLOG_DESCRIPTION =
-  'Explore India travel guides, heritage walks, wildlife safaris, slow journeys and cultural experiences from BagPackerMe’s Journal.';
+  'Practical guides, honest answers and stories for people who want to see more of the world—even when their usual travel group can’t come.';
 
 export const metadata: Metadata = {
   title: BLOG_TITLE,
@@ -32,19 +31,13 @@ export const metadata: Metadata = {
   },
 };
 
-export const revalidate = 60;
+export const revalidate = 3600;
 
 export default async function BlogPage() {
-  let blogs: BlogPost[] = [];
-  try {
-    const snap = await getPublishedBlogs();
-    blogs = snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as BlogPost));
-  } catch (error) {
-    console.error('Failed to fetch blogs:', error);
-  }
+  const blogs = await getPublishedBlogPosts();
 
   return (
-    <main className="min-h-[100vh] bg-[#F5F5F5]">
+    <>
       <JsonLd
         data={buildBreadcrumbSchema([
           { name: 'Home', path: '/' },
@@ -52,7 +45,7 @@ export default async function BlogPage() {
         ])}
       />
       <JsonLd data={buildBlogCollectionSchema(blogs)} />
-      <BlogListingClient initialBlogs={blogs} />
-    </main>
+      <BlogHub posts={blogs} />
+    </>
   );
 }

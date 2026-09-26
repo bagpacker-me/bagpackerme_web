@@ -1,9 +1,9 @@
 import type { MetadataRoute } from 'next';
-import { getPublishedPackagesForMarket, getPublishedBlogs } from '@/lib/firestore';
 import { getPublishedJobOpenings } from '@/lib/careers-server';
 import { CLUB_TRIPS, tripPath } from '@/lib/club-trips';
 import { SITE_URL } from '@/lib/site-url';
-import { Package, BlogPost } from '@/types';
+import { blogTechnicalModifiedDate, getPublishedBlogPosts } from '@/lib/blogs';
+import { Package } from '@/types';
 
 const BASE_URL = SITE_URL;
 
@@ -39,6 +39,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Dynamic package pages
   let packagePages: MetadataRoute.Sitemap = [];
   try {
+    // The client Firestore SDK validates its browser key at module evaluation.
+    // Keep it out of sitemap's static path so the crawl-critical static URLs
+    // still render when a local build deliberately omits CMS credentials.
+    const { getPublishedPackagesForMarket } = await import('@/lib/firestore');
     const globalPackages = await getPublishedPackagesForMarket('global');
     const indiaPackages = await getPublishedPackagesForMarket('india');
     packagePages = [
@@ -62,16 +66,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Dynamic blog pages
   let blogPages: MetadataRoute.Sitemap = [];
   try {
-    const snap = await getPublishedBlogs();
-    blogPages = snap.docs.map((d) => {
-      const post = { id: d.id, ...d.data() } as BlogPost;
-      return {
+    const posts = await getPublishedBlogPosts();
+    blogPages = posts.map((post) => ({
         url: `${BASE_URL}/blog/${post.slug}`,
-        lastModified: post.updatedAt ? new Date(post.updatedAt) : post.publishDate ? new Date(post.publishDate) : new Date(),
+        // Never emit the editorial display date here. A sitemap lastmod must
+        // correspond to the page's actual technical change history.
+        lastModified: new Date(blogTechnicalModifiedDate(post)),
         changeFrequency: 'monthly' as const,
         priority: 0.7,
-      };
-    });
+      }));
   } catch {
     // Sitemap generation continues even if Firestore fails
   }

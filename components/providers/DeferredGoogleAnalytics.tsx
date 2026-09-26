@@ -62,7 +62,11 @@ export function DeferredGoogleAnalytics() {
         {`window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
-gtag('config', '${GA_MEASUREMENT_ID}');`}
+gtag('config', '${GA_MEASUREMENT_ID}');
+window.__bagpackermeTrack = function(name, params) { gtag('event', name, params); };
+var queuedBlogEvents = window.__bagpackermeAnalyticsQueue || [];
+queuedBlogEvents.forEach(function(event) { window.__bagpackermeTrack(event.name, event.params); });
+window.__bagpackermeAnalyticsQueue = [];`}
       </Script>
     </>
   );

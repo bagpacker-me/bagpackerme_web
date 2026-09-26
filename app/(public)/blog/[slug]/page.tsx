@@ -1,22 +1,34 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getBlogBySlug, getRelatedBlogs } from '@/lib/firestore';
+import {
+  blogDisplayDate,
+  getPublishedBlogBySlug,
+  getRelatedBlogPosts,
+  getStaticBlogSlugs,
+} from '@/lib/blogs';
 import { Calendar, Clock, User, ArrowLeft, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import ShareButtons from '../_components/ShareButtons';
 import NewsletterCard from '../_components/NewsletterCard';
 import { JsonLd } from '@/components/seo/JsonLd';
-import { buildBlogPostingSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
+import { buildBlogPostingSchema, buildBreadcrumbSchema, buildFaqPageSchema } from '@/lib/structured-data';
 import { absoluteUrl } from '@/lib/site-url';
 import { findAuthor } from '@/lib/authors';
 import { blogDisplayTitle, blogMetaDescription, blogMetaTitle } from '@/lib/seo';
 import { getBlogPresentation } from '@/lib/blog-presentation';
+import BlogArticleAnalytics from '@/components/blog/BlogArticleAnalytics';
 
 export const revalidate = 3600;
 
+// The committed Curious Club cluster is safely prerendered at build time. CMS
+// stories still work on demand through the same route and revalidation path.
+export function generateStaticParams() {
+  return getStaticBlogSlugs().map((slug) => ({ slug }));
+}
+
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const blog = await getBlogBySlug(params.slug);
+  const blog = await getPublishedBlogBySlug(params.slug);
   if (!blog) return { title: 'Post Not Found' };
   const title = blogMetaTitle(blog);
   const description = blogMetaDescription(blog);
@@ -43,24 +55,22 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   };
 }
 
-const splitHtml = (html: string) => {
-  const paragraphs = html.split('</p>');
-  if (paragraphs.length < 4) return { firstHalf: html, secondHalf: '' };
-  const midIndex = Math.floor(paragraphs.length / 2);
-  const firstHalf = paragraphs.slice(0, midIndex).join('</p>') + '</p>';
-  const secondHalf = paragraphs.slice(midIndex).join('</p>');
-  return { firstHalf, secondHalf };
-};
-
 export default async function BlogPostPage({ params }: { params: { slug: string } }) {
-  const blog = await getBlogBySlug(params.slug);
+  const blog = await getPublishedBlogBySlug(params.slug);
   if (!blog) notFound();
 
-  const relatedBlogs = await getRelatedBlogs(blog.category, blog.slug, 3);
-  const { firstHalf, secondHalf } = splitHtml(blog.contentHtml);
+  const relatedBlogs = await getRelatedBlogPosts(blog, 3);
   const author = findAuthor(blog.author);
   const displayTitle = blogDisplayTitle(blog);
   const presentation = getBlogPresentation(blog);
+  const displayDate = blogDisplayDate(blog);
+  const cta = blog.cta || {
+    eyebrow: 'BagPackerMe Planning',
+    title: 'Want us to shape a version of this trip for you?',
+    body: 'Tell us the destination, vibe, timing, and group size you have in mind. We\'ll take it forward on WhatsApp.',
+    href: '/contact#trip',
+    label: 'Plan this trip',
+  };
 
   const formatDate = (dateString?: string) => {
     if (!dateString) return '';
@@ -79,11 +89,20 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
     [&>p]:mb-[22px]
     [&>ul]:list-disc [&>ul]:pl-[24px] [&>ul]:mb-[22px] [&>ul>li]:mb-[8px] [&>ul>li]:pl-[6px]
     [&>ol]:list-decimal [&>ol]:pl-[24px] [&>ol]:mb-[22px] [&>ol>li]:mb-[8px] [&>ol>li]:pl-[6px]
+    [&_aside]:my-[32px] [&_aside]:rounded-r-[16px] [&_aside]:border-l-4 [&_aside]:border-l-lime [&_aside]:bg-ice [&_aside]:px-5 [&_aside]:py-5 [&_aside]:text-[15px] [&_aside]:leading-relaxed
+    [&_aside>strong]:font-display [&_aside>strong]:text-[14px] [&_aside>strong]:font-bold [&_aside>strong]:text-teal
+    [&_aside>p]:mb-0 [&_aside>p]:mt-2
+    [&_.article-table]:my-[32px] [&_.article-table]:overflow-x-auto [&_.article-table]:rounded-[14px] [&_.article-table]:border [&_.article-table]:border-void/10
+    [&_table]:min-w-full [&_table]:border-collapse [&_table]:text-left [&_table]:text-[14px] [&_table]:leading-relaxed
+    [&_th]:bg-void [&_th]:px-4 [&_th]:py-3 [&_th]:font-display [&_th]:text-[11px] [&_th]:font-bold [&_th]:uppercase [&_th]:tracking-wider [&_th]:text-white
+    [&_td]:border-t [&_td]:border-void/10 [&_td]:px-4 [&_td]:py-3 [&_td]:align-top
   `;
 
   return (
     <main className="min-h-screen bg-white">
+      <BlogArticleAnalytics slug={blog.slug} title={displayTitle} />
       <JsonLd data={buildBlogPostingSchema(blog)} />
+      {blog.faqItems && blog.faqItems.length > 0 && <JsonLd data={buildFaqPageSchema(blog.faqItems)} />}
       <JsonLd
         data={buildBreadcrumbSchema([
           { name: 'Home', path: '/' },
@@ -98,6 +117,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
           {/* Back link */}
           <Link
             href="/blog"
+            prefetch={false}
             className="inline-flex min-h-[44px] -mt-2 items-center gap-2 text-[13px] font-body font-medium text-gray-500 hover:text-teal transition-colors mb-4 group"
           >
             <ArrowLeft size={14} className="transition-transform group-hover:-translate-x-1" />
@@ -142,12 +162,12 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                 <span className="text-white/30 hidden md:block">•</span>
                 <span className="flex items-center gap-1.5">
                   <Calendar size={13} className="text-lime" />
-                  {formatDate(blog.publishDate)}
+                  {blog.editorialDisplayDate ? `Editorially dated ${formatDate(displayDate)}` : formatDate(displayDate)}
                 </span>
                 {/* Only shown when an edit actually moved the date. Mirrors
                     BlogPosting.dateModified so the visible page and the schema
                     agree — a mismatch is a trust signal Google checks. */}
-                {blog.updatedAt && blog.updatedAt.slice(0, 10) !== blog.publishDate?.slice(0, 10) && (
+                {!blog.editorialDisplayDate && blog.updatedAt && blog.updatedAt.slice(0, 10) !== blog.publishDate?.slice(0, 10) && (
                   <>
                     <span className="text-white/30">•</span>
                     <span className="flex items-center gap-1.5">
@@ -190,43 +210,55 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
             </p>
           )}
 
-          {/* First half of content */}
-          <div
-            className={articleStyles}
-            dangerouslySetInnerHTML={{ __html: firstHalf }}
-          />
-
-          {/* Inline newsletter */}
-          {secondHalf && <NewsletterCard />}
-
-          {/* Second half of content */}
-          {secondHalf && (
-            <div
-              className={articleStyles}
-              dangerouslySetInnerHTML={{ __html: secondHalf }}
-            />
+          {blog.tableOfContents && blog.tableOfContents.length > 0 && (
+            <nav aria-label="On this page" className="mb-10 rounded-[20px] border border-void/10 bg-[#F7F9FA] p-6 md:p-7">
+              <p className="mb-3 font-display text-[11px] font-bold uppercase tracking-widest text-teal">On this page</p>
+              <ol className="space-y-2">
+                {blog.tableOfContents.map((item) => (
+                  <li key={item.id}>
+                    <a
+                      href={`#${item.id}`}
+                      className="inline-flex min-h-[36px] items-center font-body text-[15px] text-void/75 underline decoration-teal/30 underline-offset-4 transition-colors hover:text-teal hover:decoration-teal"
+                    >
+                      {item.label}
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </nav>
           )}
 
-          {!secondHalf && <NewsletterCard />}
+          {/* Article HTML is authored as semantic sections, tables and asides.
+              Rendering it as one document prevents a newsletter insertion from
+              splitting a table or callout into invalid nested markup. */}
+          <div
+            className={articleStyles}
+            dangerouslySetInnerHTML={{ __html: blog.contentHtml }}
+          />
+
+          <NewsletterCard />
 
           <div className="my-12 rounded-[24px] bg-teal p-7 text-white md:p-10">
             <p className="mb-2 font-display text-[11px] font-bold uppercase tracking-widest text-lime">
-              BagPackerMe Planning
+              {cta.eyebrow}
             </p>
             <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
               <div className="max-w-[460px]">
                 <h2 className="mb-3 font-display text-[28px] font-bold leading-tight md:text-[34px]">
-                  Want us to shape a version of this trip for you?
+                  {cta.title}
                 </h2>
                 <p className="font-body text-[15px] leading-relaxed text-white/80">
-                  Tell us the destination, vibe, timing, and group size you have in mind. We&apos;ll take it forward on WhatsApp.
+                  {cta.body}
                 </p>
               </div>
               <Link
-                href="/contact#trip"
+                href={cta.href}
+                prefetch={false}
+                data-blog-event={cta.eventName}
+                data-blog-slug={blog.slug}
                 className="group inline-flex items-center gap-2 self-start rounded-full bg-white px-6 py-4 font-display text-[12px] font-bold uppercase tracking-widest text-teal transition-all duration-300 hover:-translate-y-0.5 hover:bg-lime"
               >
-                Plan this trip
+                {cta.label}
                 <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
               </Link>
             </div>
@@ -283,10 +315,11 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
             <div className="flex items-end justify-between mb-8">
               <div>
                 <p className="font-display text-[11px] font-bold tracking-widest uppercase text-teal mb-2">Read More</p>
-                <h2 className="font-display font-bold text-[clamp(1.8rem,3vw,2.5rem)] text-void leading-tight">Similar Stories</h2>
+                <h2 className="font-display font-bold text-[clamp(1.8rem,3vw,2.5rem)] text-void leading-tight">Continue exploring</h2>
               </div>
               <Link
                 href="/blog"
+                prefetch={false}
                 className="hidden md:inline-flex items-center gap-2 font-display font-bold text-[12px] uppercase tracking-widest text-teal hover:text-void transition-colors group"
               >
                 All Stories
@@ -301,10 +334,14 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
 
                 return (
                   <Link
-                  href={`/blog/${related.slug}`}
-                  key={related.id}
-                  className="group flex flex-col bg-white rounded-[14px] overflow-hidden shadow-sm hover:shadow-[0_16px_40px_rgba(34,30,42,0.12)] hover:-translate-y-1.5 transition-all duration-350"
-                >
+                    href={`/blog/${related.slug}`}
+                    key={related.id}
+                    prefetch={false}
+                    data-blog-event="blog_related_article_click"
+                    data-blog-slug={blog.slug}
+                    data-related-slug={related.slug}
+                    className="group flex flex-col bg-white rounded-[14px] overflow-hidden shadow-sm hover:shadow-[0_16px_40px_rgba(34,30,42,0.12)] hover:-translate-y-1.5 transition-all duration-350"
+                  >
                   <div className="relative aspect-[4/3] w-full overflow-hidden">
                     <Image
                       src={relatedPresentation.imageSrc}
@@ -319,7 +356,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                   </div>
                   <div className="flex flex-col flex-grow p-5 md:p-6">
                     <p className="font-body text-[12px] text-gray-400 mb-2.5">
-                      {formatDate(related.publishDate)}
+                      {formatDate(blogDisplayDate(related))}
                       {related.readTimeMinutes && <span className="mx-1.5 text-gray-300">•</span>}
                       {related.readTimeMinutes && <span>{related.readTimeMinutes} min read</span>}
                     </p>

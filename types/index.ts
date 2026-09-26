@@ -79,6 +79,12 @@ export interface BlogPost {
   excerpt: string;
   contentHtml: string;
   author: string;
+  /**
+   * A reader-facing editorial chronology. This is deliberately separate from
+   * createdAt/updatedAt so a planned editorial series never pretends it was
+   * technically published before it actually reached the site.
+   */
+  editorialDisplayDate?: string;
   publishDate: string;
   status: 'draft' | 'published';
   readTimeMinutes: number;
@@ -89,6 +95,21 @@ export interface BlogPost {
   // this field existed do not have it — BlogPosting.dateModified falls back to
   // publishDate in that case, which is the honest value for an unedited post.
   updatedAt?: string;
+  /** Intentional article graph, used instead of incidental category matches. */
+  relatedSlugs?: string[];
+  /** Lightweight navigation for long, answer-led articles. */
+  tableOfContents?: Array<{ id: string; label: string }>;
+  /** Visible questions may also be represented as FAQPage structured data. */
+  faqItems?: Array<{ question: string; answer: string }>;
+  /** Intent-sensitive conversion module rendered below the article body. */
+  cta?: {
+    eyebrow: string;
+    title: string;
+    body: string;
+    href: string;
+    label: string;
+    eventName?: 'blog_curious_club_click' | 'curious_club_apply_click';
+  };
 }
 
 export type StoredEnquiryVariant = 'contact' | 'package-booking' | 'b2c' | 'corporate';

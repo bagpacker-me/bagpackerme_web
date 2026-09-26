@@ -214,6 +214,14 @@ export function buildBlogPostingSchema(post: BlogPost): JsonLdDocument {
   const url = absoluteUrl(`/blog/${post.slug}`);
   const author = findAuthor(post.author);
   const presentation = getBlogPresentation(post);
+  // Editorial chronology is intentionally reader-facing only. New static
+  // articles use the actual deployment date in machine-readable fields rather
+  // than pretending they were technically published before the site contained
+  // them. Legacy CMS posts retain their historical publishDate semantics.
+  const technicalPublishedDate = post.editorialDisplayDate ? post.createdAt : post.publishDate;
+  const technicalModifiedDate = post.editorialDisplayDate
+    ? post.updatedAt || post.createdAt
+    : post.updatedAt || post.publishDate;
 
   return {
     '@context': CONTEXT,
@@ -222,16 +230,14 @@ export function buildBlogPostingSchema(post: BlogPost): JsonLdDocument {
     headline: post.title.slice(0, 110),
     description: blogMetaDescription(post),
     ...optionalImage(absoluteAssetUrl(presentation.imageSrc)),
-    // publishDate is already 'yyyy-MM-dd' (valid ISO 8601) — emit as-is.
-    datePublished: post.publishDate,
-    // Posts predating the updatedAt field fall back to publishDate: an unedited
-    // post genuinely was last modified when it was published, so this is
-    // accurate rather than merely convenient.
-    dateModified: post.updatedAt || post.publishDate,
+    datePublished: technicalPublishedDate,
+    dateModified: technicalModifiedDate,
     // A bare `{ name }` Person is an unresolvable blank node. When the byline
     // matches a known author, emit the full entity so the credential text is
     // machine-readable and the same @id is reused across every post they wrote.
-    author: author
+    author: post.author === 'BagPackerMe Editorial Team'
+      ? { '@type': 'Organization', '@id': ORG_ID, name: 'BagPackerMe' }
+      : author
       ? {
           '@type': 'Person',
           '@id': `${SITE_URL}/#author-${author.slug}`,
@@ -295,7 +301,8 @@ export function buildBlogCollectionSchema(posts: BlogPost[]): JsonLdDocument {
     '@type': 'CollectionPage',
     '@id': `${url}#journal`,
     name: 'BagPackerMe Journal',
-    description: 'India travel guides, heritage walks, wildlife safaris, slow journeys and cultural experiences from BagPackerMe.',
+    description:
+      'Practical travel guides, honest answers and stories for curious people planning more meaningful journeys with BagPackerMe.',
     url,
     isPartOf: { '@id': SITE_ID },
     mainEntity: {
