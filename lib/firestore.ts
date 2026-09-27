@@ -286,24 +286,12 @@ export const listenNewClubApplicationsCount = (callback: (count: number) => void
 
 // Subscribers
 const subscribersCol = collection(db, 'subscribers');
-const normalizeSubscriberEmail = (email: string) => email.trim().toLowerCase();
 export const getSubscribers = async () => getDocs(query(subscribersCol, orderBy('createdAt', 'desc')));
-export const createSubscriber = async (data: { email: string; createdAt: string }) =>
-  addDoc(subscribersCol, {
-    ...data,
-    email: normalizeSubscriberEmail(data.email),
-  });
-export const subscribeToNewsletter = async (email: string) => {
-  const normalizedEmail = normalizeSubscriberEmail(email);
-  if (!normalizedEmail) {
-    throw new Error('Email is required');
-  }
-
-  return createSubscriber({
-    email: normalizedEmail,
-    createdAt: new Date().toISOString(),
-  });
-};
+// Public signup moved to lib/newsletter.ts → POST /api/newsletter/subscribe, so
+// that it can be rate limited, deduplicated and trigger a welcome email. The
+// browser can no longer create these documents at all (firestore.rules), which
+// is why createSubscriber/subscribeToNewsletter are gone from here.
+// Reads and deletes stay: both are admin-only and run as an authenticated admin.
 export const deleteSubscriber = async (id: string) => deleteDoc(doc(db, 'subscribers', id));
 
 // Customers

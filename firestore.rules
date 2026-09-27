@@ -17,18 +17,6 @@ service cloud.firestore {
         && request.auth.token.email == 'admin@bagpackerme.com';
     }
 
-    // Shape guard for the public newsletter signup. subscribeToNewsletter()
-    // writes exactly these two fields from the browser.
-    function isSubscriberDoc(data) {
-      return data.keys().hasOnly(['email', 'createdAt'])
-        && data.email is string
-        && data.email.size() > 3
-        && data.email.size() <= 254
-        && data.email.matches('^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$')
-        && data.createdAt is string
-        && data.createdAt.size() <= 40;
-    }
-
     // Packages: public can read published, only admin can write
     match /packages/{docId} {
       allow read: if resource.data.status == 'published' || isAdmin();
@@ -50,11 +38,16 @@ service cloud.firestore {
       allow read, update, delete: if isAdmin();
     }
 
-    // Subscribers: the newsletter forms (Footer, NewsletterSection,
-    // NewsletterCard) write these directly from the browser, so create stays
-    // public — but shape-validated.
+    // Subscribers: created server-side only, via the Admin SDK in
+    // app/api/newsletter/subscribe/route.ts. The newsletter forms (Footer,
+    // NewsletterCard) used to addDoc straight from the browser, which left the
+    // one public write on this site with no rate limit, no honeypot and no way
+    // to trigger a welcome email. Now they POST that route instead, so — as with
+    // enquiries above — the Admin SDK bypasses these rules and browsers get no
+    // write access at all. The shape guard that used to live here is redundant:
+    // zod validates in the route, and nothing untrusted reaches this collection.
     match /subscribers/{docId} {
-      allow create: if isSubscriberDoc(request.resource.data);
+      allow create: if isAdmin();
       allow read, delete: if isAdmin();
     }
 

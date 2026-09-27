@@ -1,25 +1,27 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Mail } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { subscribeToNewsletter } from '@/lib/newsletter';
+import { HoneypotField } from '@/components/ui/HoneypotField';
 
 export default function NewsletterCard() {
   const [email, setEmail] = useState('');
   const [isSubscribing, setIsSubscribing] = useState(false);
+  const honeypotRef = useRef<HTMLInputElement>(null);
 
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
     setIsSubscribing(true);
     try {
-      const { subscribeToNewsletter } = await import('@/lib/firestore');
-      await subscribeToNewsletter(email);
+      await subscribeToNewsletter(email, honeypotRef.current?.value ?? '');
       toast.success("Thanks for subscribing!");
       setEmail('');
     } catch (error) {
       console.error(error);
-      toast.error("Something went wrong. Please try again later.");
+      toast.error(error instanceof Error ? error.message : "Something went wrong. Please try again later.");
     } finally {
       setIsSubscribing(false);
     }
@@ -40,6 +42,7 @@ export default function NewsletterCard() {
         </div>
         
         <form onSubmit={handleSubscribe} className="w-full md:w-auto shrink-0 flex flex-col sm:flex-row gap-[12px]">
+          <HoneypotField inputRef={honeypotRef} />
           <input
             type="email"
             placeholder="Your email address"

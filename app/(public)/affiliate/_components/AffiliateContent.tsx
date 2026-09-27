@@ -1,8 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { motion, Variants } from 'framer-motion';
 import Link from 'next/link';
+import { HoneypotField } from '@/components/ui/HoneypotField';
+import { HONEYPOT_FIELD } from '@/lib/honeypot';
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 28 },
@@ -70,6 +72,7 @@ export default function AffiliateContent() {
   const [state, setState] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [resultMsg, setResultMsg] = useState('');
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const honeypotRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,7 +81,7 @@ export default function AffiliateContent() {
       const res = await fetch('/api/affiliate/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, [HONEYPOT_FIELD]: honeypotRef.current?.value ?? '' }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Something went wrong.');
@@ -221,6 +224,8 @@ export default function AffiliateContent() {
               onSubmit={handleSubmit}
               className="bg-ice/50 rounded-3xl p-8 md:p-10 space-y-5 border border-void/5"
             >
+              <HoneypotField inputRef={honeypotRef} />
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
                   <label className="block font-display text-[13px] font-bold text-void mb-2 ml-1 tracking-wide">Full Name *</label>

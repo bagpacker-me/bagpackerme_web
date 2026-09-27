@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import type { EnquiryFormData } from '@/types';
 import { persistEnquiryWithAffiliateAttribution } from '@/lib/enquiry-submission';
+import { deliverEnquiry } from '@/lib/enquiry-delivery';
 import { clientIpFrom, isHoneypotTripped, isRateLimited } from '@/lib/spam-guard';
 
 const enquiryFormDataValue = z.union([z.string(), z.array(z.string())]);
@@ -50,16 +51,41 @@ export async function POST(request: Request) {
     }
 
     const { affiliateSessionId, formData, ...data } = parsed.data;
+    const submittedAt = new Date().toISOString();
 
-    await persistEnquiryWithAffiliateAttribution(
-      {
+    // This route carries the two richest lead types on the site: the B2C trip
+    // brief and the 7-step corporate/MICE wizard. Both used to persist silently,
+    // so the highest-intent enquiries were the only ones nobody was notified
+    // about. formData is forwarded verbatim because for a corporate brief that is
+    // where the 20-odd answers actually live.
+    const { persisted, notified } = await deliverEnquiry({
+      label: 'enquiries',
+      persist: () =>
+        persistEnquiryWithAffiliateAttribution(
+          {
+            ...data,
+            status: 'new',
+            ...(formData ? { formData: formData as EnquiryFormData } : {}),
+            createdAt: submittedAt,
+          },
+          affiliateSessionId
+        ),
+      webhookUrl: process.env.N8N_BRIEF_WEBHOOK_URL,
+      webhookPayload: {
         ...data,
-        status: 'new',
-        ...(formData ? { formData: formData as EnquiryFormData } : {}),
-        createdAt: new Date().toISOString(),
+        ...(formData ? { formData } : {}),
+        source: data.source ?? 'contact-page',
+        submittedAt,
       },
-      affiliateSessionId
-    );
+    });
+
+    // Only a genuine failure if *both* sinks rejected the enquiry.
+    if (!persisted && !notified) {
+      return NextResponse.json(
+        { error: 'We could not save your enquiry right now. Please try again in a moment.' },
+        { status: 502 }
+      );
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {

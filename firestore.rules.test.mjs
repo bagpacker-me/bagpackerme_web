@@ -119,17 +119,16 @@ await check(
 );
 
 console.log('\n--- Public site (must keep working) ---');
+// Newsletter signup now goes through POST /api/newsletter/subscribe (Admin SDK),
+// so the browser has no write access at all — previously it could create these
+// documents directly, subject only to a shape guard.
 await check(
-  'newsletter signup with a valid shape',
-  assertSucceeds(setDoc(doc(anon, 'subscribers/s1'), { email: 'a@b.com', createdAt: NOW }))
+  'newsletter signup is denied from the browser, even with a valid shape',
+  assertFails(setDoc(doc(anon, 'subscribers/s1'), { email: 'a@b.com', createdAt: NOW }))
 );
 await check(
-  'newsletter signup rejects extra fields',
-  assertFails(setDoc(doc(anon, 'subscribers/s2'), { email: 'a@b.com', createdAt: NOW, evil: 'x' }))
-);
-await check(
-  'newsletter signup rejects a malformed email',
-  assertFails(setDoc(doc(anon, 'subscribers/s3'), { email: 'notanemail', createdAt: NOW }))
+  'subscribers cannot be enumerated',
+  assertFails(getDoc(doc(anon, 'subscribers/s1')))
 );
 await check(
   'registration can check the duplicate-email index',

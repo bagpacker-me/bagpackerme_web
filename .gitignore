@@ -50,3 +50,7 @@ design-system/
 firestore-debug.log
 firebase-debug.log
 *-debug.log
+
+# One-shot helper that carries live secrets (AUTOMATION_API_SECRET,
+# N8N_WEBHOOK_SECRET) so they can be pushed to Vercel. Never commit it.
+set-vercel-env.sh

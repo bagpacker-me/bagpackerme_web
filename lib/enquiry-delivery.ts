@@ -22,11 +22,20 @@ async function postToWebhook(url: string | undefined, payload: unknown): Promise
     );
   }
 
+  const secret = process.env.N8N_WEBHOOK_SECRET?.trim();
+
   // Without a timeout a hanging n8n would hold the request open for the platform
   // limit, and the visitor would sit on a spinner while their lead is already safe.
   const response = await fetch(url, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      // The webhook URL is unauthenticated and guessable, so anyone holding it
+      // could POST fake leads into the automation. The receiving workflow
+      // compares this header and drops mismatches. Optional so an instance that
+      // has not set it yet keeps working.
+      ...(secret ? { 'X-Automation-Secret': secret } : {}),
+    },
     body: JSON.stringify(payload),
     cache: 'no-store',
     signal: AbortSignal.timeout(WEBHOOK_TIMEOUT_MS),

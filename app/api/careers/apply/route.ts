@@ -9,6 +9,7 @@ import {
   type CvValidationSuccess,
 } from '@/lib/careers-cv';
 import { clientIpFrom, isHoneypotTripped, isRateLimited } from '@/lib/spam-guard';
+import { notifyAutomation } from '@/lib/automation-notify';
 
 // Admin SDK + node:crypto in the CV helpers.
 export const runtime = 'nodejs';
@@ -113,7 +114,7 @@ export async function POST(request: Request) {
     // already in Storage by this point, so a failed Firestore write must surface
     // as an error — returning 200 would leave an orphaned CV that no admin can
     // see or delete. If this throws, the catch below reports it.
-    await adminDb()
+    const applicationRef = await adminDb()
       .collection('job_applications')
       .add({
         ...data,
@@ -133,6 +134,31 @@ export async function POST(request: Request) {
         createdAt: now,
         updatedAt: now,
       });
+
+    // After the write and deliberately unable to fail it: the CV is already in
+    // Storage and the application exists, so a down n8n must not turn a accepted
+    // application into an error. notifyAutomation swallows everything.
+    //
+    // The CV is never forwarded — it is admin-gated bytes served only by
+    // app/api/admin/applications/[id]/cv, so the alert carries a flag and a
+    // filename and lets the reviewer fetch it from the panel.
+    await notifyAutomation('careers.applied', {
+      applicationId: applicationRef.id,
+      fullName: data.fullName,
+      email: data.email,
+      phone: data.phone,
+      jobId: data.jobId,
+      jobTitle: job.title ?? 'Unknown role',
+      jobSlug: job.slug ?? '',
+      yearsExperience: data.yearsExperience,
+      noticePeriod: data.noticePeriod,
+      linkedinUrl: data.linkedinUrl || null,
+      portfolioUrl: data.portfolioUrl || null,
+      coverNote: data.coverNote,
+      hasCv: Boolean(cvPath),
+      cvFilename,
+      submittedAt: now,
+    });
 
     return NextResponse.json({ success: true });
   } catch (error) {
