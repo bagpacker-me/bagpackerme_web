@@ -201,6 +201,21 @@ export function adminDb(): Firestore {
   firestoreCache = new Firestore({
     projectId,
     preferRest: true,
+    // Without this, a single undefined field rejects the whole write with
+    // "Cannot use 'undefined' as a Firestore value". Every enquiry route builds
+    // its document from a zod schema whose affiliateCode / affiliateSessionId /
+    // travelDate are `.optional()`, so they are undefined for any visitor who did
+    // not arrive through a referral link — which is most of them.
+    //
+    // That made createEnquiryAdmin throw on ordinary submissions. Paired with an
+    // unset N8N_*_WEBHOOK_URL (the other sink, which throws when unconfigured),
+    // deliverEnquiry saw both sinks reject and returned 502 — so the contact and
+    // package-booking forms told visitors to try again later while silently
+    // saving nothing. The enquiries collection was empty in production.
+    //
+    // An absent optional field should simply not be stored, which is exactly what
+    // this does. It also protects every future optional field from the same trap.
+    ignoreUndefinedProperties: true,
     ...(process.env.VERCEL ? { auth: vercelGoogleAuth(projectId) } : {}),
   });
 
