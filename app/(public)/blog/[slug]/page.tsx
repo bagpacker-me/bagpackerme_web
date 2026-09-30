@@ -196,6 +196,24 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
               )}
             </div>
           </div>
+
+          {/* Photographer attribution. Only stock covers carry one; our own
+              photography has no credit object, so nothing renders. Required by
+              the Unsplash API licence, which asks for the name and a link back. */}
+          {blog.featuredImageCredit && (
+            <p className="mt-3 text-right font-body text-[11px] text-gray-400">
+              Photograph by{' '}
+              <a
+                href={blog.featuredImageCredit.url}
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                className="underline decoration-gray-300 underline-offset-2 hover:text-teal"
+              >
+                {blog.featuredImageCredit.name}
+              </a>{' '}
+              on Unsplash
+            </p>
+          )}
         </div>
       </section>
 

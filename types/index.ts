@@ -74,6 +74,11 @@ export interface BlogPost {
   featuredImageUrl: string;
   /** Plain-language description of the featured image for assistive tech. */
   featuredImageAlt?: string;
+  /**
+   * Photographer attribution for a stock cover image. Required by the Unsplash
+   * API licence, and omitted entirely when the cover is one of our own photographs.
+   */
+  featuredImageCredit?: { name: string; url: string };
   /** Reader-facing article topics. Optional for posts created before tags. */
   tags?: string[];
   excerpt: string;
