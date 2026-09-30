@@ -5,7 +5,7 @@ const contentSecurityPolicy = [
   "object-src 'none'",
   "frame-ancestors 'self'",
   "form-action 'self'",
-  "img-src 'self' data: blob: https://images.unsplash.com https://firebasestorage.googleapis.com https://www.google-analytics.com",
+  "img-src 'self' data: blob: https://images.unsplash.com https://firebasestorage.googleapis.com https://media.viator.com https://cache.graphicslib.viator.com https://media-cdn.tripadvisor.com https://www.google-analytics.com",
   "font-src 'self' data:",
   "style-src 'self' 'unsafe-inline'",
   "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com",
@@ -31,6 +31,24 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'firebasestorage.googleapis.com',
+        pathname: '/**',
+      },
+      // Viator experience photography. The Partner API hands back media.viator.com
+      // URLs today and cache.graphicslib.viator.com for older products; some
+      // supplier images are still served from the TripAdvisor CDN.
+      {
+        protocol: 'https',
+        hostname: 'media.viator.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cache.graphicslib.viator.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'media-cdn.tripadvisor.com',
         pathname: '/**',
       },
     ],
