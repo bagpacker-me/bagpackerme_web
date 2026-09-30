@@ -130,9 +130,10 @@ committed articles run to 164 and 170 characters).
 
 | Workflow | ID | Schedule | State |
 |---|---|---|---|
-| Content Engine — Article | `wFnaRyWapj4KUKop` | Tue + Fri 07:13 | **inactive** — needs credentials |
-| Content Calendar Seeder | `6pZZsflFU1L8agnV` | Monthly 1st 06:41 | **inactive** — needs credentials |
-| Weekly Newsletter — Saturday | `y7zzANVwPjD3384M` | Sat 10:07 | **inactive** — needs credentials |
+| Content Engine — Article | `wFnaRyWapj4KUKop` | Tue + Fri 07:13 | **active** |
+| Content Calendar Seeder | `6pZZsflFU1L8agnV` | Monthly 1st 06:41 | **active** |
+| Weekly Newsletter — Saturday | `y7zzANVwPjD3384M` | Sat 10:07 | **active**, ran end to end 2026-09-30 |
+| Content Engine — Reclaim Stalled Briefs | `0BNVujRZJHQyQ6YJ` | Daily 05:23 | **active** |
 | Newsletter Unsubscribe | `LRiIvXqCNTzfX1BT` | webhook | **active**, verified end to end |
 | Monthly Newsletter Digest | `7TjAPhi3V05CCiyU` | — | **unpublished**, kept as the rollback |
 
@@ -154,34 +155,50 @@ All carry `errorWorkflow: jogtB8JVPhhTl827` and `Asia/Kolkata`.
   `confirmed = false` and stamps it, so the existing `confirmed = true` filter keeps
   working with no schema change.
 
-## Three credentials block activation
+## Credentials
 
-None of them can be created through the MCP server, which has no credential-creation
-tool. Every one is credential type **Header Auth**. Create them in the n8n UI, attach
-them, then activate the three inactive workflows.
+All three exist and are attached. They were created through the n8n **public API**
+(`POST /api/v1/credentials`), not the UI — the MCP server has no credential-creation
+tool, only `list_credentials`, which by design never returns secret data. The API key
+that made this possible lives at `~/.config/bpm/n8n-api-key`.
 
-| Credential | Header name | Header value | Attach to |
+| Credential | id | Header | Attached to |
 |---|---|---|---|
-| `OpenRouter API` | `Authorization` | `Bearer sk-or-v1-…` | `Write Article`, `Rewrite Article` (Article), `Propose Briefs` (Seeder), `Write Opening` (Newsletter) |
-| `Tavily API` | `Authorization` | `Bearer tvly-…` | `Research Topic` (Article), `Research This Week` (Newsletter) |
-| `Unsplash API` | `Authorization` | `Client-ID <access key>` | `Find Cover Photo` (Article) |
+| `OpenRouter API` | `6WU7B2EFNVkPwc0l` | `Authorization: Bearer sk-or-…` | `Write Article`, `Rewrite Article`, `Propose Briefs`, `Write Opening` |
+| `Tavily API` | `ITK7KV3TbU5Zwv9z` | `Authorization: Bearer tvly-…` | `Research Topic`, `Research This Week` |
+| `Unsplash API` | `bDmc2FBomIvOm82V` | `Authorization: Client-ID …` | `Find Cover Photo` |
 
 The keys are deliberately **not** written into any node. Inline header values land in
 workflow JSON, which is carried into version history, exports and the payload handed
 to the error workflow on a failure — a credential keeps them out of all four.
+
+Note the n8n **public API key** (`aud: public-api`) is a different object from the
+**MCP token** in `~/.claude.json` (`aud: mcp-server-api`). The MCP token returns 401
+against `/api/v1/` and `/rest/`; it speaks only to the MCP endpoint. Reaching for the
+wrong one costs half an hour.
 
 Unsplash's free tier is 5,000 requests/hour against about three a week.
 `images.unsplash.com` was already cleared in the CSP and `next.config.mjs`, so no
 config change was needed — but the licence wants attribution, which is what
 `featuredImageCredit` and the credit line under the hero are for.
 
-The site routes must also be deployed. They are **written to this repo but not yet
-committed or pushed**; the workflows call
-`https://www.bagpackerme.com/api/automation/articles`, which returns 404 until `main`
-deploys.
-
 ## Things worth not rediscovering
 
+- **`status = writing` is a lease, and nothing reclaimed it.** The first live run hit a
+  truncated OpenRouter response (`finish_reason: "error"`, zero usage, JSON cut
+  mid-string). `Parse Article` correctly returned its `ok: false` shape — and then fed
+  it straight into `Publish Article`, which stringified `undefined` and threw. The
+  brief sat at `writing` with no alert and no retry, invisible. Fixed three ways:
+  `Article Parsed?` / `Rewrite Parsed?` gates route the failure to the failure report;
+  the failure report now separates infrastructure faults (back to `planned`, up to
+  three attempts) from editorial rejection (`failed`); and **Reclaim Stalled Briefs**
+  sweeps up anything a hard crash strands, because a gate cannot catch an n8n restart.
+- **`finish_reason: "error"` is a real OpenRouter terminal state** and is not in the
+  OpenAI set. It means the stream broke upstream; usage comes back as zero, so nothing
+  was billed and retrying is the right response. Both parse nodes name it explicitly.
+- **`$execution.mode` is `'test'` or `'production'` — there is no `'manual'`.**
+  Comparing against `'manual'` fails silently, which is how the reclaim workflow's
+  no-age-check bypass did nothing on its first run.
 - **The gate had two false positives, both found by running real generated copy
   through it rather than by reading it.** A sentence naming the deposit *and* the
   cancellation ladder was narrowed to the deposit figures, so our own correct policy
